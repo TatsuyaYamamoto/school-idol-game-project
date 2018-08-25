@@ -1,0 +1,9 @@
+{
+  "name": "school-idol-game-project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/TatsuyaYamamoto/school-idol-game-project.git",
+  "author": "TatsuyaYamamoto <yamamoto.tatsuya@fujixerox.co.jp>",
+  "license": "MIT",
+  "private": true
+}
