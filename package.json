@@ -15,6 +15,9 @@
       "path": "cz-conventional-changelog"
     }
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "dependencies": {},
   "devDependencies": {
     "commitizen": "^2.10.1",
