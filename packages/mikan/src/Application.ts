@@ -1,4 +1,7 @@
-import * as PIXI from "pixi.js";
+import {
+  Application as PixiApplication,
+  ApplicationOptions as PixiApplicationOptions
+} from "pixi.js";
 
 import State from "./State";
 import config from "./config";
@@ -31,10 +34,10 @@ import ViewContainer from "./ViewContainer";
  *
  * @class
  */
-abstract class Application extends PIXI.Application implements State {
+abstract class Application extends PixiApplication implements State {
   private _stateMachine: StateMachine<ViewContainer>;
 
-  constructor(options: PIXI.ApplicationOptions) {
+  constructor(options: PixiApplicationOptions) {
     super(
       Object.assign(
         {

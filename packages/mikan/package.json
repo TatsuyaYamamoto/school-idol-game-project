@@ -2,6 +2,29 @@
   "name": "mikan",
   "version": "0.0.1",
   "description": "game framework for sokontokoro",
-  "main": "index.js",
-  "license": "MIT"
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "files": [
+    "dist",
+    "package.json",
+    "README.md"
+  ],
+  "dependencies": {
+    "animejs": "^2.2.0",
+    "i18next": "^11.6.0",
+    "i18next-browser-languagedetector": "^2.2.3",
+    "pixi-sound": "^1.4.2",
+    "pixi.js": "^4.5.4",
+    "spin.js": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/i18next": "^8.4.4",
+    "@types/i18next-browser-languagedetector": "^2.0.1",
+    "@types/pixi.js": "^4.8.0",
+    "typescript": "^3.0.1"
+  }
 }
