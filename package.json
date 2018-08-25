@@ -5,5 +5,19 @@
   "repository": "https://github.com/TatsuyaYamamoto/school-idol-game-project.git",
   "author": "TatsuyaYamamoto <yamamoto.tatsuya@fujixerox.co.jp>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "scripts": {
+    "commit": "git-cz"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "commitizen": "^2.10.1",
+    "cz-conventional-changelog": "^2.1.0"
+  }
 }
