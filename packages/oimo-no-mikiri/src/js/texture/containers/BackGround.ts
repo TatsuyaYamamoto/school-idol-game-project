@@ -1,6 +1,6 @@
 import { Sprite, extras, Container } from "pixi.js";
 
-import { loadTexture, loadFrames } from "../../../framework/AssetLoader";
+import { loadTexture, loadFrames } from "mikan";
 
 import AnimatedSprite from "../internal/AnimatedSprite";
 import { Ids } from "../../resources/image";

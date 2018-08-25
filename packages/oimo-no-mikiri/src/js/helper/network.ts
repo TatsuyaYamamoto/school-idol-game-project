@@ -1,8 +1,7 @@
 /**
  * @fileOverview convenience functions related to network, WebAPI and browser location.
  */
-import { t } from "../../framework/i18n";
-import { getRandomInteger } from "../../framework/utils";
+import { t, getRandomInteger } from "mikan";
 
 import Mode from "../models/Mode";
 import Actor from "../models/Actor";

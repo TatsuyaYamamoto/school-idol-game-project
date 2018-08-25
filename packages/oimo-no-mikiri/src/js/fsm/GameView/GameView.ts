@@ -1,5 +1,11 @@
-import ViewContainer from "../../../framework/ViewContainer";
-import Deliverable from "../../../framework/Deliverable";
+import {
+  ViewContainer,
+  Deliverable,
+  play,
+  playOnLoop,
+  stop,
+  dispatchEvent
+} from "mikan";
 
 import Player from "../../texture/sprite/character/Player";
 import Opponent from "../../texture/sprite/character/Opponent";
@@ -16,10 +22,8 @@ import EnemyRuby from "../../texture/sprite/character/EnemyRuby";
 import Game, { isSingleMode } from "../../models/Game";
 
 import { trackPageView, VirtualPageViews } from "../../helper/tracker";
-import { play, playOnLoop, stop } from "../../../framework/MusicPlayer";
 
 import { Ids as SoundIds } from "../../resources/sound";
-import { dispatchEvent } from "../../../framework/EventUtils";
 import { Events as AppEvents } from "../ApplicationState";
 
 export enum Events {

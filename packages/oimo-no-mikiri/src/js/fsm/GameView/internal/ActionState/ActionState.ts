@@ -1,7 +1,4 @@
-import { dispatchEvent } from "../../../../../framework/EventUtils";
-import Deliverable from "../../../../../framework/Deliverable";
-import { vibrate } from "../../../../../framework/utils";
-import { play } from "../../../../../framework/MusicPlayer";
+import { Deliverable, vibrate, play, dispatchEvent } from "mikan";
 
 import GameViewState from "../GameViewState";
 import { Events } from "../../GameView";

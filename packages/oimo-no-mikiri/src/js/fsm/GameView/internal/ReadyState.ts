@@ -1,16 +1,13 @@
 import * as anime from "animejs";
 import { filters } from "pixi.js";
 
-import { dispatchEvent } from "../../../../framework/EventUtils";
-import Deliverable from "../../../../framework/Deliverable";
+import { Deliverable, dispatchEvent, play } from "mikan";
 
 import GameViewState from "./GameViewState";
 import { Events } from "../GameView";
 
 import PlayerCloseUp from "../../../texture/sprite/character/PlayerCloseUp";
 import OpponentCloseUp from "../../../texture/sprite/character/OpponentCloseUp";
-
-import { play } from "../../../../framework/MusicPlayer";
 
 import { Ids as SoundIds } from "../../../resources/sound";
 import { SKIP_READY_ANIMATION } from "../../../Constants";

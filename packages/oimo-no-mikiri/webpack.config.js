@@ -46,11 +46,11 @@ const config = {
   resolve: {
     extensions: [".js", ".ts"]
   },
+  devtool: "source-map",
   module: {
     rules: [
       {
-        test: /\.(tsx?|jsx?)$/,
-        exclude: /node_modules/,
+        test: /\.tsx?$/,
         use: [{ loader: "ts-loader" }]
       },
       { test: /\.css$/, loader: "style-loader!css-loader" },

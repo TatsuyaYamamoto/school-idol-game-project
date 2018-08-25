@@ -1,7 +1,6 @@
 import { Texture, Sprite, Container } from "pixi.js";
 
-import Deliverable from "../../../../../framework/Deliverable";
-import { dispatchEvent } from "../../../../../framework/EventUtils";
+import { Deliverable, dispatchEvent, play } from "mikan";
 
 import GameViewState from "../GameViewState";
 import { Events } from "../../GameView";
@@ -17,7 +16,6 @@ import WinnerName from "../../../../texture/containers/GameResultPaper/WinnerNam
 import Actor from "../../../../models/Actor";
 import Mode from "../../../../models/Mode";
 
-import { play } from "../../../../../framework/MusicPlayer";
 import { Action, Category, trackEvent } from "../../../../helper/tracker";
 
 import { Ids as SoundIds } from "../../../../resources/sound";

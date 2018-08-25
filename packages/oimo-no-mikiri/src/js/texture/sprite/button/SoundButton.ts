@@ -1,9 +1,8 @@
 import { Texture, interaction } from "pixi.js";
+import { loadFrames, isMute } from "mikan";
 
 import Button from "../../internal/Button";
 import { Ids } from "../../../resources/image";
-import { loadFrames } from "../../../../framework/AssetLoader";
-import { isMute } from "../../../../framework/MusicPlayer";
 
 class SoundButton extends Button {
   private _onTexture: Texture;

@@ -1,5 +1,5 @@
 import { Graphics } from "pixi.js";
-import ViewContainer from "../../../../framework/ViewContainer";
+import { ViewContainer } from "mikan";
 
 import GameView from "../GameView";
 

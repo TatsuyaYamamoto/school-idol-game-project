@@ -1,6 +1,7 @@
+import { getRandomInteger } from "mikan";
+
 import Actor from "./Actor";
 import EventEmitter from "./online/EventEmitter";
-import { getRandomInteger } from "../../framework/utils";
 
 export enum BattleEvents {
   FIXED = "fixed",

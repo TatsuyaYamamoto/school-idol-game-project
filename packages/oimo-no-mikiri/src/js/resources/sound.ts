@@ -2,7 +2,7 @@
  * @fileOverview Sound resource manifest.
  * It's used to load with {@link AssetLoader#setSoundManifest}
  */
-import { SoundManifest } from "../../framework/AssetLoader";
+import { SoundManifest } from "mikan";
 
 export enum Ids {
   SOUND_OK,

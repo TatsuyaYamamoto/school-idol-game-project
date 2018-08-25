@@ -1,12 +1,6 @@
 import { default as AutoBind } from "autobind-decorator";
 
-import {
-  addEvents,
-  dispatchEvent,
-  removeEvents
-} from "../../../framework/EventUtils";
-import { play } from "../../../framework/MusicPlayer";
-import { vibrate } from "../../../framework/utils";
+import { addEvents, dispatchEvent, removeEvents, play, vibrate } from "mikan";
 
 import GameView, { EnterParams, Events, InnerStates } from "./GameView";
 

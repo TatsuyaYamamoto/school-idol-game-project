@@ -1,7 +1,6 @@
 import { default as AutoBind } from "autobind-decorator";
 
-import Deliverable from "../../../../framework/Deliverable";
-import { dispatchEvent } from "../../../../framework/EventUtils";
+import { Deliverable, dispatchEvent, play, toggleSound } from "mikan";
 
 import { Events } from "../TopView";
 import TopViewState from "./TopViewState";
@@ -12,7 +11,6 @@ import SelectMultiPlayModeBoard from "../../../texture/containers/SelectMultiPla
 
 import Mode from "../../../models/Mode";
 
-import { play, toggleSound } from "../../../../framework/MusicPlayer";
 import { goTo } from "../../../helper/network";
 import {
   Action,

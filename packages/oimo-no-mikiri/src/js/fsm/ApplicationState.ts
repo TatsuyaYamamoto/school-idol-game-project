@@ -1,8 +1,13 @@
 import { default as AutoBind } from "autobind-decorator";
 
-import Application from "../../framework/Application";
-import { getCurrentViewSize, getScale } from "../../framework/utils";
-import { addEvents, removeEvents } from "../../framework/EventUtils";
+import {
+  Application,
+  getCurrentViewSize,
+  getScale,
+  addEvents,
+  removeEvents,
+  toggleSound
+} from "mikan";
 
 import { default as InitialViewState } from "./InitialView";
 import { EnterParams as GameViewEnterParams } from "./GameView/GameView";
@@ -10,7 +15,6 @@ import LocalGameView from "./GameView/LocalGameView";
 import OnlineGameView from "./GameView/OnlineGameView";
 import { default as TopViewState } from "./TopView";
 
-import { toggleSound } from "../../framework/MusicPlayer";
 import { isOnlineMode } from "../models/Game";
 
 export enum Events {
@@ -29,7 +33,10 @@ enum InnerStates {
 @AutoBind
 class ApplicationState extends Application {
   constructor() {
-    super(getCurrentViewSize());
+    const params = {
+      ...getCurrentViewSize()
+    };
+    super(params);
   }
 
   /**

@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { isSupportTouchEvent } from "../../../../framework/utils";
+import { isSupportTouchEvent } from "mikan";
 
 import Text from "../../internal/Text";
 import { Action, Category, trackEvent } from "../../../helper/tracker";

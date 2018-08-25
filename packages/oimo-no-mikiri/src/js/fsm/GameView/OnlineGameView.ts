@@ -1,11 +1,14 @@
 import { default as AutoBind } from "autobind-decorator";
 
-import { addEvents, dispatchEvent } from "../../../framework/EventUtils";
-import Deliverable from "../../../framework/Deliverable";
 import {
+  Deliverable,
+  addEvents,
+  dispatchEvent,
+  play,
+  vibrate,
   show as showConnecting,
   hide as hideConnecting
-} from "../../../framework/ConnectingIndicator";
+} from "mikan";
 
 import GameView, { EnterParams, Events, InnerStates } from "./GameView";
 import ReadyState from "./internal/ReadyState";
@@ -34,9 +37,7 @@ import {
   openWaitingRestartModal
 } from "../../helper/modals";
 import { Ids as SoundIds } from "../../resources/sound";
-import { play } from "../../../framework/MusicPlayer";
 import { BattleEvents } from "../../models/Battle";
-import { vibrate } from "../../../framework/utils";
 import { VIBRATE_TIME } from "../../Constants";
 
 @AutoBind
