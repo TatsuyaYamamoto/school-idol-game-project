@@ -105,32 +105,32 @@ class BrandLogoAnimation extends Container {
         targets: this._hammer,
         rotation: [
           {
-            value: (-90 * Math.PI) / 180,
+            value: -90 * Math.PI / 180,
             duration: TIMELINE.EXPANSION * DURATION_SCALE
           },
           { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE },
           {
-            value: (-90 * Math.PI) / 180,
+            value: -90 * Math.PI / 180,
             duration: TIMELINE.EXPANSION * DURATION_SCALE
           },
           { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE },
           {
-            value: (-90 * Math.PI) / 180,
+            value: -90 * Math.PI / 180,
             duration: TIMELINE.EXPANSION * DURATION_SCALE
           },
           { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE },
           {
-            value: (-90 * Math.PI) / 180,
+            value: -90 * Math.PI / 180,
             duration: TIMELINE.EXPANSION * DURATION_SCALE
           },
           { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE },
           {
-            value: (-90 * Math.PI) / 180,
+            value: -90 * Math.PI / 180,
             duration: TIMELINE.EXPANSION * DURATION_SCALE
           },
           { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE },
           {
-            value: (-90 * Math.PI) / 180,
+            value: -90 * Math.PI / 180,
             duration: TIMELINE.EXPANSION * DURATION_SCALE
           },
           { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE }

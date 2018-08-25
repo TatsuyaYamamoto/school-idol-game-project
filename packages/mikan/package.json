@@ -1,0 +1,7 @@
+{
+  "name": "mikan",
+  "version": "0.0.1",
+  "description": "game framework for sokontokoro",
+  "main": "index.js",
+  "license": "MIT"
+}
