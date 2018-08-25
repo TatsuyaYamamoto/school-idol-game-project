@@ -1,0 +1,117 @@
+{
+  "frames": {
+    "maru1.png": {
+      "frame": { "x": 1, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "maru2.png": {
+      "frame": { "x": 274, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "maru3.png": {
+      "frame": { "x": 547, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "maru4.png": {
+      "frame": { "x": 820, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "maru5.png": {
+      "frame": { "x": 1093, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "maru6.png": {
+      "frame": { "x": 1366, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "maru7.png": {
+      "frame": { "x": 1639, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "maru8.png": {
+      "frame": { "x": 1, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "maru9.png": {
+      "frame": { "x": 274, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "maru10.png": {
+      "frame": { "x": 547, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "maru11.png": {
+      "frame": { "x": 820, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "maru12.png": {
+      "frame": { "x": 1093, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "maru13.png": {
+      "frame": { "x": 1366, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    }
+  },
+  "meta": {
+    "app": "http://www.codeandweb.com/texturepacker",
+    "version": "1.0",
+    "image": "character_hanamaru.png",
+    "format": "RGBA8888",
+    "size": { "w": 1911, "h": 520 },
+    "scale": "1",
+    "smartupdate": "$TexturePacker:SmartUpdate:a8df7d4a629c9e24cfaa6a553094fb95:086c80ed3885fc72197eae3c4fc178ef:72712db03555e795f0de4093a38fd731$"
+  }
+}

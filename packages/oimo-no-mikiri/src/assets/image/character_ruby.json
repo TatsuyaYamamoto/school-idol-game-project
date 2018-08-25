@@ -1,0 +1,85 @@
+{
+  "frames": {
+    "ruby2-1.png": {
+      "frame": { "x": 1, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "ruby2-2.png": {
+      "frame": { "x": 274, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "ruby2-3.png": {
+      "frame": { "x": 547, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "ruby2-4.png": {
+      "frame": { "x": 1, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "ruby2-5.png": {
+      "frame": { "x": 274, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "ruby2-6.png": {
+      "frame": { "x": 547, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "ruby2-7.png": {
+      "frame": { "x": 1, "y": 521, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "ruby2-8.png": {
+      "frame": { "x": 274, "y": 521, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "ruby2-9.png": {
+      "frame": { "x": 547, "y": 521, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    }
+  },
+  "meta": {
+    "app": "http://www.codeandweb.com/texturepacker",
+    "version": "1.0",
+    "image": "character_ruby.png",
+    "format": "RGBA8888",
+    "size": { "w": 819, "h": 780 },
+    "scale": "1",
+    "smartupdate": "$TexturePacker:SmartUpdate:543fc979ce674dd57260a30c9d9eded6:040a4896ca07c5d3b6506004c8887394:622abc30144b31d9d39c1a74cd4cf1fe$"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "allowJs": true,
+    "lib": ["dom", "es2015"],
+    "experimentalDecorators": true
+  }
+}

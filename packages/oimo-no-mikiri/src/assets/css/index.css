@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  user-select: none;
+}
+
+#main {
+  display: none;
+  text-align: center;
+}
+
+#first-gesture-guide {
+  display: block;
+  color: #888;
+  text-align: center;
+  margin: 100px auto 16px;
+}
+
+#first-gesture-guide h1 {
+  color: #555;
+  font-size: 22px;
+  font-weight: 300;
+}
+
+#first-gesture-guide p {
+}
+
+#first-gesture-guide h2 {
+  margin-bottom: 50px;
+}

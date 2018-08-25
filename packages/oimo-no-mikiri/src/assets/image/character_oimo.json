@@ -1,0 +1,37 @@
+{
+  "frames": {
+    "imo-2-1.png": {
+      "frame": { "x": 1, "y": 1, "w": 123, "h": 163 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 123, "h": 163 },
+      "sourceSize": { "w": 123, "h": 163 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "imo-2-2.png": {
+      "frame": { "x": 1, "y": 166, "w": 123, "h": 163 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 123, "h": 163 },
+      "sourceSize": { "w": 123, "h": 163 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "imo-2-3.png": {
+      "frame": { "x": 1, "y": 331, "w": 123, "h": 163 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 123, "h": 163 },
+      "sourceSize": { "w": 123, "h": 163 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    }
+  },
+  "meta": {
+    "app": "http://www.codeandweb.com/texturepacker",
+    "version": "1.0",
+    "image": "character_oimo.png",
+    "format": "RGBA8888",
+    "size": { "w": 125, "h": 495 },
+    "scale": "1",
+    "smartupdate": "$TexturePacker:SmartUpdate:bfca9191241cb5241077143def21481e:058449ef1d830d7eb2c60046a37aaf48:cb78d331e44597fa69d657baf1671545$"
+  }
+}

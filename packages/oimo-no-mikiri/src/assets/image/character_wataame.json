@@ -1,0 +1,77 @@
+{
+  "frames": {
+    "wataame1.png": {
+      "frame": { "x": 1, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "wataame2.png": {
+      "frame": { "x": 274, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "wataame3.png": {
+      "frame": { "x": 547, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "wataame4.png": {
+      "frame": { "x": 1, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "wataame5.png": {
+      "frame": { "x": 274, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "wataame6.png": {
+      "frame": { "x": 547, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "wataame7.png": {
+      "frame": { "x": 1, "y": 521, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "wataame8.png": {
+      "frame": { "x": 274, "y": 521, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    }
+  },
+  "meta": {
+    "app": "http://www.codeandweb.com/texturepacker",
+    "version": "1.0",
+    "image": "character_wataame.png",
+    "format": "RGBA8888",
+    "size": { "w": 819, "h": 780 },
+    "scale": "1",
+    "smartupdate": "$TexturePacker:SmartUpdate:c7ed2ceb6a0a6d5fc187be083c3225a1:fe70fb3813126a0a4ea75b54f75d3317:6ce954f124e5a34cdc416c2b5a4867aa$"
+  }
+}

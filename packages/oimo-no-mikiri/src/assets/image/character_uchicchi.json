@@ -1,0 +1,93 @@
+{
+  "frames": {
+    "utitti1.png": {
+      "frame": { "x": 1, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "utitti2.png": {
+      "frame": { "x": 274, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "utitti3.png": {
+      "frame": { "x": 547, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "utitti4.png": {
+      "frame": { "x": 1, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "utitti5.png": {
+      "frame": { "x": 274, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "utitti6.png": {
+      "frame": { "x": 547, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "utitti7.png": {
+      "frame": { "x": 1, "y": 521, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "utitti8.png": {
+      "frame": { "x": 274, "y": 521, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "utitti9.png": {
+      "frame": { "x": 547, "y": 521, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "utitti10.png": {
+      "frame": { "x": 1, "y": 781, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    }
+  },
+  "meta": {
+    "app": "http://www.codeandweb.com/texturepacker",
+    "version": "1.0",
+    "image": "character_uchicchi.png",
+    "format": "RGBA8888",
+    "size": { "w": 819, "h": 1040 },
+    "scale": "1",
+    "smartupdate": "$TexturePacker:SmartUpdate:9e01a8fed6aa7cce6a6aeb95de9c7d9b:de740f933deedb441f4a8739240e8237:191175f706d2b487c83537ab10b25f3d$"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "frames": {
+    "little1.png": {
+      "frame": { "x": 1, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "little2.png": {
+      "frame": { "x": 274, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "little3.png": {
+      "frame": { "x": 547, "y": 1, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "little4.png": {
+      "frame": { "x": 1, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "little5.png": {
+      "frame": { "x": 274, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "little6.png": {
+      "frame": { "x": 547, "y": 261, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "little7.png": {
+      "frame": { "x": 1, "y": 521, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    },
+    "little8.png": {
+      "frame": { "x": 274, "y": 521, "w": 271, "h": 258 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 271, "h": 258 },
+      "sourceSize": { "w": 271, "h": 258 },
+      "pivot": { "x": 0.5, "y": 0.5 }
+    }
+  },
+  "meta": {
+    "app": "http://www.codeandweb.com/texturepacker",
+    "version": "1.0",
+    "image": "character_little_daemon.png",
+    "format": "RGBA8888",
+    "size": { "w": 819, "h": 780 },
+    "scale": "1",
+    "smartupdate": "$TexturePacker:SmartUpdate:7e59d4bb47fbe9671328603109eaf3ff:7ebef720d7bc0efa0b2b05034f25d764:f5dbbcdde508577b5c92015bd6a9bc08$"
+  }
+}
