@@ -1,5 +1,5 @@
 {
-  "name": "mikan",
+  "name": "@sokontokoro/mikan",
   "version": "0.0.1",
   "description": "game framework for sokontokoro",
   "main": "dist/index.js",

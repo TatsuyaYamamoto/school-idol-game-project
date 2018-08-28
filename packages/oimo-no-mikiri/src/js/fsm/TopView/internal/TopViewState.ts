@@ -1,4 +1,4 @@
-import { ViewContainer } from "mikan";
+import { ViewContainer } from "@sokontokoro/mikan";
 
 import BackGround from "../../../texture/containers/BackGround";
 

@@ -1,4 +1,4 @@
-import { Deliverable, dispatchEvent, t, play } from "mikan";
+import { Deliverable, dispatchEvent, t, play } from "@sokontokoro/mikan";
 
 import TopViewState from "./TopViewState";
 import { Events } from "../TopView";

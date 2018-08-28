@@ -1,6 +1,6 @@
 import { Container } from "pixi.js";
 
-import { BrandLogoAnimation } from "mikan";
+import { BrandLogoAnimation } from "@sokontokoro/mikan";
 
 import Text from "../../texture/internal/Text";
 import KotoriImage from "../sprite/KotoriImage";

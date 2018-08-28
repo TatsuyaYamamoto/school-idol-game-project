@@ -1,4 +1,4 @@
-import { getRandomInteger } from "mikan";
+import { getRandomInteger } from "@sokontokoro/mikan";
 
 import Actor from "./Actor";
 import EventEmitter from "./online/EventEmitter";

@@ -1,7 +1,7 @@
 /**
  * @fileOverview Entry point of the application.
  */
-import { config, initI18n, isSupportTouchEvent } from "mikan";
+import { config, initI18n, isSupportTouchEvent } from "@sokontokoro/mikan";
 
 import ApplicationState from "./fsm/ApplicationState";
 import { default as resources } from "./resources/string";

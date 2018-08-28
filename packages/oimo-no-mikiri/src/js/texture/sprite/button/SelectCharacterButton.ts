@@ -1,6 +1,6 @@
 import Button from "../../internal/Button";
 
-import { loadTexture } from "mikan";
+import { loadTexture } from "@sokontokoro/mikan";
 
 import { Ids } from "../../../resources/image";
 

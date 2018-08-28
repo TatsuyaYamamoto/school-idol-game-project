@@ -1,5 +1,5 @@
 import { interaction } from "pixi.js";
-import { isSupportTouchEvent } from "mikan";
+import { isSupportTouchEvent } from "@sokontokoro/mikan";
 
 import Sprite from "./Sprite";
 

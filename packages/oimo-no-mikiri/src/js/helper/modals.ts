@@ -1,4 +1,4 @@
-import { t, copyTextToClipboard } from "mikan";
+import { t, copyTextToClipboard } from "@sokontokoro/mikan";
 
 import { default as SweetAlert } from "sweetalert2";
 import * as tippy from "tippy.js";

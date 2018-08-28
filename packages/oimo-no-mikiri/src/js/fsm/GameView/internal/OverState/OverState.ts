@@ -1,6 +1,6 @@
 import { Texture, Sprite, Container } from "pixi.js";
 
-import { Deliverable, dispatchEvent, play } from "mikan";
+import { Deliverable, dispatchEvent, play } from "@sokontokoro/mikan";
 
 import GameViewState from "../GameViewState";
 import { Events } from "../../GameView";

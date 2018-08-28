@@ -1,4 +1,4 @@
-import { loadTexture } from "mikan";
+import { loadTexture } from "@sokontokoro/mikan";
 
 import Button from "../../internal/Button";
 

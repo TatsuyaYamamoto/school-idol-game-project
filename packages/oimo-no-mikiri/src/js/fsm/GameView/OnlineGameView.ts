@@ -8,7 +8,7 @@ import {
   vibrate,
   show as showConnecting,
   hide as hideConnecting
-} from "mikan";
+} from "@sokontokoro/mikan";
 
 import GameView, { EnterParams, Events, InnerStates } from "./GameView";
 import ReadyState from "./internal/ReadyState";

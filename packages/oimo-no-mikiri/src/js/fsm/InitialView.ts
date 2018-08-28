@@ -7,7 +7,7 @@ import {
   AssetLoader,
   isIOS,
   resumeContext
-} from "mikan";
+} from "@sokontokoro/mikan";
 
 import { Events as ApplicationEvents } from "./ApplicationState";
 

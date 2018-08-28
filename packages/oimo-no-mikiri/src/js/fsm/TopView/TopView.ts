@@ -11,7 +11,7 @@ import {
   timeout,
   playOnLoop,
   stop
-} from "mikan";
+} from "@sokontokoro/mikan";
 
 import { Events as AppEvents } from "../ApplicationState";
 import HowToPlayState from "./internal/HowToPlayState";

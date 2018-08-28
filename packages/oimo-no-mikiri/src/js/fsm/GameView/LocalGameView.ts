@@ -1,6 +1,12 @@
 import { default as AutoBind } from "autobind-decorator";
 
-import { addEvents, dispatchEvent, removeEvents, play, vibrate } from "mikan";
+import {
+  addEvents,
+  dispatchEvent,
+  removeEvents,
+  play,
+  vibrate
+} from "@sokontokoro/mikan";
 
 import GameView, { EnterParams, Events, InnerStates } from "./GameView";
 

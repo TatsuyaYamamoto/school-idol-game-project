@@ -7,7 +7,7 @@ import {
   addEvents,
   removeEvents,
   toggleSound
-} from "mikan";
+} from "@sokontokoro/mikan";
 
 import { default as InitialViewState } from "./InitialView";
 import { EnterParams as GameViewEnterParams } from "./GameView/GameView";

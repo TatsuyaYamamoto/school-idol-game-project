@@ -1,7 +1,7 @@
 /**
  * @fileOverview convenience functions related to network, WebAPI and browser location.
  */
-import { t, getRandomInteger } from "mikan";
+import { t, getRandomInteger } from "@sokontokoro/mikan";
 
 import Mode from "../models/Mode";
 import Actor from "../models/Actor";

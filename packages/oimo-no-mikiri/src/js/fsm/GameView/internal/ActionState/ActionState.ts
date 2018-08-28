@@ -1,4 +1,4 @@
-import { Deliverable, vibrate, play, dispatchEvent } from "mikan";
+import { Deliverable, vibrate, play, dispatchEvent } from "@sokontokoro/mikan";
 
 import GameViewState from "../GameViewState";
 import { Events } from "../../GameView";

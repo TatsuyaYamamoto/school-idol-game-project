@@ -1,6 +1,11 @@
 import { default as AutoBind } from "autobind-decorator";
 
-import { Deliverable, dispatchEvent, play, toggleSound } from "mikan";
+import {
+  Deliverable,
+  dispatchEvent,
+  play,
+  toggleSound
+} from "@sokontokoro/mikan";
 
 import { Events } from "../TopView";
 import TopViewState from "./TopViewState";

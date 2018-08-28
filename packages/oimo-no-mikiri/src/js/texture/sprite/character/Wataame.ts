@@ -1,4 +1,4 @@
-import { t, loadTexture, loadFrames } from "mikan";
+import { t, loadTexture, loadFrames } from "@sokontokoro/mikan";
 
 import { FrameStructureIndexes } from "./Character";
 import Opponent from "./Opponent";

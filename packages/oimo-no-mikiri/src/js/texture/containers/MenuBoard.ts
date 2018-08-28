@@ -1,6 +1,6 @@
 import { Container, interaction } from "pixi.js";
 
-import { loadTexture, isSupportTouchEvent } from "mikan";
+import { loadTexture, isSupportTouchEvent } from "@sokontokoro/mikan";
 
 import Sprite from "../internal/Sprite";
 import Button from "../internal/Button";

@@ -5,7 +5,7 @@ import {
   playOnLoop,
   stop,
   dispatchEvent
-} from "mikan";
+} from "@sokontokoro/mikan";
 
 import Player from "../../texture/sprite/character/Player";
 import Opponent from "../../texture/sprite/character/Opponent";

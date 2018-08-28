@@ -1,7 +1,7 @@
 import { filters } from "pixi.js";
 import * as anime from "animejs";
 
-import { Deliverable, dispatchEvent } from "mikan";
+import { Deliverable, dispatchEvent } from "@sokontokoro/mikan";
 
 import { Events } from "../GameView";
 import GameViewState from "./GameViewState";

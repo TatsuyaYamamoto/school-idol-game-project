@@ -1,4 +1,4 @@
-import { loadFrames } from "mikan";
+import { loadFrames } from "@sokontokoro/mikan";
 
 import AnimatedSprite from "../../internal/AnimatedSprite";
 import { Ids } from "../../../resources/image";

@@ -1,5 +1,5 @@
 import { Texture, interaction } from "pixi.js";
-import { loadFrames, isMute } from "mikan";
+import { loadFrames, isMute } from "@sokontokoro/mikan";
 
 import Button from "../../internal/Button";
 import { Ids } from "../../../resources/image";

@@ -1,5 +1,5 @@
 import { Container, Graphics } from "pixi.js";
-import { t } from "mikan";
+import { t } from "@sokontokoro/mikan";
 
 import Text from "../internal/Text";
 
