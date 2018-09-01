@@ -1,10 +1,18 @@
+import { init as initGameEngine } from "./gameEngine";
+import { init as initHowToPlay } from "./howToPlayEngine";
+import { isLogin, postPlayLog, registration } from "./common";
+import { loadContent } from "./content";
+import globals from "./globals";
+
 // ロード画面------------------------------------------
-function loadState() {
+export function loadState() {
   loadContent(topState);
 }
 
 // TOP画面------------------------------------------
-function topState() {
+export function topState() {
+  const { playCharacter, gameStage, imageObj, textObj, soundObj } = globals;
+
   gameStage.removeAllChildren();
   gameStage.addChild(imageObj.GAME_BACKGROUND);
 
@@ -26,21 +34,23 @@ function topState() {
   }
 
   function gotoMenu() {
-    soundObj.SOUND_OK.play("none", 0, 0, 0, 1, 0);
+    globals.soundObj.SOUND_OK.play("none", 0, 0, 0, 1, 0);
     menuState();
-    imageObj.GAME_BACKGROUND.removeEventListener("click", gotoMenu);
+    globals.imageObj.GAME_BACKGROUND.removeEventListener("click", gotoMenu);
   }
 
   imageObj.GAME_BACKGROUND.addEventListener("click", gotoMenu);
 }
 
 // MENU画面------------------------------------------
-function menuState() {
+export function menuState() {
+  const { playCharacter, gameStage, imageObj, ssObj, soundObj } = globals;
+
   gameStage.removeAllChildren();
   gameStage.addChild(imageObj.GAME_BACKGROUND);
   gameStage.addChild(imageObj.WHITE_SHEET);
 
-  if (isLogin) {
+  if (globals.isLogin) {
     gameStage.addChild(imageObj.BUTTON_TWITTER_LOGOUT);
     gameStage.addChild(imageObj.TWITTER_ICON);
   } else {
@@ -51,7 +61,6 @@ function menuState() {
   gameStage.addChild(imageObj.BUTTON_HOW_TO);
   gameStage.addChild(imageObj.BUTTON_RANKING);
   gameStage.addChild(imageObj.BUTTON_CREDIT);
-  gameStage.addChild(imageObj.BUTTON_REGUSTRATION_RANKING);
   gameStage.addChild(imageObj.BUTTON_TWITTER_TOP);
   gameStage.addChild(ssObj.BUTTON_SOUND_SS);
   gameStage.addChild(imageObj.MENU_LOGO);
@@ -63,18 +72,20 @@ function menuState() {
     soundObj.SOUND_ZENKAI.play("none", 0, 0, -1, 0.4, 0);
   }
 
-  tickListener = createjs.Ticker.addEventListener("tick", function() {
+  globals.tickListener = createjs.Ticker.addEventListener("tick", function() {
     gameStage.update();
   });
 }
 //操作説明画面------------------------------------------
-function howToPlayState() {
-  gameStage.removeAllChildren();
+export function howToPlayState() {
+  globals.gameStage.removeAllChildren();
 
-  howToPlayInit();
+  initHowToPlay();
 }
 //クレジット画面------------------------------------------
-function creditState() {
+export function creditState() {
+  const { gameStage, imageObj, textObj } = globals;
+
   gameStage.removeAllChildren();
   gameStage.addChild(imageObj.GAME_BACKGROUND);
   gameStage.addChild(imageObj.BUTTON_BACK_TOP_FROM_CREDIT);
@@ -88,14 +99,23 @@ function creditState() {
 }
 
 // ゲーム画面------------------------------------------
-function gameState() {
-  gameStage.removeAllChildren();
+export function gameState() {
+  globals.gameStage.removeAllChildren();
 
-  gameInit();
+  initGameEngine();
 }
 // GAMEOVER画面------------------------------------------
-function gameOverState() {
-  if (isLogin) {
+export function gameOverState() {
+  const {
+    gameStage,
+    player,
+    playCharacter,
+    ssObj,
+    imageObj,
+    textObj
+  } = globals;
+
+  if (globals.isLogin) {
     registration();
   }
   postPlayLog();
@@ -121,7 +141,7 @@ function gameOverState() {
   gameStage.addChild(textObj.TEXT_GAME_COUNT);
   gameStage.addChild(imageObj.GAMEOVER);
 
-  tickListener = createjs.Ticker.addEventListener("tick", function() {
+  globals.tickListener = createjs.Ticker.addEventListener("tick", function() {
     gameStage.update();
   });
 }

@@ -2,7 +2,7 @@
 var apiServerOrigin = "http://api.sokontokoro-factory.net";
 var contextPath = "/lovelive";
 
-var config = {
+export const config = {
   system: {
     FPS: 30,
     gamescrean: {
@@ -39,7 +39,7 @@ var config = {
 
 //定数----------------------------------------
 
-var properties = {
+export const properties = {
   image: {
     TITLE_LOGO: {
       id: "TITLE_LOGO",
@@ -480,7 +480,7 @@ var properties = {
 };
 
 // 画像、音声ファイル---------------------------------
-var manifest = {
+export const manifest = {
   image: [
     {
       id: "BUTTON_START",

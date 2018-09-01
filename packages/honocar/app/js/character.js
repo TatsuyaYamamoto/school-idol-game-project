@@ -1,5 +1,10 @@
+import { properties, config } from "./config";
+import globals from "./globals";
+
 //ほのかちゃ------------------------------------------------
 function Player(playCharacter) {
+  const { ssObj } = globals;
+
   switch (playCharacter) {
     case "honoka":
       this.img = ssObj.PLAYER_HONOKA_SS;
@@ -15,19 +20,17 @@ function Player(playCharacter) {
   this.img.gotoAndPlay("kihon");
 }
 Player.prototype.checkLane = function() {
+  const { gameScrean } = globals;
+
   switch (this.lane) {
     case 0:
       return gameScrean.width / 8;
-      break;
     case 1:
       return (gameScrean.width / 8) * 3;
-      break;
     case 2:
       return (gameScrean.width / 8) * 5;
-      break;
     case 3:
       return (gameScrean.width / 8) * 7;
-      break;
   }
 };
 
@@ -43,6 +46,8 @@ Player.prototype.moveLeft = function() {
 };
 
 Player.prototype.howToMove = function() {
+  const { gameScrean } = globals;
+
   createjs.Tween.get(this.img, { loop: true })
     .call(this.img.gotoAndPlay, ["escapeR"])
     .to({ x: (gameScrean.width / 8) * 5 }, 100)
@@ -57,6 +62,8 @@ function Car(number) {
 }
 
 Car.prototype.init = function(number) {
+  const { queue, gameStage, gameScrean, gameScreenScale } = globals;
+
   switch (number) {
     case 0:
       this.img = new createjs.Bitmap(queue.getResult("CAR1_BACK"));
@@ -105,6 +112,7 @@ Car.prototype.init = function(number) {
   this.move();
 };
 Car.prototype.move = function() {
+  const { gameScrean } = globals;
   var target = this;
 
   switch (target.lane) {
@@ -144,3 +152,5 @@ Car.prototype.move = function() {
       break;
   }
 };
+
+export { Player, Car };

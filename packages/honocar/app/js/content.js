@@ -1,5 +1,10 @@
+import { addAllEventListener } from "./common";
+import { manifest, properties } from "./config";
+import globals from "./globals";
+import { topState } from "./stateMachine";
+
 function loadAnimation() {
-  var q = new createjs.LoadQueue();
+  const q = new createjs.LoadQueue();
   q.setMaxConnections(6);
 
   q.loadManifest([
@@ -11,49 +16,49 @@ function loadAnimation() {
 
   q.addEventListener("complete", function() {
     var bitmap = new createjs.Bitmap(q.getResult("LOAD_KOTORI"));
-    bitmap.scaleY = bitmap.scaleX = gameScreenScale;
+    bitmap.scaleY = bitmap.scaleX = globals.gameScreenScale;
 
-    bitmap.x = gameScrean.width * 0.5;
-    bitmap.y = gameScrean.height * 0.5;
+    bitmap.x = globals.gameScrean.width * 0.5;
+    bitmap.y = globals.gameScrean.height * 0.5;
     bitmap.regX = bitmap.image.width / 2;
     bitmap.regY = bitmap.image.height / 2;
 
     createjs.Tween.get(bitmap, { loop: true }).to({ rotation: 360 }, 1000);
 
-    gameStage.removeAllChildren();
-    gameStage.addChild(bitmap);
+    globals.gameStage.removeAllChildren();
+    globals.gameStage.addChild(bitmap);
 
-    tickListener = createjs.Ticker.addEventListener("tick", function() {
-      gameStage.update();
+    globals.tickListener = createjs.Ticker.addEventListener("tick", function() {
+      globals.gameStage.update();
     });
   });
 }
 
-function loadContent() {
+export function loadContent() {
   //ロードアニメーション
   loadAnimation();
 
-  queue = new createjs.LoadQueue(false);
-  queue.installPlugin(createjs.Sound);
-  queue.setMaxConnections(6);
-  queue.addEventListener("complete", handleComplete);
+  globals.queue = new createjs.LoadQueue(false);
+  globals.queue.installPlugin(createjs.Sound);
+  globals.queue.setMaxConnections(6);
+  globals.queue.addEventListener("complete", handleComplete);
 
   //マニフェストファイルを読み込む----------
-  queue.loadManifest(manifest.image);
-  queue.loadManifest(manifest.spriteImage);
-  queue.loadManifest(manifest.sound);
+  globals.queue.loadManifest(manifest.image);
+  globals.queue.loadManifest(manifest.spriteImage);
+  globals.queue.loadManifest(manifest.sound);
 }
 
 // ロードイベント -----------------------------------
 
 function handleComplete() {
-  deferredCheckLogin.always(function() {
+  globals.deferredCheckLogin.always(function() {
     setImageContent();
     setSpriteSheetContents();
     setSoundContent();
     setTextContent();
 
-    createjs.Ticker.removeEventListener("tick", tickListener);
+    createjs.Ticker.removeEventListener("tick", globals.tickListener);
 
     addAllEventListener();
     topState();
@@ -63,75 +68,82 @@ function handleComplete() {
 //ロードしたコンテンツをセット------------------------------------------
 function setImageContent() {
   for (var key in properties.image) {
-    imageObj[key] = new createjs.Bitmap(
-      queue.getResult(properties.image[key].id)
+    globals.imageObj[key] = new createjs.Bitmap(
+      globals.queue.getResult(properties.image[key].id)
     );
-    imageObj[key].x = gameScrean.width * properties.image[key].ratioX;
-    imageObj[key].y = gameScrean.height * properties.image[key].ratioY;
-    imageObj[key].regX = imageObj[key].image.width / 2;
-    imageObj[key].regY = imageObj[key].image.height / 2;
-    imageObj[key].scaleY = imageObj[key].scaleX =
-      gameScreenScale * properties.image[key].scale;
-    imageObj[key].alpha = properties.image[key].alpha;
+    globals.imageObj[key].x =
+      globals.gameScrean.width * properties.image[key].ratioX;
+    globals.imageObj[key].y =
+      globals.gameScrean.height * properties.image[key].ratioY;
+    globals.imageObj[key].regX = globals.imageObj[key].image.width / 2;
+    globals.imageObj[key].regY = globals.imageObj[key].image.height / 2;
+    globals.imageObj[key].scaleY = globals.imageObj[key].scaleX =
+      globals.gameScreenScale * properties.image[key].scale;
+    globals.imageObj[key].alpha = properties.image[key].alpha;
   }
 
-  if (isLogin) {
-    imageObj.TWITTER_ICON = new createjs.Bitmap(user.iconURL);
-    imageObj.TWITTER_ICON.x =
-      gameScrean.width * properties.asyncImage.TWITTER_ICON.ratioX;
-    imageObj.TWITTER_ICON.y =
-      gameScrean.height * properties.asyncImage.TWITTER_ICON.ratioY;
-    imageObj.TWITTER_ICON.scaleY = imageObj.TWITTER_ICON.scaleX =
-      gameScreenScale * properties.asyncImage.TWITTER_ICON.scale;
-    imageObj.TWITTER_ICON.alpha = properties.asyncImage.TWITTER_ICON.alpha;
+  if (globals.isLogin) {
+    globals.imageObj.TWITTER_ICON = new createjs.Bitmap(user.iconURL);
+    globals.imageObj.TWITTER_ICON.x =
+      globals.gameScrean.width * properties.asyncImage.TWITTER_ICON.ratioX;
+    globals.imageObj.TWITTER_ICON.y =
+      globals.gameScrean.height * properties.asyncImage.TWITTER_ICON.ratioY;
+    globals.imageObj.TWITTER_ICON.scaleY = imageObj.TWITTER_ICON.scaleX =
+      globals.gameScreenScale * properties.asyncImage.TWITTER_ICON.scale;
+    globals.imageObj.TWITTER_ICON.alpha =
+      properties.asyncImage.TWITTER_ICON.alpha;
   }
 }
 
 function setSpriteSheetContents() {
   for (var key in properties.ss) {
     var spriteSheet = new createjs.SpriteSheet({
-      images: [queue.getResult(properties.ss[key].id)],
+      images: [globals.queue.getResult(properties.ss[key].id)],
       frames: properties.ss[key].frames,
       animations: properties.ss[key].animations
     });
 
-    ssObj[key] = new createjs.Sprite(
+    globals.ssObj[key] = new createjs.Sprite(
       spriteSheet,
       properties.ss[key].firstAnimation
     );
-    ssObj[key].x = gameScrean.width * properties.ss[key].ratioX;
-    ssObj[key].y = gameScrean.height * properties.ss[key].ratioY;
-    ssObj[key].regX = properties.ss[key].frames.width / 2;
-    ssObj[key].regY = properties.ss[key].frames.height / 2;
-    ssObj[key].scaleY = ssObj[key].scaleX = gameScreenScale;
+    globals.ssObj[key].x = globals.gameScrean.width * properties.ss[key].ratioX;
+    globals.ssObj[key].y =
+      globals.gameScrean.height * properties.ss[key].ratioY;
+    globals.ssObj[key].regX = properties.ss[key].frames.width / 2;
+    globals.ssObj[key].regY = properties.ss[key].frames.height / 2;
+    globals.ssObj[key].scaleY = globals.ssObj[key].scaleX =
+      globals.gameScreenScale;
   }
 }
 
 function setSoundContent() {
   for (var key in properties.sound) {
-    soundObj[key] = createjs.Sound.createInstance(properties.sound[key].id);
+    globals.soundObj[key] = createjs.Sound.createInstance(
+      properties.sound[key].id
+    );
   }
 }
 
-function soundTurnOff() {
-  isSoundMute = true;
-  for (var key in soundObj) {
+export function soundTurnOff() {
+  globals.isSoundMute = true;
+  for (var key in globals.soundObj) {
     if (properties.sound[key].canMute) {
-      soundObj[key].muted = true;
+      globals.soundObj[key].muted = true;
     }
   }
 }
 
-function soundTurnOn() {
-  isSoundMute = false;
-  for (var key in soundObj) {
+export function soundTurnOn() {
+  globals.isSoundMute = false;
+  for (var key in globals.soundObj) {
     if (properties.sound[key].canMute) {
-      soundObj[key].muted = false;
+      globals.soundObj[key].muted = false;
     }
   }
 }
 
-function setTextProperties(target, x, y, size, family, align, height) {
+export function setTextProperties(target, x, y, size, family, align, height) {
   target.x = x;
   target.y = y;
   target.font = size + "px " + family;
@@ -141,36 +153,39 @@ function setTextProperties(target, x, y, size, family, align, height) {
 
 function setTextContent() {
   for (var key in properties.text) {
-    textObj[key] = new createjs.Text();
-    textObj[key].x = gameScrean.width * properties.text[key].ratioX;
-    textObj[key].y = gameScrean.height * properties.text[key].ratioY;
-    textObj[key].font =
-      gameScrean.width * properties.text[key].size +
+    globals.textObj[key] = new createjs.Text();
+    globals.textObj[key].x =
+      globals.gameScrean.width * properties.text[key].ratioX;
+    globals.textObj[key].y =
+      globals.gameScrean.height * properties.text[key].ratioY;
+    globals.textObj[key].font =
+      globals.gameScrean.width * properties.text[key].size +
       "px " +
       properties.text[key].family;
-    textObj[key].color = properties.text[key].color;
-    textObj[key].textAlign = properties.text[key].align;
-    textObj[key].lineHeight =
-      gameScrean.width * properties.text[key].lineHeight;
+    globals.textObj[key].color = properties.text[key].color;
+    globals.textObj[key].textAlign = properties.text[key].align;
+    globals.textObj[key].lineHeight =
+      globals.gameScrean.width * properties.text[key].lineHeight;
   }
 
-  textObj.TEXT_START.text = "-Please tap on the display!-";
+  globals.textObj.TEXT_START.text = "-Please tap on the display!-";
 
-  textObj.TEXT_RANKING.text = "ランキング機能(仮画面)\rだよー";
+  globals.textObj.TEXT_RANKING.text = "ランキング機能(仮画面)\rだよー";
 
-  textObj.TEXT_LINK_ME.text =
+  globals.textObj.TEXT_LINK_ME.text =
     "プログラム、音楽、思いつき：T28\rhttp://sokontokoro-factory.net";
 
-  textObj.TEXT_LINK_SAN.text =
+  globals.textObj.TEXT_LINK_SAN.text =
     "イラスト：さんざし\rhttps://twitter.com/xxsanzashixx";
 
-  textObj.TEXT_LINK_1.text =
+  globals.textObj.TEXT_LINK_1.text =
     "効果音：効果音ラボ 樣\rhttp://soundeffect-lab.info/";
 
-  textObj.TEXT_LINK_2.text = "効果音：On-Jin ～音人～ 樣\rhttp://on-jin.com/";
+  globals.textObj.TEXT_LINK_2.text =
+    "効果音：On-Jin ～音人～ 樣\rhttp://on-jin.com/";
 
-  textObj.TEXT_LINK_LOVELIVE.text =
+  globals.textObj.TEXT_LINK_LOVELIVE.text =
     "プロジェクトラブライブ！\rhttp://www.lovelive-anime.jp";
 
-  textObj.TEXT_REGISTRATION.text = "ランキングシステム　通信完了！";
+  globals.textObj.TEXT_REGISTRATION.text = "ランキングシステム　通信完了！";
 }

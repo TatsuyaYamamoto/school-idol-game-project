@@ -1,5 +1,11 @@
+import globals from "./globals";
+import { text_how_to, text_how_to_E } from "./common";
+import { Player } from "./character";
+
 //ゲーム初期化-----------------------------------------
-function howToPlayInit() {
+export function init() {
+  const { gameStage, imageObj, playCharacter, textObj } = globals;
+
   //要素をステージに追加
   gameStage.addChild(imageObj.GAME_BACKGROUND);
   gameStage.addChild(imageObj.BUTTON_BACK_TOP_FROM_HOW_TO);
@@ -15,21 +21,20 @@ function howToPlayInit() {
   gameStage.addChild(textObj.TEXT_HOW_TO);
 
   //ほのかちゃを作成
-  player = new Player(playCharacter);
-  gameStage.addChild(player.img);
+  const player = new Player(playCharacter);
   player.howToMove();
+  gameStage.addChild(player.img);
+
+  globals.player = player;
 
   //ゲーム内タイマーTickイベント
-  tickListener = createjs.Ticker.addEventListener("tick", processHowToPlay);
+  globals.tickListener = createjs.Ticker.addEventListener(
+    "tick",
+    processHowToPlay
+  );
 }
 
 //ゲーム処理-----------------------------------------
 function processHowToPlay() {
-  // gameFrame = Math.floor(createjs.Ticker.getTime());
-  if (gameFrame == 100) {
-    gameFrame = 0;
-  }
-
-  gameFrame++;
-  gameStage.update();
+  globals.gameStage.update();
 }

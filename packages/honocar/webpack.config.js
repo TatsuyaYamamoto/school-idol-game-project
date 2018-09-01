@@ -1,6 +1,5 @@
 const { resolve } = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ConcatPlugin = require("webpack-concat-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -25,16 +24,6 @@ const plugins = [
     templateParameters: htmlParams,
     template: "app/index.ejs",
     hash: true
-  }),
-  new ConcatPlugin({
-    uglify: isProduction,
-    sourceMap: !isProduction,
-    name: "lib",
-    fileName: "[name].[hash:8].js",
-    filesToConcat: ["jquery", ["./app/js/*.js", "!./app/js/main.js"]],
-    attributes: {
-      async: true
-    }
   }),
   new CopyWebpackPlugin([
     { context: "app/img", from: "**/*", to: "img" },

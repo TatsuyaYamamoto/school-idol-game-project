@@ -1,107 +1,73 @@
-//変数宣言----------------------------------------
-var gameStage;
-var gameScrean;
-var gameScreenScale;
+import $ from "jquery";
+import { config, properties } from "./config";
+import globals from "./globals";
+import {
+  creditState,
+  gameState,
+  howToPlayState,
+  menuState,
+  topState
+} from "./stateMachine";
+import { soundTurnOff, soundTurnOn } from "./content";
+import { clickButtonLeft, clickButtonRight } from "./gameEngine";
 
-var gameFrame;
-var passCarCount;
-var gameScore;
-var tickListener;
-
-var queue;
-var loginCheckPromise;
-var isSoundMute = false;
-
-var playCharacter = "honoka";
-//honoka or erichi
-var player;
-//キャラクターオブジェクトを格納する
-var car;
-
-var deferredCheckLogin;
-var isLogin = false;
-
-var imageObj = {};
-var ssObj = {};
-var soundObj = {};
-var textObj = {};
-var user = {
-  id: "",
-  name: ""
-};
-
-var deferredCheckLogin;
-
-//初期化----------------------------------------
-
-var TWITTER_ICON_URL;
-var screen_name;
-//テキスト
-
-var TEXT_HOW_TO;
-var TEXT_GAME_COUNT;
-var TEXT_START;
-
-var TEXT_RANKING;
-
-var TEXT_LINK_LOVELIVE;
-var TEXT_LINK_ME;
-var TEXT_LINK_SAN;
-var TEXT_LINK_1;
-var TEXT_LINK_2;
-
-var text_how_to =
+// text ----------------------------------------
+export const text_how_to =
   "車道ど真ん中の穂乃果ちゃんを車が容赦なく襲う！\r \rなかなか始まらないススメ→トゥモロウを尻目に\r穂乃果ちゃんを助けてあげなくちゃ！\r \r \r \r \r \r \r \r \r \r \r \r \r \r \rLEFT, RIGHTボタン(キーボードの←→でも可！)\rで、かわせ！ホノカチャン！\r \r「私、やっぱりやる！やるったらやる！」";
-var text_how_to_E =
+export const text_how_to_E =
   "車道ど真ん中の生徒会長を車が容赦なく襲う！\r \rなかなか始まらないススメ→トゥモロウを尻目に\rエリチカを助けてあげなくちゃ！\r \r \r \r \r \r \r \r \r \r \r \r \r \r \rLEFT, RIGHTボタン(キーボードの←→でも可！)\rで、かしこく！かわせ！エリーチカ！！(KKE)\r \r「生徒会の許可ぁ？認められないチカ！」";
-var text_game_count_L = "よけたー : ";
-var text_game_count_R = "台";
+export const text_game_count_L = "よけたー : ";
+export const text_game_count_R = "台";
 
 //ゲームスクリーンサイズ初期化用-----------------------
-function initGameScreenScale() {
+export function initGameScreenScale() {
   if (
     window.innerHeight / window.innerWidth <
     config.system.gamescrean.height / config.system.gamescrean.width
   ) {
-    gameScreenScale = window.innerHeight / config.system.gamescrean.height;
+    globals.gameScreenScale =
+      window.innerHeight / config.system.gamescrean.height;
   } else {
-    gameScreenScale = window.innerWidth / config.system.gamescrean.width;
+    globals.gameScreenScale =
+      window.innerWidth / config.system.gamescrean.width;
   }
 
-  gameScrean.height = config.system.gamescrean.height * gameScreenScale;
-  gameScrean.width = config.system.gamescrean.width * gameScreenScale;
+  globals.gameScrean.height =
+    config.system.gamescrean.height * globals.gameScreenScale;
+  globals.gameScrean.width =
+    config.system.gamescrean.width * globals.gameScreenScale;
 }
 
 // tweet文言----------------
 function getTweetText() {
-  var tweet_text;
+  let tweet_text;
 
   switch (playCharacter) {
     case "honoka":
-      if (gameScore == 0) {
+      if (passCarCount === 0) {
         tweet_text =
           "穂乃果「いやー、今日もパンがうまいっ！」海未「また運動もせずにそんなものを食べて！」";
-      } else if (gameScore < 100) {
+      } else if (passCarCount < 100) {
         tweet_text =
           "穂乃果「ことりちゃーん！穂乃果、" +
           gameScore +
           "台も車を避けたのに、海未ちゃんちっとも褒めてくれないよー！」";
-      } else if (gameScore >= 100) {
+      } else if (passCarCount >= 100) {
         tweet_text =
           "海未「なにやっていたんですか！！どれだけ避けたと思っているんですか...」穂乃果「" +
-          gameScore +
+          passCarCount +
           "台！」";
       }
       break;
     case "erichi":
-      if (gameScore == 0) {
+      if (passCarCount === 0) {
         tweet_text = "(車なんて避けてないで)エリチカ、おうちにかえる!!!";
       } else if (gameScore < 100) {
         tweet_text =
-          gameScore +
+          passCarCount +
           "台よ...なんとか避けなくちゃいけないんだから、しょうがないじゃないチカ！";
-      } else if (gameScore >= 100) {
-        tweet_text = gameScore + "台！ハラショー！";
+      } else if (passCarCount >= 100) {
+        tweet_text = passCarCount + "台！ハラショー！";
       }
       break;
   }
@@ -109,7 +75,7 @@ function getTweetText() {
 }
 
 // ランキング登録-------------
-function registration() {
+export function registration() {
   $.ajax({
     type: "POST",
     url: config.api.score,
@@ -118,7 +84,7 @@ function registration() {
     },
     contentType: "application/json",
     data: JSON.stringify({
-      point: gameScore
+      point: passCarCount
     })
   })
     .done(function(data, status, xhr) {
@@ -142,7 +108,7 @@ function registration() {
 }
 
 // プレイログ登録-------------
-function postPlayLog() {
+export function postPlayLog() {
   $.ajax({
     type: "POST",
     url: config.api.playlog,
@@ -151,14 +117,14 @@ function postPlayLog() {
     },
     contentType: "application/json",
     data: JSON.stringify({
-      point: gameScore
+      point: globals.passCarCount
     })
   }).done(function(data, status, xhr) {});
 }
 
 // システムへログイン-------------
 
-function requestCheckingLogging() {
+export function requestCheckingLogging() {
   var deferred = $.Deferred();
 
   var ajax = $.ajax({
@@ -173,16 +139,16 @@ function requestCheckingLogging() {
     .done(function(data) {
       alertify.log("ランキングシステム ログイン中！", "success", 3000);
 
-      user.id = data.user_id;
-      user.name = data.user_name;
+      globals.user.id = data.user_id;
+      globals.user.name = data.user_name;
       properties.asyncImage.TWITTER_ICON.url = data.icon_url;
 
-      isLogin = true;
+      globals.isLogin = true;
       deferred.resolve();
     })
     .fail(function() {
       // 未ログインの場合は通知なし
-      isLogin = false;
+      globals.isLogin = false;
       deferred.reject();
     });
 
@@ -191,19 +157,21 @@ function requestCheckingLogging() {
 
 //イベントリスナー登録--------------------------------
 
-function addAllEventListener() {
+export function addAllEventListener() {
+  const { imageObj, soundObj, textObj, ssObj } = globals;
+
   imageObj.BUTTON_RIGHT.addEventListener("mousedown", clickButtonRight);
 
   imageObj.BUTTON_LEFT.addEventListener("mousedown", clickButtonLeft);
 
   imageObj.BUTTON_START.addEventListener("mousedown", function() {
-    createjs.Ticker.removeEventListener("tick", tickListener);
+    createjs.Ticker.removeEventListener("tick", globals.tickListener);
     soundObj.SOUND_ZENKAI.stop();
     soundObj.SOUND_OK.play("none", 0, 0, 0, 1, 0);
     gameState();
   });
   imageObj.BUTTON_HOW_TO.addEventListener("mousedown", function() {
-    createjs.Ticker.removeEventListener("tick", tickListener);
+    createjs.Ticker.removeEventListener("tick", globals.tickListener);
     soundObj.SOUND_OK.play("none", 0, 0, 0, 1, 0);
     howToPlayState();
   });
@@ -213,13 +181,13 @@ function addAllEventListener() {
   });
 
   imageObj.BUTTON_CREDIT.addEventListener("mousedown", function() {
-    createjs.Ticker.removeEventListener("tick", tickListener);
+    createjs.Ticker.removeEventListener("tick", globals.tickListener);
     soundObj.SOUND_OK.play("none", 0, 0, 0, 1, 0);
     creditState();
   });
 
   imageObj.BUTTON_BACK_TOP.addEventListener("mousedown", function() {
-    createjs.Ticker.removeEventListener("tick", tickListener);
+    createjs.Ticker.removeEventListener("tick", globals.tickListener);
     soundObj.SOUND_BACK.play("none", 0, 0, 0, 1, 0);
     menuState();
   });
@@ -227,9 +195,9 @@ function addAllEventListener() {
   imageObj.BUTTON_BACK_TOP_FROM_HOW_TO.addEventListener(
     "mousedown",
     function() {
-      createjs.Tween.removeTweens(player.img);
+      createjs.Tween.removeTweens(globals.player.img);
       soundObj.SOUND_BACK.play("none", 0, 0, 0, 1, 0);
-      createjs.Ticker.removeEventListener("tick", tickListener);
+      createjs.Ticker.removeEventListener("tick", globals.tickListener);
       menuState();
     }
   );
@@ -252,14 +220,14 @@ function addAllEventListener() {
   );
 
   imageObj.BUTTON_RESTART.addEventListener("mousedown", function() {
-    createjs.Ticker.removeEventListener("tick", tickListener);
+    createjs.Ticker.removeEventListener("tick", globals.tickListener);
     soundObj.SOUND_BACK.play("none", 0, 0, 0, 1, 0);
     gameState();
   });
 
   ssObj.BUTTON_SOUND_SS.addEventListener("mousedown", function() {
     soundObj.SOUND_TURN_SWITCH.play("none", 0, 0, 0, 1, 0);
-    if (isSoundMute) {
+    if (globals.isSoundMute) {
       ssObj.BUTTON_SOUND_SS.gotoAndPlay("on");
       soundTurnOn();
     } else {
@@ -301,16 +269,16 @@ function addAllEventListener() {
   ssObj.BUTTON_CHANGE_CHARA.addEventListener("mousedown", function() {
     soundObj.SOUND_OK.play("none", 0, 0, 0, 1, 0);
 
-    switch (playCharacter) {
+    switch (globals.playCharacter) {
       case "honoka":
-        playCharacter = "erichi";
+        globals.playCharacter = "erichi";
         break;
       case "erichi":
-        playCharacter = "honoka";
+        globals.playCharacter = "honoka";
         break;
     }
 
-    createjs.Ticker.removeEventListener("tick", tickListener);
+    createjs.Ticker.removeEventListener("tick", globals.tickListener);
     topState();
   });
   textObj.TEXT_LINK_1.addEventListener("mousedown", function() {
