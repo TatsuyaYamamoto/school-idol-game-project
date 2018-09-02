@@ -1,3 +1,5 @@
+import * as alertify from "alertify/lib/alertify";
+
 import config from "./resources/config";
 import globals from "./globals";
 import {
@@ -147,7 +149,7 @@ export function addAllEventListener() {
       function(result) {
         if (result) {
           soundObj.SOUND_OK.play("none", 0, 0, 0, 1, 0);
-          window.location.href = config.api.logout + "?redirect=honocar";
+          window.location.href = config.api.logout;
         } else {
           soundObj.SOUND_BACK.play("none", 0, 0, 0, 1, 0);
         }

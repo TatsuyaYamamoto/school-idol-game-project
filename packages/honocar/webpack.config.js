@@ -55,6 +55,11 @@ const config = {
         // Inject "window" to this called in create.js
         test: require.resolve("createjs/builds/1.0.0/createjs.js"),
         use: "imports-loader?this=>window"
+      },
+      {
+        // Inject "window" to this called in alertify.js
+        test: require.resolve("alertify/lib/alertify"),
+        use: "imports-loader?this=>window"
       }
     ]
   },

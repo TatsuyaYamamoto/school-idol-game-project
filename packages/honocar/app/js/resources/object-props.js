@@ -422,7 +422,6 @@ export default {
   },
   asyncImage: {
     TWITTER_ICON: {
-      url: "",
       ratioX: 0.04,
       ratioY: 0.91,
       scale: 1.3,

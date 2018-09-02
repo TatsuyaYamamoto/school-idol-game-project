@@ -84,12 +84,12 @@ function setImageContent() {
   }
 
   if (globals.isLogin) {
-    globals.imageObj.TWITTER_ICON = new createjs.Bitmap(user.iconURL);
+    globals.imageObj.TWITTER_ICON = new createjs.Bitmap(globals.user.iconUrl);
     globals.imageObj.TWITTER_ICON.x =
       globals.gameScrean.width * properties.asyncImage.TWITTER_ICON.ratioX;
     globals.imageObj.TWITTER_ICON.y =
       globals.gameScrean.height * properties.asyncImage.TWITTER_ICON.ratioY;
-    globals.imageObj.TWITTER_ICON.scaleY = imageObj.TWITTER_ICON.scaleX =
+    globals.imageObj.TWITTER_ICON.scaleY = globals.imageObj.TWITTER_ICON.scaleX =
       globals.gameScreenScale * properties.asyncImage.TWITTER_ICON.scale;
     globals.imageObj.TWITTER_ICON.alpha =
       properties.asyncImage.TWITTER_ICON.alpha;

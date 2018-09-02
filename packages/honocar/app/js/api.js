@@ -1,5 +1,6 @@
+import * as alertify from "alertify/lib/alertify";
+
 import config from "./resources/config";
-import properties from "./resources/object-props";
 import globals from "./globals";
 
 // プレイログ登録-------------
@@ -11,6 +12,8 @@ export function postPlayLog() {
 
   return fetch(url, {
     method: "POST",
+    mode: "cors",
+    credentials: "include",
     headers,
     body: JSON.stringify({
       point: globals.passCarCount
@@ -30,6 +33,8 @@ export function registration() {
 
   return fetch(url, {
     method: "POST",
+    mode: "cors",
+    credentials: "include",
     headers,
     body
   }).then(response => {
@@ -59,15 +64,20 @@ export function registration() {
 export function requestLogin() {
   const url = config.api.user;
 
-  return fetch(url, {}).then(response => {
+  return fetch(url, {
+    mode: "cors",
+    credentials: "include"
+  }).then(response => {
     if (response.ok) {
       alertify.log("ランキングシステム ログイン中！", "success", 3000);
 
-      globals.user.id = data.user_id;
-      globals.user.name = data.user_name;
-      properties.asyncImage.TWITTER_ICON.url = data.icon_url;
+      return response.json().then(data => {
+        globals.isLogin = true;
 
-      globals.isLogin = true;
+        globals.user.id = data.user_id;
+        globals.user.name = data.user_name;
+        globals.user.iconUrl = data.icon_url;
+      });
     } else {
       // 未ログインの場合は通知なし
       globals.isLogin = false;
