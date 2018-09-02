@@ -2,6 +2,9 @@ import $ from "jquery";
 import "alertify/lib/alertify";
 import "alertify/themes/alertify.core.css";
 import "alertify/themes/alertify.default.css";
+
+import "createjs/builds/1.0.0/createjs.js";
+
 import "../main.css";
 
 import { loadState } from "./stateMachine";
