@@ -91,13 +91,6 @@ export default {
       scale: 1,
       alpha: 1
     },
-    BUTTON_BACK_TOP_FROM_RANKING: {
-      id: "BUTTON_BACK_MENU",
-      ratioX: 0.5,
-      ratioY: 0.9,
-      scale: 1,
-      alpha: 1
-    },
     BUTTON_RESTART: {
       id: "BUTTON_RESTART",
       ratioX: 0.3,

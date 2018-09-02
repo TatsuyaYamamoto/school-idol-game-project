@@ -1,6 +1,6 @@
 import { init as initGameEngine } from "./gameEngine";
 import { init as initHowToPlay } from "./howToPlayEngine";
-import { isLogin, postPlayLog, registration } from "./common";
+import { postPlayLog, registration } from "./api";
 import { loadContent } from "./contentsLoader";
 import globals from "./globals";
 

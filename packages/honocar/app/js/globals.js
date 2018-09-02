@@ -2,7 +2,7 @@ export default {
   gameStage: null,
   gameScrean: null,
   gameScreenScale: null,
-  deferredCheckLogin: null,
+  loginPromise: null,
   isLogin: false,
   queue: null,
   tickListener: null,

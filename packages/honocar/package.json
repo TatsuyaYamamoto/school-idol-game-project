@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "alertify": "^0.3.0",
-    "createjs": "^1.0.1",
-    "jquery": "1.11.3"
+    "createjs": "^1.0.1"
   }
 }

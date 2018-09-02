@@ -53,7 +53,7 @@ export function loadContent() {
 // ロードイベント -----------------------------------
 
 function handleComplete() {
-  globals.deferredCheckLogin.always(function() {
+  globals.loginPromise.finally(function() {
     setImageContent();
     setSpriteSheetContents();
     setSoundContent();

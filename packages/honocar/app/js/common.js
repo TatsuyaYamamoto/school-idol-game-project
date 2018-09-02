@@ -1,6 +1,4 @@
-import $ from "jquery";
 import config from "./resources/config";
-import properties from "./resources/object-props";
 import globals from "./globals";
 import {
   creditState,
@@ -67,87 +65,6 @@ function getTweetText() {
   return tweet_text;
 }
 
-// ランキング登録-------------
-export function registration() {
-  $.ajax({
-    type: "POST",
-    url: config.api.score,
-    xhrFields: {
-      withCredentials: true
-    },
-    contentType: "application/json",
-    data: JSON.stringify({
-      point: passCarCount
-    })
-  })
-    .done(function(data, status, xhr) {
-      alertify.log("ランキングシステム　通信完了！", "success", 3000);
-    })
-    .fail(function() {
-      if (textStatus == 401) {
-        alertify.log(
-          "ログインセッションが切れてしまいました...再ログインして下さい。",
-          "error",
-          3000
-        );
-      } else {
-        alertify.log(
-          "ランキングシステムへの接続に失敗しました...",
-          "error",
-          3000
-        );
-      }
-    });
-}
-
-// プレイログ登録-------------
-export function postPlayLog() {
-  $.ajax({
-    type: "POST",
-    url: config.api.playlog,
-    xhrFields: {
-      withCredentials: true
-    },
-    contentType: "application/json",
-    data: JSON.stringify({
-      point: globals.passCarCount
-    })
-  }).done(function(data, status, xhr) {});
-}
-
-// システムへログイン-------------
-
-export function requestCheckingLogging() {
-  var deferred = $.Deferred();
-
-  var ajax = $.ajax({
-    type: "GET",
-    url: config.api.user,
-    xhrFields: {
-      withCredentials: true
-    }
-  });
-
-  $.when(ajax)
-    .done(function(data) {
-      alertify.log("ランキングシステム ログイン中！", "success", 3000);
-
-      globals.user.id = data.user_id;
-      globals.user.name = data.user_name;
-      properties.asyncImage.TWITTER_ICON.url = data.icon_url;
-
-      globals.isLogin = true;
-      deferred.resolve();
-    })
-    .fail(function() {
-      // 未ログインの場合は通知なし
-      globals.isLogin = false;
-      deferred.reject();
-    });
-
-  return deferred.promise();
-}
-
 //イベントリスナー登録--------------------------------
 
 export function addAllEventListener() {
@@ -199,15 +116,6 @@ export function addAllEventListener() {
     "mousedown",
     function() {
       soundObj.SOUND_BACK.play("none", 0, 0, 0, 1, 0);
-      menuState();
-    }
-  );
-
-  imageObj.BUTTON_BACK_TOP_FROM_RANKING.addEventListener(
-    "mousedown",
-    function() {
-      soundObj.SOUND_BACK.play("none", 0, 0, 0, 1, 0);
-      $("#rankingName").hide();
       menuState();
     }
   );

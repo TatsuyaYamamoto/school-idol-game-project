@@ -1,4 +1,3 @@
-import $ from "jquery";
 import "alertify/lib/alertify";
 import "alertify/themes/alertify.core.css";
 import "alertify/themes/alertify.default.css";
@@ -8,7 +7,8 @@ import "createjs/builds/1.0.0/createjs.js";
 import "../main.css";
 
 import { loadState } from "./stateMachine";
-import { requestCheckingLogging, initGameScreenScale } from "./common";
+import { initGameScreenScale } from "./common";
+import { requestLogin } from "./api";
 import { setTextProperties } from "./contentsLoader";
 import config from "./resources/config";
 import globals from "./globals";
@@ -16,7 +16,7 @@ import globals from "./globals";
 function init() {
   /*---------- ログインチェック ----------*/
   // 完了後にコンテンツオブジェクトのセットアップを開始する
-  globals.deferredCheckLogin = requestCheckingLogging();
+  globals.loginPromise = requestLogin();
 
   //ゲーム画面の初期
   globals.gameStage = new createjs.Stage("gameScrean");
@@ -41,7 +41,7 @@ function init() {
   globals.gameStage.update();
 
   //canvas要素内でのスマホでのスライドスクロール禁止
-  $(gameScrean).on("touchmove.noScroll", function(e) {
+  document.addEventListener("touchmove", function(e) {
     e.preventDefault();
   });
 
