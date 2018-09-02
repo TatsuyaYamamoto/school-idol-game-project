@@ -1,8 +1,10 @@
-import { Player, Car } from "./character";
+import Player from "./character/Player";
+import Car from "./character/Car";
 import { gameOverState } from "./stateMachine";
 import globals from "./globals";
-import { text_game_count_L, text_game_count_R } from "./common";
-import { config, properties } from "./config";
+import { text_game_count_L, text_game_count_R } from "./resources/text";
+import properties from "./resources/object-props";
+import config from "./resources/config";
 
 let cars = [];
 

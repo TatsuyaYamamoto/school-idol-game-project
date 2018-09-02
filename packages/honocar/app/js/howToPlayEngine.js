@@ -1,6 +1,6 @@
 import globals from "./globals";
-import { text_how_to, text_how_to_E } from "./common";
-import { Player } from "./character";
+import { text_how_to, text_how_to_E } from "./resources/text";
+import Player from "./character/Player";
 
 //ゲーム初期化-----------------------------------------
 export function init() {

@@ -1,5 +1,6 @@
 import { addAllEventListener } from "./common";
-import { manifest, properties } from "./config";
+import manifest from "./resources/manifest";
+import properties from "./resources/object-props";
 import globals from "./globals";
 import { topState } from "./stateMachine";
 

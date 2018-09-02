@@ -6,8 +6,8 @@ import "../main.css";
 
 import { loadState } from "./stateMachine";
 import { requestCheckingLogging, initGameScreenScale } from "./common";
-import { setTextProperties } from "./content";
-import { config } from "./config";
+import { setTextProperties } from "./contentsLoader";
+import config from "./resources/config";
 import globals from "./globals";
 
 function init() {
