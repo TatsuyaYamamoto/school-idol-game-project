@@ -12,7 +12,6 @@ const currentUrl = protocol + "//" + host + port + path;
 
 export default {
   system: {
-    FPS: 30,
     gamescrean: {
       width: 640,
       height: 896

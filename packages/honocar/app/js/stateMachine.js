@@ -30,11 +30,14 @@ export function topState() {
   gameStage.update();
 
   if (soundObj.SOUND_ZENKAI.playState != createjs.Sound.PLAY_SUCCEEDED) {
-    soundObj.SOUND_ZENKAI.play("none", 0, 0, -1, 0.4, 0);
+    soundObj.SOUND_ZENKAI.play({
+      loop: -1,
+      volume: 0.4
+    });
   }
 
   function gotoMenu() {
-    globals.soundObj.SOUND_OK.play("none", 0, 0, 0, 1, 0);
+    globals.soundObj.SOUND_OK.play();
     menuState();
     globals.imageObj.GAME_BACKGROUND.removeEventListener("click", gotoMenu);
   }
@@ -69,7 +72,7 @@ export function menuState() {
   gameStage.addChild(ssObj.BUTTON_CHANGE_CHARA);
 
   if (soundObj.SOUND_ZENKAI.playState != createjs.Sound.PLAY_SUCCEEDED) {
-    soundObj.SOUND_ZENKAI.play("none", 0, 0, -1, 0.4, 0);
+    soundObj.SOUND_ZENKAI.play({ loop: -1, volume: 0.4 });
   }
 
   globals.tickListener = createjs.Ticker.addEventListener("tick", function() {

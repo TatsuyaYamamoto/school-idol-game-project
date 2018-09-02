@@ -79,12 +79,12 @@ export function addAllEventListener() {
   imageObj.BUTTON_START.addEventListener("mousedown", function() {
     createjs.Ticker.removeEventListener("tick", globals.tickListener);
     soundObj.SOUND_ZENKAI.stop();
-    soundObj.SOUND_OK.play("none", 0, 0, 0, 1, 0);
+    soundObj.SOUND_OK.play();
     gameState();
   });
   imageObj.BUTTON_HOW_TO.addEventListener("mousedown", function() {
     createjs.Ticker.removeEventListener("tick", globals.tickListener);
-    soundObj.SOUND_OK.play("none", 0, 0, 0, 1, 0);
+    soundObj.SOUND_OK.play();
     howToPlayState();
   });
   imageObj.BUTTON_RANKING.addEventListener("mousedown", function() {
@@ -94,13 +94,13 @@ export function addAllEventListener() {
 
   imageObj.BUTTON_CREDIT.addEventListener("mousedown", function() {
     createjs.Ticker.removeEventListener("tick", globals.tickListener);
-    soundObj.SOUND_OK.play("none", 0, 0, 0, 1, 0);
+    soundObj.SOUND_OK.play();
     creditState();
   });
 
   imageObj.BUTTON_BACK_TOP.addEventListener("mousedown", function() {
     createjs.Ticker.removeEventListener("tick", globals.tickListener);
-    soundObj.SOUND_BACK.play("none", 0, 0, 0, 1, 0);
+    soundObj.SOUND_BACK.play();
     menuState();
   });
 
@@ -108,7 +108,7 @@ export function addAllEventListener() {
     "mousedown",
     function() {
       createjs.Tween.removeTweens(globals.player.img);
-      soundObj.SOUND_BACK.play("none", 0, 0, 0, 1, 0);
+      soundObj.SOUND_BACK.play();
       createjs.Ticker.removeEventListener("tick", globals.tickListener);
       menuState();
     }
@@ -117,19 +117,19 @@ export function addAllEventListener() {
   imageObj.BUTTON_BACK_TOP_FROM_CREDIT.addEventListener(
     "mousedown",
     function() {
-      soundObj.SOUND_BACK.play("none", 0, 0, 0, 1, 0);
+      soundObj.SOUND_BACK.play();
       menuState();
     }
   );
 
   imageObj.BUTTON_RESTART.addEventListener("mousedown", function() {
     createjs.Ticker.removeEventListener("tick", globals.tickListener);
-    soundObj.SOUND_BACK.play("none", 0, 0, 0, 1, 0);
+    soundObj.SOUND_BACK.play();
     gameState();
   });
 
   ssObj.BUTTON_SOUND_SS.addEventListener("mousedown", function() {
-    soundObj.SOUND_TURN_SWITCH.play("none", 0, 0, 0, 1, 0);
+    soundObj.SOUND_TURN_SWITCH.play();
     if (globals.isSoundMute) {
       ssObj.BUTTON_SOUND_SS.gotoAndPlay("on");
       soundTurnOn();
@@ -143,15 +143,15 @@ export function addAllEventListener() {
     window.location.href = config.api.login;
   });
   imageObj.BUTTON_TWITTER_LOGOUT.addEventListener("mousedown", function() {
-    soundObj.SOUND_OK.play("none", 0, 0, 0, 1, 0);
+    soundObj.SOUND_OK.play();
     alertify.confirm(
       "ログアウトします。ランキング登録はログイン中のみ有効です。",
       function(result) {
         if (result) {
-          soundObj.SOUND_OK.play("none", 0, 0, 0, 1, 0);
+          soundObj.SOUND_OK.play();
           window.location.href = config.api.logout;
         } else {
-          soundObj.SOUND_BACK.play("none", 0, 0, 0, 1, 0);
+          soundObj.SOUND_BACK.play();
         }
       }
     );
@@ -170,7 +170,7 @@ export function addAllEventListener() {
       "&url=http://games.sokontokoro-factory.net/honocar/";
   });
   ssObj.BUTTON_CHANGE_CHARA.addEventListener("mousedown", function() {
-    soundObj.SOUND_OK.play("none", 0, 0, 0, 1, 0);
+    soundObj.SOUND_OK.play();
 
     switch (globals.playCharacter) {
       case "honoka":
@@ -198,10 +198,10 @@ export function addAllEventListener() {
   });
   window.addEventListener("blur", function() {
     soundTurnOff();
-    createjs.Ticker.setPaused(true);
+    createjs.Ticker.paused = true;
   });
   window.addEventListener("focus", function() {
     soundTurnOn();
-    createjs.Ticker.setPaused(false);
+    createjs.Ticker.paused = false;
   });
 }

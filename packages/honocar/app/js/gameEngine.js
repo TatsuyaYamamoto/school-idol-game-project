@@ -82,7 +82,11 @@ function gameReady() {
       );
       //キーボード用keycodeevent登録
       window.addEventListener("keydown", keyDownEvent);
-      soundObj.SOUND_SUSUME_LOOP.play("late", 0, 0, -1, 0.6, 0);
+      soundObj.SOUND_SUSUME_LOOP.play({
+        interrupt: "late",
+        loop: -1,
+        volume: 0.6
+      });
       break;
   }
 }
@@ -210,7 +214,7 @@ function checkDistance(target) {
 // TODO: remove export.
 export function clickButtonRight() {
   globals.player.lane++;
-  globals.soundObj.SOUND_KAIHI.play("none", 0, 0, 0, 1, 0);
+  globals.soundObj.SOUND_KAIHI.play();
   globals.player.moveRight();
 
   checkButton();
@@ -220,7 +224,7 @@ export function clickButtonRight() {
 export function clickButtonLeft() {
   globals.player.lane--;
   globals.player.moveLeft();
-  globals.soundObj.SOUND_KAIHI.play("none", 0, 0, 0, 1, 0);
+  globals.soundObj.SOUND_KAIHI.play();
 
   checkButton();
 }
@@ -230,7 +234,7 @@ function crash() {
     text_game_count_L + globals.passCarCount + text_game_count_R;
   globals.soundObj.SOUND_SUSUME_LOOP.stop();
   globals.soundObj.SOUND_CRASH.play();
-  globals.soundObj.SOUND_SUSUME_END.play("late", 0, 0, 0, 0.6, 0);
+  globals.soundObj.SOUND_SUSUME_END.play({ interrupt: "late", volume: 0.6 });
 
   // createjs.Ticker.reset();
   createjs.Ticker.removeEventListener("tick", globals.tickListener);
