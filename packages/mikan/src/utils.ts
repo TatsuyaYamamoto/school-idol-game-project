@@ -114,3 +114,13 @@ export function vibrate(patternMillis: number | number[]) {
     console.error("Failed to vibrate.");
   }
 }
+
+export function getCurrentUrl(): string {
+  const protocol = location.protocol;
+  const host = location.hostname;
+  const path = location.pathname;
+  const port =
+    !location.port || location.port === "80" ? `` : `:${location.port}`;
+
+  return protocol + "//" + host + port + path;
+}

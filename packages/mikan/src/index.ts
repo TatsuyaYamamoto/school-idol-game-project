@@ -41,7 +41,8 @@ export {
   getRandomInteger,
   copyTextToClipboard,
   timeout,
-  vibrate
+  vibrate,
+  getCurrentUrl
 } from "./utils";
 
 export { default as ViewContainer } from "./ViewContainer";
@@ -49,5 +50,7 @@ export { default as ViewContainer } from "./ViewContainer";
 export { default as BrandLogoAnimation } from "./BrandLogoAnimation";
 
 export { default as P2PClient } from "./P2PClient";
+
+export { openModal, closeModal } from "./Modal";
 
 export { getLogger } from "./logger";

@@ -78,6 +78,7 @@ export function menuState() {
   }
 
   gameStage.addChild(imageObj.BUTTON_START);
+  gameStage.addChild(imageObj.BUTTON_ONLINE_START);
   gameStage.addChild(imageObj.BUTTON_HOW_TO);
   gameStage.addChild(imageObj.BUTTON_RANKING);
   gameStage.addChild(imageObj.BUTTON_CREDIT);

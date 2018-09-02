@@ -24,7 +24,9 @@
     "pixi-sound": "^1.4.2",
     "pixi.js": "^4.5.4",
     "skyway-js": "^1.1.16",
-    "spin.js": "^4.0.0"
+    "spin.js": "^4.0.0",
+    "sweetalert2": "^7.26.12",
+    "tippy.js": "^2.5.4"
   },
   "devDependencies": {
     "@types/i18next": "^8.4.4",

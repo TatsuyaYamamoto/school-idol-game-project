@@ -45,6 +45,13 @@ export default {
     BUTTON_START: {
       id: "BUTTON_START",
       ratioX: 0.5,
+      ratioY: 0.3,
+      scale: 0.8,
+      alpha: 1
+    },
+    BUTTON_ONLINE_START: {
+      id: "BUTTON_START",
+      ratioX: 0.5,
       ratioY: 0.4,
       scale: 0.8,
       alpha: 1

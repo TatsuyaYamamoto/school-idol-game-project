@@ -1,4 +1,10 @@
 import * as alertify from "alertify/lib/alertify";
+import {
+  copyTextToClipboard,
+  openModal,
+  P2PClient,
+  getCurrentUrl
+} from "@sokontokoro/mikan";
 
 import config from "./resources/config";
 import globals from "./globals";
@@ -82,6 +88,33 @@ export function addAllEventListener() {
     soundObj.SOUND_OK.play();
     gameState();
   });
+
+  imageObj.BUTTON_ONLINE_START.addEventListener("mousedown", function() {
+    soundObj.SOUND_OK.play();
+
+    openModal({
+      title: "オンライン対戦",
+      text:
+        "招待用URLからゲームにアクセスすることで、あなたと対戦が行えます。\n" +
+        "このダイアログを閉じてしまうとルームが削除されてしまいます。リロードやツイート時は気を付けてください。",
+      actions: [
+        {
+          text: "Copy URL",
+          autoClose: false,
+          tooltipText: "コピーしました!",
+          onClick: () => {
+            const url = getCurrentUrl();
+            const peerId = P2PClient.get().peerId;
+
+            copyTextToClipboard(`${url}?peerId=${peerId}`);
+          }
+        },
+        { text: "Twitter" },
+        { text: "cancel", type: "cancel" }
+      ]
+    });
+  });
+
   imageObj.BUTTON_HOW_TO.addEventListener("mousedown", function() {
     createjs.Ticker.removeEventListener("tick", globals.tickListener);
     soundObj.SOUND_OK.play();

@@ -1,14 +1,11 @@
+import { getCurrentUrl } from "@sokontokoro/mikan";
+
 const baseUrl =
   process.env.NODE_ENV === "production"
     ? "https://api.sokontokoro-factory.net/lovelive"
     : "https://api-dev.sokontokoro-factory.net/lovelive";
 
-const protocol = location.protocol;
-const host = location.hostname;
-const path = location.pathname;
-const port = location.port === 80 ? "" : ":" + location.port;
-
-const currentUrl = protocol + "//" + host + port + path;
+const currentUrl = getCurrentUrl();
 
 export default {
   system: {

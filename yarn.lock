@@ -7356,7 +7356,7 @@ svgo@^0.7.0:
     sax "~1.2.1"
     whet.extend "~0.9.9"
 
-sweetalert2@^7.15.0:
+sweetalert2@^7.15.0, sweetalert2@^7.26.12:
   version "7.26.12"
   resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-7.26.12.tgz#1a679de3ddc0eda3b5466bfbfd32733d640c2d63"
 
@@ -7512,7 +7512,7 @@ tingle.js@^0.13.0:
   version "0.13.2"
   resolved "https://registry.yarnpkg.com/tingle.js/-/tingle.js-0.13.2.tgz#516e28d77c7c0160d835fa12278856be1a8a7502"
 
-tippy.js@^2.2.3:
+tippy.js@^2.2.3, tippy.js@^2.5.4:
   version "2.5.4"
   resolved "https://registry.yarnpkg.com/tippy.js/-/tippy.js-2.5.4.tgz#69155d673761275dbf874c93175df443a006de46"
   dependencies:
