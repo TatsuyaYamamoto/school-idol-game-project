@@ -6,6 +6,7 @@
   "types": "dist/index.d.ts",
   "license": "MIT",
   "scripts": {
+    "start": "tsc -w",
     "build": "tsc"
   },
   "files": [
@@ -15,10 +16,14 @@
   ],
   "dependencies": {
     "animejs": "^2.2.0",
+    "autobind-decorator": "^2.1.0",
+    "eventemitter3": "^3.1.0",
     "i18next": "^11.6.0",
     "i18next-browser-languagedetector": "^2.2.3",
+    "loglevel": "^1.6.1",
     "pixi-sound": "^1.4.2",
     "pixi.js": "^4.5.4",
+    "skyway-js": "^1.1.16",
     "spin.js": "^4.0.0"
   },
   "devDependencies": {

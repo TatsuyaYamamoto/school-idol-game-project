@@ -198,10 +198,8 @@ export function addAllEventListener() {
   });
   window.addEventListener("blur", function() {
     soundTurnOff();
-    createjs.Ticker.paused = true;
   });
   window.addEventListener("focus", function() {
     soundTurnOn();
-    createjs.Ticker.paused = false;
   });
 }

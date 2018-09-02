@@ -47,3 +47,7 @@ export {
 export { default as ViewContainer } from "./ViewContainer";
 
 export { default as BrandLogoAnimation } from "./BrandLogoAnimation";
+
+export { default as P2PClient } from "./P2PClient";
+
+export { getLogger } from "./logger";

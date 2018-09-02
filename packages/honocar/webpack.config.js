@@ -1,4 +1,5 @@
 const { resolve } = require("path");
+const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
@@ -28,7 +29,10 @@ const plugins = [
   new CopyWebpackPlugin([
     { context: "app/img", from: "**/*", to: "img" },
     { context: "app/sound", from: "**/*", to: "sound" }
-  ])
+  ]),
+  new webpack.DefinePlugin({
+    "process.env": JSON.stringify(process.env)
+  })
 ];
 
 const config = {
@@ -64,7 +68,11 @@ const config = {
     ]
   },
 
-  plugins: plugins
+  plugins: plugins,
+
+  // https://github.com/pixijs/pixi-sound/issues/28
+  // Resolve node fs module for pixi-sound.
+  node: { fs: "empty" }
 };
 
 module.exports = config;

@@ -1,8 +1,14 @@
+import { parse } from "query-string";
+import { P2PClient, getLogger } from "@sokontokoro/mikan";
+
 import { init as initGameEngine } from "./gameEngine";
+import { init as initOnlineGameEngine } from "./OnlineGameEngine";
 import { init as initHowToPlay } from "./howToPlayEngine";
 import { postPlayLog, registration } from "./api";
 import { loadContent } from "./contentsLoader";
 import globals from "./globals";
+
+const logger = getLogger("state-machine");
 
 // ロード画面------------------------------------------
 export function loadState() {
@@ -43,6 +49,17 @@ export function topState() {
   }
 
   imageObj.GAME_BACKGROUND.addEventListener("click", gotoMenu);
+
+  // check online game state
+  const p2p = P2PClient.get(process.env.SKYWAY_KEY);
+  p2p.on(P2PClient.events.CONNECT, () => {
+    onlineGameState();
+  });
+  const { peerId } = parse(window.location.search);
+  if (peerId) {
+    console.log("peerId has", peerId);
+    p2p.connect(peerId);
+  }
 }
 
 // MENU画面------------------------------------------
@@ -103,9 +120,20 @@ export function creditState() {
 
 // ゲーム画面------------------------------------------
 export function gameState() {
+  logger.debug("start game state.");
+
   globals.gameStage.removeAllChildren();
 
   initGameEngine();
+}
+
+// ゲーム画面------------------------------------------
+export function onlineGameState() {
+  logger.debug("start online game state.");
+
+  globals.gameStage.removeAllChildren();
+
+  initOnlineGameEngine();
 }
 // GAMEOVER画面------------------------------------------
 export function gameOverState() {

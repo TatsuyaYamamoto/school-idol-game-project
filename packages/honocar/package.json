@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "alertify": "^0.3.0",
-    "createjs": "^1.0.1"
+    "createjs": "^1.0.1",
+    "query-string": "^6.1.0"
   }
 }

@@ -9,7 +9,6 @@ import { loadState } from "./stateMachine";
 import { initGameScreenScale } from "./common";
 import { requestLogin } from "./api";
 import { setTextProperties } from "./contentsLoader";
-import config from "./resources/config";
 import globals from "./globals";
 
 function init() {
