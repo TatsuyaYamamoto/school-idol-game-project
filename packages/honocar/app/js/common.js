@@ -90,6 +90,8 @@ export function addAllEventListener() {
   });
 
   imageObj.BUTTON_ONLINE_START.addEventListener("mousedown", function() {
+    createjs.Ticker.removeEventListener("tick", globals.tickListener);
+
     soundObj.SOUND_OK.play();
 
     openModal({
