@@ -2,6 +2,7 @@ import Peer from "skyway-js";
 import Autobind from "autobind-decorator";
 import { EventEmitter } from "eventemitter3";
 import { getLogger } from "./logger";
+import { mean } from "./Calculation";
 
 const logger = getLogger("p2p-client");
 
@@ -24,11 +25,14 @@ interface P2PData {
  */
 @Autobind
 class P2PClient extends EventEmitter {
-  public static events = EventType;
-  private static _instance: object | null = null;
+  public static EVENTS = EventType;
+  private static INSTANCE: P2PClient | null = null;
+  private static PING_COUNT_FOR_AVERAGE = 5;
 
   readonly peer;
   private _connection = null;
+  private _averagePing: number = 0;
+  private _pingHistory: number[] = [];
 
   /**
    * Constructor
@@ -64,15 +68,15 @@ class P2PClient extends EventEmitter {
    * @param peerId
    */
   public static get(key?: string, peerId?: string) {
-    if (this._instance) {
-      return this._instance;
+    if (this.INSTANCE) {
+      return this.INSTANCE;
     }
 
     if (key) {
       if (peerId) {
-        this._instance = new P2PClient(key, peerId);
+        this.INSTANCE = new P2PClient(key, peerId);
       } else {
-        this._instance = new P2PClient(key);
+        this.INSTANCE = new P2PClient(key);
       }
 
       return P2PClient.get();
@@ -97,6 +101,17 @@ class P2PClient extends EventEmitter {
     return this.peer.open;
   }
 
+  public get remotePeerId(): boolean {
+    return this._connection.remoteId;
+  }
+
+  /**
+   * Return an average of ping to remote peer.
+   */
+  public get averagePing(): number {
+    return this._averagePing;
+  }
+
   /**
    * Request connection to remote peer.
    *
@@ -115,7 +130,7 @@ class P2PClient extends EventEmitter {
           const connection = this.peer.connect(remotePeerId);
           this.setConnection(connection);
           resolve();
-          this.emit(P2PClient.events.CONNECT);
+          this.emit(P2PClient.EVENTS.CONNECT);
         } catch (e) {
           tryCount++;
           if (max < tryCount) {
@@ -187,7 +202,7 @@ class P2PClient extends EventEmitter {
 
     firstSignal();
 
-    this.emit(P2PClient.events.CONNECT);
+    this.emit(P2PClient.EVENTS.CONNECT);
   }
 
   private onPeerError(e) {
@@ -199,17 +214,27 @@ class P2PClient extends EventEmitter {
   }
 
   private onDataReceived(data: P2PData) {
-    const { message, time } = data;
+    const { time } = data;
     const ping = Date.now() - time;
+
+    setTimeout(this.calcAveragePing);
 
     logger.debug(`received message, ping: ${ping}ms`, data);
 
-    this.emit(P2PClient.events.DATA, data);
+    this.emit(P2PClient.EVENTS.DATA, data);
   }
 
   private onConnectionClosed() {
     logger.debug(`connection is disconnected. connection: ${this._connection}`);
     this._connection = null;
+  }
+
+  private calcAveragePing(newPing) {
+    this._pingHistory.push(newPing);
+    this._averagePing = mean(this._pingHistory);
+    if (P2PClient.PING_COUNT_FOR_AVERAGE < this._pingHistory.length) {
+      this._pingHistory.shift();
+    }
   }
 }
 

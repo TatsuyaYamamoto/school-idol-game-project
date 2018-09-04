@@ -5,10 +5,12 @@ import globals from "./globals";
 import { text_game_count_L, text_game_count_R } from "./resources/text";
 import properties from "./resources/object-props";
 import config from "./resources/config";
-import { P2PClient } from "@sokontokoro/mikan";
+import { P2PClient, getLogger } from "@sokontokoro/mikan";
 
+const logger = getLogger("online-game-engine");
 let cars = [];
 let opponent = null;
+let shouldPushCar = false;
 
 //ゲーム初期化-----------------------------------------
 export function init() {
@@ -86,21 +88,8 @@ function gameReady() {
       drawGameScrean();
       createjs.Ticker.removeEventListener("tick", globals.tickListener);
 
-      P2PClient.get().on(P2PClient.events.DATA, ({ message }) => {
-        const nextLane = message.lane;
-        const prevLane = opponent.lane;
-
-        opponent.lane = nextLane;
-
-        if (prevLane < nextLane) {
-          opponent.moveRight();
-        } else if (nextLane < prevLane) {
-          opponent.moveLeft();
-        } else {
-          // nextLane === nextLane
-          // ignore
-        }
-      });
+      P2PClient.get().on(P2PClient.EVENTS.DATA, onDataReceived);
+      shouldPushCar = P2PClient.get().peerId < P2PClient.get().remotePeerId;
 
       //ゲーム処理開始
       globals.tickListener = createjs.Ticker.addEventListener(
@@ -128,8 +117,8 @@ function processGame() {
     text_game_count_L + globals.passCarCount + text_game_count_R;
   gameStage.update();
 
-  if (globals.gameFrame % 20 === 0) {
-    // enemyAppeare();
+  if (shouldPushCar && globals.gameFrame % 20 === 0) {
+    enemyAppeare();
   }
 
   cars.forEach(function(target, index) {
@@ -138,7 +127,7 @@ function processGame() {
       globals.passCarCount++;
     }
 
-    if (player.lane == target.lane && checkDistance(target) < 0) {
+    if (player.lane === target.lane && checkDistance(target) < 0) {
       crash();
     }
   });
@@ -158,8 +147,15 @@ function drawGameScrean() {
 
 // 敵出現---------------------------------------
 function enemyAppeare() {
+  logger.debug("push car");
+  shouldPushCar = false;
   var enemyNumber = Math.floor(Math.random() * 5);
 
+  sendPushCarEvent(enemyNumber);
+  pushCar(enemyNumber);
+}
+
+function pushCar(enemyNumber) {
   switch (enemyNumber) {
     case 0:
       cars.push(new Car(0));
@@ -188,16 +184,16 @@ function enemyAppeare() {
 function checkButton() {
   const { player } = globals;
 
-  if (player.lane == 0) {
+  if (player.lane === 0) {
     leftButtonDisable();
   }
-  if (player.lane == 1) {
+  if (player.lane === 1) {
     leftButtonEnable();
   }
-  if (player.lane == 2) {
+  if (player.lane === 2) {
     rightButtonEnable();
   }
-  if (player.lane == 3) {
+  if (player.lane === 3) {
     rightButtonDisable();
   }
 }
@@ -245,7 +241,7 @@ export function clickButtonRight() {
   globals.soundObj.SOUND_KAIHI.play();
   globals.player.moveRight();
 
-  P2PClient.get().send({ lane: globals.player.lane });
+  sendChangeLaneEvent();
 
   checkButton();
 }
@@ -256,7 +252,7 @@ export function clickButtonLeft() {
   globals.player.moveLeft();
   globals.soundObj.SOUND_KAIHI.play();
 
-  P2PClient.get().send({ lane: globals.player.lane });
+  sendChangeLaneEvent();
 
   checkButton();
 }
@@ -275,4 +271,74 @@ function crash() {
   window.removeEventListener("keydown", keyDownEvent);
   //stateマシン内、ゲームオーバー状態に遷移
   gameOverState();
+}
+
+function onDataReceived(data) {
+  const { message, time } = data;
+
+  const f = {};
+  f["change_lane"] = function() {
+    const nextLane = message.detail.lane;
+    const prevLane = opponent.lane;
+
+    opponent.lane = nextLane;
+
+    if (prevLane < nextLane) {
+      opponent.moveRight();
+    } else if (nextLane < prevLane) {
+      opponent.moveLeft();
+    } else {
+      // nextLane === nextLane
+      // ignore
+    }
+  };
+
+  f["push_car"] = function() {
+    const nextPusher = message.detail.nextPusher;
+    if (nextPusher === P2PClient.get().peerId) {
+      shouldPushCar = true;
+      globals.gameFrame = globals.gameFrame - (globals.gameFrame % 20) + 20;
+    }
+
+    const nextEnemyNumber = message.detail.nextEnemyNumber;
+    pushCar(nextEnemyNumber);
+  };
+
+  f["crashed"] = function() {};
+
+  f[message.type] && f[message.type]();
+}
+
+function sendChangeLaneEvent() {
+  const message = {
+    type: "change_lane",
+    detail: {
+      lane: globals.player.lane
+    }
+  };
+
+  P2PClient.get().send(message);
+}
+
+function sendPushCarEvent(enemyNumber) {
+  const message = {
+    type: "push_car",
+    detail: {
+      nextEnemyNumber: enemyNumber,
+      nextPusher: P2PClient.get().remotePeerId
+    }
+  };
+
+  P2PClient.get().send(message);
+}
+
+function sendCrashEvent() {
+  const message = {
+    type: "crashed",
+    detail: {
+      crashedAt: Date.now()
+    }
+  };
+
+  P2PClient.get().send(message);
 }

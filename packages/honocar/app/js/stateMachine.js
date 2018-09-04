@@ -52,7 +52,7 @@ export function topState() {
 
   // check online game state
   const p2p = P2PClient.get(process.env.SKYWAY_KEY);
-  p2p.on(P2PClient.events.CONNECT, () => {
+  p2p.on(P2PClient.EVENTS.CONNECT, () => {
     onlineGameState();
   });
   const { peerId } = parse(window.location.search);
