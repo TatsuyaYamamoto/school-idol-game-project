@@ -84,8 +84,10 @@ export function addAllEventListener() {
 
   imageObj.BUTTON_START.addEventListener("mousedown", function() {
     createjs.Ticker.removeEventListener("tick", globals.tickListener);
+
     soundObj.SOUND_ZENKAI.stop();
     soundObj.SOUND_OK.play();
+
     gameState();
   });
 
