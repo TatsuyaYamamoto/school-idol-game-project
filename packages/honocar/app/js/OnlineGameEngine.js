@@ -1,6 +1,6 @@
 import Player from "./character/Player";
 import Car from "./character/Car";
-import { gameOverState } from "./stateMachine";
+import { onlineGameOverState } from "./stateMachine";
 import globals from "./globals";
 import { text_game_count_L, text_game_count_R } from "./resources/text";
 import properties from "./resources/object-props";
@@ -11,6 +11,8 @@ const logger = getLogger("online-game-engine");
 let cars = [];
 let opponent = null;
 let shouldPushCar = false;
+let playerCrashedTime = null;
+let opponentCrashTime = null;
 
 //ゲーム初期化-----------------------------------------
 export function init() {
@@ -20,7 +22,7 @@ export function init() {
 
   const opponentCharacter =
     globals.playCharacter === "honoka" ? "erichi" : "honoka";
-  opponent = new Player(opponentCharacter);
+  globals.opponent = new Player(opponentCharacter);
 
   //フレーム数リセット
   gameStatusReset();
@@ -53,7 +55,7 @@ function keyDownEvent(event) {
 
 // ゲームスタートカウント-----------------------------------------
 function gameReady() {
-  const { gameStage, soundObj, imageObj, textObj, player } = globals;
+  const { gameStage, soundObj, imageObj, textObj, player, opponent } = globals;
   globals.gameFrame++;
 
   switch (globals.gameFrame) {
@@ -90,6 +92,8 @@ function gameReady() {
 
       P2PClient.get().on(P2PClient.EVENTS.DATA, onDataReceived);
       shouldPushCar = P2PClient.get().peerId < P2PClient.get().remotePeerId;
+      playerCrashedTime = null;
+      opponentCrashTime = null;
 
       //ゲーム処理開始
       globals.tickListener = createjs.Ticker.addEventListener(
@@ -135,7 +139,7 @@ function processGame() {
 
 // 描画処理-----------------------------------------
 function drawGameScrean() {
-  const { gameStage, imageObj, textObj, player } = globals;
+  const { gameStage, imageObj, textObj, player, opponent } = globals;
 
   gameStage.addChild(imageObj.GAME_BACKGROUND);
   gameStage.addChild(imageObj.BUTTON_LEFT);
@@ -258,11 +262,29 @@ export function clickButtonLeft() {
 }
 // クラッシュ関数-------------------------------------
 function crash() {
+  playerCrashedTime = Date.now();
+  sendCrashEvent(playerCrashedTime);
+
+  const waitTime = P2PClient.get().averagePing * 2;
+
+  setTimeout(() => {
+    if (opponentCrashTime && opponentCrashTime < playerCrashedTime) {
+      match(true);
+    } else {
+      match(false);
+    }
+  }, waitTime);
+}
+
+function match(win) {
   globals.textObj.TEXT_GAME_COUNT.text =
     text_game_count_L + globals.passCarCount + text_game_count_R;
   globals.soundObj.SOUND_SUSUME_LOOP.stop();
   globals.soundObj.SOUND_CRASH.play();
-  globals.soundObj.SOUND_SUSUME_END.play({ interrupt: "late", volume: 0.6 });
+  globals.soundObj.SOUND_SUSUME_END.play({
+    interrupt: "late",
+    volume: 0.6
+  });
 
   // createjs.Ticker.reset();
   createjs.Ticker.removeEventListener("tick", globals.tickListener);
@@ -270,10 +292,11 @@ function crash() {
   //キーボード用keycodeevent削除
   window.removeEventListener("keydown", keyDownEvent);
   //stateマシン内、ゲームオーバー状態に遷移
-  gameOverState();
+  onlineGameOverState(win);
 }
 
 function onDataReceived(data) {
+  const { opponent } = globals;
   const { message, time } = data;
 
   const f = {};
@@ -304,7 +327,15 @@ function onDataReceived(data) {
     pushCar(nextEnemyNumber);
   };
 
-  f["crashed"] = function() {};
+  f["crashed"] = function() {
+    opponentCrashTime = message.detail.crashedAt;
+
+    if (playerCrashedTime && playerCrashedTime < opponentCrashTime) {
+      match(false);
+    } else {
+      match(true);
+    }
+  };
 
   f[message.type] && f[message.type]();
 }
@@ -332,11 +363,11 @@ function sendPushCarEvent(enemyNumber) {
   P2PClient.get().send(message);
 }
 
-function sendCrashEvent() {
+function sendCrashEvent(crashedTime) {
   const message = {
     type: "crashed",
     detail: {
-      crashedAt: Date.now()
+      crashedAt: crashedTime
     }
   };
 

@@ -53,6 +53,7 @@ export function topState() {
   // check online game state
   const p2p = P2PClient.get(process.env.SKYWAY_KEY);
   p2p.on(P2PClient.EVENTS.CONNECT, () => {
+    soundObj.SOUND_ZENKAI.stop();
     onlineGameState();
   });
   const { peerId } = parse(window.location.search);
@@ -166,6 +167,50 @@ export function gameOverState() {
   }
 
   gameStage.addChild(imageObj.GAME_BACKGROUND);
+  gameStage.addChild(player.img);
+  gameStage.addChild(imageObj.BUTTON_BACK_TOP);
+  gameStage.addChild(imageObj.BUTTON_RESTART);
+  gameStage.addChild(ssObj.BUTTON_TWITTER_GAMEOVER_SS);
+  gameStage.addChild(textObj.TEXT_GAME_COUNT);
+  gameStage.addChild(imageObj.GAMEOVER);
+
+  globals.tickListener = createjs.Ticker.addEventListener("tick", function() {
+    gameStage.update();
+  });
+}
+
+export function onlineGameOverState(win) {
+  logger.debug("win?", win);
+
+  const {
+    gameStage,
+    player,
+    opponent,
+    playCharacter,
+    ssObj,
+    imageObj,
+    textObj
+  } = globals;
+
+  if (win) {
+    opponent.img.gotoAndPlay("down");
+  } else {
+    player.img.gotoAndPlay("down");
+  }
+
+  gameStage.removeAllChildren();
+
+  switch (playCharacter) {
+    case "honoka":
+      ssObj.BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("honoka");
+      break;
+    case "erichi":
+      ssObj.BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("erichi");
+      break;
+  }
+
+  gameStage.addChild(imageObj.GAME_BACKGROUND);
+  gameStage.addChild(opponent.img);
   gameStage.addChild(player.img);
   gameStage.addChild(imageObj.BUTTON_BACK_TOP);
   gameStage.addChild(imageObj.BUTTON_RESTART);

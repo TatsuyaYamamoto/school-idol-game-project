@@ -8,6 +8,7 @@ export default {
   tickListener: null,
   playCharacter: "honoka",
   player: null,
+  opponent: null,
   isSoundMute: false,
   passCarCount: null,
   gameFrame: null,
