@@ -82,6 +82,10 @@ export function addAllEventListener() {
 
   imageObj.BUTTON_LEFT.addEventListener("mousedown", clickButtonLeft);
 
+  imageObj.BUTTON_ONLINE_RIGHT.addEventListener("mousedown", clickButtonRight);
+
+  imageObj.BUTTON_ONLINE_LEFT.addEventListener("mousedown", clickButtonLeft);
+
   imageObj.BUTTON_START.addEventListener("mousedown", function() {
     createjs.Ticker.removeEventListener("tick", globals.tickListener);
 

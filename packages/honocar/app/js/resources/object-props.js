@@ -119,6 +119,20 @@ export default {
       scale: 1,
       alpha: 0.5
     },
+    BUTTON_ONLINE_LEFT: {
+      id: "BUTTON_LEFT",
+      ratioX: 0.2,
+      ratioY: 0.9,
+      scale: 1,
+      alpha: 0.5
+    },
+    BUTTON_ONLINE_RIGHT: {
+      id: "BUTTON_RIGHT",
+      ratioX: 0.8,
+      ratioY: 0.9,
+      scale: 1,
+      alpha: 0.5
+    },
     BUTTON_LEFT_HOW_TO: {
       id: "BUTTON_LEFT",
       ratioX: 0.2,
