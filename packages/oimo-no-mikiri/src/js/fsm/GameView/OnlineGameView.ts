@@ -7,7 +7,8 @@ import {
   play,
   vibrate,
   show as showConnecting,
-  hide as hideConnecting
+  hide as hideConnecting,
+  removeEvents
 } from "@sokontokoro/mikan";
 
 import GameView, { EnterParams, Events, InnerStates } from "./GameView";
@@ -89,8 +90,15 @@ class OnlineGameView extends GameView {
    */
   onExit(): void | Deliverable {
     super.onExit();
-
     this.game.release();
+    removeEvents([
+      Events.REQUEST_READY,
+      Events.IS_READY,
+      Events.ATTACK,
+      Events.FIXED_RESULT,
+      Events.RESTART_GAME,
+      Events.BACK_TO_TOP
+    ]);
   }
 
   /**
