@@ -23,6 +23,7 @@ import {
   clickButtonLeft as clickButtonLeftOnline,
   clickButtonRight as clickButtonRightOnline
 } from "./OnlineGameEngine";
+import { P2PEvents } from "./constants";
 
 //ゲームスクリーンサイズ初期化用-----------------------
 export function initGameScreenScale() {
@@ -220,7 +221,7 @@ export function addAllEventListener() {
     });
 
     P2PClient.get().once(P2PClient.EVENTS.DATA, ({ message }) => {
-      if (message.type === "restart_accept") {
+      if (message.type === P2PEvents.RESTART_ACCEPT) {
         closeModal();
         onlineGameState();
       }
@@ -228,7 +229,7 @@ export function addAllEventListener() {
 
     // TODO restartイベントをonする前にmessageを送信する可能性がある。
     const message = {
-      type: "restart"
+      type: P2PEvents.RESTART
     };
     P2PClient.get().send(message);
   });

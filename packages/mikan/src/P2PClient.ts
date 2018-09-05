@@ -120,22 +120,22 @@ class P2PClient extends EventEmitter {
   public connect(remotePeerId) {
     logger.debug(`try connect. target PeerID: ${remotePeerId}`);
 
-    // TODO check peer status.
+    // TODO: reconsider check state and try logic
     let max = 3;
     let tryCount = 0;
 
     return new Promise((resolve, reject) => {
       const tryConnect = () => {
-        try {
+        if (this.peer.open) {
           const connection = this.peer.connect(remotePeerId);
           this.setConnection(connection);
           resolve();
           this.emit(P2PClient.EVENTS.CONNECT);
-        } catch (e) {
+        } else {
           tryCount++;
           if (max < tryCount) {
             logger.error("Failed to try connection. reach mac try count.");
-            reject(e);
+            reject();
           }
 
           setTimeout(tryConnect, 1000);
@@ -153,6 +153,9 @@ class P2PClient extends EventEmitter {
    */
   public send(message: P2PMessage) {
     if (!this._connection) {
+      logger.error(
+        "P2PClient doesn't have a connection. check whether you initialize a client or not."
+      );
       return;
     }
 
@@ -161,8 +164,29 @@ class P2PClient extends EventEmitter {
       time: Date.now()
     };
 
-    this._connection.send(data);
-    logger.debug(`send data.`, data);
+    // TODO: reconsider check state and try logic
+    let max = 3;
+    let tryCount = 0;
+
+    return new Promise((resolve, reject) => {
+      const trySend = () => {
+        if (this._connection.open) {
+          this._connection.send(data);
+          logger.debug(`send data.`, data);
+          resolve();
+        } else {
+          tryCount++;
+          if (max < tryCount) {
+            logger.error("Failed to try send. reach max try count.");
+            reject();
+          }
+
+          setTimeout(trySend, 1000);
+        }
+      };
+
+      trySend();
+    });
   }
 
   private setConnection(connection) {
@@ -184,7 +208,7 @@ class P2PClient extends EventEmitter {
    */
   private onPeerConnected(connection) {
     const connId = connection.id;
-    const peerId = connection.peer;
+    const peerId = connection.remoteId;
 
     logger.debug(
       `peer is connected. ConnectionID: ${connId}, RemoteID: ${peerId}`

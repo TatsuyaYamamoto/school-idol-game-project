@@ -6,6 +6,7 @@ import { text_game_count_L, text_game_count_R } from "./resources/text";
 import properties from "./resources/object-props";
 import config from "./resources/config";
 import { P2PClient, getLogger } from "@sokontokoro/mikan";
+import { P2PEvents } from "./constants";
 
 const logger = getLogger("online-game-engine");
 let cars = [];
@@ -150,7 +151,7 @@ function drawGameScrean() {
 function enemyAppeare() {
   logger.debug("push car");
   shouldPushCar = false;
-  var enemyNumber = Math.floor(Math.random() * 5);
+  const enemyNumber = Math.floor(Math.random() * 5);
 
   sendPushCarEvent(enemyNumber);
   pushCar(enemyNumber);
@@ -300,7 +301,7 @@ function onDataReceived(data) {
   const { message, time } = data;
 
   const f = {};
-  f["change_lane"] = function() {
+  f[P2PEvents.CHANGE_LANE] = function() {
     const nextLane = message.detail.lane;
     const prevLane = opponent.lane;
 
@@ -316,7 +317,7 @@ function onDataReceived(data) {
     }
   };
 
-  f["push_car"] = function() {
+  f[P2PEvents.PUSH_CAR] = function() {
     const nextPusher = message.detail.nextPusher;
     if (nextPusher === P2PClient.get().peerId) {
       shouldPushCar = true;
@@ -327,7 +328,7 @@ function onDataReceived(data) {
     pushCar(nextEnemyNumber);
   };
 
-  f["crashed"] = function() {
+  f[P2PEvents.CRASHED] = function() {
     opponentCrashTime = message.detail.crashedAt;
 
     if (playerCrashedTime && playerCrashedTime < opponentCrashTime) {
@@ -342,7 +343,7 @@ function onDataReceived(data) {
 
 function sendChangeLaneEvent() {
   const message = {
-    type: "change_lane",
+    type: P2PEvents.CHANGE_LANE,
     detail: {
       lane: globals.player.lane
     }
@@ -352,8 +353,9 @@ function sendChangeLaneEvent() {
 }
 
 function sendPushCarEvent(enemyNumber) {
+  console.log("sendPushCarEvent", enemyNumber);
   const message = {
-    type: "push_car",
+    type: P2PEvents.PUSH_CAR,
     detail: {
       nextEnemyNumber: enemyNumber,
       nextPusher: P2PClient.get().remotePeerId
@@ -365,7 +367,7 @@ function sendPushCarEvent(enemyNumber) {
 
 function sendCrashEvent(crashedTime) {
   const message = {
-    type: "crashed",
+    type: P2PEvents.CRASHED,
     detail: {
       crashedAt: crashedTime
     }

@@ -1,5 +1,10 @@
 import { parse } from "query-string";
-import { P2PClient, getLogger } from "@sokontokoro/mikan";
+import {
+  P2PClient,
+  getLogger,
+  openModal,
+  closeModal
+} from "@sokontokoro/mikan";
 
 import { init as initGameEngine } from "./gameEngine";
 import { init as initOnlineGameEngine } from "./OnlineGameEngine";
@@ -7,6 +12,7 @@ import { init as initHowToPlay } from "./howToPlayEngine";
 import { postPlayLog, registration } from "./api";
 import { loadContent } from "./contentsLoader";
 import globals from "./globals";
+import { P2PEvents } from "./constants";
 
 const logger = getLogger("state-machine");
 
@@ -17,6 +23,8 @@ export function loadState() {
 
 // TOP画面------------------------------------------
 export function topState() {
+  logger.debug("start TopState");
+
   const { playCharacter, gameStage, imageObj, textObj, soundObj } = globals;
 
   gameStage.removeAllChildren();
@@ -52,19 +60,32 @@ export function topState() {
 
   // check online game state
   const p2p = P2PClient.get(process.env.SKYWAY_KEY);
+
   p2p.once(P2PClient.EVENTS.CONNECT, () => {
-    soundObj.SOUND_ZENKAI.stop();
-    onlineGameState();
+    logger.debug("success to connect to peer.");
+    const offset = 2 * 1000; //[ms]
+
+    openModal({ title: "準備完了", actions: [] });
+
+    setTimeout(() => {
+      soundObj.SOUND_ZENKAI.stop();
+      closeModal();
+
+      onlineGameState();
+    }, offset);
   });
+
   const { peerId } = parse(window.location.search);
   if (peerId) {
-    console.log("peerId has", peerId);
+    console.debug("user has remote peer id. try to connect.", peerId);
     p2p.connect(peerId);
   }
 }
 
 // MENU画面------------------------------------------
 export function menuState() {
+  logger.debug("start MenuState");
+
   const { playCharacter, gameStage, imageObj, ssObj, soundObj } = globals;
 
   gameStage.removeAllChildren();
@@ -100,12 +121,16 @@ export function menuState() {
 }
 //操作説明画面------------------------------------------
 export function howToPlayState() {
+  logger.debug("start HowToPlayState");
+
   globals.gameStage.removeAllChildren();
 
   initHowToPlay();
 }
 //クレジット画面------------------------------------------
 export function creditState() {
+  logger.debug("start CreditState");
+
   const { gameStage, imageObj, textObj } = globals;
 
   gameStage.removeAllChildren();
@@ -122,7 +147,7 @@ export function creditState() {
 
 // ゲーム画面------------------------------------------
 export function gameState() {
-  logger.debug("start game state.");
+  logger.debug("start GameState.");
 
   globals.gameStage.removeAllChildren();
 
@@ -131,7 +156,7 @@ export function gameState() {
 
 // ゲーム画面------------------------------------------
 export function onlineGameState() {
-  logger.debug("start online game state.");
+  logger.debug("start OnlineGameState.");
 
   globals.gameStage.removeAllChildren();
 
@@ -139,6 +164,8 @@ export function onlineGameState() {
 }
 // GAMEOVER画面------------------------------------------
 export function gameOverState() {
+  logger.debug("start GameOverState.");
+
   const {
     gameStage,
     player,
@@ -180,7 +207,8 @@ export function gameOverState() {
 }
 
 export function onlineGameOverState(win) {
-  logger.debug("win?", win);
+  logger.debug("start OnlineGameOverState.");
+  logger.debug("player is win?", win);
 
   const {
     gameStage,
@@ -223,9 +251,9 @@ export function onlineGameOverState(win) {
   });
 
   P2PClient.get().once(P2PClient.EVENTS.DATA, ({ message }) => {
-    if (message.type === "restart") {
+    if (message.type === P2PEvents.RESTART) {
       const message = {
-        type: "restart_accept"
+        type: P2PEvents.RESTART_ACCEPT
       };
       P2PClient.get().send(message);
 
