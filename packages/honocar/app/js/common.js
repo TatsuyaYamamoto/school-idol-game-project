@@ -3,7 +3,8 @@ import {
   copyTextToClipboard,
   openModal,
   P2PClient,
-  getCurrentUrl
+  getCurrentUrl,
+  closeModal
 } from "@sokontokoro/mikan";
 
 import config from "./resources/config";
@@ -13,10 +14,15 @@ import {
   gameState,
   howToPlayState,
   menuState,
+  onlineGameState,
   topState
 } from "./stateMachine";
 import { soundTurnOff, soundTurnOn } from "./contentsLoader";
 import { clickButtonLeft, clickButtonRight } from "./gameEngine";
+import {
+  clickButtonLeft as clickButtonLeftOnline,
+  clickButtonRight as clickButtonRightOnline
+} from "./OnlineGameEngine";
 
 //ゲームスクリーンサイズ初期化用-----------------------
 export function initGameScreenScale() {
@@ -78,13 +84,31 @@ function getTweetText() {
 export function addAllEventListener() {
   const { imageObj, soundObj, textObj, ssObj } = globals;
 
+  /**
+   * GameStateの右移動ボタン
+   */
   imageObj.BUTTON_RIGHT.addEventListener("mousedown", clickButtonRight);
 
+  /**
+   * GameStateの左移動ボタン
+   */
   imageObj.BUTTON_LEFT.addEventListener("mousedown", clickButtonLeft);
 
-  imageObj.BUTTON_ONLINE_RIGHT.addEventListener("mousedown", clickButtonRight);
+  /**
+   * OnlineGameStateの右移動ボタン
+   */
+  imageObj.BUTTON_RIGHT_ONLINE.addEventListener(
+    "mousedown",
+    clickButtonRightOnline
+  );
 
-  imageObj.BUTTON_ONLINE_LEFT.addEventListener("mousedown", clickButtonLeft);
+  /**
+   * OnlineGameStateの左移動ボタン
+   */
+  imageObj.BUTTON_LEFT_ONLINE.addEventListener(
+    "mousedown",
+    clickButtonLeftOnline
+  );
 
   imageObj.BUTTON_START.addEventListener("mousedown", function() {
     createjs.Ticker.removeEventListener("tick", globals.tickListener);
@@ -95,7 +119,7 @@ export function addAllEventListener() {
     gameState();
   });
 
-  imageObj.BUTTON_ONLINE_START.addEventListener("mousedown", function() {
+  imageObj.BUTTON_START_ONLINE.addEventListener("mousedown", function() {
     createjs.Ticker.removeEventListener("tick", globals.tickListener);
 
     soundObj.SOUND_OK.play();
@@ -139,7 +163,19 @@ export function addAllEventListener() {
     creditState();
   });
 
+  /**
+   * GameOverStateからMenuStateへ遷移するボタン
+   */
   imageObj.BUTTON_BACK_TOP.addEventListener("mousedown", function() {
+    createjs.Ticker.removeEventListener("tick", globals.tickListener);
+    soundObj.SOUND_BACK.play();
+    menuState();
+  });
+
+  /**
+   * OnlineGameOverStateからMenuStateへ遷移するボタン
+   */
+  imageObj.BUTTON_BACK_TOP_ONLINE.addEventListener("mousedown", function() {
     createjs.Ticker.removeEventListener("tick", globals.tickListener);
     soundObj.SOUND_BACK.play();
     menuState();
@@ -163,10 +199,38 @@ export function addAllEventListener() {
     }
   );
 
+  /**
+   * GameOverStateからGameStateへ遷移(リプレイ)
+   */
   imageObj.BUTTON_RESTART.addEventListener("mousedown", function() {
     createjs.Ticker.removeEventListener("tick", globals.tickListener);
     soundObj.SOUND_BACK.play();
     gameState();
+  });
+
+  /**
+   * OnlineGameOverStateからOnlineGameStateへ遷移(リプレイ)
+   */
+  imageObj.BUTTON_RESTART_ONLINE.addEventListener("mousedown", function() {
+    soundObj.SOUND_BACK.play();
+
+    openModal({
+      title: "対戦相手を入力待っています！",
+      actions: []
+    });
+
+    P2PClient.get().once(P2PClient.EVENTS.DATA, ({ message }) => {
+      if (message.type === "restart_accept") {
+        closeModal();
+        onlineGameState();
+      }
+    });
+
+    // TODO restartイベントをonする前にmessageを送信する可能性がある。
+    const message = {
+      type: "restart"
+    };
+    P2PClient.get().send(message);
   });
 
   ssObj.BUTTON_SOUND_SS.addEventListener("mousedown", function() {

@@ -49,7 +49,7 @@ export default {
       scale: 0.8,
       alpha: 1
     },
-    BUTTON_ONLINE_START: {
+    BUTTON_START_ONLINE: {
       id: "BUTTON_START",
       ratioX: 0.5,
       ratioY: 0.4,
@@ -84,6 +84,13 @@ export default {
       scale: 1,
       alpha: 1
     },
+    BUTTON_BACK_TOP_ONLINE: {
+      id: "BUTTON_BACK_MENU",
+      ratioX: 0.7,
+      ratioY: 0.75,
+      scale: 1,
+      alpha: 1
+    },
     BUTTON_BACK_TOP_FROM_CREDIT: {
       id: "BUTTON_BACK_MENU",
       ratioX: 0.5,
@@ -105,6 +112,13 @@ export default {
       scale: 1,
       alpha: 1
     },
+    BUTTON_RESTART_ONLINE: {
+      id: "BUTTON_RESTART",
+      ratioX: 0.3,
+      ratioY: 0.75,
+      scale: 1,
+      alpha: 1
+    },
     BUTTON_LEFT: {
       id: "BUTTON_LEFT",
       ratioX: 0.2,
@@ -119,14 +133,14 @@ export default {
       scale: 1,
       alpha: 0.5
     },
-    BUTTON_ONLINE_LEFT: {
+    BUTTON_LEFT_ONLINE: {
       id: "BUTTON_LEFT",
       ratioX: 0.2,
       ratioY: 0.9,
       scale: 1,
       alpha: 0.5
     },
-    BUTTON_ONLINE_RIGHT: {
+    BUTTON_RIGHT_ONLINE: {
       id: "BUTTON_RIGHT",
       ratioX: 0.8,
       ratioY: 0.9,

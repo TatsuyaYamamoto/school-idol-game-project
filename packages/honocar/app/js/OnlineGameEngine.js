@@ -31,8 +31,6 @@ export function init() {
   leftButtonEnable();
 
   //タイマーに関数セット
-  // todo 重複したtickイベントが発火している実装が他にもあるかも
-  createjs.Ticker.removeEventListener("tick", gameReady);
   globals.tickListener = createjs.Ticker.addEventListener("tick", gameReady);
 }
 
@@ -40,14 +38,17 @@ function gameStatusReset() {
   globals.gameFrame = 0;
   globals.passCarCount = 0;
   cars = [];
+  playerCrashedTime = null;
+  opponentCrashTime = null;
+  shouldPushCar = P2PClient.get().peerId < P2PClient.get().remotePeerId;
 }
 
 function keyDownEvent(event) {
   const { imageObj } = globals;
-  if (event.which == 37 && imageObj.BUTTON_ONLINE_LEFT.mouseEnabled) {
+  if (event.which == 37 && imageObj.BUTTON_LEFT_ONLINE.mouseEnabled) {
     clickButtonLeft();
   }
-  if (event.keyCode == 39 && imageObj.BUTTON_ONLINE_RIGHT.mouseEnabled) {
+  if (event.keyCode == 39 && imageObj.BUTTON_RIGHT_ONLINE.mouseEnabled) {
     clickButtonRight();
   }
 }
@@ -90,9 +91,6 @@ function gameReady() {
       createjs.Ticker.removeEventListener("tick", globals.tickListener);
 
       P2PClient.get().on(P2PClient.EVENTS.DATA, onDataReceived);
-      shouldPushCar = P2PClient.get().peerId < P2PClient.get().remotePeerId;
-      playerCrashedTime = null;
-      opponentCrashTime = null;
 
       //ゲーム処理開始
       globals.tickListener = createjs.Ticker.addEventListener(
@@ -141,8 +139,8 @@ function drawGameScrean() {
   const { gameStage, imageObj, textObj, player, opponent } = globals;
 
   gameStage.addChild(imageObj.GAME_BACKGROUND);
-  gameStage.addChild(imageObj.BUTTON_ONLINE_LEFT);
-  gameStage.addChild(imageObj.BUTTON_ONLINE_RIGHT);
+  gameStage.addChild(imageObj.BUTTON_LEFT_ONLINE);
+  gameStage.addChild(imageObj.BUTTON_RIGHT_ONLINE);
   gameStage.addChild(textObj.TEXT_GAME_COUNT);
   gameStage.addChild(opponent.img);
   gameStage.addChild(player.img);
@@ -203,22 +201,22 @@ function checkButton() {
 
 // 有効化
 function rightButtonEnable() {
-  globals.imageObj.BUTTON_ONLINE_RIGHT.mouseEnabled = true;
-  globals.imageObj.BUTTON_ONLINE_RIGHT.alpha = 0.5;
+  globals.imageObj.BUTTON_RIGHT_ONLINE.mouseEnabled = true;
+  globals.imageObj.BUTTON_RIGHT_ONLINE.alpha = 0.5;
 }
 function leftButtonEnable() {
-  globals.imageObj.BUTTON_ONLINE_LEFT.mouseEnabled = true;
-  globals.imageObj.BUTTON_ONLINE_LEFT.alpha = 0.5;
+  globals.imageObj.BUTTON_LEFT_ONLINE.mouseEnabled = true;
+  globals.imageObj.BUTTON_LEFT_ONLINE.alpha = 0.5;
 }
 
 // 無効化
 function rightButtonDisable() {
-  globals.imageObj.BUTTON_ONLINE_RIGHT.mouseEnabled = false;
-  globals.imageObj.BUTTON_ONLINE_RIGHT.alpha = 0.2;
+  globals.imageObj.BUTTON_RIGHT_ONLINE.mouseEnabled = false;
+  globals.imageObj.BUTTON_RIGHT_ONLINE.alpha = 0.2;
 }
 function leftButtonDisable() {
-  globals.imageObj.BUTTON_ONLINE_LEFT.mouseEnabled = false;
-  globals.imageObj.BUTTON_ONLINE_LEFT.alpha = 0.2;
+  globals.imageObj.BUTTON_LEFT_ONLINE.mouseEnabled = false;
+  globals.imageObj.BUTTON_LEFT_ONLINE.alpha = 0.2;
 }
 
 // オブジェクト間の距離計算(y軸方向のみ)---------------------
@@ -290,6 +288,9 @@ function match(win) {
 
   //キーボード用keycodeevent削除
   window.removeEventListener("keydown", keyDownEvent);
+
+  P2PClient.get().off(P2PClient.EVENTS.DATA, onDataReceived);
+
   //stateマシン内、ゲームオーバー状態に遷移
   onlineGameOverState(win);
 }

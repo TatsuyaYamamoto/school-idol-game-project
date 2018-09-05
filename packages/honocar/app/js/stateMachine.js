@@ -52,7 +52,7 @@ export function topState() {
 
   // check online game state
   const p2p = P2PClient.get(process.env.SKYWAY_KEY);
-  p2p.on(P2PClient.EVENTS.CONNECT, () => {
+  p2p.once(P2PClient.EVENTS.CONNECT, () => {
     soundObj.SOUND_ZENKAI.stop();
     onlineGameState();
   });
@@ -79,7 +79,7 @@ export function menuState() {
   }
 
   gameStage.addChild(imageObj.BUTTON_START);
-  gameStage.addChild(imageObj.BUTTON_ONLINE_START);
+  gameStage.addChild(imageObj.BUTTON_START_ONLINE);
   gameStage.addChild(imageObj.BUTTON_HOW_TO);
   gameStage.addChild(imageObj.BUTTON_RANKING);
   gameStage.addChild(imageObj.BUTTON_CREDIT);
@@ -212,13 +212,24 @@ export function onlineGameOverState(win) {
   gameStage.addChild(imageObj.GAME_BACKGROUND);
   gameStage.addChild(opponent.img);
   gameStage.addChild(player.img);
-  gameStage.addChild(imageObj.BUTTON_BACK_TOP);
-  gameStage.addChild(imageObj.BUTTON_RESTART);
+  gameStage.addChild(imageObj.BUTTON_BACK_TOP_ONLINE);
+  gameStage.addChild(imageObj.BUTTON_RESTART_ONLINE);
   gameStage.addChild(ssObj.BUTTON_TWITTER_GAMEOVER_SS);
   gameStage.addChild(textObj.TEXT_GAME_COUNT);
   gameStage.addChild(imageObj.GAMEOVER);
 
   globals.tickListener = createjs.Ticker.addEventListener("tick", function() {
     gameStage.update();
+  });
+
+  P2PClient.get().once(P2PClient.EVENTS.DATA, ({ message }) => {
+    if (message.type === "restart") {
+      const message = {
+        type: "restart_accept"
+      };
+      P2PClient.get().send(message);
+
+      onlineGameState();
+    }
   });
 }
