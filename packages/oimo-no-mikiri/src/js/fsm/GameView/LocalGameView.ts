@@ -74,13 +74,15 @@ class LocalGameView extends GameView {
    */
   onExit(): void {
     super.onExit();
+    this.game.release();
 
     removeEvents([
       Events.REQUEST_READY,
       Events.IS_READY,
       Events.ATTACK,
       Events.FIXED_RESULT,
-      Events.RESTART_GAME
+      Events.RESTART_GAME,
+      Events.BACK_TO_TOP
     ]);
   }
 
