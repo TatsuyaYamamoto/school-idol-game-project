@@ -215,17 +215,6 @@ class P2PClient extends EventEmitter {
     );
 
     this.setConnection(connection);
-
-    const firstSignal = () => {
-      if (connection.open) {
-        this.send("connection check message. remote PeerID is " + this.peerId);
-      } else {
-        setTimeout(firstSignal, 500);
-      }
-    };
-
-    firstSignal();
-
     this.emit(P2PClient.EVENTS.CONNECT);
   }
 

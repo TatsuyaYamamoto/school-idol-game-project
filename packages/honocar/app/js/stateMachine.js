@@ -63,16 +63,46 @@ export function topState() {
 
   p2p.once(P2PClient.EVENTS.CONNECT, () => {
     logger.debug("success to connect to peer.");
-    const offset = 2 * 1000; //[ms]
-
     openModal({ title: "準備完了", actions: [] });
 
-    setTimeout(() => {
-      soundObj.SOUND_ZENKAI.stop();
-      closeModal();
+    const offset = 2 * 1000; //[ms]
 
-      onlineGameState();
-    }, offset);
+    if (!peerId /* connection request receiver */) {
+      const now = Date.now();
+      const message = {
+        type: P2PEvents.START,
+        detail: {
+          startTime: now + offset
+        }
+      };
+      P2PClient.get().send(message);
+
+      setTimeout(() => {
+        soundObj.SOUND_ZENKAI.stop();
+        closeModal();
+
+        onlineGameState();
+      }, offset);
+    } else {
+      p2p.once(P2PClient.EVENTS.DATA, data => {
+        if (data.message.type === P2PEvents.START) {
+          const now = Date.now();
+          const offset = data.message.detail.startTime - now;
+          const start = () => {
+            soundObj.SOUND_ZENKAI.stop();
+            closeModal();
+
+            onlineGameState();
+          };
+
+          if (0 < offset) {
+            setTimeout(start, offset);
+          } else {
+            start();
+          }
+        }
+      });
+    }
   });
 
   const { peerId } = parse(window.location.search);
