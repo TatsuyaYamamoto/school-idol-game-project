@@ -204,7 +204,6 @@ export function addAllEventListener() {
    * GameOverStateからGameStateへ遷移(リプレイ)
    */
   imageObj.BUTTON_RESTART.addEventListener("mousedown", function() {
-    createjs.Ticker.removeEventListener("tick", globals.tickListener);
     soundObj.SOUND_BACK.play();
     gameState();
   });

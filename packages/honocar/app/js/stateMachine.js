@@ -179,6 +179,7 @@ export function creditState() {
 export function gameState() {
   logger.debug("start GameState.");
 
+  createjs.Ticker.removeEventListener("tick", globals.tickListener);
   globals.gameStage.removeAllChildren();
 
   initGameEngine();
@@ -188,6 +189,7 @@ export function gameState() {
 export function onlineGameState() {
   logger.debug("start OnlineGameState.");
 
+  createjs.Ticker.removeEventListener("tick", globals.tickListener);
   globals.gameStage.removeAllChildren();
 
   initOnlineGameEngine();
