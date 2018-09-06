@@ -61,47 +61,56 @@ export function topState() {
   // check online game state
   const p2p = P2PClient.get(process.env.SKYWAY_KEY);
 
+  function sendSyncStartMessage(offset) {
+    const now = Date.now();
+    const message = {
+      type: P2PEvents.START,
+      detail: {
+        startTime: now + offset
+      }
+    };
+    P2PClient.get().send(message);
+
+    setTimeout(() => {
+      soundObj.SOUND_ZENKAI.stop();
+      closeModal();
+
+      onlineGameState();
+    }, offset);
+  }
+
+  function onDataReceived(data) {
+    if (data.message.type === P2PEvents.START) {
+      p2p.off(P2PClient.EVENTS.DATA, onDataReceived);
+
+      const now = Date.now();
+      const offset = data.message.detail.startTime - now;
+      const start = () => {
+        soundObj.SOUND_ZENKAI.stop();
+        closeModal();
+
+        onlineGameState();
+      };
+
+      if (0 < offset) {
+        setTimeout(start, offset);
+      } else {
+        start();
+      }
+    }
+  }
+
   p2p.once(P2PClient.EVENTS.CONNECT, () => {
     logger.debug("success to connect to peer.");
     openModal({ title: "準備完了", actions: [] });
 
     const offset = 2 * 1000; //[ms]
+    const isConnectionRequestReceiver = !peerId;
 
-    if (!peerId /* connection request receiver */) {
-      const now = Date.now();
-      const message = {
-        type: P2PEvents.START,
-        detail: {
-          startTime: now + offset
-        }
-      };
-      P2PClient.get().send(message);
-
-      setTimeout(() => {
-        soundObj.SOUND_ZENKAI.stop();
-        closeModal();
-
-        onlineGameState();
-      }, offset);
+    if (isConnectionRequestReceiver) {
+      sendSyncStartMessage(offset);
     } else {
-      p2p.once(P2PClient.EVENTS.DATA, data => {
-        if (data.message.type === P2PEvents.START) {
-          const now = Date.now();
-          const offset = data.message.detail.startTime - now;
-          const start = () => {
-            soundObj.SOUND_ZENKAI.stop();
-            closeModal();
-
-            onlineGameState();
-          };
-
-          if (0 < offset) {
-            setTimeout(start, offset);
-          } else {
-            start();
-          }
-        }
-      });
+      p2p.on(P2PClient.EVENTS.DATA, onDataReceived);
     }
   });
 
@@ -282,8 +291,10 @@ export function onlineGameOverState(win) {
     gameStage.update();
   });
 
-  P2PClient.get().once(P2PClient.EVENTS.DATA, ({ message }) => {
+  function onDataReceived({ message }) {
     if (message.type === P2PEvents.RESTART) {
+      P2PClient.get().off(P2PClient.EVENTS.DATA, onDataReceived);
+
       const message = {
         type: P2PEvents.RESTART_ACCEPT
       };
@@ -291,5 +302,6 @@ export function onlineGameOverState(win) {
 
       onlineGameState();
     }
-  });
+  }
+  P2PClient.get().on(P2PClient.EVENTS.DATA, onDataReceived);
 }

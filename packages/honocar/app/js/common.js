@@ -215,16 +215,20 @@ export function addAllEventListener() {
     soundObj.SOUND_BACK.play();
 
     openModal({
-      title: "対戦相手を入力待っています！",
+      title: "対戦相手の入力待っています！",
       actions: []
     });
 
-    P2PClient.get().once(P2PClient.EVENTS.DATA, ({ message }) => {
+    function onDataReceived({ message }) {
       if (message.type === P2PEvents.RESTART_ACCEPT) {
+        P2PClient.get().off(P2PClient.EVENTS.DATA, onDataReceived);
+
         closeModal();
         onlineGameState();
       }
-    });
+    }
+
+    P2PClient.get().on(P2PClient.EVENTS.DATA, onDataReceived);
 
     // TODO restartイベントをonする前にmessageを送信する可能性がある。
     const message = {
