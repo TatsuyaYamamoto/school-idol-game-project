@@ -3,7 +3,8 @@ import {
   P2PClient,
   getLogger,
   openModal,
-  closeModal
+  closeModal,
+  getCurrentUrl
 } from "@sokontokoro/mikan";
 
 import { init as initGameEngine } from "./gameEngine";
@@ -102,7 +103,11 @@ export function topState() {
 
   p2p.once(P2PClient.EVENTS.CONNECT, () => {
     logger.debug("success to connect to peer.");
-    openModal({ title: "準備完了", actions: [] });
+    openModal({
+      title: "準備完了",
+      text: "オンライン対戦を開始します。",
+      actions: []
+    });
 
     const offset = 2 * 1000; //[ms]
     const isConnectionRequestReceiver = !peerId;
@@ -117,6 +122,8 @@ export function topState() {
   const { peerId } = parse(window.location.search);
   if (peerId) {
     console.debug("user has remote peer id. try to connect.", peerId);
+    // clearQueryString
+    history.replaceState(null, null, getCurrentUrl());
     p2p.connect(peerId);
   }
 }
