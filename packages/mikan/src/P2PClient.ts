@@ -230,7 +230,7 @@ class P2PClient extends EventEmitter {
     const { time } = data;
     const ping = Date.now() - time;
 
-    setTimeout(this.calcAveragePing);
+    setTimeout(() => this.calcAveragePing(ping));
 
     logger.debug(`received message, ping: ${ping}ms`, data);
 

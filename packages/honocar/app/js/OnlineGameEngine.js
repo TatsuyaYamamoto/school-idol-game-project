@@ -13,6 +13,7 @@ let cars = [];
 let shouldPushCar = false;
 let playerCrashedTime = null;
 let opponentCrashTime = null;
+let isMatched = false;
 
 //ゲーム初期化-----------------------------------------
 export function init() {
@@ -42,6 +43,7 @@ function gameStatusReset() {
   playerCrashedTime = null;
   opponentCrashTime = null;
   shouldPushCar = P2PClient.get().peerId < P2PClient.get().remotePeerId;
+  isMatched = false;
 }
 
 function keyDownEvent(event) {
@@ -123,16 +125,18 @@ function processGame() {
     enemyAppeare();
   }
 
-  cars.forEach(function(target, index) {
-    if (target.passed) {
-      cars.splice(index, 1);
-      globals.passCarCount++;
-    }
+  if (!isPlayerCrashed()) {
+    cars.forEach(function(target, index) {
+      if (target.passed) {
+        cars.splice(index, 1);
+        globals.passCarCount++;
+      }
 
-    if (player.lane === target.lane && checkDistance(target) < 0) {
-      crash();
-    }
-  });
+      if (player.lane === target.lane && checkDistance(target) < 0) {
+        crash();
+      }
+    });
+  }
 }
 
 // 描画処理-----------------------------------------
@@ -149,9 +153,10 @@ function drawGameScrean() {
 
 // 敵出現---------------------------------------
 function enemyAppeare() {
-  logger.debug("push car");
   shouldPushCar = false;
   const enemyNumber = Math.floor(Math.random() * 5);
+
+  logger.debug(`push car. car index: ${enemyNumber}`);
 
   sendPushCarEvent(enemyNumber);
   pushCar(enemyNumber);
@@ -259,22 +264,61 @@ export function clickButtonLeft() {
   checkButton();
 }
 // クラッシュ関数-------------------------------------
-function crash() {
-  playerCrashedTime = Date.now();
-  sendCrashEvent(playerCrashedTime);
-
-  const waitTime = P2PClient.get().averagePing * 2;
-
-  setTimeout(() => {
-    if (opponentCrashTime && opponentCrashTime < playerCrashedTime) {
-      match(true);
-    } else {
-      match(false);
-    }
-  }, waitTime);
+function isPlayerCrashed() {
+  return !!playerCrashedTime;
 }
 
-function match(win) {
+function isOpponentCrashed() {
+  return !!opponentCrashTime;
+}
+
+function crash() {
+  playerCrashedTime = Date.now();
+  let waitTime = P2PClient.get().averagePing * 10;
+  if (1000 < waitTime) {
+    waitTime = 1000;
+  }
+
+  logger.debug(
+    `player is crash at ${playerCrashedTime} ms ${
+      globals.gameFrame
+    } frames. Wait for ${waitTime}ms to check opponent is crashed at the same time.`
+  );
+
+  sendCrashEvent(playerCrashedTime);
+
+  setTimeout(judge, waitTime);
+}
+
+function judge() {
+  if (isMatched) {
+    logger.debug("This game is already matched. ignore judge request.");
+    return;
+  }
+  isMatched = true;
+
+  const pTime = playerCrashedTime;
+  const oTime = opponentCrashTime;
+
+  let result = "draw";
+
+  if (isPlayerCrashed() && !isOpponentCrashed()) {
+    result = "lose";
+  }
+
+  if (!isPlayerCrashed() && isOpponentCrashed()) {
+    result = "win";
+  }
+
+  if (isPlayerCrashed() && isOpponentCrashed()) {
+    result = pTime === oTime ? "draw" : oTime < pTime ? "win" : "lose";
+  }
+
+  logger.debug(
+    `judge. game is ${result}.  player crash time: ${pTime}, opponent: ${oTime}, player - opponent = ${pTime -
+      oTime}ms`
+  );
+
   globals.textObj.TEXT_GAME_COUNT.text =
     text_game_count_L + globals.passCarCount + text_game_count_R;
   globals.soundObj.SOUND_SUSUME_LOOP.stop();
@@ -293,7 +337,7 @@ function match(win) {
   P2PClient.get().off(P2PClient.EVENTS.DATA, onDataReceived);
 
   //stateマシン内、ゲームオーバー状態に遷移
-  onlineGameOverState(win);
+  onlineGameOverState(result);
 }
 
 function onDataReceived(data) {
@@ -330,12 +374,8 @@ function onDataReceived(data) {
 
   f[P2PEvents.CRASHED] = function() {
     opponentCrashTime = message.detail.crashedAt;
-
-    if (playerCrashedTime && playerCrashedTime < opponentCrashTime) {
-      match(false);
-    } else {
-      match(true);
-    }
+    logger.debug(`opponent is crash at ${opponentCrashTime}ms.`);
+    judge();
   };
 
   f[message.type] && f[message.type]();
@@ -353,7 +393,6 @@ function sendChangeLaneEvent() {
 }
 
 function sendPushCarEvent(enemyNumber) {
-  console.log("sendPushCarEvent", enemyNumber);
   const message = {
     type: P2PEvents.PUSH_CAR,
     detail: {

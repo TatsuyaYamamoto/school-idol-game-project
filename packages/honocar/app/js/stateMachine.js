@@ -247,9 +247,13 @@ export function gameOverState() {
   });
 }
 
-export function onlineGameOverState(win) {
+/**
+ *
+ * @param result (win|lose|draw)
+ */
+export function onlineGameOverState(result) {
   logger.debug("start OnlineGameOverState.");
-  logger.debug("player is win?", win);
+  logger.debug("this game is " + result);
 
   const {
     gameStage,
@@ -261,10 +265,15 @@ export function onlineGameOverState(win) {
     textObj
   } = globals;
 
-  if (win) {
+  if (result === "win") {
     opponent.img.gotoAndPlay("down");
-  } else {
+  }
+  if (result === "lose") {
     player.img.gotoAndPlay("down");
+  }
+  if (result === "draw") {
+    player.img.gotoAndPlay("down");
+    opponent.img.gotoAndPlay("down");
   }
 
   gameStage.removeAllChildren();
