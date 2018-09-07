@@ -301,7 +301,16 @@ export function onlineGameOverState(result) {
   gameStage.addChild(imageObj.BUTTON_RESTART_ONLINE);
   gameStage.addChild(ssObj.BUTTON_TWITTER_GAMEOVER_SS);
   gameStage.addChild(textObj.TEXT_GAME_COUNT);
-  gameStage.addChild(imageObj.GAMEOVER);
+
+  if (result === "win") {
+    gameStage.addChild(imageObj.GAMEOVER_WIN);
+  }
+  if (result === "lose") {
+    gameStage.addChild(imageObj.GAMEOVER_LOSE);
+  }
+  if (result === "draw") {
+    gameStage.addChild(imageObj.GAMEOVER_DRAW);
+  }
 
   globals.tickListener = createjs.Ticker.addEventListener("tick", function() {
     gameStage.update();

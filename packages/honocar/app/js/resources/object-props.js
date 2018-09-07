@@ -28,6 +28,27 @@ export default {
       scale: 1,
       alpha: 1
     },
+    GAMEOVER_WIN: {
+      id: "GAMEOVER_WIN",
+      ratioX: 0.5,
+      ratioY: 0.35,
+      scale: 1,
+      alpha: 1
+    },
+    GAMEOVER_LOSE: {
+      id: "GAMEOVER_LOSE",
+      ratioX: 0.5,
+      ratioY: 0.35,
+      scale: 1,
+      alpha: 1
+    },
+    GAMEOVER_DRAW: {
+      id: "GAMEOVER_DRAW",
+      ratioX: 0.5,
+      ratioY: 0.35,
+      scale: 1,
+      alpha: 1
+    },
     GAME_BACKGROUND: {
       id: "GAME_BACKGROUND",
       ratioX: 0.5,

@@ -52,6 +52,18 @@ export default {
       src: "img/GAMEOVER.png"
     },
     {
+      id: "GAMEOVER_WIN",
+      src: "img/GAMEOVER_WIN.png"
+    },
+    {
+      id: "GAMEOVER_LOSE",
+      src: "img/GAMEOVER_LOSE.png"
+    },
+    {
+      id: "GAMEOVER_DRAW",
+      src: "img/GAMEOVER_DRAW.png"
+    },
+    {
       id: "BUTTON_LEFT",
       src: "img/BUTTON_LEFT.png"
     },
