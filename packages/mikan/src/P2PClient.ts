@@ -8,6 +8,7 @@ const logger = getLogger("p2p-client");
 
 enum EventType {
   CONNECT = "connect",
+  CLOSE = "close",
   DATA = "data"
 }
 
@@ -33,6 +34,7 @@ class P2PClient extends EventEmitter {
   private _connection = null;
   private _averagePing: number = 0;
   private _pingHistory: number[] = [];
+  private _isDisconnectRequested;
 
   /**
    * Constructor
@@ -146,6 +148,12 @@ class P2PClient extends EventEmitter {
     });
   }
 
+  public disconnect() {
+    logger.debug(`try disconnect with remote peerID: ${this.remotePeerId}`);
+    this._isDisconnectRequested = true;
+    this._connection.close();
+  }
+
   /**
    * Send data to peer.
    *
@@ -191,6 +199,7 @@ class P2PClient extends EventEmitter {
 
   private setConnection(connection) {
     this._connection = connection;
+    this._isDisconnectRequested = false;
 
     this._connection.on("data", this.onDataReceived);
     this._connection.on("close", this.onConnectionClosed);
@@ -238,7 +247,12 @@ class P2PClient extends EventEmitter {
   }
 
   private onConnectionClosed() {
-    logger.debug(`connection is disconnected. connection: ${this._connection}`);
+    logger.debug(`connection is disconnected.`, this._connection);
+
+    this.emit(P2PClient.EVENTS.CLOSE, {
+      isByMyself: this._isDisconnectRequested
+    });
+
     this._connection = null;
   }
 

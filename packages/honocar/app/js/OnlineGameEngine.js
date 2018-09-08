@@ -454,6 +454,13 @@ function goGameOverState(result) {
     volume: 0.6
   });
 
+  teerDown();
+
+  //stateマシン内、ゲームオーバー状態に遷移
+  onlineGameOverState(result);
+}
+
+export function teerDown() {
   // createjs.Ticker.reset();
   createjs.Ticker.removeEventListener("tick", globals.tickListener);
 
@@ -461,7 +468,4 @@ function goGameOverState(result) {
   window.removeEventListener("keydown", keyDownEvent);
 
   P2PClient.get().off(P2PClient.EVENTS.DATA, onDataReceived);
-
-  //stateマシン内、ゲームオーバー状態に遷移
-  onlineGameOverState(result);
 }

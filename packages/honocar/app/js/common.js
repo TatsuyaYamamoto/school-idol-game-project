@@ -21,7 +21,8 @@ import { soundTurnOff, soundTurnOn } from "./contentsLoader";
 import { clickButtonLeft, clickButtonRight } from "./gameEngine";
 import {
   clickButtonLeft as clickButtonLeftOnline,
-  clickButtonRight as clickButtonRightOnline
+  clickButtonRight as clickButtonRightOnline,
+  teerDown as teerDownOnlineGameEngine
 } from "./OnlineGameEngine";
 import { P2PEvents } from "./constants";
 
@@ -208,21 +209,23 @@ export function addAllEventListener() {
   });
 
   /**
-   * GameOverStateからMenuStateへ遷移するボタン
+   * GameOverStateからTopStateへ遷移するボタン
    */
   imageObj.BUTTON_BACK_TOP.addEventListener("mousedown", function() {
     createjs.Ticker.removeEventListener("tick", globals.tickListener);
     soundObj.SOUND_BACK.play();
-    menuState();
+    topState();
   });
 
   /**
-   * OnlineGameOverStateからMenuStateへ遷移するボタン
+   * OnlineGameOverStateからTopStateへ遷移するボタン
    */
   imageObj.BUTTON_BACK_TOP_ONLINE.addEventListener("mousedown", function() {
-    createjs.Ticker.removeEventListener("tick", globals.tickListener);
+    P2PClient.get().disconnect();
+    teerDownOnlineGameEngine();
+
     soundObj.SOUND_BACK.play();
-    menuState();
+    topState();
   });
 
   imageObj.BUTTON_BACK_TOP_FROM_HOW_TO.addEventListener(

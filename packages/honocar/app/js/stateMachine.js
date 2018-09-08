@@ -8,7 +8,10 @@ import {
 } from "@sokontokoro/mikan";
 
 import { init as initGameEngine } from "./gameEngine";
-import { init as initOnlineGameEngine } from "./OnlineGameEngine";
+import {
+  init as initOnlineGameEngine,
+  teerDown as teerDownOnlineGameEngine
+} from "./OnlineGameEngine";
 import { init as initHowToPlay } from "./howToPlayEngine";
 import { postPlayLog, registration } from "./api";
 import { loadContent } from "./contentsLoader";
@@ -66,14 +69,13 @@ export function topState() {
   const remotePeerId = parse(window.location.search).peerId;
 
   p2p.once(P2PClient.EVENTS.CONNECT, () => {
-    logger.debug("success to connect to peer.");
+    logger.info("success to connect to peer.");
     openModal({
       title: "準備完了",
       text: "オンライン対戦を開始します。",
       actions: []
     });
 
-    const offset = 2 * 1000; //[ms]
     const firstMessageSender = !remotePeerId; // connectionRequestReceiver
 
     trySyncGameStart(firstMessageSender).then(() => {
@@ -82,6 +84,25 @@ export function topState() {
 
       onlineGameState();
     });
+  });
+
+  p2p.once(P2PClient.EVENTS.CLOSE, params => {
+    logger.info("close connection to peer.", params);
+
+    if (!params.isByMyself) {
+      teerDownOnlineGameEngine();
+
+      openModal({
+        title: "ゲーム終了",
+        text: "通信相手の接続が切れてしまいました。Topに戻ります。",
+        actions: []
+      });
+
+      setTimeout(() => {
+        closeModal();
+        topState();
+      }, 3000);
+    }
   });
 
   if (remotePeerId) {
@@ -312,9 +333,11 @@ export function onlineGameOverState(result) {
           {
             text: "NO",
             onClick: () => {
-              createjs.Ticker.removeEventListener("tick", globals.tickListener);
+              P2PClient.get().disconnect();
+              teerDownOnlineGameEngine();
+
               globals.soundObj.SOUND_BACK.play();
-              menuState();
+              topState();
             }
           }
         ]
