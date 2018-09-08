@@ -14,6 +14,7 @@ import { postPlayLog, registration } from "./api";
 import { loadContent } from "./contentsLoader";
 import globals from "./globals";
 import { P2PEvents } from "./constants";
+import { trySyncGameStart } from "./common";
 
 const logger = getLogger("state-machine");
 
@@ -62,44 +63,7 @@ export function topState() {
   // check online game state
   const p2p = P2PClient.get(process.env.SKYWAY_KEY);
 
-  function sendSyncStartMessage(offset) {
-    const now = Date.now();
-    const message = {
-      type: P2PEvents.START,
-      detail: {
-        startTime: now + offset
-      }
-    };
-    P2PClient.get().send(message);
-
-    setTimeout(() => {
-      soundObj.SOUND_ZENKAI.stop();
-      closeModal();
-
-      onlineGameState();
-    }, offset);
-  }
-
-  function onDataReceived(data) {
-    if (data.message.type === P2PEvents.START) {
-      p2p.off(P2PClient.EVENTS.DATA, onDataReceived);
-
-      const now = Date.now();
-      const offset = data.message.detail.startTime - now;
-      const start = () => {
-        soundObj.SOUND_ZENKAI.stop();
-        closeModal();
-
-        onlineGameState();
-      };
-
-      if (0 < offset) {
-        setTimeout(start, offset);
-      } else {
-        start();
-      }
-    }
-  }
+  const remotePeerId = parse(window.location.search).peerId;
 
   p2p.once(P2PClient.EVENTS.CONNECT, () => {
     logger.debug("success to connect to peer.");
@@ -110,21 +74,21 @@ export function topState() {
     });
 
     const offset = 2 * 1000; //[ms]
-    const isConnectionRequestReceiver = !peerId;
+    const firstMessageSender = !remotePeerId; // connectionRequestReceiver
 
-    if (isConnectionRequestReceiver) {
-      sendSyncStartMessage(offset);
-    } else {
-      p2p.on(P2PClient.EVENTS.DATA, onDataReceived);
-    }
+    trySyncGameStart(firstMessageSender).then(() => {
+      soundObj.SOUND_ZENKAI.stop();
+      closeModal();
+
+      onlineGameState();
+    });
   });
 
-  const { peerId } = parse(window.location.search);
-  if (peerId) {
-    console.debug("user has remote peer id. try to connect.", peerId);
+  if (remotePeerId) {
+    console.debug(`user has remote peer id. try to connect to ${remotePeerId}`);
     // clearQueryString
     history.replaceState(null, null, getCurrentUrl());
-    p2p.connect(peerId);
+    p2p.connect(remotePeerId);
   }
 }
 
@@ -320,12 +284,41 @@ export function onlineGameOverState(result) {
     if (message.type === P2PEvents.RESTART) {
       P2PClient.get().off(P2PClient.EVENTS.DATA, onDataReceived);
 
-      const message = {
-        type: P2PEvents.RESTART_ACCEPT
-      };
-      P2PClient.get().send(message);
+      openModal({
+        title: "もう一度遊びますか？",
+        text: "対戦相手が再戦を求めています！",
+        actions: [
+          {
+            text: "OK",
+            autoClose: true,
+            onClick: () => {
+              const message = {
+                type: P2PEvents.RESTART_ACCEPT
+              };
+              P2PClient.get().send(message);
 
-      onlineGameState();
+              openModal({
+                title: "準備完了！",
+                text: "オンライン対戦を開始します。",
+                actions: []
+              });
+
+              trySyncGameStart(false).then(() => {
+                closeModal();
+                onlineGameState();
+              });
+            }
+          },
+          {
+            text: "NO",
+            onClick: () => {
+              createjs.Ticker.removeEventListener("tick", globals.tickListener);
+              globals.soundObj.SOUND_BACK.play();
+              menuState();
+            }
+          }
+        ]
+      });
     }
   }
   P2PClient.get().on(P2PClient.EVENTS.DATA, onDataReceived);

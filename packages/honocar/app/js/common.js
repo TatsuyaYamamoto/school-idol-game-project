@@ -80,6 +80,49 @@ function getTweetText() {
   return tweet_text;
 }
 
+// P2P --------------------------------------------
+export function trySyncGameStart(sernder) {
+  const offset = 2 * 1000; //[ms]
+  const p2p = P2PClient.get();
+
+  return new Promise(resolve => {
+    if (sernder) {
+      sendSyncStartMessage(offset);
+    } else {
+      P2PClient.get().on(P2PClient.EVENTS.DATA, onDataReceived);
+    }
+
+    function sendSyncStartMessage(offset) {
+      const now = Date.now();
+      const message = {
+        type: P2PEvents.START,
+        detail: {
+          startTime: now + offset
+        }
+      };
+
+      p2p.send(message);
+
+      setTimeout(resolve, offset);
+    }
+
+    function onDataReceived(data) {
+      if (data.message.type === P2PEvents.START) {
+        p2p.off(P2PClient.EVENTS.DATA, onDataReceived);
+
+        const now = Date.now();
+        const offset = data.message.detail.startTime - now;
+
+        if (0 < offset) {
+          setTimeout(resolve, offset);
+        } else {
+          resolve();
+        }
+      }
+    }
+  });
+}
+
 //イベントリスナー登録--------------------------------
 
 export function addAllEventListener() {
@@ -223,8 +266,16 @@ export function addAllEventListener() {
       if (message.type === P2PEvents.RESTART_ACCEPT) {
         P2PClient.get().off(P2PClient.EVENTS.DATA, onDataReceived);
 
-        closeModal();
-        onlineGameState();
+        openModal({
+          title: "準備完了！",
+          text: "オンライン対戦を開始します。",
+          actions: []
+        });
+
+        trySyncGameStart(true).then(() => {
+          closeModal();
+          onlineGameState();
+        });
       }
     }
 
