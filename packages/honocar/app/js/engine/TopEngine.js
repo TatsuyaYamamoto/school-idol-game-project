@@ -22,6 +22,10 @@ class TopEngine extends Engine {
     super(props);
 
     this.onClickTop = this.onClickTop.bind(this);
+    this.onP2pClosed = this.onP2pClosed.bind(this);
+    this.onP2pConnect = this.onP2pConnect.bind(this);
+
+    this.isConnectionRequester = false;
   }
 
   init(params) {
@@ -52,9 +56,21 @@ class TopEngine extends Engine {
       });
     }
 
-    imageObj.GAME_BACKGROUND.addEventListener("click", this.onClickTop);
+    const p2p = P2PClient.get(process.env.SKYWAY_KEY);
 
-    this.initP2p();
+    p2p.once(P2PClient.EVENTS.CONNECT, this.onP2pConnect);
+    p2p.once(P2PClient.EVENTS.CLOSE, this.onP2pClosed);
+
+    const remotePeerId = parse(window.location.search).peerId;
+    this.isConnectionRequester = !remotePeerId;
+    if (remotePeerId) {
+      history.replaceState(null, null, getCurrentUrl());
+
+      logger.debug(`try to connect to ${remotePeerId}`);
+      p2p.connect(remotePeerId);
+    } else {
+      imageObj.GAME_BACKGROUND.addEventListener("click", this.onClickTop);
+    }
   }
 
   tearDown() {
@@ -74,51 +90,36 @@ class TopEngine extends Engine {
     to(MenuEngine);
   }
 
-  initP2p() {
-    // check online game state
-    const p2p = P2PClient.get(process.env.SKYWAY_KEY);
+  onP2pConnect() {
+    logger.info("success to connect to peer.");
+    openModal({
+      title: "準備完了",
+      text: "オンライン対戦を開始します。",
+      actions: []
+    });
 
-    const remotePeerId = parse(window.location.search).peerId;
-    history.replaceState(null, null, getCurrentUrl());
+    trySyncGameStart(this.isConnectionRequester).then(() => {
+      globals.soundObj.SOUND_ZENKAI.stop();
+      closeModal();
 
-    p2p.once(P2PClient.EVENTS.CONNECT, () => {
-      logger.info("success to connect to peer.");
+      to(OnlineGameEngine);
+    });
+  }
+
+  onP2pClosed(params) {
+    logger.info("close connection to peer.", params);
+
+    if (!params.isByMyself) {
       openModal({
-        title: "準備完了",
-        text: "オンライン対戦を開始します。",
+        title: "ゲーム終了",
+        text: "通信相手の接続が切れてしまいました。Topに戻ります。",
         actions: []
       });
 
-      const firstMessageSender = !remotePeerId; // connectionRequestReceiver
-
-      trySyncGameStart(firstMessageSender).then(() => {
-        globals.soundObj.SOUND_ZENKAI.stop();
+      setTimeout(() => {
         closeModal();
-
-        to(OnlineGameEngine);
-      });
-    });
-
-    p2p.once(P2PClient.EVENTS.CLOSE, params => {
-      logger.info("close connection to peer.", params);
-
-      if (!params.isByMyself) {
-        openModal({
-          title: "ゲーム終了",
-          text: "通信相手の接続が切れてしまいました。Topに戻ります。",
-          actions: []
-        });
-
-        setTimeout(() => {
-          closeModal();
-          to(instance);
-        }, 3000);
-      }
-    });
-
-    if (remotePeerId) {
-      logger.debug(`try to connect to ${remotePeerId}`);
-      p2p.connect(remotePeerId);
+        to(instance);
+      }, 3000);
     }
   }
 }
