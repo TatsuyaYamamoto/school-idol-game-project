@@ -1,8 +1,6 @@
-import { addAllEventListener } from "./common";
 import manifest from "./resources/manifest";
 import properties from "./resources/object-props";
 import globals from "./globals";
-import { topState } from "./stateMachine";
 
 function loadAnimation() {
   const q = new createjs.LoadQueue();
@@ -29,40 +27,39 @@ function loadAnimation() {
     globals.gameStage.removeAllChildren();
     globals.gameStage.addChild(bitmap);
 
-    globals.tickListener = createjs.Ticker.addEventListener("tick", function() {
-      globals.gameStage.update();
-    });
+    createjs.Ticker.addEventListener("tick", update);
   });
 }
 
-export function loadContent() {
-  //ロードアニメーション
-  loadAnimation();
-
-  globals.queue = new createjs.LoadQueue(false);
-  globals.queue.installPlugin(createjs.Sound);
-  globals.queue.setMaxConnections(6);
-  globals.queue.addEventListener("complete", handleComplete);
-
-  //マニフェストファイルを読み込む----------
-  globals.queue.loadManifest(manifest.image);
-  globals.queue.loadManifest(manifest.spriteImage);
-  globals.queue.loadManifest(manifest.sound);
+function update() {
+  globals.gameStage.update();
 }
 
-// ロードイベント -----------------------------------
+export function loadContent() {
+  return new Promise(resolve => {
+    //ロードアニメーション
+    loadAnimation();
 
-function handleComplete() {
-  globals.loginPromise.finally(function() {
-    setImageContent();
-    setSpriteSheetContents();
-    setSoundContent();
-    setTextContent();
+    globals.queue = new createjs.LoadQueue(false);
+    globals.queue.installPlugin(createjs.Sound);
+    globals.queue.setMaxConnections(6);
+    globals.queue.addEventListener("complete", function() {
+      globals.loginPromise.finally(function() {
+        setImageContent();
+        setSpriteSheetContents();
+        setSoundContent();
+        setTextContent();
 
-    createjs.Ticker.removeEventListener("tick", globals.tickListener);
+        createjs.Ticker.removeEventListener("tick", update);
 
-    addAllEventListener();
-    topState();
+        resolve();
+      });
+    });
+
+    //マニフェストファイルを読み込む----------
+    globals.queue.loadManifest(manifest.image);
+    globals.queue.loadManifest(manifest.spriteImage);
+    globals.queue.loadManifest(manifest.sound);
   });
 }
 

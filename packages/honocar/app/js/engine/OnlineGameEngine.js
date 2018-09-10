@@ -1,12 +1,14 @@
-import Player from "./character/Player";
-import Car from "./character/Car";
-import { onlineGameOverState } from "./stateMachine";
-import globals from "./globals";
-import { text_game_count_L, text_game_count_R } from "./resources/text";
-import properties from "./resources/object-props";
-import config from "./resources/config";
 import { P2PClient, getLogger } from "@sokontokoro/mikan";
-import { P2PEvents } from "./constants";
+
+import Player from "../character/Player";
+import globals from "../globals";
+import { text_game_count_L, text_game_count_R } from "../resources/text";
+import { P2PEvents } from "../constants";
+import Engine from "./Engine";
+import { checkButton, checkDistance } from "./GameEngine";
+import OnlineGameOverEngine from "./OnlineGameOverEngine";
+import { to } from "../stateMachine";
+import Car from "../character/Car";
 
 const MAX_WAIT_TIME = 150;
 const logger = getLogger("online-game-engine");
@@ -15,31 +17,64 @@ let shouldPushCar = false;
 let playerCrashedTime = null;
 let opponentCrashTime = null;
 let isMatched = false;
+let gameFrame = 0;
+let passCarCount = 0;
 
-//ゲーム初期化-----------------------------------------
-export function init() {
-  //honoka or erichiを作成
-  //初期値はplayCharacter=honoka
-  globals.player = new Player(globals.playCharacter);
+class OnlineGameEngine extends Engine {
+  init() {
+    super.init();
+    const { imageObj } = globals;
 
-  const opponentCharacter =
-    globals.playCharacter === "honoka" ? "erichi" : "honoka";
-  globals.opponent = new Player(opponentCharacter);
+    //honoka or erichiを作成
+    //初期値はplayCharacter=honoka
+    globals.player = new Player(globals.playCharacter);
 
-  //フレーム数リセット
-  gameStatusReset();
+    const opponentCharacter =
+      globals.playCharacter === "honoka" ? "erichi" : "honoka";
+    globals.opponent = new Player(opponentCharacter);
 
-  //ボタン有効化
-  rightButtonEnable();
-  leftButtonEnable();
+    //フレーム数リセット
+    gameStatusReset();
 
-  //タイマーに関数セット
-  globals.tickListener = createjs.Ticker.addEventListener("tick", gameReady);
+    //ボタン有効化
+    checkButton();
+
+    imageObj.BUTTON_RIGHT_ONLINE.addEventListener(
+      "mousedown",
+      clickButtonRight
+    );
+    imageObj.BUTTON_LEFT_ONLINE.addEventListener("mousedown", clickButtonLeft);
+
+    createjs.Ticker.addEventListener("tick", gameReady);
+    window.addEventListener("keydown", keyDownEvent);
+
+    P2PClient.get().on(P2PClient.EVENTS.DATA, onDataReceived);
+  }
+
+  tearDown() {
+    super.tearDown();
+    const { imageObj } = globals;
+
+    imageObj.BUTTON_RIGHT_ONLINE.removeEventListener(
+      "mousedown",
+      clickButtonRight
+    );
+    imageObj.BUTTON_LEFT_ONLINE.removeEventListener(
+      "mousedown",
+      clickButtonLeft
+    );
+
+    createjs.Ticker.removeEventListener("tick", gameReady);
+    createjs.Ticker.removeEventListener("tick", processGame);
+    window.removeEventListener("keydown", keyDownEvent);
+
+    P2PClient.get().off(P2PClient.EVENTS.DATA, onDataReceived);
+  }
 }
 
 function gameStatusReset() {
-  globals.gameFrame = 0;
-  globals.passCarCount = 0;
+  gameFrame = 0;
+  passCarCount = 0;
   cars = [];
   playerCrashedTime = null;
   opponentCrashTime = null;
@@ -47,27 +82,16 @@ function gameStatusReset() {
   isMatched = false;
 }
 
-function keyDownEvent(event) {
-  const { imageObj } = globals;
-  if (event.which == 37 && imageObj.BUTTON_LEFT_ONLINE.mouseEnabled) {
-    clickButtonLeft();
-  }
-  if (event.keyCode == 39 && imageObj.BUTTON_RIGHT_ONLINE.mouseEnabled) {
-    clickButtonRight();
-  }
-}
-
 // ゲームスタートカウント-----------------------------------------
 function gameReady() {
   const { gameStage, soundObj, imageObj, textObj, player, opponent } = globals;
-  globals.gameFrame++;
+  gameFrame++;
 
-  switch (globals.gameFrame) {
+  switch (gameFrame) {
     case 1:
       gameStage.addChild(imageObj.GAME_BACKGROUND);
       gameStage.addChild(opponent.img);
       gameStage.addChild(player.img);
-      gameStage.update();
       break;
     case 10:
       soundObj.SOUND_PI1.play();
@@ -76,7 +100,6 @@ function gameReady() {
       gameStage.addChild(textObj.TETX_GAMESTART_COUNT);
       gameStage.addChild(opponent.img);
       gameStage.addChild(player.img);
-      gameStage.update();
       break;
     case 30:
       soundObj.SOUND_PI1.play();
@@ -85,24 +108,17 @@ function gameReady() {
       gameStage.addChild(textObj.TETX_GAMESTART_COUNT);
       gameStage.addChild(opponent.img);
       gameStage.addChild(player.img);
-      gameStage.update();
       break;
     case 50:
       soundObj.SOUND_PI2.play();
       gameStage.removeAllChildren();
       gameStatusReset();
       drawGameScrean();
-      createjs.Ticker.removeEventListener("tick", globals.tickListener);
-
-      P2PClient.get().on(P2PClient.EVENTS.DATA, onDataReceived);
 
       //ゲーム処理開始
-      globals.tickListener = createjs.Ticker.addEventListener(
-        "tick",
-        processGame
-      );
-      //キーボード用keycodeevent登録
-      window.addEventListener("keydown", keyDownEvent);
+      createjs.Ticker.removeEventListener("tick", gameReady);
+      createjs.Ticker.addEventListener("tick", processGame);
+
       soundObj.SOUND_SUSUME_LOOP.play({
         interrupt: "late",
         loop: -1,
@@ -110,19 +126,21 @@ function gameReady() {
       });
       break;
   }
+
+  gameStage.update();
 }
 
 // ゲーム処理-----------------------------------------
 function processGame() {
   const { textObj, gameStage, player } = globals;
 
-  globals.gameFrame++;
+  gameFrame++;
 
   textObj.TEXT_GAME_COUNT.text =
-    text_game_count_L + globals.passCarCount + text_game_count_R;
+    text_game_count_L + passCarCount + text_game_count_R;
   gameStage.update();
 
-  if (shouldPushCar && globals.gameFrame % 20 === 0) {
+  if (shouldPushCar && gameFrame % 20 === 0) {
     enemyAppeare();
   }
 
@@ -130,7 +148,7 @@ function processGame() {
     cars.forEach(function(target, index) {
       if (target.passed) {
         cars.splice(index, 1);
-        globals.passCarCount++;
+        passCarCount++;
       }
 
       if (player.lane === target.lane && checkDistance(target) < 0) {
@@ -158,12 +176,12 @@ function enemyAppeare() {
   const enemyNumber = Math.floor(Math.random() * 5);
 
   sendPushCarEvent(enemyNumber);
+
+  logger.debug(`push car. car index: ${enemyNumber}, now: ${Date.now()}`);
   pushCar(enemyNumber);
 }
 
 function pushCar(enemyNumber) {
-  logger.debug(`push car. car index: ${enemyNumber}, now: ${Date.now()}`);
-
   switch (enemyNumber) {
     case 0:
       cars.push(new Car(0));
@@ -186,68 +204,18 @@ function pushCar(enemyNumber) {
   }
 }
 
-// 操作ボタンの状態操作系---------------------------
-
-// ボタン状態の確認
-function checkButton() {
-  const { player } = globals;
-
-  if (player.lane === 0) {
-    leftButtonDisable();
-  }
-  if (player.lane === 1) {
-    leftButtonEnable();
-  }
-  if (player.lane === 2) {
-    rightButtonEnable();
-  }
-  if (player.lane === 3) {
-    rightButtonDisable();
-  }
-}
-
-// 有効化
-function rightButtonEnable() {
-  globals.imageObj.BUTTON_RIGHT_ONLINE.mouseEnabled = true;
-  globals.imageObj.BUTTON_RIGHT_ONLINE.alpha = 0.5;
-}
-
-function leftButtonEnable() {
-  globals.imageObj.BUTTON_LEFT_ONLINE.mouseEnabled = true;
-  globals.imageObj.BUTTON_LEFT_ONLINE.alpha = 0.5;
-}
-
-// 無効化
-function rightButtonDisable() {
-  globals.imageObj.BUTTON_RIGHT_ONLINE.mouseEnabled = false;
-  globals.imageObj.BUTTON_RIGHT_ONLINE.alpha = 0.2;
-}
-
-function leftButtonDisable() {
-  globals.imageObj.BUTTON_LEFT_ONLINE.mouseEnabled = false;
-  globals.imageObj.BUTTON_LEFT_ONLINE.alpha = 0.2;
-}
-
-// オブジェクト間の距離計算(y軸方向のみ)---------------------
-function checkDistance(target) {
-  const { gameScreenScale, player } = globals;
-  const { system } = config;
-  const { ss } = properties;
-
-  const y = player.img.y - target.img.y;
-
-  var length =
-    Math.abs(y) -
-    system.car.height * gameScreenScale * system.difficultyLength -
-    ss.PLAYER_HONOKA_SS.frames.height *
-      gameScreenScale *
-      system.difficultyLength;
-  return length;
-}
-
 // イベント処理-------------------------------------
-// TODO: remove export.
-export function clickButtonRight() {
+function keyDownEvent(event) {
+  const { imageObj } = globals;
+  if (event.which === 37 && imageObj.BUTTON_LEFT.mouseEnabled) {
+    clickButtonLeft();
+  }
+  if (event.keyCode === 39 && imageObj.BUTTON_RIGHT.mouseEnabled) {
+    clickButtonRight();
+  }
+}
+
+function clickButtonRight() {
   globals.player.lane++;
   globals.soundObj.SOUND_KAIHI.play();
   globals.player.moveRight();
@@ -257,8 +225,7 @@ export function clickButtonRight() {
   checkButton();
 }
 
-// TODO: remove export.
-export function clickButtonLeft() {
+function clickButtonLeft() {
   globals.player.lane--;
   globals.player.moveLeft();
   globals.soundObj.SOUND_KAIHI.play();
@@ -278,7 +245,6 @@ function isOpponentCrashed() {
 }
 
 function crash() {
-  const frame = globals.gameFrame;
   const now = Date.now();
   playerCrashedTime = now;
 
@@ -286,7 +252,7 @@ function crash() {
   const judgeTime = now + waitInterval;
 
   logger.debug(
-    `player is crashed at ${playerCrashedTime} ms, ${frame} frames.`
+    `player is crashed at ${playerCrashedTime} ms, ${gameFrame} frames.`
   );
   logger.debug(
     `Wait for ${waitInterval}ms to check opponent is crashed at the same time.`
@@ -372,7 +338,7 @@ function onOpponentPushedCar(message) {
   const nextPusher = message.detail.nextPusher;
   if (nextPusher === P2PClient.get().peerId) {
     shouldPushCar = true;
-    globals.gameFrame = globals.gameFrame - (globals.gameFrame % 20) + 20;
+    gameFrame = gameFrame - (gameFrame % 20) + 20;
   }
 
   const nextEnemyNumber = message.detail.nextEnemyNumber;
@@ -446,7 +412,7 @@ function getWaitIntervalBy(judgeTime) {
 
 function goGameOverState(result) {
   globals.textObj.TEXT_GAME_COUNT.text =
-    text_game_count_L + globals.passCarCount + text_game_count_R;
+    text_game_count_L + passCarCount + text_game_count_R;
   globals.soundObj.SOUND_SUSUME_LOOP.stop();
   globals.soundObj.SOUND_CRASH.play();
   globals.soundObj.SOUND_SUSUME_END.play({
@@ -454,18 +420,8 @@ function goGameOverState(result) {
     volume: 0.6
   });
 
-  teerDown();
-
   //stateマシン内、ゲームオーバー状態に遷移
-  onlineGameOverState(result);
+  to(OnlineGameOverEngine, { result: result });
 }
 
-export function teerDown() {
-  // createjs.Ticker.reset();
-  createjs.Ticker.removeEventListener("tick", globals.tickListener);
-
-  //キーボード用keycodeevent削除
-  window.removeEventListener("keydown", keyDownEvent);
-
-  P2PClient.get().off(P2PClient.EVENTS.DATA, onDataReceived);
-}
+export default new OnlineGameEngine();

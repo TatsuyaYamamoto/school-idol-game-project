@@ -4,7 +4,7 @@ import config from "./resources/config";
 import globals from "./globals";
 
 // プレイログ登録-------------
-export function postPlayLog() {
+export function postPlayLog(passCarCount) {
   const url = config.api.playlog;
   const headers = {
     "Content-Type": "application/json"
@@ -16,19 +16,19 @@ export function postPlayLog() {
     credentials: "include",
     headers,
     body: JSON.stringify({
-      point: globals.passCarCount
+      point: passCarCount
     })
   });
 }
 
 // ランキング登録-------------
-export function registration() {
+export function registration(passCarCount) {
   const url = config.api.score;
   const headers = {
     "Content-Type": "application/json"
   };
   const body = JSON.stringify({
-    point: globals.passCarCount
+    point: passCarCount
   });
 
   return fetch(url, {

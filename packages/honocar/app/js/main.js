@@ -5,11 +5,17 @@ import "createjs/builds/1.0.0/createjs.js";
 
 import "../main.css";
 
-import { loadState } from "./stateMachine";
+import { to } from "./stateMachine";
 import { initGameScreenScale } from "./common";
 import { requestLogin } from "./api";
-import { setTextProperties } from "./contentsLoader";
+import {
+  loadContent,
+  setTextProperties,
+  soundTurnOff,
+  soundTurnOn
+} from "./contentsLoader";
 import globals from "./globals";
+import TopEngine from "./engine/TopEngine";
 
 function init() {
   /*---------- ログインチェック ----------*/
@@ -48,11 +54,21 @@ function init() {
     createjs.Touch.enable(globals.gameStage);
   }
 
+  // toggle sound with blur or focus
+  window.addEventListener("blur", function() {
+    soundTurnOff();
+  });
+  window.addEventListener("focus", function() {
+    soundTurnOn();
+  });
+
   //ゲーム用タイマーの設定
   createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
 
   // TODO createjsにcross originの画像を読み込まない
   createjs.DisplayObject.suppressCrossDomainErrors = true;
+
+  createjs.Sound.defaultInterruptBehavior = createjs.Sound.INTERRUPT_ANY;
 
   //コンテンツのロードステートに移行
   const ua = navigator.userAgent;
@@ -77,13 +93,17 @@ function init() {
     window.addEventListener("touchstart", start);
   } else {
     // ログイン確認後ロード画面へ遷移
-    loadState();
+    loadContent().then(() => {
+      to(TopEngine);
+    });
   }
 }
 
 function start() {
   window.removeEventListener("touchstart", start);
-  loadState();
+  loadContent().then(() => {
+    to(TopEngine);
+  });
 }
 
 window.addEventListener("load", init, {
