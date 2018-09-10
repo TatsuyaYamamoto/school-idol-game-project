@@ -231,8 +231,11 @@ function keyDownEvent(event) {
 
 function clickButtonRight() {
   globals.player.lane++;
-  globals.soundObj.SOUND_KAIHI.play();
   globals.player.moveRight();
+
+  // TODO reconsider how to set interrupt
+  globals.soundObj.SOUND_KAIHI.stop();
+  globals.soundObj.SOUND_KAIHI.play();
 
   checkButton();
 }
@@ -240,6 +243,9 @@ function clickButtonRight() {
 function clickButtonLeft() {
   globals.player.lane--;
   globals.player.moveLeft();
+
+  // TODO reconsider how to set interrupt
+  globals.soundObj.SOUND_KAIHI.stop();
   globals.soundObj.SOUND_KAIHI.play();
 
   checkButton();

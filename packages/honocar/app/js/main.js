@@ -68,8 +68,6 @@ function init() {
   // TODO createjsにcross originの画像を読み込まない
   createjs.DisplayObject.suppressCrossDomainErrors = true;
 
-  createjs.Sound.defaultInterruptBehavior = createjs.Sound.INTERRUPT_ANY;
-
   //コンテンツのロードステートに移行
   const ua = navigator.userAgent;
 
