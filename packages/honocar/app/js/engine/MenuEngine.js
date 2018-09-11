@@ -19,10 +19,28 @@ import SelectCharaEngine from "./SelectCharaEngine";
 import { Ids } from "../resources/string";
 
 class MenuEngine extends Engine {
+  constructor(props) {
+    super(props);
+
+    this.characterSelectButton = null;
+  }
+
   init() {
     super.init();
 
-    const { gameStage, imageObj, ssObj, soundObj } = globals;
+    const { gameStage, imageObj, ssObj, soundObj, playCharacter } = globals;
+
+    switch (playCharacter) {
+      case "honoka":
+        this.characterSelectButton = imageObj.BUTTON_SELECT_CHARA_HONOKA;
+        break;
+      case "eri":
+        this.characterSelectButton = imageObj.BUTTON_SELECT_CHARA_ERI;
+        break;
+      case "kotori":
+        this.characterSelectButton = imageObj.BUTTON_SELECT_CHARA_KOTORI;
+        break;
+    }
 
     gameStage.removeAllChildren();
     gameStage.addChild(imageObj.GAME_BACKGROUND);
@@ -39,13 +57,13 @@ class MenuEngine extends Engine {
     gameStage.addChild(imageObj.BUTTON_START);
     gameStage.addChild(imageObj.BUTTON_START_ONLINE);
     gameStage.addChild(imageObj.BUTTON_HOW_TO);
-    gameStage.addChild(imageObj.BUTTON_SELECT_CHARA);
+    gameStage.addChild(this.characterSelectButton);
     gameStage.addChild(imageObj.BUTTON_RANKING);
     gameStage.addChild(imageObj.BUTTON_CREDIT);
     gameStage.addChild(imageObj.BUTTON_TWITTER_TOP);
     gameStage.addChild(ssObj.BUTTON_SOUND_SS);
 
-    if (soundObj.SOUND_ZENKAI.playState != createjs.Sound.PLAY_SUCCEEDED) {
+    if (soundObj.SOUND_ZENKAI.playState !== createjs.Sound.PLAY_SUCCEEDED) {
       soundObj.SOUND_ZENKAI.play({ loop: -1, volume: 0.4 });
     }
 
@@ -57,7 +75,7 @@ class MenuEngine extends Engine {
       onClick2MultiPlay
     );
     imageObj.BUTTON_HOW_TO.addEventListener("mousedown", onClick2HowToPlay);
-    imageObj.BUTTON_SELECT_CHARA.addEventListener(
+    this.characterSelectButton.addEventListener(
       "mousedown",
       onClick2ChangeChara
     );
@@ -82,7 +100,7 @@ class MenuEngine extends Engine {
       onClick2MultiPlay
     );
     imageObj.BUTTON_HOW_TO.removeEventListener("mousedown", onClick2HowToPlay);
-    imageObj.BUTTON_SELECT_CHARA.removeEventListener(
+    this.characterSelectButton.removeEventListener(
       "mousedown",
       onClick2ChangeChara
     );
@@ -101,6 +119,8 @@ class MenuEngine extends Engine {
       onClickTwitter
     );
     ssObj.BUTTON_SOUND_SS.removeEventListener("mousedown", toggleSound);
+
+    this.characterSelectButton = null;
   }
 
   progress() {

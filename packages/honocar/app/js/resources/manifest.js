@@ -28,8 +28,16 @@ export default {
       src: "img/BUTTON_RANKING.png"
     },
     {
-      id: "BUTTON_SELECT_CHARA",
-      src: "img/BUTTON_SELECT_CHARA.png"
+      id: "BUTTON_SELECT_CHARA_HONOKA",
+      src: "img/BUTTON_SELECT_CHARA_HONOKA.png"
+    },
+    {
+      id: "BUTTON_SELECT_CHARA_ERI",
+      src: "img/BUTTON_SELECT_CHARA_ERI.png"
+    },
+    {
+      id: "BUTTON_SELECT_CHARA_KOTORI",
+      src: "img/BUTTON_SELECT_CHARA_KOTORI.png"
     },
     {
       id: "BUTTON_BACK_MENU",

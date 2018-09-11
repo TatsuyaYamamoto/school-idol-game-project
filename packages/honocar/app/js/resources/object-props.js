@@ -107,8 +107,22 @@ export default {
       scale: 1,
       alpha: 1
     },
-    BUTTON_SELECT_CHARA: {
-      id: "BUTTON_SELECT_CHARA",
+    BUTTON_SELECT_CHARA_HONOKA: {
+      id: "BUTTON_SELECT_CHARA_HONOKA",
+      ratioX: 0.3,
+      ratioY: 0.65,
+      scale: 1,
+      alpha: 1
+    },
+    BUTTON_SELECT_CHARA_ERI: {
+      id: "BUTTON_SELECT_CHARA_ERI",
+      ratioX: 0.3,
+      ratioY: 0.65,
+      scale: 1,
+      alpha: 1
+    },
+    BUTTON_SELECT_CHARA_KOTORI: {
+      id: "BUTTON_SELECT_CHARA_KOTORI",
       ratioX: 0.3,
       ratioY: 0.65,
       scale: 1,
