@@ -102,8 +102,8 @@ export default {
     },
     BUTTON_HOW_TO: {
       id: "BUTTON_HOW_TO",
-      ratioX: 0.45,
-      ratioY: 0.15,
+      ratioX: 0.5,
+      ratioY: 0.18,
       scale: 1,
       alpha: 1
     },
@@ -123,7 +123,7 @@ export default {
     },
     BUTTON_CREDIT: {
       id: "BUTTON_CREDIT",
-      ratioX: 0.7,
+      ratioX: 0.75,
       ratioY: 0.2,
       scale: 1,
       alpha: 1
@@ -228,8 +228,8 @@ export default {
     },
     BUTTON_TWITTER_LOGOUT: {
       id: "BUTTON_TWITTER_LOGOUT",
-      ratioX: 0.1,
-      ratioY: 0.05,
+      ratioX: 0.2,
+      ratioY: 0.07,
       scale: 1,
       alpha: 1
     },
@@ -442,8 +442,8 @@ export default {
   },
   asyncImage: {
     TWITTER_ICON: {
-      ratioX: 0.04,
-      ratioY: 0.91,
+      ratioX: 0.4,
+      ratioY: 0.035,
       scale: 1.3,
       alpha: 1
     }
