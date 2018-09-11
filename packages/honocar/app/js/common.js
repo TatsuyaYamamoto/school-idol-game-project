@@ -24,39 +24,56 @@ export function initGameScreenScale() {
 }
 
 // tweet文言----------------
-export function getTweetText(passCarCount) {
-  let tweet_text;
+export function getTweetText(passCarCount, playCharacter) {
+  let text;
 
   switch (playCharacter) {
     case "honoka":
       if (passCarCount === 0) {
-        tweet_text =
+        text =
           "穂乃果「いやー、今日もパンがうまいっ！」海未「また運動もせずにそんなものを食べて！」";
       } else if (passCarCount < 100) {
-        tweet_text =
+        text =
           "穂乃果「ことりちゃーん！穂乃果、" +
           gameScore +
           "台も車を避けたのに、海未ちゃんちっとも褒めてくれないよー！」";
       } else if (passCarCount >= 100) {
-        tweet_text =
+        text =
           "海未「なにやっていたんですか！！どれだけ避けたと思っているんですか...」穂乃果「" +
           passCarCount +
           "台！」";
       }
       break;
+
     case "eri":
       if (passCarCount === 0) {
-        tweet_text = "(車なんて避けてないで)エリチカ、おうちにかえる!!!";
-      } else if (gameScore < 100) {
-        tweet_text =
+        text = "(車なんて避けてないで)エリチカ、おうちにかえる!!!";
+      } else if (passCarCount < 100) {
+        text =
           passCarCount +
           "台よ...なんとか避けなくちゃいけないんだから、しょうがないじゃないチカ！";
       } else if (passCarCount >= 100) {
-        tweet_text = passCarCount + "台！ハラショー！";
+        text = passCarCount + "台！ハラショー！";
+      }
+      break;
+
+    case "kotori":
+      if (passCarCount === 0) {
+        text =
+          "チガイマースッ！ソレデハ、ゴキゲンヨウー！ヨキニハカラエ〜ミンナノシュウ...";
+      } else if (passCarCount < 100) {
+        text =
+          passCarCount +
+          "台...店内のイベントで歌わされて...自動車、道路で避けるの...禁止だったのに";
+      } else if (100 <= passCarCount) {
+        text =
+          "ふわふわしたものかわいいな、はいっ！あとは自動車たくさん(" +
+          passCarCount +
+          "台)回避したら？カラフルで幸せー";
       }
       break;
   }
-  return tweet_text;
+  return text;
 }
 
 // P2P --------------------------------------------

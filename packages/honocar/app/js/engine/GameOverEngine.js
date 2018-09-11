@@ -11,6 +11,12 @@ import { getTweetText } from "../common";
 import { Ids } from "../resources/string";
 
 class GameOverEngine extends Engine {
+  constructor(props) {
+    super(props);
+
+    this.onClickTweet = this.onClickTweet.bind(this);
+  }
+
   init(params) {
     super.init();
     this.passCarCount = params.passCarCount;
@@ -104,11 +110,14 @@ class GameOverEngine extends Engine {
   }
 
   onClickTweet() {
+    const count = this.passCarCount;
+    const chara = globals.playCharacter;
+
     window.location.href =
       "https://twitter.com/intent/tweet" +
       "?hashtags=ほのCar!+%23そこんところ工房" +
       "&text=" +
-      getTweetText(this.passCarCount) +
+      getTweetText(count, chara) +
       "&url=http://games.sokontokoro-factory.net/honocar/";
   }
 }
