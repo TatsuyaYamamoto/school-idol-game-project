@@ -2,10 +2,9 @@ import { P2PClient, getLogger } from "@sokontokoro/mikan";
 
 import Player from "../character/Player";
 import globals from "../globals";
-import { text_game_count_L, text_game_count_R } from "../resources/text";
 import { P2PEvents } from "../constants";
 import Engine from "./Engine";
-import { checkButton, checkDistance } from "./GameEngine";
+import { checkButton, checkDistance, passCountText } from "./GameEngine";
 import OnlineGameOverEngine from "./OnlineGameOverEngine";
 import { to } from "../stateMachine";
 import Car from "../character/Car";
@@ -136,8 +135,7 @@ function processGame() {
 
   gameFrame++;
 
-  textObj.TEXT_GAME_COUNT.text =
-    text_game_count_L + passCarCount + text_game_count_R;
+  globals.textObj.TEXT_GAME_COUNT.text = passCountText();
   gameStage.update();
 
   if (shouldPushCar && gameFrame % 20 === 0) {
@@ -417,8 +415,7 @@ function getWaitIntervalBy(judgeTime) {
 }
 
 function goGameOverState(result) {
-  globals.textObj.TEXT_GAME_COUNT.text =
-    text_game_count_L + passCarCount + text_game_count_R;
+  globals.textObj.TEXT_GAME_COUNT.text = passCountText();
   globals.soundObj.SOUND_SUSUME_LOOP.stop();
   globals.soundObj.SOUND_CRASH.play();
   globals.soundObj.SOUND_SUSUME_END.play({

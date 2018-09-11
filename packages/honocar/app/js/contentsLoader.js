@@ -1,6 +1,9 @@
+import { t } from "@sokontokoro/mikan";
+
 import manifest from "./resources/manifest";
 import properties from "./resources/object-props";
 import globals from "./globals";
+import { Ids } from "./resources/string";
 
 function loadAnimation() {
   const q = new createjs.LoadQueue();
@@ -166,24 +169,15 @@ function setTextContent() {
       globals.gameScrean.width * properties.text[key].lineHeight;
   }
 
-  globals.textObj.TEXT_START.text = "-Please tap on the display!-";
+  globals.textObj.TEXT_START.text = t(Ids.TAP_DISPLAY_INFO);
 
-  globals.textObj.TEXT_RANKING.text = "ランキング機能(仮画面)\rだよー";
+  globals.textObj.TEXT_LINK_ME.text = t(Ids.LINK_ME);
 
-  globals.textObj.TEXT_LINK_ME.text =
-    "プログラム、音楽、思いつき：T28\rhttp://sokontokoro-factory.net";
+  globals.textObj.TEXT_LINK_SAN.text = t(Ids.LINK_SANZASHI);
 
-  globals.textObj.TEXT_LINK_SAN.text =
-    "イラスト：さんざし\rhttps://twitter.com/xxsanzashixx";
+  globals.textObj.TEXT_LINK_1.text = t(Ids.LINK_SOUND_EFFECT);
 
-  globals.textObj.TEXT_LINK_1.text =
-    "効果音：効果音ラボ 樣\rhttp://soundeffect-lab.info/";
+  globals.textObj.TEXT_LINK_2.text = t(Ids.LINK_ONJIN);
 
-  globals.textObj.TEXT_LINK_2.text =
-    "効果音：On-Jin ～音人～ 樣\rhttp://on-jin.com/";
-
-  globals.textObj.TEXT_LINK_LOVELIVE.text =
-    "プロジェクトラブライブ！\rhttp://www.lovelive-anime.jp";
-
-  globals.textObj.TEXT_REGISTRATION.text = "ランキングシステム　通信完了！";
+  globals.textObj.TEXT_LINK_LOVELIVE.text = t(Ids.LINK_LOVELIVE);
 }

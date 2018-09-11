@@ -1,6 +1,8 @@
 import * as alertify from "alertify/lib/alertify";
+import { t } from "@sokontokoro/mikan";
 
 import config from "./resources/config";
+import { Ids } from "./resources/string";
 import globals from "./globals";
 
 // プレイログ登録-------------
@@ -39,22 +41,14 @@ export function registration(passCarCount) {
     body
   }).then(response => {
     if (response.ok) {
-      alertify.log("ランキングシステム　通信完了！", "success", 3000);
+      alertify.log(t(Ids.REGISTER_SUCCESS), "success", 3000);
       return;
     }
 
     if (response.status === 401) {
-      alertify.log(
-        "ログインセッションが切れてしまいました...再ログインして下さい。",
-        "error",
-        3000
-      );
+      alertify.log(t(Ids.UNAUTHORIZED), "error", 3000);
     } else {
-      alertify.log(
-        "ランキングシステムへの接続に失敗しました...",
-        "error",
-        3000
-      );
+      alertify.log(t(Ids.UNEXPECTED_SERVER_ERROR), "error", 3000);
     }
   });
 }
@@ -69,7 +63,7 @@ export function requestLogin() {
     credentials: "include"
   }).then(response => {
     if (response.ok) {
-      alertify.log("ランキングシステム ログイン中！", "success", 3000);
+      alertify.log(t(Ids.LOGIN_SUCCESS), "success", 3000);
 
       return response.json().then(data => {
         globals.isLogin = true;

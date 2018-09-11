@@ -1,9 +1,11 @@
+import { t } from "@sokontokoro/mikan";
+
 import globals from "../globals";
-import { text_how_to, text_how_to_E } from "../resources/text";
 import Player from "../character/Player";
 import { to } from "../stateMachine";
 import Engine from "./Engine";
 import MenuEngine from "./MenuEngine";
+import { Ids } from "../resources/string";
 
 //ゲーム初期化-----------------------------------------
 
@@ -18,12 +20,15 @@ class HowToPlayEngine extends Engine {
     gameStage.addChild(imageObj.BUTTON_BACK_TOP_FROM_HOW_TO);
 
     switch (playCharacter) {
-      case "honoka":
-        textObj.TEXT_HOW_TO.text = text_how_to;
+      case "kotori":
+        textObj.TEXT_HOW_TO.text = t(Ids.HOW_TO_PLAY_KOTORI);
         break;
       case "erichi":
-        textObj.TEXT_HOW_TO.text = text_how_to_E;
+        textObj.TEXT_HOW_TO.text = t(Ids.HOW_TO_PLAY_ERI);
         break;
+      case "honoka":
+      default:
+        textObj.TEXT_HOW_TO.text = t(Ids.HOW_TO_PLAY_HONOKA);
     }
     gameStage.addChild(textObj.TEXT_HOW_TO);
 

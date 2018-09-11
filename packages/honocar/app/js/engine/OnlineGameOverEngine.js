@@ -1,4 +1,4 @@
-import { closeModal, openModal, P2PClient } from "@sokontokoro/mikan";
+import { closeModal, openModal, P2PClient, t } from "@sokontokoro/mikan";
 
 import Engine from "./Engine";
 import globals from "../globals";
@@ -7,6 +7,7 @@ import { trySyncGameStart } from "../common";
 import TopEngine from "./TopEngine";
 import OnlineGameEngine from "./OnlineGameEngine";
 import { to } from "../stateMachine";
+import { Ids } from "../resources/string";
 
 class OnlineGameOverEngine extends Engine {
   init(params) {
@@ -105,7 +106,7 @@ class OnlineGameOverEngine extends Engine {
     globals.soundObj.SOUND_BACK.play();
 
     openModal({
-      title: "対戦相手の入力待っています！",
+      title: t(Ids.ONLINE_DIALOG_REPLAY_WAITING_TEXT),
       actions: []
     });
 
@@ -119,8 +120,8 @@ class OnlineGameOverEngine extends Engine {
   onDataReceived({ message }) {
     if (message.type === P2PEvents.RESTART) {
       openModal({
-        title: "もう一度遊びますか？",
-        text: "対戦相手が再戦を求めています！",
+        title: t(Ids.ONLINE_DIALOG_REPLAY_CONFIRM_TITLE),
+        text: t(Ids.ONLINE_DIALOG_REPLAY_CONFIRM_TEXT),
         actions: [
           {
             text: "OK",
@@ -132,8 +133,8 @@ class OnlineGameOverEngine extends Engine {
               P2PClient.get().send(message);
 
               openModal({
-                title: "準備完了！",
-                text: "オンライン対戦を開始します。",
+                title: t(Ids.ONLINE_DIALOG_READY_TITLE),
+                text: t(Ids.ONLINE_DIALOG_READY_TEXT),
                 actions: []
               });
 
@@ -158,8 +159,8 @@ class OnlineGameOverEngine extends Engine {
 
     if (message.type === P2PEvents.RESTART_ACCEPT) {
       openModal({
-        title: "準備完了！",
-        text: "オンライン対戦を開始します。",
+        title: t(Ids.ONLINE_DIALOG_READY_TITLE),
+        text: t(Ids.ONLINE_DIALOG_READY_TEXT),
         actions: []
       });
 

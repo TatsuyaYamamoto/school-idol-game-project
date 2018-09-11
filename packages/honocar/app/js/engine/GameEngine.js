@@ -1,12 +1,14 @@
+import { t } from "@sokontokoro/mikan";
+
 import Player from "../character/Player";
 import Car from "../character/Car";
 import globals from "../globals";
-import { text_game_count_L, text_game_count_R } from "../resources/text";
 import properties from "../resources/object-props";
 import config from "../resources/config";
 import Engine from "./Engine";
 import GameOverEngine from "./GameOverEngine";
 import { to } from "../stateMachine";
+import { Ids } from "../resources/string";
 
 let cars = [];
 let gameFrame = 0;
@@ -115,8 +117,7 @@ function processGame() {
 
   gameFrame++;
 
-  textObj.TEXT_GAME_COUNT.text =
-    text_game_count_L + passCarCount + text_game_count_R;
+  globals.textObj.TEXT_GAME_COUNT.text = passCountText();
   gameStage.update();
 
   if (gameFrame % 20 === 0) {
@@ -253,8 +254,7 @@ function clickButtonLeft() {
 }
 // クラッシュ関数-------------------------------------
 function crash() {
-  globals.textObj.TEXT_GAME_COUNT.text =
-    text_game_count_L + passCarCount + text_game_count_R;
+  globals.textObj.TEXT_GAME_COUNT.text = passCountText();
   globals.soundObj.SOUND_SUSUME_LOOP.stop();
   globals.soundObj.SOUND_CRASH.play();
   globals.soundObj.SOUND_SUSUME_END.play({ interrupt: "late", volume: 0.6 });
@@ -262,6 +262,10 @@ function crash() {
   to(GameOverEngine, {
     passCarCount: passCarCount
   });
+}
+
+export function passCountText() {
+  return t(Ids.PASS_COUNT, { count: passCarCount });
 }
 
 export default new GameEngine();

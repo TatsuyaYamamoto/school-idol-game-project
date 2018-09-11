@@ -35,6 +35,9 @@ class GameOverEngine extends Engine {
       case "erichi":
         ssObj.BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("erichi");
         break;
+      case "kotori":
+        ssObj.BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("erichi");
+        break;
     }
 
     gameStage.addChild(imageObj.GAME_BACKGROUND);

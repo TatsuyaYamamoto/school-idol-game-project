@@ -3,7 +3,8 @@ import {
   copyTextToClipboard,
   getCurrentUrl,
   openModal,
-  P2PClient
+  P2PClient,
+  t
 } from "@sokontokoro/mikan";
 
 import globals from "../globals";
@@ -12,16 +13,16 @@ import { soundTurnOff, soundTurnOn } from "../contentsLoader";
 import config from "../resources/config";
 import CreditEngine from "./CreditEngine";
 import HowToPlayEngine from "./HowToPlayEngine";
-import TopEngine from "./TopEngine";
 import GameEngine from "./GameEngine";
 import { to } from "../stateMachine";
 import SelectCharaEngine from "./SelectCharaEngine";
+import { Ids } from "../resources/string";
 
 class MenuEngine extends Engine {
   init() {
     super.init();
 
-    const { playCharacter, gameStage, imageObj, ssObj, soundObj } = globals;
+    const { gameStage, imageObj, ssObj, soundObj } = globals;
 
     gameStage.removeAllChildren();
     gameStage.addChild(imageObj.GAME_BACKGROUND);
@@ -118,15 +119,13 @@ function onClick2MultiPlay() {
   globals.soundObj.SOUND_OK.play();
 
   openModal({
-    title: "オンライン対戦",
-    text:
-      "招待用URLからゲームにアクセスすることで、あなたと対戦が行えます。\n" +
-      "このダイアログを閉じてしまうとルームが削除されてしまいます。リロードやツイート時は気を付けてください。",
+    title: t(Ids.ONLINE_DIALOG_PREPARE_TITLE),
+    text: t(Ids.ONLINE_DIALOG_PREPARE_TEXT),
     actions: [
       {
-        text: "Copy URL",
+        text: t(Ids.ONLINE_DIALOG_PREPARE_CLIPBOARD),
         autoClose: false,
-        tooltipText: "コピーしました!",
+        tooltipText: t(Ids.ONLINE_DIALOG_PREPARE_COPY_SUCCESS),
         onClick: () => {
           const url = getCurrentUrl();
           const peerId = P2PClient.get().peerId;
@@ -187,17 +186,14 @@ function onClickLogout() {
   const { soundObj } = globals;
 
   soundObj.SOUND_OK.play();
-  alertify.confirm(
-    "ログアウトします。ランキング登録はログイン中のみ有効です。",
-    function(result) {
-      if (result) {
-        soundObj.SOUND_OK.play();
-        window.location.href = config.api.logout;
-      } else {
-        soundObj.SOUND_BACK.play();
-      }
+  alertify.confirm(t(Ids.LOGOUT_MESSAGE), function(result) {
+    if (result) {
+      soundObj.SOUND_OK.play();
+      window.location.href = config.api.logout;
+    } else {
+      soundObj.SOUND_BACK.play();
     }
-  );
+  });
 }
 
 function onClickTwitter() {

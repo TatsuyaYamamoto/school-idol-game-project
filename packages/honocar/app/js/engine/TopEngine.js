@@ -4,7 +4,8 @@ import {
   getCurrentUrl,
   getLogger,
   openModal,
-  P2PClient
+  P2PClient,
+  t
 } from "@sokontokoro/mikan";
 import { parse } from "query-string";
 
@@ -14,6 +15,7 @@ import MenuEngine from "./MenuEngine";
 import OnlineGameEngine from "./OnlineGameEngine";
 
 import { trySyncGameStart } from "../common";
+import { Ids } from "../resources/string";
 
 const logger = getLogger("top-engine");
 
@@ -93,8 +95,8 @@ class TopEngine extends Engine {
   onP2pConnect() {
     logger.info("success to connect to peer.");
     openModal({
-      title: "準備完了",
-      text: "オンライン対戦を開始します。",
+      title: t(Ids.ONLINE_DIALOG_READY_TITLE),
+      text: t(Ids.ONLINE_DIALOG_READY_TEXT),
       actions: []
     });
 
@@ -111,8 +113,8 @@ class TopEngine extends Engine {
 
     if (!params.isByMyself) {
       openModal({
-        title: "ゲーム終了",
-        text: "通信相手の接続が切れてしまいました。Topに戻ります。",
+        title: t(Ids.ONLINE_DIALOG_DISCONNECTED_TITLE),
+        text: t(Ids.ONLINE_DIALOG_DISCONNECTED_TEXT),
         actions: []
       });
 

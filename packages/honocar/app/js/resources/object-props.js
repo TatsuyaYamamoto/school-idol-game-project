@@ -439,14 +439,6 @@ export default {
       align: "center",
       lineHeight: 0.07
     },
-    TEXT_RANKING: {
-      ratioX: 0.5,
-      ratioY: 0.15,
-      size: 0.05,
-      family: "Arial",
-      align: "center",
-      lineHeight: 0.07
-    },
     TEXT_LINK_ME: {
       ratioX: 0.5,
       ratioY: 0.15,
@@ -486,15 +478,6 @@ export default {
       family: "Courier",
       align: "center",
       lineHeight: 0.05
-    },
-    TEXT_REGISTRATION: {
-      ratioX: 0.4,
-      ratioY: 0.9,
-      size: 0.04,
-      family: "Courier",
-      align: "center",
-      color: "#ffffff",
-      lineHeight: 0.1
     }
   },
   asyncImage: {

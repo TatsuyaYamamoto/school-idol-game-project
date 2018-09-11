@@ -5,8 +5,11 @@ import "createjs/builds/1.0.0/createjs.js";
 
 import "../main.css";
 
+import { config as mikanConfig, initI18n, t } from "@sokontokoro/mikan";
+
 import { to } from "./stateMachine";
 import config from "./resources/config";
+import { default as stringResources, Ids } from "./resources/string";
 import { initGameScreenScale } from "./common";
 import { requestLogin } from "./api";
 import {
@@ -70,6 +73,10 @@ function init() {
   // TODO createjsにcross originの画像を読み込まない
   createjs.DisplayObject.suppressCrossDomainErrors = true;
 
+  // Initialize internationalization.
+  mikanConfig.defaultLanguage = "ja";
+  initI18n({ resources: stringResources });
+
   //コンテンツのロードステートに移行
   const ua = navigator.userAgent;
 
@@ -85,7 +92,7 @@ function init() {
       "center",
       globals.gameScrean.width * 0.04
     );
-    text.text = "-Please tap on the display!-";
+    text.text = t(Ids.TAP_DISPLAY_INFO);
 
     globals.gameStage.addChild(text);
     globals.gameStage.update();
