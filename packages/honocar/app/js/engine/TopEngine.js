@@ -38,7 +38,7 @@ class TopEngine extends Engine {
     gameStage.removeAllChildren();
     gameStage.addChild(imageObj.GAME_BACKGROUND);
     gameStage.addChild(imageObj.TITLE_LOGO);
-
+    gameStage.addChild(textObj.TEXT_APP_VERSION);
     gameStage.addChild(textObj.TEXT_START);
 
     gameStage.update();

@@ -180,4 +180,7 @@ function setTextContent() {
   globals.textObj.TEXT_LINK_2.text = t(Ids.LINK_ONJIN);
 
   globals.textObj.TEXT_LINK_LOVELIVE.text = t(Ids.LINK_LOVELIVE);
+
+  globals.textObj.TEXT_APP_VERSION.text =
+    "v" + require("../../package.json").version;
 }

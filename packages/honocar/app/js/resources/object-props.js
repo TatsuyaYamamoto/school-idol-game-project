@@ -438,6 +438,14 @@ export default {
       family: "Courier",
       align: "center",
       lineHeight: 0.05
+    },
+    TEXT_APP_VERSION: {
+      ratioX: 0.9,
+      ratioY: 0.01,
+      size: 0.04,
+      family: "Courier",
+      align: "center",
+      lineHeight: 0.05
     }
   },
   asyncImage: {
