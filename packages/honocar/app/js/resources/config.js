@@ -9,6 +9,7 @@ const currentUrl = getCurrentUrl();
 
 export default {
   system: {
+    framerate: 30,
     gamescrean: {
       width: 640,
       height: 896

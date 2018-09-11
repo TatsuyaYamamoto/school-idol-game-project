@@ -6,6 +6,7 @@ import "createjs/builds/1.0.0/createjs.js";
 import "../main.css";
 
 import { to } from "./stateMachine";
+import config from "./resources/config";
 import { initGameScreenScale } from "./common";
 import { requestLogin } from "./api";
 import {
@@ -63,6 +64,7 @@ function init() {
   });
 
   //ゲーム用タイマーの設定
+  createjs.Ticker.framerate = config.system.framerate;
   createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
 
   // TODO createjsにcross originの画像を読み込まない
