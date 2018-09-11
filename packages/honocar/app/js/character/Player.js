@@ -1,4 +1,5 @@
 import globals from "../globals";
+import props from "../resources/object-props";
 
 function Player(playCharacter) {
   const { ssObj } = globals;
@@ -18,6 +19,7 @@ function Player(playCharacter) {
   //レーンナンバー
   this.lane = 1;
   this.img.x = this.checkLane();
+  this.img.y = globals.gameScrean.height * props.ss.PLAYER_HONOKA_SS.ratioY;
   this.img.gotoAndPlay("kihon");
 }
 Player.prototype.checkLane = function() {
