@@ -3,6 +3,7 @@ import Player from "../character/Player";
 import { to } from "../stateMachine";
 import Engine from "./Engine";
 import MenuEngine from "./MenuEngine";
+import { setCharacter } from "../storage";
 
 //ゲーム初期化-----------------------------------------
 
@@ -83,7 +84,9 @@ function onSelectHonoka() {
   globals.soundObj.SOUND_OK.stop();
   globals.soundObj.SOUND_OK.play();
 
-  globals.playCharacter = "honoka";
+  const newChara = "honoka";
+  globals.playCharacter = newChara;
+  setCharacter(newChara);
 
   to(MenuEngine);
 }
@@ -92,7 +95,9 @@ function onSelectKotori() {
   globals.soundObj.SOUND_OK.stop();
   globals.soundObj.SOUND_OK.play();
 
-  globals.playCharacter = "kotori";
+  const newChara = "kotori";
+  globals.playCharacter = newChara;
+  setCharacter(newChara);
 
   to(MenuEngine);
 }
@@ -101,7 +106,9 @@ function onSelectErihci() {
   globals.soundObj.SOUND_OK.stop();
   globals.soundObj.SOUND_OK.play();
 
-  globals.playCharacter = "eri";
+  const newChara = "eri";
+  globals.playCharacter = newChara;
+  setCharacter(newChara);
 
   to(MenuEngine);
 }

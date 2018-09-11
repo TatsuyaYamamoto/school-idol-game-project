@@ -1,3 +1,5 @@
+import { getCharacter } from "./storage";
+
 export default {
   gameStage: null,
   gameScrean: null,
@@ -5,7 +7,7 @@ export default {
   loginPromise: null,
   isLogin: false,
   queue: null,
-  playCharacter: "honoka",
+  playCharacter: getCharacter(),
   player: null,
   opponent: null,
   isSoundMute: false,

@@ -37,15 +37,7 @@ class TopEngine extends Engine {
 
     gameStage.removeAllChildren();
     gameStage.addChild(imageObj.GAME_BACKGROUND);
-
-    switch (playCharacter) {
-      case "honoka":
-        gameStage.addChild(imageObj.TITLE_LOGO);
-        break;
-      case "eri":
-        gameStage.addChild(imageObj.TITLE_LOGO_E);
-        break;
-    }
+    gameStage.addChild(imageObj.TITLE_LOGO);
 
     gameStage.addChild(textObj.TEXT_START);
 
