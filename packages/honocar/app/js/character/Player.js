@@ -1,12 +1,14 @@
 import globals from "../globals";
 
-//ほのかちゃ------------------------------------------------
 function Player(playCharacter) {
   const { ssObj } = globals;
 
   switch (playCharacter) {
     case "honoka":
       this.img = ssObj.PLAYER_HONOKA_SS;
+      break;
+    case "kotori":
+      this.img = ssObj.PLAYER_KOTORI_SS;
       break;
     case "erichi":
       this.img = ssObj.PLAYER_ERICHI_SS;

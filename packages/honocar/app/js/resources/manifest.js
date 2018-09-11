@@ -8,6 +8,10 @@ export default {
       src: "img/BUTTON_START.png"
     },
     {
+      id: "BUTTON_START_ONLINE",
+      src: "img/BUTTON_START_ONLINE.png"
+    },
+    {
       id: "BUTTON_RESTART",
       src: "img/BUTTON_RESTART.png"
     },
@@ -24,6 +28,10 @@ export default {
       src: "img/BUTTON_RANKING.png"
     },
     {
+      id: "BUTTON_SELECT_CHARA",
+      src: "img/BUTTON_SELECT_CHARA.png"
+    },
+    {
       id: "BUTTON_BACK_MENU",
       src: "img/BUTTON_BACK_MENU.png"
     },
@@ -36,16 +44,16 @@ export default {
       src: "img/GAME_BACKGROUND.png"
     },
     {
+      id: "MENU_BACKGROUND",
+      src: "img/MENU_BACKGROUND.png"
+    },
+    {
       id: "TITLE_LOGO",
       src: "img/TITLE_LOGO.png"
     },
     {
       id: "TITLE_LOGO_E",
       src: "img/TITLE_LOGO_E.png"
-    },
-    {
-      id: "MENU_LOGO",
-      src: "img/MENU_LOGO.png"
     },
     {
       id: "GAMEOVER",
@@ -110,8 +118,8 @@ export default {
       src: "img/ERICHI_SS.png"
     },
     {
-      id: "BUTTON_CHANGE_CHARA_SS",
-      src: "img/BUTTON_CHANGE_CHARA_SS.png"
+      id: "KOTORI_SS",
+      src: "img/KOTORI_SS.png"
     },
     {
       id: "TWITTER_GAMEOVER_SS",

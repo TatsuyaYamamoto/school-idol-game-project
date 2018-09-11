@@ -15,6 +15,7 @@ import HowToPlayEngine from "./HowToPlayEngine";
 import TopEngine from "./TopEngine";
 import GameEngine from "./GameEngine";
 import { to } from "../stateMachine";
+import SelectCharaEngine from "./SelectCharaEngine";
 
 class MenuEngine extends Engine {
   init() {
@@ -25,6 +26,7 @@ class MenuEngine extends Engine {
     gameStage.removeAllChildren();
     gameStage.addChild(imageObj.GAME_BACKGROUND);
     gameStage.addChild(imageObj.WHITE_SHEET);
+    gameStage.addChild(imageObj.MENU_BACKGROUND);
 
     if (globals.isLogin) {
       gameStage.addChild(imageObj.BUTTON_TWITTER_LOGOUT);
@@ -36,14 +38,11 @@ class MenuEngine extends Engine {
     gameStage.addChild(imageObj.BUTTON_START);
     gameStage.addChild(imageObj.BUTTON_START_ONLINE);
     gameStage.addChild(imageObj.BUTTON_HOW_TO);
+    gameStage.addChild(imageObj.BUTTON_SELECT_CHARA);
     gameStage.addChild(imageObj.BUTTON_RANKING);
     gameStage.addChild(imageObj.BUTTON_CREDIT);
     gameStage.addChild(imageObj.BUTTON_TWITTER_TOP);
     gameStage.addChild(ssObj.BUTTON_SOUND_SS);
-    gameStage.addChild(imageObj.MENU_LOGO);
-
-    ssObj.BUTTON_CHANGE_CHARA.gotoAndPlay(playCharacter);
-    gameStage.addChild(ssObj.BUTTON_CHANGE_CHARA);
 
     if (soundObj.SOUND_ZENKAI.playState != createjs.Sound.PLAY_SUCCEEDED) {
       soundObj.SOUND_ZENKAI.play({ loop: -1, volume: 0.4 });
@@ -57,13 +56,16 @@ class MenuEngine extends Engine {
       onClick2MultiPlay
     );
     imageObj.BUTTON_HOW_TO.addEventListener("mousedown", onClick2HowToPlay);
+    imageObj.BUTTON_SELECT_CHARA.addEventListener(
+      "mousedown",
+      onClick2ChangeChara
+    );
     imageObj.BUTTON_RANKING.addEventListener("mousedown", onClick2Ranking);
     imageObj.BUTTON_CREDIT.addEventListener("mousedown", onClick2Credit);
     imageObj.BUTTON_TWITTER_LOGIN.addEventListener("mousedown", onClickLogin);
     imageObj.BUTTON_TWITTER_LOGOUT.addEventListener("mousedown", onClickLogout);
     imageObj.BUTTON_TWITTER_TOP.addEventListener("mousedown", onClickTwitter);
     ssObj.BUTTON_SOUND_SS.addEventListener("mousedown", toggleSound);
-    ssObj.BUTTON_CHANGE_CHARA.addEventListener("mousedown", onClickChangeChara);
   }
 
   tearDown() {
@@ -79,6 +81,10 @@ class MenuEngine extends Engine {
       onClick2MultiPlay
     );
     imageObj.BUTTON_HOW_TO.removeEventListener("mousedown", onClick2HowToPlay);
+    imageObj.BUTTON_SELECT_CHARA.removeEventListener(
+      "mousedown",
+      onClick2ChangeChara
+    );
     imageObj.BUTTON_RANKING.removeEventListener("mousedown", onClick2Ranking);
     imageObj.BUTTON_CREDIT.removeEventListener("mousedown", onClick2Credit);
     imageObj.BUTTON_TWITTER_LOGIN.removeEventListener(
@@ -94,10 +100,6 @@ class MenuEngine extends Engine {
       onClickTwitter
     );
     ssObj.BUTTON_SOUND_SS.removeEventListener("mousedown", toggleSound);
-    ssObj.BUTTON_CHANGE_CHARA.removeEventListener(
-      "mousedown",
-      onClickChangeChara
-    );
   }
 
   progress() {
@@ -139,6 +141,7 @@ function onClick2MultiPlay() {
 }
 
 function onClick2HowToPlay() {
+  globals.soundObj.SOUND_OK.stop();
   globals.soundObj.SOUND_OK.play();
 
   to(HowToPlayEngine);
@@ -150,9 +153,17 @@ function onClick2Ranking() {
 }
 
 function onClick2Credit() {
+  globals.soundObj.SOUND_OK.stop();
   globals.soundObj.SOUND_OK.play();
 
   to(CreditEngine);
+}
+
+function onClick2ChangeChara() {
+  globals.soundObj.SOUND_OK.stop();
+  globals.soundObj.SOUND_OK.play();
+
+  to(SelectCharaEngine);
 }
 
 function toggleSound() {
@@ -191,21 +202,6 @@ function onClickLogout() {
 
 function onClickTwitter() {
   window.location.href = config.link.t28_twitter;
-}
-
-function onClickChangeChara() {
-  globals.soundObj.SOUND_OK.play();
-
-  switch (globals.playCharacter) {
-    case "honoka":
-      globals.playCharacter = "erichi";
-      break;
-    case "erichi":
-      globals.playCharacter = "honoka";
-      break;
-  }
-
-  to(TopEngine);
 }
 
 export default new MenuEngine();

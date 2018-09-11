@@ -61,12 +61,16 @@ function gameReady() {
 
   switch (gameFrame) {
     case 1:
+      gameStage.removeAllChildren();
       gameStage.addChild(imageObj.GAME_BACKGROUND);
       gameStage.addChild(player.img);
+
       break;
     case 10:
       soundObj.SOUND_PI1.play();
       textObj.TETX_GAMESTART_COUNT.text = "-2-";
+
+      gameStage.removeAllChildren();
       gameStage.addChild(imageObj.GAME_BACKGROUND);
       gameStage.addChild(textObj.TETX_GAMESTART_COUNT);
       gameStage.addChild(player.img);
@@ -74,15 +78,23 @@ function gameReady() {
     case 30:
       soundObj.SOUND_PI1.play();
       textObj.TETX_GAMESTART_COUNT.text = "-1-";
+
+      gameStage.removeAllChildren();
       gameStage.addChild(imageObj.GAME_BACKGROUND);
       gameStage.addChild(textObj.TETX_GAMESTART_COUNT);
       gameStage.addChild(player.img);
       break;
     case 50:
       soundObj.SOUND_PI2.play();
+
       gameStage.removeAllChildren();
+      gameStage.addChild(imageObj.GAME_BACKGROUND);
+      gameStage.addChild(imageObj.BUTTON_LEFT);
+      gameStage.addChild(imageObj.BUTTON_RIGHT);
+      gameStage.addChild(textObj.TEXT_GAME_COUNT);
+      gameStage.addChild(player.img);
+
       gameStatusReset();
-      drawGameScrean();
 
       createjs.Ticker.removeEventListener("tick", gameReady);
       createjs.Ticker.addEventListener("tick", processGame);
@@ -121,17 +133,6 @@ function processGame() {
       crash();
     }
   });
-}
-
-// 描画処理-----------------------------------------
-function drawGameScrean() {
-  const { gameStage, imageObj, textObj, player } = globals;
-
-  gameStage.addChild(imageObj.GAME_BACKGROUND);
-  gameStage.addChild(imageObj.BUTTON_LEFT);
-  gameStage.addChild(imageObj.BUTTON_RIGHT);
-  gameStage.addChild(textObj.TEXT_GAME_COUNT);
-  gameStage.addChild(player.img);
 }
 
 // 敵出現---------------------------------------
