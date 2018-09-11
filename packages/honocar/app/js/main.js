@@ -5,6 +5,7 @@ import "createjs/builds/1.0.0/createjs.js";
 
 import "../main.css";
 
+import * as alertify from "alertify/lib/alertify";
 import { config as mikanConfig, initI18n, t } from "@sokontokoro/mikan";
 
 import { to } from "./stateMachine";
@@ -23,8 +24,22 @@ import TopEngine from "./engine/TopEngine";
 
 function init() {
   /*---------- ログインチェック ----------*/
-  // 完了後にコンテンツオブジェクトのセットアップを開始する
-  globals.loginPromise = requestLogin();
+  globals.loginPromise = requestLogin().then(response => {
+    if (response.ok) {
+      alertify.log(t(Ids.LOGIN_SUCCESS), "success", 3000);
+
+      return response.json().then(data => {
+        globals.isLogin = true;
+
+        globals.user.id = data.user_id;
+        globals.user.name = data.user_name;
+        globals.user.iconUrl = data.icon_url;
+      });
+    } else {
+      // 未ログインの場合は通知なし
+      globals.isLogin = false;
+    }
+  });
 
   //ゲーム画面の初期
   globals.gameStage = new createjs.Stage("gameScrean");

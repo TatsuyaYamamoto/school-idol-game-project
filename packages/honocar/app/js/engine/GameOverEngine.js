@@ -1,10 +1,14 @@
+import * as alertify from "alertify/lib/alertify";
+import { t } from "@sokontokoro/mikan";
+
 import globals from "../globals";
 import Engine from "./Engine";
-import { postPlayLog, registration } from "../api";
+import { postScore } from "../api";
 import TopEngine from "./TopEngine";
 import GameEngine from "./GameEngine";
 import { to } from "../stateMachine";
 import { getTweetText } from "../common";
+import { Ids } from "../resources/string";
 
 class GameOverEngine extends Engine {
   init(params) {
@@ -19,10 +23,20 @@ class GameOverEngine extends Engine {
       textObj
     } = globals;
 
-    if (globals.isLogin) {
-      registration(this.passCarCount);
-    }
-    postPlayLog(this.passCarCount);
+    postScore(this.passCarCount, playCharacter).then(response => {
+      if (globals.isLogin) {
+        if (response.ok) {
+          alertify.log(t(Ids.REGISTER_SUCCESS), "success", 3000);
+          return;
+        }
+
+        if (response.status === 401) {
+          alertify.log(t(Ids.UNAUTHORIZED), "error", 3000);
+        } else {
+          alertify.log(t(Ids.UNEXPECTED_SERVER_ERROR), "error", 3000);
+        }
+      }
+    });
 
     player.img.gotoAndPlay("down");
 
@@ -32,11 +46,11 @@ class GameOverEngine extends Engine {
       case "honoka":
         ssObj.BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("honoka");
         break;
-      case "erichi":
-        ssObj.BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("erichi");
+      case "eri":
+        ssObj.BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("eri");
         break;
       case "kotori":
-        ssObj.BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("erichi");
+        ssObj.BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("eri");
         break;
     }
 

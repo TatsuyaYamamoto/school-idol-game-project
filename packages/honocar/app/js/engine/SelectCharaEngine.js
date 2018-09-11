@@ -12,7 +12,7 @@ class SelectCharaEngine extends Engine {
 
     this.honoka = null;
     this.kotori = null;
-    this.erichi = null;
+    this.eri = null;
   }
 
   init() {
@@ -32,18 +32,18 @@ class SelectCharaEngine extends Engine {
     this.kotori.img.x = gameScrean.width * 0.2;
     this.kotori.img.y = gameScrean.height * 0.4;
 
-    this.erichi = new Player("erichi");
-    this.erichi.img.x = gameScrean.width * 0.8;
-    this.erichi.img.y = gameScrean.height * 0.4;
+    this.eri = new Player("eri");
+    this.eri.img.x = gameScrean.width * 0.8;
+    this.eri.img.y = gameScrean.height * 0.4;
 
     gameStage.addChild(this.honoka.img);
     gameStage.addChild(this.kotori.img);
-    gameStage.addChild(this.erichi.img);
+    gameStage.addChild(this.eri.img);
 
     createjs.Ticker.addEventListener("tick", this.process);
     this.honoka.img.addEventListener("mousedown", onSelectHonoka);
     this.kotori.img.addEventListener("mousedown", onSelectKotori);
-    this.erichi.img.addEventListener("mousedown", onSelectErihci);
+    this.eri.img.addEventListener("mousedown", onSelectErihci);
     imageObj.BUTTON_BACK_TOP_FROM_HOW_TO.addEventListener(
       "mousedown",
       onClickBack
@@ -56,7 +56,7 @@ class SelectCharaEngine extends Engine {
     createjs.Ticker.removeEventListener("tick", this.process);
     this.honoka.img.removeEventListener("mousedown", onSelectHonoka);
     this.kotori.img.removeEventListener("mousedown", onSelectKotori);
-    this.erichi.img.removeEventListener("mousedown", onSelectErihci);
+    this.eri.img.removeEventListener("mousedown", onSelectErihci);
     globals.imageObj.BUTTON_BACK_TOP_FROM_HOW_TO.removeEventListener(
       "mousedown",
       onClickBack
@@ -64,7 +64,7 @@ class SelectCharaEngine extends Engine {
 
     this.honoka = null;
     this.kotori = null;
-    this.erichi = null;
+    this.eri = null;
   }
 
   process() {
@@ -101,7 +101,7 @@ function onSelectErihci() {
   globals.soundObj.SOUND_OK.stop();
   globals.soundObj.SOUND_OK.play();
 
-  globals.playCharacter = "erichi";
+  globals.playCharacter = "eri";
 
   to(MenuEngine);
 }

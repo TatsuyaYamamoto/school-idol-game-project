@@ -11,7 +11,7 @@ function Player(playCharacter) {
     case "kotori":
       this.img = ssObj.PLAYER_KOTORI_SS;
       break;
-    case "erichi":
+    case "eri":
       this.img = ssObj.PLAYER_ERICHI_SS;
       break;
   }

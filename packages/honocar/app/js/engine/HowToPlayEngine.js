@@ -23,7 +23,7 @@ class HowToPlayEngine extends Engine {
       case "kotori":
         textObj.TEXT_HOW_TO.text = t(Ids.HOW_TO_PLAY_KOTORI);
         break;
-      case "erichi":
+      case "eri":
         textObj.TEXT_HOW_TO.text = t(Ids.HOW_TO_PLAY_ERI);
         break;
       case "honoka":

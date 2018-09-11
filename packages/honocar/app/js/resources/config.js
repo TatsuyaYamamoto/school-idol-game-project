@@ -2,8 +2,8 @@ import { getCurrentUrl } from "@sokontokoro/mikan";
 
 const baseUrl =
   process.env.NODE_ENV === "production"
-    ? "https://api.sokontokoro-factory.net/lovelive"
-    : "https://api-dev.sokontokoro-factory.net/lovelive";
+    ? "//api.sokontokoro-factory.net/lovelive"
+    : "//api-dev.sokontokoro-factory.net/lovelive";
 
 const currentUrl = getCurrentUrl();
 
@@ -28,8 +28,7 @@ export default {
   api: {
     login: baseUrl + "/auth/twitter/login?redirect=" + currentUrl,
     logout: baseUrl + "/auth/twitter/logout?redirect=" + currentUrl,
-    score: baseUrl + "/scores/honocar/me/",
-    playlog: baseUrl + "/scores/honocar/playlog/",
+    score: baseUrl + "/games/honocar/scores/",
     user: baseUrl + "/users/me/"
   },
   link: {

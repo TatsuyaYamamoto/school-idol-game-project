@@ -40,8 +40,8 @@ class OnlineGameOverEngine extends Engine {
       case "honoka":
         ssObj.BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("honoka");
         break;
-      case "erichi":
-        ssObj.BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("erichi");
+      case "eri":
+        ssObj.BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("eri");
         break;
     }
 

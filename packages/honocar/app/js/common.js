@@ -44,7 +44,7 @@ export function getTweetText(passCarCount) {
           "台！」";
       }
       break;
-    case "erichi":
+    case "eri":
       if (passCarCount === 0) {
         tweet_text = "(車なんて避けてないで)エリチカ、おうちにかえる!!!";
       } else if (gameScore < 100) {

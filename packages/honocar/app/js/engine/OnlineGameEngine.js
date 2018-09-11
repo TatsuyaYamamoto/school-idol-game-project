@@ -24,12 +24,12 @@ class OnlineGameEngine extends Engine {
     super.init();
     const { imageObj } = globals;
 
-    //honoka or erichiを作成
+    //honoka or eriを作成
     //初期値はplayCharacter=honoka
     globals.player = new Player(globals.playCharacter);
 
     const opponentCharacter =
-      globals.playCharacter === "honoka" ? "erichi" : "honoka";
+      globals.playCharacter === "honoka" ? "eri" : "honoka";
     globals.opponent = new Player(opponentCharacter);
 
     //フレーム数リセット

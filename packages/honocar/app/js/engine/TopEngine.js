@@ -42,7 +42,7 @@ class TopEngine extends Engine {
       case "honoka":
         gameStage.addChild(imageObj.TITLE_LOGO);
         break;
-      case "erichi":
+      case "eri":
         gameStage.addChild(imageObj.TITLE_LOGO_E);
         break;
     }

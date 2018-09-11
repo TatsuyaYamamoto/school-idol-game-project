@@ -19,7 +19,7 @@ class GameEngine extends Engine {
     super.init();
     const { imageObj } = globals;
 
-    //honoka or erichiを作成
+    //honoka or eriを作成
     //初期値はplayCharacter=honoka
     globals.player = new Player(globals.playCharacter);
 

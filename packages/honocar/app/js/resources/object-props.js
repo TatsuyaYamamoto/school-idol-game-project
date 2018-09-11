@@ -256,7 +256,7 @@ export default {
         honoka: {
           frames: 0
         },
-        erichi: {
+        eri: {
           frames: 1
         }
       },
