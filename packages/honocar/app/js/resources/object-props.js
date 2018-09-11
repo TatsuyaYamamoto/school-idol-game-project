@@ -1,3 +1,26 @@
+const playerAnimation = {
+  kihon: {
+    frames: [0, 1],
+    next: true,
+    speed: 0.25
+  },
+  escapeR: {
+    frames: [2, 3, 4],
+    next: "kihon",
+    speed: 0.8
+  },
+  escapeL: {
+    frames: [4, 3, 2],
+    next: "kihon",
+    speed: 0.8
+  },
+  down: {
+    frames: [5, 6],
+    next: true,
+    speed: 0.3
+  }
+};
+
 export default {
   image: {
     TITLE_LOGO: {
@@ -271,28 +294,7 @@ export default {
         width: 186,
         height: 266
       },
-      animations: {
-        kihon: {
-          frames: [0, 1],
-          next: true,
-          speed: 0.3
-        },
-        escapeR: {
-          frames: [2, 3, 4],
-          next: "kihon",
-          speed: 0.8
-        },
-        escapeL: {
-          frames: [4, 3, 2],
-          next: "kihon",
-          speed: 0.8
-        },
-        down: {
-          frames: [5, 6],
-          next: true,
-          speed: 0.5
-        }
-      },
+      animations: playerAnimation,
       firstAnimation: "kihon"
     },
     PLAYER_KOTORI_SS: {
@@ -305,28 +307,7 @@ export default {
         width: 186,
         height: 266
       },
-      animations: {
-        kihon: {
-          frames: [0, 1],
-          next: true,
-          speed: 0.3
-        },
-        escapeR: {
-          frames: [2, 3, 4],
-          next: "kihon",
-          speed: 0.8
-        },
-        escapeL: {
-          frames: [4, 3, 2],
-          next: "kihon",
-          speed: 0.8
-        },
-        down: {
-          frames: [5, 6],
-          next: true,
-          speed: 0.5
-        }
-      },
+      animations: playerAnimation,
       firstAnimation: "kihon"
     },
     PLAYER_ERICHI_SS: {
@@ -339,28 +320,7 @@ export default {
         width: 186,
         height: 266
       },
-      animations: {
-        kihon: {
-          frames: [0, 1],
-          next: true,
-          speed: 0.3
-        },
-        escapeR: {
-          frames: [2, 3, 4],
-          next: "kihon",
-          speed: 0.8
-        },
-        escapeL: {
-          frames: [4, 3, 2],
-          next: "kihon",
-          speed: 0.8
-        },
-        down: {
-          frames: [5, 6],
-          next: true,
-          speed: 0.5
-        }
-      },
+      animations: playerAnimation,
       firstAnimation: "kihon"
     }
   },
