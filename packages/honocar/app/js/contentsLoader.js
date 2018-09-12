@@ -4,6 +4,7 @@ import manifest from "./resources/manifest";
 import properties from "./resources/object-props";
 import globals from "./globals";
 import { Ids } from "./resources/string";
+import { trackTiming } from "./tracker";
 
 function loadAnimation() {
   const q = new createjs.LoadQueue();
@@ -39,6 +40,8 @@ function update() {
 }
 
 export function loadContent() {
+  const start = Date.now();
+
   return new Promise(resolve => {
     //ロードアニメーション
     loadAnimation();
@@ -55,6 +58,7 @@ export function loadContent() {
 
         createjs.Ticker.removeEventListener("tick", update);
 
+        trackTiming(Date.now() - start);
         resolve();
       });
     });

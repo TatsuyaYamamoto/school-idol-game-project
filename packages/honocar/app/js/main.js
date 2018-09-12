@@ -26,8 +26,11 @@ import {
 } from "./contentsLoader";
 import globals from "./globals";
 import TopEngine from "./engine/TopEngine";
+import { tracePage, TRACK_PAGES } from "./tracker";
 
 function init() {
+  tracePage(TRACK_PAGES.INDEX);
+
   /*---------- ログインチェック ----------*/
   globals.loginPromise = requestLogin().then(response => {
     if (response.ok) {

@@ -1,11 +1,5 @@
 import * as alertify from "alertify/lib/alertify";
-import {
-  copyTextToClipboard,
-  getCurrentUrl,
-  openModal,
-  P2PClient,
-  t
-} from "@sokontokoro/mikan";
+import { openModal, t } from "@sokontokoro/mikan";
 
 import globals from "../globals";
 import Engine from "./Engine";
@@ -17,7 +11,7 @@ import GameEngine from "./GameEngine";
 import { to } from "../stateMachine";
 import SelectCharaEngine from "./SelectCharaEngine";
 import { Ids } from "../resources/string";
-import { tracePage, TRACK_PAGES } from "../tracker";
+import { tracePage, trackEvent, TRACK_ACTION, TRACK_PAGES } from "../tracker";
 
 class MenuEngine extends Engine {
   constructor(props) {
@@ -202,17 +196,25 @@ function toggleSound() {
   if (globals.isSoundMute) {
     ssObj.BUTTON_SOUND_SS.gotoAndPlay("on");
     soundTurnOn();
+
+    trackEvent(TRACK_ACTION.CLICK, { label: "sound_on" });
   } else {
     ssObj.BUTTON_SOUND_SS.gotoAndPlay("off");
     soundTurnOff();
+
+    trackEvent(TRACK_ACTION.CLICK, { label: "sound_off" });
   }
 }
 
 function onClickLogin() {
+  trackEvent(TRACK_ACTION.CLICK, { label: "login" });
+
   window.location.href = config.api.login;
 }
 
 function onClickLogout() {
+  trackEvent(TRACK_ACTION.CLICK, { label: "logout" });
+
   const { soundObj } = globals;
 
   soundObj.SOUND_OK.play();

@@ -9,7 +9,7 @@ import GameEngine from "./GameEngine";
 import { to } from "../stateMachine";
 import { getTweetText } from "../common";
 import { Ids } from "../resources/string";
-import { TRACK_ACTION, trackClick } from "../tracker";
+import { TRACK_ACTION, trackEvent } from "../tracker";
 
 class GameOverEngine extends Engine {
   constructor(props) {
@@ -21,6 +21,12 @@ class GameOverEngine extends Engine {
   init(params) {
     super.init();
     this.passCarCount = params.passCarCount;
+
+    trackEvent(TRACK_ACTION.GAMEOVER, {
+      label: "single",
+      value: this.passCarCount
+    });
+
     const {
       gameStage,
       player,
@@ -104,21 +110,21 @@ class GameOverEngine extends Engine {
     globals.soundObj.SOUND_BACK.play();
     to(GameEngine);
 
-    trackClick(TRACK_ACTION.CLICK, { value: "restart" });
+    trackEvent(TRACK_ACTION.CLICK, { label: "restart" });
   }
 
   onCLickBack() {
     globals.soundObj.SOUND_BACK.play();
     to(TopEngine);
 
-    trackClick(TRACK_ACTION.CLICK, { value: "back_from_gameover" });
+    trackEvent(TRACK_ACTION.CLICK, { label: "back_from_gameover" });
   }
 
   onClickTweet() {
     const count = this.passCarCount;
     const chara = globals.playCharacter;
 
-    trackClick(TRACK_ACTION.CLICK, { value: "tweet" });
+    trackEvent(TRACK_ACTION.CLICK, { label: "tweet" });
 
     window.location.href =
       "https://twitter.com/intent/tweet" +

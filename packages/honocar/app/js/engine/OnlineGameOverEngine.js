@@ -8,6 +8,7 @@ import TopEngine from "./TopEngine";
 import OnlineGameEngine from "./OnlineGameEngine";
 import { to } from "../stateMachine";
 import { Ids } from "../resources/string";
+import { TRACK_ACTION, trackEvent } from "../tracker";
 
 class OnlineGameOverEngine extends Engine {
   init(params) {
@@ -22,6 +23,11 @@ class OnlineGameOverEngine extends Engine {
       imageObj,
       textObj
     } = globals;
+
+    trackEvent(TRACK_ACTION.GAMEOVER, {
+      label: "multi",
+      value: params.passCarCount
+    });
 
     if (result === "win") {
       opponent.img.gotoAndPlay("down");

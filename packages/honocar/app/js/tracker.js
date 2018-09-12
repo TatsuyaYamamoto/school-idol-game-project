@@ -6,6 +6,7 @@ const trackingCode =
     : config.trackingCode.dev;
 
 export const TRACK_PAGES = {
+  INDEX: "/honocar/",
   TOP: "/honocar/#top",
   MENU: "/honocar/#menu",
   HOW_TO_PLAY: "/honocar/#how_to_play",
@@ -21,14 +22,15 @@ export function tracePage(pagePath) {
 
 export const TRACK_ACTION = {
   CLICK: "click",
-  SELECT_CHARA: "select_chara"
+  SELECT_CHARA: "select_chara",
+  GAMEOVER: "gameover"
 };
 
 export const TRACK_CATEGORY = {};
 
 export const TRACK_LABEL = {};
 
-export function trackClick(action, { category, label, value }) {
+export function trackEvent(action, { category, label, value }) {
   const params = {};
   if (category) {
     params.event_category = category;
@@ -41,4 +43,11 @@ export function trackClick(action, { category, label, value }) {
   }
 
   gtag("event", action, params);
+}
+
+export function trackTiming(value) {
+  gtag("event", "timing_complete", {
+    name: "load",
+    value: value
+  });
 }

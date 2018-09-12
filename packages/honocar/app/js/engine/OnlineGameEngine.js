@@ -428,7 +428,7 @@ function goGameOverState(result) {
   });
 
   //stateマシン内、ゲームオーバー状態に遷移
-  to(OnlineGameOverEngine, { result: result });
+  to(OnlineGameOverEngine, { result: result, passCarCount });
 }
 
 export default new OnlineGameEngine();
