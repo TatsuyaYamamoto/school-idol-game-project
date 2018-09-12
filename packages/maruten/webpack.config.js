@@ -1,26 +1,51 @@
 const path = require("path");
 const webpack = require("webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+
+const isProduction = process.env.NODE_ENV === "production";
+
+const htmlParams = {
+  title: "DEV まるてん!",
+  noIndex: true,
+  trackingCode: "UA-64858827-8",
+  description: "まるがよしこを堕天させるゲームです。(?)2015そこんところ工房"
+};
+
+isProduction &&
+  Object.assign(htmlParams, {
+    title: "まるてん！ver.1.1 -そこんところ工房-",
+    trackingCode: "UA-64858827-5",
+    noIndex: false
+  });
+
+const plugins = [
+  new HtmlWebpackPlugin({
+    templateParameters: htmlParams,
+    template: "src/index.ejs",
+    hash: true
+  }),
+  new CopyWebpackPlugin([
+    { context: "src/fonts", from: "**/*", to: "fonts" },
+    { context: "src/img", from: "**/*", to: "img" },
+    { context: "src/sound", from: "**/*", to: "sound" }
+  ])
+];
 
 module.exports = {
-  debug: true,
+  mode: "development",
+
   entry: {
-    bundle: path.join(__dirname, "src/js/main.js")
+    bundle: path.resolve(__dirname, "src/js/main.js")
   },
+
   output: {
-    path: path.join(__dirname, "dist/development/"),
+    path: path.resolve(__dirname, "dist"),
     filename: "[name].js"
   },
+
   module: {
-    loaders: [
-      {
-        loader: "babel",
-        exclude: /node_modules/,
-        test: /\.js[x]?$/,
-        query: {
-          cacheDirectory: true,
-          presets: ["es2015", "stage-0"]
-        }
-      },
+    rules: [
       { test: /\.css$/, loader: "style-loader!css-loader" },
       { test: /\.svg$/, loader: "url-loader?mimetype=image/svg+xml" },
       { test: /\.woff$/, loader: "url-loader?mimetype=application/font-woff" },
@@ -29,10 +54,10 @@ module.exports = {
       { test: /\.ttf$/, loader: "url-loader?mimetype=application/font-woff" }
     ]
   },
+
   resolve: {
-    extensions: ["", ".js", ".jsx", ".json"]
+    extensions: [".js", ".jsx", ".json"]
   },
-  plugins: [
-    // new webpack.optimize.UglifyJsPlugin()
-  ]
+
+  plugins
 };
