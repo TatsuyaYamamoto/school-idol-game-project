@@ -10,7 +10,11 @@ const htmlParams = {
   noIndex: true,
   trackingCode: "UA-64858827-8",
   description:
-    "ひたすら穂乃果ちゃんが車を避けるゲームです。(?)2015そこんところ工房"
+    "ひたすら穂乃果ちゃんが車を避けるゲームです。(?)2015そこんところ工房",
+  ogpUrl: "https://games.sokontokoro-factory.net/honocar/",
+  // ogpImageUrl: "https://games.sokontokoro-factory.net/honocar/img/ogp.png"
+  ogpImageUrl:
+    "https://games.sokontokoro-factory.net/honocar/img/TITLE_LOGO_HONOKA.png"
 };
 
 isProduction &&
@@ -44,6 +48,8 @@ const config = {
     path: resolve(__dirname, "dist/"),
     filename: "bundle.js"
   },
+
+  devtool: isProduction ? "none" : "source-map",
 
   resolve: {
     extensions: [".js", ".ts"]

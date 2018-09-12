@@ -10,7 +10,14 @@
     <meta name="description" content="<%= description %>"/>
     <meta name="keyword" content="ラブライブ！,LoveLive！,高坂穂乃果, ホノカチャン, ゲーム,フリゲ,フリーゲーム">
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <meta property="og:title" content="<%= title %>"/>
+    <meta property="og:site_name" content="<%= title %>"/>
+    <meta property="og:type" content="article"/>
+    <meta property="og:description" content="<%= description %>"/>
+    <meta property="og:url" content="<%= ogpUrl %>"/>
+    <meta property="og:image" content="<%= ogpImageUrl %>"/>
+
+    <!-- Global site tag (tracker.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=<%= trackingCode %>"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -24,9 +31,9 @@
     </script>
 
     <script>
-      window.addEventListener("error", function(e) {
+      window.addEventListener('error', function(e) {
         console.error(e);
-        gtag("event", "exception", {description: e.message, fatal: true});
+        gtag('event', 'exception', {description: e.message, fatal: true});
       });
     </script>
 </head>
