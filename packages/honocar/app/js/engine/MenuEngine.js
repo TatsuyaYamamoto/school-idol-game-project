@@ -48,7 +48,6 @@ class MenuEngine extends Engine {
     gameStage.removeAllChildren();
     gameStage.addChild(imageObj.GAME_BACKGROUND);
     gameStage.addChild(imageObj.WHITE_SHEET);
-    gameStage.addChild(imageObj.MENU_BACKGROUND);
 
     if (globals.isLogin) {
       gameStage.addChild(imageObj.BUTTON_TWITTER_LOGOUT);
@@ -57,10 +56,12 @@ class MenuEngine extends Engine {
       gameStage.addChild(imageObj.BUTTON_TWITTER_LOGIN);
     }
 
+    gameStage.addChild(this.characterSelectButton);
+    gameStage.addChild(imageObj.MENU_BACKGROUND);
+
     gameStage.addChild(imageObj.BUTTON_START);
     gameStage.addChild(imageObj.BUTTON_START_ONLINE);
     gameStage.addChild(imageObj.BUTTON_HOW_TO);
-    gameStage.addChild(this.characterSelectButton);
     gameStage.addChild(imageObj.BUTTON_RANKING);
     gameStage.addChild(imageObj.BUTTON_CREDIT);
     gameStage.addChild(imageObj.BUTTON_TWITTER_TOP);
