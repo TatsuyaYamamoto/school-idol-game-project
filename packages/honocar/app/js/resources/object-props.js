@@ -264,7 +264,7 @@ export default {
     LABEL_CHARA_SELECT: {
       id: "LABEL_CHARA_SELECT",
       ratioX: 0.5,
-      ratioY: 0.2,
+      ratioY: 0.1,
       scale: 1,
       alpha: 1
     }
