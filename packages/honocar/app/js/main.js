@@ -6,7 +6,12 @@ import "createjs/builds/1.0.0/createjs.js";
 import "../main.css";
 
 import * as alertify from "alertify/lib/alertify";
-import { config as mikanConfig, initI18n, t } from "@sokontokoro/mikan";
+import {
+  config as mikanConfig,
+  initI18n,
+  t,
+  isSupportTouchEvent
+} from "@sokontokoro/mikan";
 
 import { to } from "./stateMachine";
 import config from "./resources/config";
@@ -63,11 +68,6 @@ function init() {
   globals.gameStage.addChild(loading);
   globals.gameStage.update();
 
-  //canvas要素内でのスマホでのスライドスクロール禁止
-  document.addEventListener("touchmove", function(e) {
-    e.preventDefault();
-  });
-
   //canvasステージ内でのタッチイベントの有効化
   if (createjs.Touch.isSupported()) {
     createjs.Touch.enable(globals.gameStage);
@@ -112,7 +112,10 @@ function init() {
     globals.gameStage.addChild(text);
     globals.gameStage.update();
 
-    window.addEventListener("touchstart", start);
+    window.addEventListener(
+      isSupportTouchEvent() ? "touchstart" : "click",
+      start
+    );
   } else {
     // ログイン確認後ロード画面へ遷移
     loadContent().then(() => {
@@ -122,7 +125,10 @@ function init() {
 }
 
 function start() {
-  window.removeEventListener("touchstart", start);
+  window.removeEventListener(
+    isSupportTouchEvent() ? "touchstart" : "click",
+    start
+  );
   loadContent().then(() => {
     to(TopEngine);
   });
