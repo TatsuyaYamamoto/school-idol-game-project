@@ -114,6 +114,10 @@ export default {
     {
       id: "WHITE_SHEET",
       src: "img/WHITE_SHEET.png"
+    },
+    {
+      id: "LABEL_CHARA_SELECT",
+      src: "img/LABEL_CHARA_SELECT.png"
     }
   ],
   spriteImage: [

@@ -40,6 +40,7 @@ class SelectCharaEngine extends Engine {
     gameStage.addChild(this.honoka.img);
     gameStage.addChild(this.kotori.img);
     gameStage.addChild(this.eri.img);
+    gameStage.addChild(imageObj.LABEL_CHARA_SELECT);
 
     createjs.Ticker.addEventListener("tick", this.process);
     this.honoka.img.addEventListener("mousedown", onSelectHonoka);

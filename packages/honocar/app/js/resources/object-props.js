@@ -260,6 +260,13 @@ export default {
       ratioY: 0.2,
       scale: 0.5,
       alpha: 1
+    },
+    LABEL_CHARA_SELECT: {
+      id: "LABEL_CHARA_SELECT",
+      ratioX: 0.5,
+      ratioY: 0.2,
+      scale: 1,
+      alpha: 1
     }
   },
   ss: {
