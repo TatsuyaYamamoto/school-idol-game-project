@@ -17,6 +17,7 @@ import OnlineGameEngine from "./OnlineGameEngine";
 import { trySyncGameStart } from "../common";
 import { Ids } from "../resources/string";
 import objectProps from "../resources/object-props";
+import { tracePage, TRACK_PAGES } from "../tracker";
 
 const logger = getLogger("top-engine");
 
@@ -34,6 +35,8 @@ class TopEngine extends Engine {
 
   init(params) {
     super.init(params);
+
+    tracePage(TRACK_PAGES.TOP);
 
     const {
       playCharacter,

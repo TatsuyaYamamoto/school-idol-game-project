@@ -6,12 +6,15 @@ import { to } from "../stateMachine";
 import Engine from "./Engine";
 import MenuEngine from "./MenuEngine";
 import { Ids } from "../resources/string";
+import { tracePage, TRACK_PAGES } from "../tracker";
 
 //ゲーム初期化-----------------------------------------
 
 class HowToPlayEngine extends Engine {
   init() {
     super.init();
+
+    tracePage(TRACK_PAGES.HOW_TO_PLAY);
 
     const { gameStage, imageObj, playCharacter, textObj } = globals;
 

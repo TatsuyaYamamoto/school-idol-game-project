@@ -8,6 +8,7 @@ import { checkButton, checkDistance, passCountText } from "./GameEngine";
 import OnlineGameOverEngine from "./OnlineGameOverEngine";
 import { to } from "../stateMachine";
 import Car from "../character/Car";
+import { tracePage, TRACK_PAGES } from "../tracker";
 
 const MAX_WAIT_TIME = 150;
 const logger = getLogger("online-game-engine");
@@ -22,6 +23,9 @@ let passCarCount = 0;
 class OnlineGameEngine extends Engine {
   init() {
     super.init();
+
+    tracePage(TRACK_PAGES.GAME_ONLINE);
+
     const { imageObj } = globals;
 
     //honoka or eriを作成

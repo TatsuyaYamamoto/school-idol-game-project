@@ -9,6 +9,7 @@ import Engine from "./Engine";
 import GameOverEngine from "./GameOverEngine";
 import { to } from "../stateMachine";
 import { Ids } from "../resources/string";
+import { tracePage, TRACK_PAGES } from "../tracker";
 
 let cars = [];
 let gameFrame = 0;
@@ -17,6 +18,9 @@ let passCarCount = 0;
 class GameEngine extends Engine {
   init() {
     super.init();
+
+    tracePage(TRACK_PAGES.GAME);
+
     const { imageObj } = globals;
 
     //honoka or eriを作成

@@ -3,9 +3,14 @@ import config from "../resources/config";
 import Engine from "./Engine";
 import MenuEngine from "./MenuEngine";
 import { to } from "../stateMachine";
+import { tracePage, TRACK_PAGES } from "../tracker";
 
 class CreditEngine extends Engine {
   init() {
+    super.init();
+
+    tracePage(TRACK_PAGES.CREDIT);
+
     const { gameStage, imageObj, textObj } = globals;
 
     gameStage.removeAllChildren();

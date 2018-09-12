@@ -3,12 +3,13 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
+const config = require("./package.json").config.sokontokoro;
 const isProduction = process.env.NODE_ENV === "production";
 
 const htmlParams = {
   title: "DEV ほのCar!",
   noIndex: true,
-  trackingCode: "UA-64858827-8",
+  trackingCode: config.trackingCode.dev,
   description:
     "ひたすら穂乃果ちゃんが車を避けるゲームです。(?)2015そこんところ工房",
   ogpUrl: "https://games.sokontokoro-factory.net/honocar/",
@@ -20,7 +21,7 @@ const htmlParams = {
 isProduction &&
   Object.assign(htmlParams, {
     title: "ほのCar!ver1.1 -そこんところ工房-",
-    trackingCode: "UA-64858827-2",
+    trackingCode: config.trackingCode.pro,
     noIndex: false
   });
 
@@ -39,7 +40,7 @@ const plugins = [
   })
 ];
 
-const config = {
+const webpackConfig = {
   mode: isProduction ? "production" : "development",
 
   entry: resolve(__dirname, "app/js/main.js"),
@@ -91,4 +92,4 @@ const config = {
   node: { fs: "empty" }
 };
 
-module.exports = config;
+module.exports = webpackConfig;

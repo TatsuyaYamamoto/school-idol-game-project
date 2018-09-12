@@ -4,6 +4,7 @@ import { to } from "../stateMachine";
 import Engine from "./Engine";
 import MenuEngine from "./MenuEngine";
 import { setCharacter } from "../storage";
+import { tracePage, TRACK_ACTION, TRACK_PAGES, trackClick } from "../tracker";
 
 //ゲーム初期化-----------------------------------------
 
@@ -18,6 +19,8 @@ class SelectCharaEngine extends Engine {
 
   init() {
     super.init();
+
+    tracePage(TRACK_PAGES.CHARA_SELECT);
 
     const { gameStage, gameScrean, imageObj } = globals;
 
@@ -90,6 +93,8 @@ function onSelectHonoka() {
   setCharacter(newChara);
 
   to(MenuEngine);
+
+  trackClick(TRACK_ACTION.SELECT_CHARA, { value: newChara });
 }
 
 function onSelectKotori() {
@@ -101,6 +106,8 @@ function onSelectKotori() {
   setCharacter(newChara);
 
   to(MenuEngine);
+
+  trackClick(TRACK_ACTION.SELECT_CHARA, { value: newChara });
 }
 
 function onSelectErihci() {
@@ -112,6 +119,8 @@ function onSelectErihci() {
   setCharacter(newChara);
 
   to(MenuEngine);
+
+  trackClick(TRACK_ACTION.SELECT_CHARA, { value: newChara });
 }
 
 export default new SelectCharaEngine();

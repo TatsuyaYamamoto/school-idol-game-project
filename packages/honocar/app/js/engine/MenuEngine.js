@@ -17,6 +17,7 @@ import GameEngine from "./GameEngine";
 import { to } from "../stateMachine";
 import SelectCharaEngine from "./SelectCharaEngine";
 import { Ids } from "../resources/string";
+import { tracePage, TRACK_PAGES } from "../tracker";
 
 class MenuEngine extends Engine {
   constructor(props) {
@@ -27,6 +28,8 @@ class MenuEngine extends Engine {
 
   init() {
     super.init();
+
+    tracePage(TRACK_PAGES.MENU);
 
     const { gameStage, imageObj, ssObj, soundObj, playCharacter } = globals;
 
