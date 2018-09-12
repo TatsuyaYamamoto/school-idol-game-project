@@ -16,6 +16,7 @@ import OnlineGameEngine from "./OnlineGameEngine";
 
 import { trySyncGameStart } from "../common";
 import { Ids } from "../resources/string";
+import objectProps from "../resources/object-props";
 
 const logger = getLogger("top-engine");
 
@@ -28,26 +29,61 @@ class TopEngine extends Engine {
     this.onP2pConnect = this.onP2pConnect.bind(this);
 
     this.isConnectionRequester = false;
+    this.titleLogo = null;
   }
 
   init(params) {
     super.init(params);
 
-    const { playCharacter, gameStage, imageObj, textObj, soundObj } = globals;
+    const {
+      playCharacter,
+      gameStage,
+      gameScrean,
+      imageObj,
+      textObj,
+      soundObj
+    } = globals;
+
+    const {
+      TITLE_LOGO_HONOKA,
+      TITLE_LOGO_ERI,
+      TITLE_LOGO_KOTORI,
+      GAME_BACKGROUND
+    } = imageObj;
+    const { TEXT_APP_VERSION, TEXT_START } = textObj;
+    const { SOUND_ZENKAI } = soundObj;
+
+    switch (playCharacter) {
+      case "honoka":
+        this.titleLogo = TITLE_LOGO_HONOKA;
+        break;
+      case "eri":
+        this.titleLogo = TITLE_LOGO_ERI;
+        break;
+      case "kotori":
+        this.titleLogo = TITLE_LOGO_KOTORI;
+        break;
+    }
+
+    // Bad means!!
+    // Move version text for kotori title logo layout.
+    const versionRatioX = objectProps.text.TEXT_APP_VERSION.ratioX;
+    if (playCharacter === "kotori") {
+      TEXT_APP_VERSION.x = gameScrean.width * (1 - versionRatioX);
+    } else {
+      TEXT_APP_VERSION.x = gameScrean.width * versionRatioX;
+    }
 
     gameStage.removeAllChildren();
-    gameStage.addChild(imageObj.GAME_BACKGROUND);
-    gameStage.addChild(imageObj.TITLE_LOGO);
-    gameStage.addChild(textObj.TEXT_APP_VERSION);
-    gameStage.addChild(textObj.TEXT_START);
+    gameStage.addChild(GAME_BACKGROUND);
+    gameStage.addChild(this.titleLogo);
+    gameStage.addChild(TEXT_APP_VERSION);
+    gameStage.addChild(TEXT_START);
 
     gameStage.update();
 
-    if (soundObj.SOUND_ZENKAI.playState !== createjs.Sound.PLAY_SUCCEEDED) {
-      soundObj.SOUND_ZENKAI.play({
-        loop: -1,
-        volume: 0.4
-      });
+    if (SOUND_ZENKAI.playState !== createjs.Sound.PLAY_SUCCEEDED) {
+      SOUND_ZENKAI.play({ loop: -1, volume: 0.4 });
     }
 
     const p2p = P2PClient.get(process.env.SKYWAY_KEY);
@@ -63,23 +99,17 @@ class TopEngine extends Engine {
       logger.debug(`try to connect to ${remotePeerId}`);
       p2p.connect(remotePeerId);
     } else {
-      imageObj.GAME_BACKGROUND.addEventListener("click", this.onClickTop);
+      window.addEventListener("click", this.onClickTop);
     }
   }
 
   tearDown() {
-    globals.imageObj.GAME_BACKGROUND.removeEventListener(
-      "click",
-      this.onClickTop
-    );
+    window.removeEventListener("click", this.onClickTop);
+    this.titleLogo = null;
   }
 
   onClickTop() {
     globals.soundObj.SOUND_OK.play();
-    globals.imageObj.GAME_BACKGROUND.removeEventListener(
-      "click",
-      this.onClickTop
-    );
 
     to(MenuEngine);
   }

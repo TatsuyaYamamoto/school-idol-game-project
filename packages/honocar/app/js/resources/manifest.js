@@ -56,12 +56,16 @@ export default {
       src: "img/MENU_BACKGROUND.png"
     },
     {
-      id: "TITLE_LOGO",
-      src: "img/TITLE_LOGO.png"
+      id: "TITLE_LOGO_HONOKA",
+      src: "img/TITLE_LOGO_HONOKA.png"
     },
     {
-      id: "TITLE_LOGO_E",
-      src: "img/TITLE_LOGO_E.png"
+      id: "TITLE_LOGO_ERI",
+      src: "img/TITLE_LOGO_ERI.png"
+    },
+    {
+      id: "TITLE_LOGO_KOTORI",
+      src: "img/TITLE_LOGO_KOTORI.png"
     },
     {
       id: "GAMEOVER",

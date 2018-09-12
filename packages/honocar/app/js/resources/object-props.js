@@ -23,15 +23,22 @@ const playerAnimation = {
 
 export default {
   image: {
-    TITLE_LOGO: {
-      id: "TITLE_LOGO",
+    TITLE_LOGO_HONOKA: {
+      id: "TITLE_LOGO_HONOKA",
       ratioX: 0.5,
       ratioY: 0.5,
       scale: 1,
       alpha: 1
     },
-    TITLE_LOGO_E: {
-      id: "TITLE_LOGO_E",
+    TITLE_LOGO_ERI: {
+      id: "TITLE_LOGO_ERI",
+      ratioX: 0.5,
+      ratioY: 0.5,
+      scale: 1,
+      alpha: 1
+    },
+    TITLE_LOGO_KOTORI: {
+      id: "TITLE_LOGO_KOTORI",
       ratioX: 0.5,
       ratioY: 0.5,
       scale: 1,
