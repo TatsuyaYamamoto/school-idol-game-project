@@ -35,7 +35,7 @@ export function getTweetText(passCarCount, playCharacter) {
       } else if (passCarCount < 100) {
         text =
           "穂乃果「ことりちゃーん！穂乃果、" +
-          gameScore +
+          passCarCount +
           "台も車を避けたのに、海未ちゃんちっとも褒めてくれないよー！」";
       } else if (passCarCount >= 100) {
         text =
