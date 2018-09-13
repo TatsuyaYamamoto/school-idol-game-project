@@ -33,12 +33,17 @@ export default class Network {
     });
   }
 
-  static postScore(point) {
+  static postScore(point, member) {
+    const body = {
+      point,
+      member
+    };
+
     request
       .post(ENDPOINT.SCORES)
       .withCredentials()
       .type("application/json")
-      .send({ point: point })
+      .send(body)
       .end((err, res) => {
         if (res.ok) {
           alertify.log("ランキングシステム　通信完了！", "success", 3000);

@@ -13,12 +13,10 @@ export default class GameoverEngine {
   }
 
   start() {
-    // ランキング登録
-    if (State.isLogin) {
-      Network.postScore(State.gameScore);
-    }
-    // ロギング
-    Network.postPlayLog(State.gameScore);
+    // プレイログ、ランキング登録
+    const point = State.gameScore;
+    const member = State.playCharacter;
+    Network.postScore(point, member);
 
     // 表示スコア設定
     State.object.text.RESULT_SCORE.text = `×${State.gameScore}`;

@@ -14,9 +14,8 @@ export const ENDPOINT = {
     apiServerOrigin + contextPath + "/auth/twitter/login/?redirect=maruten",
   LOGOUT:
     apiServerOrigin + contextPath + "/auth/twitter/logout/?redirect=maruten",
-  SCORES: apiServerOrigin + contextPath + "/scores/maruten/me/",
-  USERS: apiServerOrigin + contextPath + "/users/me/",
-  PLAY_LOG: apiServerOrigin + contextPath + "/scores/maruten/playlog/"
+  SCORES: apiServerOrigin + contextPath + "/games/maruten/scores/",
+  USERS: apiServerOrigin + contextPath + "/users/me/"
 };
 
 export const LINK = {
