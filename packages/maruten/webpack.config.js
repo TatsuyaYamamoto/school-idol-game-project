@@ -44,8 +44,20 @@ module.exports = {
     filename: "[name].js"
   },
 
+  devtool: isProduction ? "none" : "source-map",
+
   module: {
     rules: [
+      {
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env"]
+          }
+        }
+      },
       {
         // Inject "window" to this called in create.js
         test: require.resolve("createjs/builds/1.0.0/createjs.js"),
