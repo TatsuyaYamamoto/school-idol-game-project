@@ -46,6 +46,11 @@ module.exports = {
 
   module: {
     rules: [
+      {
+        // Inject "window" to this called in create.js
+        test: require.resolve("createjs/builds/1.0.0/createjs.js"),
+        use: "imports-loader?this=>window"
+      },
       { test: /\.css$/, loader: "style-loader!css-loader" },
       { test: /\.svg$/, loader: "url-loader?mimetype=image/svg+xml" },
       { test: /\.woff$/, loader: "url-loader?mimetype=application/font-woff" },

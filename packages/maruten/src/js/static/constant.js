@@ -1,5 +1,7 @@
-const apiServerOrigin = "http://api.sokontokoro-factory.net";
-// const apiServerOrigin = "http://localhost:8888";
+const apiServerOrigin =
+  process.env.NODE_ENV === "production"
+    ? "http://api.sokontokoro-factory.net"
+    : "http://api-dev.sokontokoro-factory.net";
 const contextPath = "/lovelive";
 
 export const CHARACTER = {

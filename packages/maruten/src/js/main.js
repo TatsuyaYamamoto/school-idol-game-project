@@ -1,3 +1,8 @@
+import "alertify/lib/alertify";
+import "alertify/themes/alertify.core.css";
+import "alertify/themes/alertify.default.css";
+import "createjs/builds/1.0.0/createjs.js";
+
 import State from "./state.js";
 import { STANDARD_PIXEL_SIZE } from "./static/config.js";
 import StateMachine from "./stateMachine.js";
