@@ -42,7 +42,8 @@ export {
   copyTextToClipboard,
   timeout,
   vibrate,
-  getCurrentUrl
+  getCurrentUrl,
+  tweetByWebIntent
 } from "./utils";
 
 export { default as ViewContainer } from "./ViewContainer";

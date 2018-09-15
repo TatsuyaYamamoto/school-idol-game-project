@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "npm run clean && webpack-serve --port 8001",
+    "start": "npm run clean && webpack-serve",
     "build": "npm run clean && webpack",
     "build:pro": "npm run clean && NODE_ENV=production webpack",
     "clean": "rm -rf dist"

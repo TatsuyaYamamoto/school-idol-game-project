@@ -1,5 +1,5 @@
 import * as alertify from "alertify/lib/alertify";
-import { t } from "@sokontokoro/mikan";
+import { t, tweetByWebIntent } from "@sokontokoro/mikan";
 
 import globals from "../globals";
 import Engine from "./Engine";
@@ -20,6 +20,16 @@ class GameOverEngine extends Engine {
 
   init(params) {
     super.init();
+
+    const {
+      BUTTON_BACK_TOP,
+      BUTTON_RESTART,
+      GAME_BACKGROUND,
+      GAMEOVER
+    } = globals.imageObj;
+    const { BUTTON_TWITTER_GAMEOVER_SS } = globals.ssObj;
+    const { TEXT_GAME_COUNT } = globals.textObj;
+
     this.passCarCount = params.passCarCount;
 
     trackEvent(TRACK_ACTION.GAMEOVER, {
@@ -57,32 +67,29 @@ class GameOverEngine extends Engine {
 
     switch (playCharacter) {
       case "honoka":
-        ssObj.BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("honoka");
+        BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("honoka");
         break;
       case "eri":
-        ssObj.BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("eri");
+        BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("eri");
         break;
       case "kotori":
-        ssObj.BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("eri");
+        BUTTON_TWITTER_GAMEOVER_SS.gotoAndPlay("eri");
         break;
     }
 
-    gameStage.addChild(imageObj.GAME_BACKGROUND);
+    gameStage.addChild(GAME_BACKGROUND);
     gameStage.addChild(player.img);
-    gameStage.addChild(imageObj.BUTTON_BACK_TOP);
-    gameStage.addChild(imageObj.BUTTON_RESTART);
-    gameStage.addChild(ssObj.BUTTON_TWITTER_GAMEOVER_SS);
-    gameStage.addChild(textObj.TEXT_GAME_COUNT);
-    gameStage.addChild(imageObj.GAMEOVER);
+    gameStage.addChild(BUTTON_BACK_TOP);
+    gameStage.addChild(BUTTON_RESTART);
+    gameStage.addChild(BUTTON_TWITTER_GAMEOVER_SS);
+    gameStage.addChild(TEXT_GAME_COUNT);
+    gameStage.addChild(GAMEOVER);
 
     createjs.Ticker.addEventListener("tick", this.progress);
 
-    imageObj.BUTTON_BACK_TOP.addEventListener("mousedown", this.onCLickBack);
-    imageObj.BUTTON_RESTART.addEventListener("mousedown", this.onClickRestart);
-    ssObj.BUTTON_TWITTER_GAMEOVER_SS.addEventListener(
-      "mousedown",
-      this.onClickTweet
-    );
+    BUTTON_BACK_TOP.addEventListener("mousedown", this.onCLickBack);
+    BUTTON_RESTART.addEventListener("mousedown", this.onClickRestart);
+    BUTTON_TWITTER_GAMEOVER_SS.addEventListener("mousedown", this.onClickTweet);
   }
 
   progress() {
@@ -91,16 +98,14 @@ class GameOverEngine extends Engine {
 
   tearDown() {
     super.tearDown();
-    const { imageObj, ssObj } = globals;
+    const { BUTTON_BACK_TOP, BUTTON_RESTART } = globals.imageObj;
+    const { BUTTON_TWITTER_GAMEOVER_SS } = globals.ssObj;
 
     createjs.Ticker.removeEventListener("tick", this.progress);
 
-    imageObj.BUTTON_BACK_TOP.removeEventListener("mousedown", this.onCLickBack);
-    imageObj.BUTTON_RESTART.removeEventListener(
-      "mousedown",
-      this.onClickRestart
-    );
-    ssObj.BUTTON_TWITTER_GAMEOVER_SS.removeEventListener(
+    BUTTON_BACK_TOP.removeEventListener("mousedown", this.onCLickBack);
+    BUTTON_RESTART.removeEventListener("mousedown", this.onClickRestart);
+    BUTTON_TWITTER_GAMEOVER_SS.removeEventListener(
       "mousedown",
       this.onClickTweet
     );
@@ -126,12 +131,11 @@ class GameOverEngine extends Engine {
 
     trackEvent(TRACK_ACTION.CLICK, { label: "tweet" });
 
-    window.location.href =
-      "https://twitter.com/intent/tweet" +
-      "?hashtags=ほのCar!+%23そこんところ工房" +
-      "&text=" +
-      getTweetText(count, chara) +
-      "&url=http://games.sokontokoro-factory.net/honocar/";
+    tweetByWebIntent({
+      text: getTweetText(count, chara),
+      url: "http://games.sokontokoro-factory.net/honocar/",
+      hashtags: ["ほのCar", "そこんところ工房"]
+    });
   }
 }
 

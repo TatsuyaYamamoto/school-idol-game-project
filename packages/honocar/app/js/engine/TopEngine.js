@@ -103,18 +103,12 @@ class TopEngine extends Engine {
       logger.debug(`try to connect to ${remotePeerId}`);
       p2p.connect(remotePeerId);
     } else {
-      window.addEventListener(
-        isSupportTouchEvent() ? "touchstart" : "click",
-        this.onClickTop
-      );
+      window.addEventListener("mousedown", this.onClickTop);
     }
   }
 
   tearDown() {
-    window.removeEventListener(
-      isSupportTouchEvent() ? "touchstart" : "click",
-      this.onClickTop
-    );
+    window.removeEventListener("mousedown", this.onClickTop);
     this.titleLogo = null;
   }
 
