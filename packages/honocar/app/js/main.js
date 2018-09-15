@@ -6,12 +6,7 @@ import "createjs/builds/1.0.0/createjs.js";
 import "../main.css";
 
 import * as alertify from "alertify/lib/alertify";
-import {
-  config as mikanConfig,
-  initI18n,
-  t,
-  isSupportTouchEvent
-} from "@sokontokoro/mikan";
+import { config as mikanConfig, initI18n, t } from "@sokontokoro/mikan";
 
 import { to } from "./stateMachine";
 import config from "./resources/config";
@@ -71,11 +66,6 @@ function init() {
   globals.gameStage.addChild(loading);
   globals.gameStage.update();
 
-  //canvasステージ内でのタッチイベントの有効化
-  if (createjs.Touch.isSupported()) {
-    createjs.Touch.enable(globals.gameStage);
-  }
-
   // toggle sound with blur or focus
   window.addEventListener("blur", function() {
     soundTurnOff();
@@ -98,40 +88,28 @@ function init() {
   //コンテンツのロードステートに移行
   const ua = navigator.userAgent;
 
-  if (/iPhone/.test(ua)) {
-    globals.gameStage.removeAllChildren();
-    const text = new createjs.Text();
-    setTextProperties(
-      text,
-      globals.gameScrean.width * 0.5,
-      globals.gameScrean.height * 0.5,
-      globals.gameScrean.width * 0.05,
-      "Courier",
-      "center",
-      globals.gameScrean.width * 0.04
-    );
-    text.text = t(Ids.TAP_DISPLAY_INFO);
+  globals.gameStage.removeAllChildren();
+  const text = new createjs.Text();
+  setTextProperties(
+    text,
+    globals.gameScrean.width * 0.5,
+    globals.gameScrean.height * 0.5,
+    globals.gameScrean.width * 0.05,
+    "Courier",
+    "center",
+    globals.gameScrean.width * 0.04
+  );
+  text.text = t(Ids.TAP_DISPLAY_INFO);
 
-    globals.gameStage.addChild(text);
-    globals.gameStage.update();
+  globals.gameStage.addChild(text);
+  globals.gameStage.update();
 
-    window.addEventListener(
-      isSupportTouchEvent() ? "touchstart" : "click",
-      start
-    );
-  } else {
-    // ログイン確認後ロード画面へ遷移
-    loadContent().then(() => {
-      to(TopEngine);
-    });
-  }
+  window.addEventListener("mousedown", start);
 }
 
 function start() {
-  window.removeEventListener(
-    isSupportTouchEvent() ? "touchstart" : "click",
-    start
-  );
+  window.removeEventListener("mousedown", start);
+
   loadContent().then(() => {
     to(TopEngine);
   });
