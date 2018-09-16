@@ -50,7 +50,7 @@ export function loadContent() {
     globals.queue.installPlugin(createjs.Sound);
     globals.queue.setMaxConnections(6);
     globals.queue.addEventListener("complete", function() {
-      globals.loginPromise.finally(function() {
+      globals.loginPromise.then(function() {
         setImageContent();
         setSpriteSheetContents();
         setSoundContent();

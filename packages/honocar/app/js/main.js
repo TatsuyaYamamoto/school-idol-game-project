@@ -27,22 +27,25 @@ function init() {
   tracePage(TRACK_PAGES.INDEX);
 
   /*---------- ログインチェック ----------*/
-  globals.loginPromise = requestLogin().then(response => {
-    if (response.ok) {
-      alertify.log(t(Ids.LOGIN_SUCCESS), "success", 3000);
+  globals.loginPromise = requestLogin()
+    .then(response => {
+      if (response.ok) {
+        alertify.log(t(Ids.LOGIN_SUCCESS), "success", 3000);
 
-      return response.json().then(data => {
-        globals.isLogin = true;
+        return response.json().then(data => {
+          globals.isLogin = true;
 
-        globals.user.id = data.user_id;
-        globals.user.name = data.user_name;
-        globals.user.iconUrl = data.icon_url;
-      });
-    } else {
-      // 未ログインの場合は通知なし
+          globals.user.id = data.user_id;
+          globals.user.name = data.user_name;
+          globals.user.iconUrl = data.icon_url;
+        });
+      } else {
+        throw "fail to login";
+      }
+    })
+    .catch(e => {
       globals.isLogin = false;
-    }
-  });
+    });
 
   //ゲーム画面の初期
   globals.gameStage = new createjs.Stage("gameScrean");
