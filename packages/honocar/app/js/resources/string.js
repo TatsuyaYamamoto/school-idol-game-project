@@ -29,7 +29,9 @@ export const Ids = {
   ONLINE_DIALOG_REPLAY_CONFIRM_TEXT: "online_dialog_replay_confirm_text",
   ONLINE_DIALOG_REPLAY_WAITING_TEXT: "online_dialog_replay_waiting_text",
   ONLINE_DIALOG_DISCONNECTED_TITLE: "online_dialog_disconnected_title",
-  ONLINE_DIALOG_DISCONNECTED_TEXT: "online_dialog_disconnected_text"
+  ONLINE_DIALOG_DISCONNECTED_TEXT: "online_dialog_disconnected_text",
+
+  OPEN_EXTERNAL_SITE_INFO: "open_external_site_info"
 };
 
 export default {
@@ -102,7 +104,9 @@ LEFT, RIGHTボタン(キーボードの←→でも可！)
 
       [Ids.ONLINE_DIALOG_DISCONNECTED_TITLE]: "ゲーム終了",
       [Ids.ONLINE_DIALOG_DISCONNECTED_TEXT]:
-        "通信相手の接続が切れてしまいました。Topに戻ります。"
+        "通信相手の接続が切れてしまいました。Topに戻ります。",
+
+      [Ids.OPEN_EXTERNAL_SITE_INFO]: "外部サイト({{ url }})を開きます！"
     }
   }
 };

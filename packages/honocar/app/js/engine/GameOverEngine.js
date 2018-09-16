@@ -1,5 +1,5 @@
 import * as alertify from "alertify/lib/alertify";
-import { t, tweetByWebIntent } from "@sokontokoro/mikan";
+import { t, tweetByWebIntent, getLogger, openModal } from "@sokontokoro/mikan";
 
 import globals from "../globals";
 import Engine from "./Engine";
@@ -10,6 +10,8 @@ import { to } from "../stateMachine";
 import { getTweetText } from "../common";
 import { Ids } from "../resources/string";
 import { TRACK_ACTION, trackEvent } from "../tracker";
+
+const logger = getLogger("gameover");
 
 class GameOverEngine extends Engine {
   constructor(props) {
@@ -125,16 +127,30 @@ class GameOverEngine extends Engine {
     trackEvent(TRACK_ACTION.CLICK, { label: "back_from_gameover" });
   }
 
-  onClickTweet() {
-    const count = this.passCarCount;
-    const chara = globals.playCharacter;
+  onClickTweet(e) {
+    openModal({
+      text: t(Ids.OPEN_EXTERNAL_SITE_INFO, { url: "twitter.com" }),
+      actions: [
+        {
+          text: "OK",
+          onClick: () => {
+            const count = this.passCarCount;
+            const chara = globals.playCharacter;
 
-    trackEvent(TRACK_ACTION.CLICK, { label: "tweet" });
+            trackEvent(TRACK_ACTION.CLICK, { label: "tweet" });
 
-    tweetByWebIntent({
-      text: getTweetText(count, chara),
-      url: "http://games.sokontokoro-factory.net/honocar/",
-      hashtags: ["ほのCar", "そこんところ工房"]
+            tweetByWebIntent({
+              text: getTweetText(count, chara),
+              url: "http://games.sokontokoro-factory.net/honocar/",
+              hashtags: ["ほのCar", "そこんところ工房"]
+            });
+          }
+        },
+        {
+          text: "CANCEL",
+          type: "cancel"
+        }
+      ]
     });
   }
 }

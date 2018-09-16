@@ -3,7 +3,7 @@ import {
   closeModal,
   getCurrentUrl,
   getLogger,
-  isSupportTouchEvent,
+  pointerdown,
   openModal,
   P2PClient,
   t
@@ -103,12 +103,12 @@ class TopEngine extends Engine {
       logger.debug(`try to connect to ${remotePeerId}`);
       p2p.connect(remotePeerId);
     } else {
-      window.addEventListener("mousedown", this.onClickTop);
+      window.addEventListener(pointerdown, this.onClickTop);
     }
   }
 
   tearDown() {
-    window.removeEventListener("mousedown", this.onClickTop);
+    window.removeEventListener(pointerdown, this.onClickTop);
     this.titleLogo = null;
   }
 

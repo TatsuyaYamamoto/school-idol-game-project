@@ -2,6 +2,9 @@
  * @fileOverview Convenience utilities.
  */
 import config from "./config";
+import { getLogger } from "./logger";
+
+const logger = getLogger("mikan:util");
 
 /**
  * Detecting iOS
@@ -48,14 +51,36 @@ export function getScale(): number {
   return width / config.basicImageWidth;
 }
 
+export function isSupportPointerEvents(): boolean {
+  return "onpointerdown" in window;
+}
+
 /**
  * Return true if running browser is supporting touch events.
  * @see https://github.com/Modernizr/Modernizr/blob/v3.3.1/feature-detects/touchevents.js
  * @return {boolean}
  */
+export function isSupportTouchEvents(): boolean {
+  return "ontouchstart" in window;
+}
+
+/**
+ * @deprecated
+ */
 export function isSupportTouchEvent(): boolean {
   return "ontouchstart" in window;
 }
+
+export const pointerdown: "pointerdown" | "touchstart" | "mousedown" = (() => {
+  if (isSupportPointerEvents()) {
+    return "pointerdown";
+  }
+  if (isSupportTouchEvents()) {
+    return "touchstart";
+  }
+
+  return "mousedown";
+})();
 
 /**
  * Get integer. this value is generated randomly between min and max.
@@ -157,11 +182,28 @@ export function tweetByWebIntent(params: WebIntentParams, popup = false) {
     queries.push(`via=${encodeURIComponent(params.via)}`);
   }
 
-  const intentUrl = `${TWITTER_INTENT_ENDPOINT}?${queries.join("&")}`;
+  const url = `${TWITTER_INTENT_ENDPOINT}?${queries.join("&")}`;
+
+  logger.debug(`open twitter with webintent. url; ${url}`);
 
   if (WindowObjectReference && !WindowObjectReference.closed) {
     WindowObjectReference.close();
   }
 
-  WindowObjectReference = window.open(intentUrl, "TwitterIntentWindowName");
+  WindowObjectReference = window.open(url, "TwitterIntentWindowName");
+
+  setTimeout(() => {
+    const opened =
+      !window.focus() ||
+      (WindowObjectReference && WindowObjectReference.focus());
+
+    if (opened) {
+      return;
+    }
+
+    logger.error(
+      `fail to open with new window object. change location to; ${url}`
+    );
+    window.location.href = url;
+  }, 500);
 }

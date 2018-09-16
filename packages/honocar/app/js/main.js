@@ -6,7 +6,13 @@ import "createjs/builds/1.0.0/createjs.js";
 import "../main.css";
 
 import * as alertify from "alertify/lib/alertify";
-import { config as mikanConfig, initI18n, t } from "@sokontokoro/mikan";
+import {
+  config as mikanConfig,
+  initI18n,
+  isSupportTouchEvents,
+  pointerdown,
+  t
+} from "@sokontokoro/mikan";
 
 import { to } from "./stateMachine";
 import config from "./resources/config";
@@ -51,6 +57,10 @@ function init() {
   globals.gameStage = new createjs.Stage("gameScrean");
 
   globals.gameScrean = document.getElementById("gameScrean");
+
+  if (isSupportTouchEvents()) {
+    createjs.Touch.enable(globals.gameStage, true, true);
+  }
 
   //拡大縮小率の計算
   initGameScreenScale();
@@ -107,11 +117,11 @@ function init() {
   globals.gameStage.addChild(text);
   globals.gameStage.update();
 
-  window.addEventListener("mousedown", start);
+  window.addEventListener(pointerdown, start);
 }
 
 function start() {
-  window.removeEventListener("mousedown", start);
+  window.removeEventListener(pointerdown, start);
 
   loadContent().then(() => {
     to(TopEngine);
