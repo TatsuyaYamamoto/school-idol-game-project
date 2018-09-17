@@ -53,11 +53,9 @@ window.onload = function() {
   // サウンド用イベント
   window.addEventListener("blur", function() {
     Util.soundTurnOff();
-    createjs.Ticker.setPaused(true);
   });
   window.addEventListener("focus", function() {
     Util.soundTurnOn();
-    createjs.Ticker.setPaused(false);
   });
 
   /*---------- StateMachien起動 ----------*/
