@@ -1,5 +1,5 @@
 import * as alertify from "alertify/lib/alertify";
-import { openModal, t } from "@sokontokoro/mikan";
+import { openModal, t, openExternalSite } from "@sokontokoro/mikan";
 
 import globals from "../globals";
 import Engine from "./Engine";
@@ -81,7 +81,7 @@ class MenuEngine extends Engine {
     imageObj.BUTTON_CREDIT.addEventListener("mousedown", onClick2Credit);
     imageObj.BUTTON_TWITTER_LOGIN.addEventListener("mousedown", onClickLogin);
     imageObj.BUTTON_TWITTER_LOGOUT.addEventListener("mousedown", onClickLogout);
-    imageObj.BUTTON_TWITTER_TOP.addEventListener("mousedown", onClickTwitter);
+    imageObj.BUTTON_TWITTER_TOP.addEventListener("mousedown", onClickHome);
     ssObj.BUTTON_SOUND_SS.addEventListener("mousedown", toggleSound);
   }
 
@@ -112,10 +112,7 @@ class MenuEngine extends Engine {
       "mousedown",
       onClickLogout
     );
-    imageObj.BUTTON_TWITTER_TOP.removeEventListener(
-      "mousedown",
-      onClickTwitter
-    );
+    imageObj.BUTTON_TWITTER_TOP.removeEventListener("mousedown", onClickHome);
     ssObj.BUTTON_SOUND_SS.removeEventListener("mousedown", toggleSound);
 
     this.characterSelectButton = null;
@@ -171,8 +168,29 @@ function onClick2HowToPlay() {
 }
 
 function onClick2Ranking() {
-  window.location.href =
-    "http://games.sokontokoro-factory.net/ranking/?game=honocar";
+  globals.soundObj.SOUND_OK.stop();
+  globals.soundObj.SOUND_OK.play();
+
+  const url = "http://games.sokontokoro-factory.net/ranking/?game=honocar";
+
+  openModal({
+    text: t(Ids.OPEN_EXTERNAL_SITE_INFO, {
+      url: "games.sokontokoro-factory.net"
+    }),
+    actions: [
+      {
+        text: "OK",
+        onClick: () => {
+          trackEvent(TRACK_ACTION.CLICK, { label: "ranking" });
+          openExternalSite(url);
+        }
+      },
+      {
+        text: "CANCEL",
+        type: "cancel"
+      }
+    ]
+  });
 }
 
 function onClick2Credit() {
@@ -228,8 +246,30 @@ function onClickLogout() {
   });
 }
 
-function onClickTwitter() {
-  window.location.href = config.link.t28_twitter;
+function onClickHome() {
+  globals.soundObj.SOUND_OK.stop();
+  globals.soundObj.SOUND_OK.play();
+
+  const url = "http://www.sokontokoro-factory.net/";
+
+  openModal({
+    text: t(Ids.OPEN_EXTERNAL_SITE_INFO, {
+      url: "www.sokontokoro-factory.net"
+    }),
+    actions: [
+      {
+        text: "OK",
+        onClick: () => {
+          trackEvent(TRACK_ACTION.CLICK, { label: "home" });
+          openExternalSite(url);
+        }
+      },
+      {
+        text: "CANCEL",
+        type: "cancel"
+      }
+    ]
+  });
 }
 
 export default new MenuEngine();

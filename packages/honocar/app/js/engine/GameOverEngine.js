@@ -128,6 +128,9 @@ class GameOverEngine extends Engine {
   }
 
   onClickTweet(e) {
+    globals.soundObj.SOUND_OK.stop();
+    globals.soundObj.SOUND_OK.play();
+
     openModal({
       text: t(Ids.OPEN_EXTERNAL_SITE_INFO, { url: "twitter.com" }),
       actions: [

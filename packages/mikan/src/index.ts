@@ -46,7 +46,8 @@ export {
   timeout,
   vibrate,
   getCurrentUrl,
-  tweetByWebIntent
+  tweetByWebIntent,
+  openExternalSite
 } from "./utils";
 
 export { default as ViewContainer } from "./ViewContainer";

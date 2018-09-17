@@ -161,7 +161,6 @@ interface WebIntentParams {
 }
 
 const TWITTER_INTENT_ENDPOINT = "https://twitter.com/intent/tweet";
-let WindowObjectReference: Window | null = null;
 
 /**
  * @see https://dev.twitter.com/web/tweet-button/web-intent
@@ -184,18 +183,21 @@ export function tweetByWebIntent(params: WebIntentParams, popup = false) {
 
   const url = `${TWITTER_INTENT_ENDPOINT}?${queries.join("&")}`;
 
-  logger.debug(`open twitter with webintent. url; ${url}`);
+  openExternalSite(url);
+}
 
-  if (WindowObjectReference && !WindowObjectReference.closed) {
-    WindowObjectReference.close();
-  }
+let ExternalSiteWindowRef: Window | null = null;
 
-  WindowObjectReference = window.open(url, "TwitterIntentWindowName");
+export function openExternalSite(url) {
+  const target = "sokontokoro-factory.net_external_site";
+  ExternalSiteWindowRef = window.open(url, target);
+
+  logger.debug(`open external site; ${url}`);
 
   setTimeout(() => {
     const opened =
       !window.focus() ||
-      (WindowObjectReference && WindowObjectReference.focus());
+      (ExternalSiteWindowRef && ExternalSiteWindowRef.focus());
 
     if (opened) {
       return;
