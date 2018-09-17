@@ -5,7 +5,11 @@ export function to(stateEngine, params) {
   const prevState = currentState;
 
   prevState && prevState["tearDown"]();
-  nextState && nextState["init"](params);
+
+  // prevent to fire next state button.
+  setTimeout(() => {
+    nextState && nextState["init"](params);
+  });
 
   currentState = nextState;
 }
