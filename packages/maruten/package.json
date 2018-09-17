@@ -1,6 +1,6 @@
 {
   "name": "maruten",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "homepage": "https://github.com/TatsuyaYamamoto/maruten",
   "authors": [
     "TatsuyaYamamoto <yamamoto.tatsuya@fujixerox.co.jp>"
@@ -10,6 +10,7 @@
   "scripts": {
     "start": "npm run clean && webpack-serve",
     "build": "npm run clean && webpack",
+    "build:pro": "npm run clean && NODE_ENV=production webpack",
     "clean": "rm -rf dist"
   },
   "devDependencies": {
