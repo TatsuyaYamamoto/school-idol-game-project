@@ -29,7 +29,8 @@ export default class CreditEngine {
   handleLinkButtonEventListener() {
     const goToMenu = () => {
       this.handleLinkButtonEventListener().remove();
-      State.object.sound.BACK.play("none", 0, 0, 0, 1, 0);
+      State.object.sound.BACK.stop();
+      State.object.sound.BACK.play();
 
       this.callbackMenuGameState();
     };

@@ -109,7 +109,7 @@ export default class GameEngine {
         this.appearYoshiko();
         this.frameOfAppearingAddTimeItem = Util.getRondom(100, 200);
 
-        State.object.sound.GAME_LOOP.play("none", 0, 0, -1, 0.4, 0);
+        State.object.sound.GAME_LOOP.play({ loop: -1, volume: 0.4 });
 
         break;
     }
@@ -150,7 +150,9 @@ export default class GameEngine {
       // よしこ
       if (this.enemy != null && this.enemy.doseColideWithFeather(feather)) {
         this.enemy.hit();
-        State.object.sound.DATEN.play("none", 0, 0, 0, 1, 0);
+
+        State.object.sound.DATEN.stop();
+        State.object.sound.DATEN.play();
 
         this.datenCount++;
         this.enemy = null;
@@ -164,7 +166,9 @@ export default class GameEngine {
       ) {
         this.disappearAddTimeItem();
 
-        State.object.sound.MICAN.play("none", 0, 0, 0, 1, 0);
+        State.object.sound.MICAN.stop();
+        State.object.sound.MICAN.play();
+
         this.timer.addCount(ADD_TIME_SECONDS_BY_ITEM);
       }
     });
@@ -216,7 +220,7 @@ export default class GameEngine {
     State.gameStage.update();
 
     State.object.sound.GAME_LOOP.stop();
-    State.object.sound.GAME_END.play("none", 0, 0, 0, 0.4, 0);
+    State.object.sound.GAME_END.play({ volume: 0.4 });
 
     this.callbackState();
   }
@@ -282,7 +286,9 @@ export default class GameEngine {
       });
 
       this.player.throw();
-      State.object.sound.THROW.play("none", 0, 0, 0, 1, 0);
+
+      State.object.sound.THROW.stop();
+      State.object.sound.THROW.play();
     } else {
       // 画面下方向の角度の場合、待機モーションに移行して終了
       this.player.wait();

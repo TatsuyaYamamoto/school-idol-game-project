@@ -70,7 +70,9 @@ export default class HowToPlayEngine extends GameEngine {
       this.feathers.forEach(feather => {
         if (this.enemy.doseColideWithFeather(feather)) {
           this.enemy.hit();
-          State.object.sound.DATEN.play("none", 0, 0, 0, 1, 0);
+
+          State.object.sound.DATEN.stop();
+          State.object.sound.DATEN.play();
 
           this.enemy = null;
         }
@@ -109,7 +111,8 @@ export default class HowToPlayEngine extends GameEngine {
    */
   handleLinkButtonEventListener() {
     const backMenu = () => {
-      State.object.sound.BACK.play("none", 0, 0, 0, 1, 0);
+      State.object.sound.BACK.stop();
+      State.object.sound.BACK.play();
 
       this.tick.remove();
       this.handleLinkButtonEventListener().remove();
