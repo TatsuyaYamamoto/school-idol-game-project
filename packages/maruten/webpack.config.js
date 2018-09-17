@@ -9,7 +9,12 @@ const htmlParams = {
   title: "DEV まるてん!",
   noIndex: true,
   trackingCode: "UA-64858827-8",
-  description: "まるがよしこを堕天させるゲームです。(?)2015そこんところ工房"
+  description: "まるがよしこを堕天させるゲームです。(?)2015そこんところ工房",
+  keyword:
+    "ラブライブ！サンシャイン!!,LoveLive！,国木田花丸, はなまる, 津島善子, よしこ, ヨハネ,ゲーム,フリゲ,フリーゲーム",
+  ogUrl: "https://games.sokontokoro-factory.net/maruten/",
+  ogImage:
+    "https://games.sokontokoro-factory.net/maruten/img/TITLE_LOGO_HANAMARU.png"
 };
 
 isProduction &&
