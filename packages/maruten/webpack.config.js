@@ -38,7 +38,7 @@ const plugins = [
 ];
 
 module.exports = {
-  mode: "development",
+  mode: isProduction ? "production" : "development",
 
   entry: {
     bundle: path.resolve(__dirname, "src/js/main.js")
@@ -86,5 +86,9 @@ module.exports = {
     extensions: [".js", ".jsx", ".json"]
   },
 
-  plugins
+  plugins,
+
+  // https://github.com/pixijs/pixi-sound/issues/28
+  // Resolve node fs module for pixi-sound.
+  node: { fs: "empty" }
 };

@@ -1,9 +1,11 @@
 import * as alertify from "alertify/lib/alertify";
+import { openModal, tweetByWebIntent } from "@sokontokoro/mikan";
 
 import State from "../state.js";
 import Util from "../util.js";
 import { postScore } from "../network.js";
 import { CHARACTER } from "../static/constant.js";
+import { LINK } from "../static/constant";
 
 export default class GameoverEngine {
   constructor(tick, callbackMenuState, callbackGameState) {
@@ -91,10 +93,32 @@ export default class GameoverEngine {
       this.callbackGameState();
     };
     const tweet = () => {
-      window.location.href = `https://twitter.com/intent/tweet
-?hashtags=まるてん！+%23そこんところ工房
-&text=${GameoverEngine.getTweetText()}
-&url=http://games.sokontokoro-factory.net/maruten/`;
+      openModal({
+        text: "外部サイト(twitter.com)にアクセスします！",
+        actions: [
+          {
+            text: "OK",
+            onClick: () => {
+              State.object.sound.BACK.stop();
+              State.object.sound.OK.play();
+
+              tweetByWebIntent({
+                text: GameoverEngine.getTweetText(),
+                url: "http://games.sokontokoro-factory.net/maruten/",
+                hashtags: ["まるてん", "そこんところ工房"]
+              });
+            }
+          },
+          {
+            text: "CANCEL",
+            type: "cancel",
+            onClick: () => {
+              State.object.sound.BACK.stop();
+              State.object.sound.BACK.play();
+            }
+          }
+        ]
+      });
     };
 
     return {

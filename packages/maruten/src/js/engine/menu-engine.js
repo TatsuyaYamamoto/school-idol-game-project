@@ -1,4 +1,4 @@
-import * as alertify from "alertify/lib/alertify";
+import { openModal, openExternalSite } from "@sokontokoro/mikan";
 
 import State from "../state.js";
 import Util from "../util.js";
@@ -108,11 +108,59 @@ export default class MenuEngine {
     };
 
     const goToTwitterHome = () => {
-      window.location.href = LINK.T28_TWITTER;
+      State.object.sound.OK.stop();
+      State.object.sound.OK.play();
+
+      openModal({
+        text: "ホームページににアクセスします！",
+        actions: [
+          {
+            text: "OK",
+            onClick: () => {
+              State.object.sound.BACK.stop();
+              State.object.sound.OK.play();
+
+              openExternalSite(LINK.SOKONTOKORO_HOME);
+            }
+          },
+          {
+            text: "CANCEL",
+            type: "cancel",
+            onClick: () => {
+              State.object.sound.BACK.stop();
+              State.object.sound.BACK.play();
+            }
+          }
+        ]
+      });
     };
 
     const goToRanking = () => {
-      window.location.href = LINK.RANKING;
+      State.object.sound.OK.stop();
+      State.object.sound.OK.play();
+
+      openModal({
+        text: "ランキングページにアクセスします！",
+        actions: [
+          {
+            text: "OK",
+            onClick: () => {
+              State.object.sound.BACK.stop();
+              State.object.sound.OK.play();
+
+              openExternalSite(LINK.RANKING);
+            }
+          },
+          {
+            text: "CANCEL",
+            type: "cancel",
+            onClick: () => {
+              State.object.sound.BACK.stop();
+              State.object.sound.BACK.play();
+            }
+          }
+        ]
+      });
     };
 
     const turnSoundSwitch = () => {
@@ -132,16 +180,27 @@ export default class MenuEngine {
       State.object.sound.OK.stop();
       State.object.sound.OK.play();
 
-      alertify.confirm("ランキングシステムにログインします！", result => {
-        if (result) {
-          State.object.sound.BACK.stop();
-          State.object.sound.OK.play();
+      openModal({
+        text: "ランキングシステムにログインします！",
+        actions: [
+          {
+            text: "OK",
+            onClick: () => {
+              State.object.sound.BACK.stop();
+              State.object.sound.OK.play();
 
-          window.location.href = ENDPOINT.LOGIN;
-        } else {
-          State.object.sound.BACK.stop();
-          State.object.sound.BACK.play();
-        }
+              window.location.href = ENDPOINT.LOGIN;
+            }
+          },
+          {
+            text: "CANCEL",
+            type: "cancel",
+            onClick: () => {
+              State.object.sound.BACK.stop();
+              State.object.sound.BACK.play();
+            }
+          }
+        ]
       });
     };
 
@@ -149,20 +208,28 @@ export default class MenuEngine {
       State.object.sound.OK.play();
       State.object.sound.OK.stop();
 
-      alertify.confirm(
-        "ログアウトします。ランキング登録はログイン中のみ有効です。",
-        result => {
-          if (result) {
-            State.object.sound.OK.stop();
-            State.object.sound.OK.play();
+      openModal({
+        text: "ログアウトします。ランキング登録はログイン中のみ有効です。",
+        actions: [
+          {
+            text: "OK",
+            onClick: () => {
+              State.object.sound.OK.stop();
+              State.object.sound.OK.play();
 
-            window.location.href = ENDPOINT.LOGOUT;
-          } else {
-            State.object.sound.BACK.stop();
-            State.object.sound.BACK.play();
+              window.location.href = ENDPOINT.LOGOUT;
+            }
+          },
+          {
+            text: "CANCEL",
+            type: "cancel",
+            onClick: () => {
+              State.object.sound.BACK.stop();
+              State.object.sound.BACK.play();
+            }
           }
-        }
-      );
+        ]
+      });
     };
 
     const changeCharaAndRstart = () => {

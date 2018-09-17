@@ -20,8 +20,8 @@ export const ENDPOINT = {
 
 export const LINK = {
   RANKING: "http://games.sokontokoro-factory.net/ranking/?game=maruten",
+  SOKONTOKORO_HOME: "https://www.sokontokoro-factory.net",
   T28_TWITTER: "https://twitter.com/t28_tatsuya",
-  SOKONTOKORO_HOME: "http://sokontokoro-factory.net",
   SANZASHI_TWITTER: "https://twitter.com/xxsanzashixx",
   SOUNDEFFECT_HOME: "http://soundeffect-lab.info/",
   ONJIN_HOME: "http://on-jin.com/"

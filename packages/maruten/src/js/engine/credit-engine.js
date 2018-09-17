@@ -44,7 +44,7 @@ export default class CreditEngine {
     };
 
     const goToSokontokoro = () => {
-      window.location.href = LINK.SOKONTOKORO_HOME;
+      window.location.href = LINK.T28_TWITTER;
     };
 
     const goToSanzashi = () => {
