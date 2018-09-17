@@ -1,3 +1,5 @@
+import * as alertify from "alertify/lib/alertify";
+
 import State from "../state.js";
 import Util from "../util.js";
 import { ENDPOINT, LINK, CHARACTER } from "../static/constant.js";

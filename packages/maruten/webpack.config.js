@@ -73,7 +73,12 @@ module.exports = {
       { test: /\.woff$/, loader: "url-loader?mimetype=application/font-woff" },
       { test: /\.woff2$/, loader: "url-loader?mimetype=application/font-woff" },
       { test: /\.eot$/, loader: "url-loader?mimetype=application/font-woff" },
-      { test: /\.ttf$/, loader: "url-loader?mimetype=application/font-woff" }
+      { test: /\.ttf$/, loader: "url-loader?mimetype=application/font-woff" },
+      {
+        // Inject "window" to this called in alertify.js
+        test: require.resolve("alertify/lib/alertify"),
+        use: "imports-loader?this=>window"
+      }
     ]
   },
 

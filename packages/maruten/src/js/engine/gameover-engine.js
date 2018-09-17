@@ -1,6 +1,8 @@
+import * as alertify from "alertify/lib/alertify";
+
 import State from "../state.js";
 import Util from "../util.js";
-import Network from "../network.js";
+import { postScore } from "../network.js";
 import { CHARACTER } from "../static/constant.js";
 
 export default class GameoverEngine {
@@ -16,7 +18,18 @@ export default class GameoverEngine {
     // プレイログ、ランキング登録
     const point = State.gameScore;
     const member = State.playCharacter;
-    Network.postScore(point, member);
+
+    postScore(point, member).then(response => {
+      if (!State.isLogin) {
+        return;
+      }
+
+      if (response.ok) {
+        alertify.log("ランキングシステム　通信完了！", "success", 3000);
+        return;
+      }
+      throw "fail to login";
+    });
 
     // 表示スコア設定
     State.object.text.RESULT_SCORE.text = `×${State.gameScore}`;

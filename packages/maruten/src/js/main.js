@@ -1,18 +1,37 @@
-import "alertify/lib/alertify";
 import "alertify/themes/alertify.core.css";
 import "alertify/themes/alertify.default.css";
 import "createjs/builds/1.0.0/createjs.js";
+
+import * as alertify from "alertify/lib/alertify";
 
 import State from "./state.js";
 import { STANDARD_PIXEL_SIZE } from "./static/config.js";
 import StateMachine from "./stateMachine.js";
 import Util from "./util.js";
-import Network from "./network.js";
+import { getUser } from "./network.js";
+import properties from "./static/properties";
 
 window.onload = function() {
   /*---------- ログインチェック ----------*/
   // 完了後にコンテンツオブジェクトのセットアップを開始する
-  State.deferredCheckLogin = Network.getUser();
+  State.deferredCheckLogin = getUser()
+    .then(response => {
+      if (response.ok) {
+        State.isLogin = true;
+        alertify.log("ランキングシステム ログイン中！", "success", 3000);
+
+        return response.json().then(data => {
+          State.user.id = data.user_id;
+          State.user.name = data.user_name;
+          properties.asyncImage.TWITTER_ICON.url = data.icon_url;
+        });
+      } else {
+        throw "fail to login";
+      }
+    })
+    .catch(e => {
+      State.isLogin = false;
+    });
 
   /*---------- ゲーム画面の初期化 ----------*/
   const scale = Util.initScreenScale(
