@@ -1,6 +1,4 @@
-import Deliverable from "../../../../framework/Deliverable";
-import { dispatchEvent } from "../../../../framework/EventUtils";
-import { t } from "../../../../framework/i18n";
+import { Deliverable, dispatchEvent, t, play } from "@sokontokoro/mikan";
 
 import TopViewState from "./TopViewState";
 import { Events } from "../TopView";
@@ -8,7 +6,6 @@ import { Events } from "../TopView";
 import CreditItem from "../../../texture/sprite/text/CreditItem";
 import BackToMenuButton from "../../../texture/sprite/button/BackToMenuButton";
 
-import { play } from "../../../../framework/MusicPlayer";
 import { trackPageView, VirtualPageViews } from "../../../helper/tracker";
 
 import { Ids as SoundIds } from "../../../resources/sound";

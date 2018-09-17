@@ -1,8 +1,6 @@
 import { parse } from "query-string";
 
-import Deliverable from "../../../../framework/Deliverable";
-import { dispatchEvent } from "../../../../framework/EventUtils";
-import { t } from "../../../../framework/i18n";
+import { Deliverable, dispatchEvent, t, play } from "@sokontokoro/mikan";
 
 import TopViewState from "./TopViewState";
 import { Events } from "../TopView";
@@ -10,7 +8,6 @@ import { Events } from "../TopView";
 import TitleLogo from "../../../texture/sprite/TitleLogo";
 import Text from "../../../texture/internal/Text";
 
-import { play } from "../../../../framework/MusicPlayer";
 import { trackPageView, VirtualPageViews } from "../../../helper/tracker";
 
 import Mode from "../../../models/Mode";

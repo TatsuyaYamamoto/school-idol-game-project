@@ -1,8 +1,7 @@
 import { Container, Graphics } from "pixi.js";
+import { t } from "@sokontokoro/mikan";
 
 import Text from "../internal/Text";
-
-import { t } from "../../../framework/i18n";
 
 import { Ids } from "../../resources/string";
 

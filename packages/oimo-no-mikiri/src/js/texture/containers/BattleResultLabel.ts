@@ -1,6 +1,6 @@
 import { Container, Graphics, TextStyleOptions } from "pixi.js";
 
-import { getCurrentLanguage, t } from "../../../framework/i18n";
+import { getCurrentLanguage, t } from "@sokontokoro/mikan";
 
 import VerticalText from "../sprite/text/VerticalText";
 import Text from "../internal/Text";

@@ -3,8 +3,7 @@
  * Sound resources provided from {@link loadSound} is one instance only.
  * Because of that, load a sound from cache of loader each time before invoking them.
  */
-import { default as PixiSound } from "pixi-sound/lib";
-import Sound from "pixi-sound/lib/Sound";
+import PixiSound from "pixi-sound";
 
 import { loadSound } from "./AssetLoader";
 

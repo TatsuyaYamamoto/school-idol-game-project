@@ -2,7 +2,7 @@
  * @fileOverview Image resource manifest.
  * It's used to load with {@link AssetLoader#setImageManifest}
  */
-import { ImageManifest } from "../../framework/AssetLoader";
+import { ImageManifest } from "@sokontokoro/mikan";
 
 export enum Ids {
   BACKGROUND_TOP,

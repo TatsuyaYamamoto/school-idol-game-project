@@ -1,6 +1,6 @@
 import { Container } from "pixi.js";
 
-import { t } from "../../../../framework/i18n";
+import { t } from "@sokontokoro/mikan";
 
 import Text from "../../internal/Text";
 

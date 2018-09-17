@@ -64,13 +64,13 @@
     "webpack-dev-server": "^2.7.1"
   },
   "dependencies": {
+    "@sokontokoro/mikan": "^0.0.1",
     "animejs": "^2.0.2",
     "autobind-decorator": "^2.1.0",
     "firebase": "^4.10.1",
     "i18next": "^9.0.0",
     "i18next-browser-languagedetector": "^2.0.0",
     "mousetrap": "^1.6.1",
-    "pixi-sound": "^1.4.2",
     "pixi.js": "^4.5.4",
     "query-string": "^5.1.0",
     "spin.js": "^3.1.0",

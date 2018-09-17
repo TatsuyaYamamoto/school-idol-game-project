@@ -1,8 +1,7 @@
 /**
  * @fileOverview Entry point of the application.
  */
-import config from "../framework/config";
-import { initI18n } from "../framework/i18n";
+import { config, initI18n, isSupportTouchEvent } from "@sokontokoro/mikan";
 
 import ApplicationState from "./fsm/ApplicationState";
 import { default as resources } from "./resources/string";
@@ -18,7 +17,6 @@ import {
 
 // Network fetch module
 import "whatwg-fetch";
-import { isSupportTouchEvent } from "../framework/utils";
 
 // Brand logo text font
 require("../fonts/PixelMplus10-Regular.css");

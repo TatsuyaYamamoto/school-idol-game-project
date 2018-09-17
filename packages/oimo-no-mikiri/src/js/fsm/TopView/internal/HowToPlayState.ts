@@ -1,5 +1,4 @@
-import Deliverable from "../../../../framework/Deliverable";
-import { dispatchEvent } from "../../../../framework/EventUtils";
+import { Deliverable, dispatchEvent, play } from "@sokontokoro/mikan";
 
 import TopViewState from "./TopViewState";
 import { Events } from "../TopView";
@@ -13,7 +12,6 @@ import Hanamaru from "../../../texture/sprite/character/Hanamaru";
 import Uchicchi from "../../../texture/sprite/character/Uchicchi";
 import Oimo from "../../../texture/sprite/character/Oimo";
 
-import { play } from "../../../../framework/MusicPlayer";
 import { trackPageView, VirtualPageViews } from "../../../helper/tracker";
 
 import { Ids as SoundIds } from "../../../resources/sound";

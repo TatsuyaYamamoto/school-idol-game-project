@@ -2,6 +2,9 @@
  * @fileOverview Convenience utilities.
  */
 import config from "./config";
+import { getLogger } from "./logger";
+
+const logger = getLogger("mikan:util");
 
 /**
  * Detecting iOS
@@ -48,14 +51,36 @@ export function getScale(): number {
   return width / config.basicImageWidth;
 }
 
+export function isSupportPointerEvents(): boolean {
+  return "onpointerdown" in window;
+}
+
 /**
  * Return true if running browser is supporting touch events.
  * @see https://github.com/Modernizr/Modernizr/blob/v3.3.1/feature-detects/touchevents.js
  * @return {boolean}
  */
+export function isSupportTouchEvents(): boolean {
+  return "ontouchstart" in window;
+}
+
+/**
+ * @deprecated
+ */
 export function isSupportTouchEvent(): boolean {
   return "ontouchstart" in window;
 }
+
+export const pointerdown: "pointerdown" | "touchstart" | "mousedown" = (() => {
+  if (isSupportPointerEvents()) {
+    return "pointerdown";
+  }
+  if (isSupportTouchEvents()) {
+    return "touchstart";
+  }
+
+  return "mousedown";
+})();
 
 /**
  * Get integer. this value is generated randomly between min and max.
@@ -113,4 +138,74 @@ export function vibrate(patternMillis: number | number[]) {
   if (!isSucceed) {
     console.error("Failed to vibrate.");
   }
+}
+
+export function getCurrentUrl(): string {
+  const protocol = location.protocol;
+  const host = location.hostname;
+  const path = location.pathname;
+  const port =
+    !location.port || location.port === "80" ? `` : `:${location.port}`;
+
+  return protocol + "//" + host + port + path;
+}
+
+/**
+ * @see https://dev.twitter.com/web/tweet-button/web-intent
+ */
+interface WebIntentParams {
+  text?: string;
+  url?: string;
+  hashtags?: string[];
+  via?: string;
+}
+
+const TWITTER_INTENT_ENDPOINT = "https://twitter.com/intent/tweet";
+
+/**
+ * @see https://dev.twitter.com/web/tweet-button/web-intent
+ */
+export function tweetByWebIntent(params: WebIntentParams, popup = false) {
+  const queries: string[] = [];
+
+  if (!!params.hashtags) {
+    queries.push(`hashtags=${encodeURIComponent(params.hashtags.join(","))}`);
+  }
+  if (!!params.text) {
+    queries.push(`text=${encodeURIComponent(params.text)}`);
+  }
+  if (!!params.url) {
+    queries.push(`url=${encodeURIComponent(params.url)}`);
+  }
+  if (!!params.via) {
+    queries.push(`via=${encodeURIComponent(params.via)}`);
+  }
+
+  const url = `${TWITTER_INTENT_ENDPOINT}?${queries.join("&")}`;
+
+  openExternalSite(url);
+}
+
+let ExternalSiteWindowRef: Window | null = null;
+
+export function openExternalSite(url) {
+  const target = "sokontokoro-factory.net_external_site";
+  ExternalSiteWindowRef = window.open(url, target);
+
+  logger.debug(`open external site; ${url}`);
+
+  setTimeout(() => {
+    const opened =
+      !window.focus() ||
+      (ExternalSiteWindowRef && ExternalSiteWindowRef.focus());
+
+    if (opened) {
+      return;
+    }
+
+    logger.error(
+      `fail to open with new window object. change location to; ${url}`
+    );
+    window.location.href = url;
+  }, 500);
 }

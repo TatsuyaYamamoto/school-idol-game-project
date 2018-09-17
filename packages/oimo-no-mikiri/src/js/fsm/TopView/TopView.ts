@@ -1,17 +1,17 @@
 import { default as AutoBind } from "autobind-decorator";
 
-import ViewContainer from "../../../framework/ViewContainer";
-import Deliverable from "../../../framework/Deliverable";
 import {
+  ViewContainer,
+  Deliverable,
   dispatchEvent,
   addEvents,
-  removeEvents
-} from "../../../framework/EventUtils";
-import {
+  removeEvents,
   show as showConnecting,
-  hide as hideConnecting
-} from "../../../framework/ConnectingIndicator";
-import { timeout } from "../../../framework/utils";
+  hide as hideConnecting,
+  timeout,
+  playOnLoop,
+  stop
+} from "@sokontokoro/mikan";
 
 import { Events as AppEvents } from "../ApplicationState";
 import HowToPlayState from "./internal/HowToPlayState";
@@ -22,8 +22,6 @@ import MenuState from "./internal/MenuState";
 import OnlineGame, { GameEvents } from "../../models/online/OnlineGame";
 import Mode from "../../models/Mode";
 import LocalGame from "../../models/local/LocalGame";
-
-import { playOnLoop, stop } from "../../../framework/MusicPlayer";
 
 import { Ids as SoundIds } from "../../resources/sound";
 

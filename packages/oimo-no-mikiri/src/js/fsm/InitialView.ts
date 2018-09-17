@@ -1,11 +1,13 @@
 import {
   addEvents,
   dispatchEvent,
-  removeEvents
-} from "../../framework/EventUtils";
-import ViewContainer from "../../framework/ViewContainer";
-import Deliverable from "../../framework/Deliverable";
-import AssetLoader from "../../framework/AssetLoader";
+  removeEvents,
+  ViewContainer,
+  Deliverable,
+  AssetLoader,
+  isIOS,
+  resumeContext
+} from "@sokontokoro/mikan";
 
 import { Events as ApplicationEvents } from "./ApplicationState";
 
@@ -24,8 +26,6 @@ import {
   trackTiming,
   VirtualPageViews
 } from "../helper/tracker";
-import { isIOS } from "../../framework/utils";
-import { resumeContext } from "../../framework/MusicPlayer";
 
 export enum Events {
   COMPLETE_PRELOAD = "InitialViewState@COMPLETE_LOAD",

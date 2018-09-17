@@ -1,5 +1,4 @@
-import { t } from "../../../../framework/i18n";
-import { loadTexture, loadFrames } from "../../../../framework/AssetLoader";
+import { t, loadTexture, loadFrames } from "@sokontokoro/mikan";
 
 import { FrameStructureIndexes } from "./Character";
 import Opponent from "./Opponent";

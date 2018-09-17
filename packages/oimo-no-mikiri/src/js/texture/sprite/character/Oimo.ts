@@ -1,6 +1,7 @@
+import { loadFrames } from "@sokontokoro/mikan";
+
 import AnimatedSprite from "../../internal/AnimatedSprite";
 import { Ids } from "../../../resources/image";
-import { loadFrames } from "../../../../framework/AssetLoader";
 
 const ANIMATION_SPEED = 0.05;
 
