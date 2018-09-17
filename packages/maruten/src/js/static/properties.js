@@ -1,3 +1,5 @@
+import packageJson from "../../../package.json";
+
 export default {
   player: {
     HANAMARU: "hanamaru"
@@ -422,6 +424,15 @@ export default {
       align: "center",
       lineHeight: 0.04,
       text: "-Please tap on the display!-"
+    },
+    VERSION: {
+      ratioX: 0.9,
+      ratioY: 0.005,
+      size: 0.04,
+      family: "Courier",
+      align: "center",
+      lineHeight: 0.04,
+      text: `v${packageJson.version}`
     },
     HOW_TO_PLAY: {
       ratioX: 0.5,

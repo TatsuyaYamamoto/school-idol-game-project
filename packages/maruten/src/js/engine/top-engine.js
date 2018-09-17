@@ -1,6 +1,5 @@
 import State from "../state.js";
 import Util from "../util.js";
-import properties from "../static/properties.js";
 import { CHARACTER } from "../static/constant.js";
 
 export default class TopEngine {
@@ -14,7 +13,8 @@ export default class TopEngine {
     Util.addChildren([
       State.object.image.BACKGROUND,
       TopEngine.getTitleLogChild(),
-      State.object.text.START
+      State.object.text.START,
+      State.object.text.VERSION
     ]);
     State.gameStage.update();
 
