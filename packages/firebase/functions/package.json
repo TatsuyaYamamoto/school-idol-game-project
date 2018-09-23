@@ -1,5 +1,7 @@
 {
   "name": "functions",
+  "private": true,
+  "version": "1.0.0",
   "scripts": {
     "build": "tsc",
     "serve": "npm run build && firebase serve --only functions",
@@ -15,6 +17,5 @@
   },
   "devDependencies": {
     "typescript": "~2.8.3"
-  },
-  "private": true
+  }
 }
