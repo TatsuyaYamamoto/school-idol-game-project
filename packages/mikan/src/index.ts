@@ -59,3 +59,16 @@ export { default as P2PClient } from "./P2PClient";
 export { openModal, closeModal } from "./Modal";
 
 export { getLogger } from "./logger";
+
+export {
+  init as initAuth,
+  getCurrentUser,
+  getIdToken,
+  signInAsAnonymous,
+  signInAsTwitterUser,
+  signOut
+} from "./firebase/auth";
+
+export { postScore, mergeUsers } from "./firebase/db";
+
+export { devConfig as devFirebaseConfig } from "./firebase/config";

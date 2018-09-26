@@ -2,7 +2,7 @@
  * @fileOverview Configuration that the application uses globally.
  */
 
-interface Config {
+export interface Config {
   rendererBackgroundColor: number;
 
   supportedLanguages: string[];
