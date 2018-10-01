@@ -2,14 +2,11 @@ import { auth, initializeApp, firestore } from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 
-import { Twitter } from "twit";
-import TwitterUser = Twitter.User;
 import UserCredential = auth.UserCredential;
 
 import { getLogger } from "../logger";
-import User from "./User";
-import { mergeUsers, UserDocument } from "./db";
-import { userDocRef } from "./utils";
+import { User, UserDocument } from "./User";
+import { mergeUsers } from "./db";
 
 const logger = getLogger("mikan/firebase/auth");
 const twitterAuthProvider = new auth.TwitterAuthProvider();
@@ -72,12 +69,7 @@ export function init(options: any): Promise<User> {
     auth()
       .getRedirectResult()
       .then(async (userCredential: UserCredential) => {
-        const {
-          operationType,
-          user,
-          additionalUserInfo,
-          credential
-        } = userCredential;
+        const { operationType, credential } = userCredential;
 
         // Received NO redirect result.
         if (!operationType) {
@@ -90,33 +82,13 @@ export function init(options: any): Promise<User> {
          * Anonymous direbase user is linked twitter user information.
          * After this, {@link auth#onAuthStateChanged}'s callback is fired.
          */
-        if (
-          operationType === "link" &&
-          credential.signInMethod === "twitter.com"
-        ) {
+        if (operationType === "link") {
+          const idp = credential.signInMethod;
           logger.debug(
-            "received redirect result and success to link with IdP."
+            `received redirect result and success to link with IdP; ${idp}`
           );
 
-          const profile = additionalUserInfo.profile as TwitterUser;
-          const userRef = userDocRef(user.uid);
-
-          await firestore().runTransaction(async transaction => {
-            const userDoc = await transaction.get(userRef);
-
-            if (!userDoc.exists) {
-              throw "Document does not exist!";
-            }
-
-            const providerData = userDoc.data().providerData || [];
-            providerData.push({
-              uid: profile.id_str,
-              providerId: credential.signInMethod,
-              linkedAt: new Date()
-            });
-
-            transaction.update(userRef, { providerData });
-          });
+          await User.linkIdp(userCredential);
 
           logger.debug("success update linked firebase user.");
 

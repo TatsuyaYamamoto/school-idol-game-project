@@ -4,34 +4,22 @@ import "createjs/builds/1.0.0/createjs.js";
 
 import * as alertify from "alertify/lib/alertify";
 
-import State from "./state.js";
+import { initAuth, devFirebaseConfig } from "@sokontokoro/mikan";
+
 import { STANDARD_PIXEL_SIZE } from "./static/config.js";
 import StateMachine from "./stateMachine.js";
 import Util from "./util.js";
-import { getUser } from "./network.js";
 import properties from "./static/properties";
+import State from "./state";
 
 window.onload = function() {
-  /*---------- ログインチェック ----------*/
-  // 完了後にコンテンツオブジェクトのセットアップを開始する
-  State.deferredCheckLogin = getUser()
-    .then(response => {
-      if (response.ok) {
-        State.isLogin = true;
-        alertify.log("ランキングシステム ログイン中！", "success", 3000);
+  State.firebaseInitPromise = initAuth(devFirebaseConfig).then(user => {
+    if (!user.isAnonymous) {
+      alertify.log("ランキングシステム ログイン中！", "success", 3000);
 
-        return response.json().then(data => {
-          State.user.id = data.user_id;
-          State.user.name = data.user_name;
-          properties.asyncImage.TWITTER_ICON.url = data.icon_url;
-        });
-      } else {
-        throw "fail to login";
-      }
-    })
-    .catch(e => {
-      State.isLogin = false;
-    });
+      properties.asyncImage.TWITTER_ICON.url = user.photoURL;
+    }
+  });
 
   /*---------- ゲーム画面の初期化 ----------*/
   const scale = Util.initScreenScale(

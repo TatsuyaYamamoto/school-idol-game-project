@@ -1,11 +1,14 @@
 import * as alertify from "alertify/lib/alertify";
-import { openModal, tweetByWebIntent } from "@sokontokoro/mikan";
+import {
+  openModal,
+  tweetByWebIntent,
+  getCurrentUser,
+  postScore
+} from "@sokontokoro/mikan";
 
 import State from "../state.js";
 import Util from "../util.js";
-import { postScore } from "../network.js";
 import { CHARACTER } from "../static/constant.js";
-import { LINK } from "../static/constant";
 
 export default class GameoverEngine {
   constructor(tick, callbackMenuState, callbackGameState) {
@@ -20,17 +23,15 @@ export default class GameoverEngine {
     // プレイログ、ランキング登録
     const point = State.gameScore;
     const member = State.playCharacter;
+    function shouldUpdate(prev, next) {
+      return prev.point < next.point;
+    }
 
-    postScore(point, member).then(response => {
-      if (!State.isLogin) {
+    postScore("maruten", member, point, shouldUpdate).then(() => {
+      if (getCurrentUser().isAnonymous) {
         return;
       }
-
-      if (response.ok) {
-        alertify.log("ランキングシステム　通信完了！", "success", 3000);
-        return;
-      }
-      throw "fail to login";
+      alertify.log("ランキングシステム　通信完了！", "success", 3000);
     });
 
     // 表示スコア設定

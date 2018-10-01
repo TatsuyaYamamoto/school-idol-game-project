@@ -84,8 +84,8 @@ export default class PreloadEngine {
       });
 
       const promiseList = DEBUG
-        ? [State.deferredCheckLogin]
-        : [State.deferredCheckLogin, brandingAnimation.promise];
+        ? [State.firebaseInitPromise]
+        : [State.firebaseInitPromise, brandingAnimation.promise];
 
       Promise.all(promiseList)
         .then(() => {

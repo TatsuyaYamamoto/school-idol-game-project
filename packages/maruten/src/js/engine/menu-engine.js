@@ -1,4 +1,10 @@
-import { openModal, openExternalSite } from "@sokontokoro/mikan";
+import {
+  openModal,
+  openExternalSite,
+  getCurrentUser,
+  signInAsTwitterUser,
+  signOut
+} from "@sokontokoro/mikan";
 
 import State from "../state.js";
 import Util from "../util.js";
@@ -17,7 +23,7 @@ export default class MenuEngine {
 
   start() {
     const targetChildren = [State.object.image.BACKGROUND];
-    if (State.isLogin) {
+    if (!getCurrentUser().isAnonymous) {
       targetChildren.push(
         State.object.image.BUTTON_TWITTER_LOGOUT,
         State.object.image.TWITTER_ICON
@@ -189,7 +195,7 @@ export default class MenuEngine {
               State.object.sound.BACK.stop();
               State.object.sound.OK.play();
 
-              window.location.href = ENDPOINT.LOGIN;
+              signInAsTwitterUser();
             }
           },
           {
@@ -217,7 +223,9 @@ export default class MenuEngine {
               State.object.sound.OK.stop();
               State.object.sound.OK.play();
 
-              window.location.href = ENDPOINT.LOGOUT;
+              signOut().then(() => {
+                location.reload();
+              });
             }
           },
           {

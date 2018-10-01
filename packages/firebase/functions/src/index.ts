@@ -1,8 +1,10 @@
 import * as functions from "firebase-functions";
-import { initializeApp, firestore } from "firebase-admin";
+import { initializeApp, firestore, credential } from "firebase-admin";
 
 import onCreateUser from "./trigger/onCreateUser";
 import onDeleteUser from "./trigger/onDeleteUser";
+import onCreatePlaylog from "./trigger/onCreatePlaylog";
+import onWriteHighscores from "./trigger/onWriteHighscores";
 
 initializeApp();
 firestore().settings({
@@ -14,4 +16,4 @@ export const helloWorld = functions.https.onRequest((request, response) => {
 });
 
 // Trigger
-export { onCreateUser, onDeleteUser };
+export { onCreateUser, onDeleteUser, onCreatePlaylog, onWriteHighscores };

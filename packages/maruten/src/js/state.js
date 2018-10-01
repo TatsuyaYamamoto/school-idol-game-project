@@ -11,8 +11,7 @@ export default {
 
   playCharacter: CHARACTER.HANAMARU,
 
-  deferredCheckLogin: null,
-  isLogin: false,
+  firebaseInitPromise: null,
 
   user: {
     id: "",
