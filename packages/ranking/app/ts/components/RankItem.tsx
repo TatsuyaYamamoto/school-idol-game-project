@@ -1,19 +1,81 @@
 import * as React from "react";
+import styled from "styled-components";
 
 interface Props {
   rank: number;
   point: number;
   userName: string;
+  member: string;
 }
 
+const Root = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  padding: 0.2em 0.5em;
+  margin: 2em 0;
+  color: #565656;
+  background: rgba(255, 222, 222, 0.27);
+  box-shadow: 0px 0px 0px 10px #ffeaea;
+  border: dashed 2px #ffc3c3;
+  border-radius: 8px;
+`;
+
+const Rank = styled.div``;
+
+const RankValue = styled.span`
+  font-size: 25px;
+`;
+
+const RankUnit = styled.span`
+  font-size: 15px;
+`;
+
+const UserDetail = styled.div``;
+
+const Username = styled.div``;
+
+const Score = styled.div``;
+
+const ScoreLabel = styled.span``;
+
+const ScoreValue = styled.span``;
+
+const memberBudgeSize = 30;
+
+const Member = styled.div`
+  font-size: ${memberBudgeSize}px;
+
+  padding: 0.2em 0.5em;
+  color: #565656;
+  background: white;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  //border: dashed 2px #ffc3c3;
+  border-radius: ${memberBudgeSize}px;
+`;
+
 const RankItem: React.SFC<Props> = props => {
-  const { rank, point, userName } = props;
+  const { rank, point, userName, member } = props;
+
   return (
-    <div>
-      <div>Rank: {rank}</div>
-      <div>Point: {point}</div>
-      <div>User: {userName}</div>
-    </div>
+    <Root>
+      <Rank>
+        {/* TODO i18n */}
+        <RankValue>{rank}</RankValue>
+        <RankUnit>位</RankUnit>
+      </Rank>
+      <UserDetail>
+        <Username>{userName}</Username>
+        <Score>
+          <ScoreLabel>{"SCORE "}</ScoreLabel>
+          <ScoreValue>{point}</ScoreValue>
+        </Score>
+      </UserDetail>
+      <div>
+        <Member>{"🍊"}</Member>
+      </div>
+    </Root>
   );
 };
 

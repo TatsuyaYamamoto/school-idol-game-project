@@ -48,6 +48,7 @@ class Index extends React.Component<Props, State> {
                 userName={item.userName}
                 rank={item.rank}
                 point={item.point}
+                member={item.member}
               />
             );
           })}
