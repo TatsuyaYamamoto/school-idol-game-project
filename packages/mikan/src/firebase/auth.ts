@@ -1,8 +1,8 @@
-import { auth, initializeApp, firestore } from "firebase/app";
-import "firebase/auth";
-import "firebase/firestore";
+import { auth } from "firebase/app";
 
 import UserCredential = auth.UserCredential;
+
+import { firebaseAuth, firebaseDb } from "./index";
 
 import { getLogger } from "../logger";
 import { User, UserDocument } from "./User";
@@ -22,13 +22,9 @@ interface AuthCredentialAlreadyInUseError extends auth.Error {
 /**
  * Initialize auth module.
  * A promise of return value will be resolved when signing-in.
- *
- * @param options
- * @param forceRefresh
  */
-export function init(options: any): Promise<User> {
-  initializeApp(options);
-  firestore().settings({ timestampsInSnapshots: true });
+export function init(): Promise<User> {
+  firebaseDb.settings({ timestampsInSnapshots: true });
 
   let ignoreChangeStateUid: string = null;
 
@@ -36,7 +32,7 @@ export function init(options: any): Promise<User> {
     /**
      * First state change event will fire after getting redirect result; {@link auth#getRedirectResult}.
      */
-    auth().onAuthStateChanged(user => {
+    firebaseAuth.onAuthStateChanged(user => {
       /**
        * If {@code ignoreChangeStateUid} is set value, ignore this state change.
        * In many cases to set, redirect result error.
@@ -66,7 +62,7 @@ export function init(options: any): Promise<User> {
       }
     });
 
-    auth()
+    firebaseAuth
       .getRedirectResult()
       .then(async (userCredential: UserCredential) => {
         const { operationType, credential } = userCredential;
@@ -118,7 +114,7 @@ export function init(options: any): Promise<User> {
           /**
            * Sign-in as a firebase user to be linked with twitter ID.
            */
-          const userCredential: auth.UserCredential = await auth().signInAndRetrieveDataWithCredential(
+          const userCredential: auth.UserCredential = await firebaseAuth.signInAndRetrieveDataWithCredential(
             e.credential
           );
 
@@ -139,7 +135,7 @@ export function init(options: any): Promise<User> {
 }
 
 export function getCurrentUser(): User {
-  const currentFirebaseUser = auth().currentUser;
+  const currentFirebaseUser = firebaseAuth.currentUser;
 
   if (!currentFirebaseUser) {
     throw new Error("no current user received.");
@@ -149,17 +145,17 @@ export function getCurrentUser(): User {
 }
 
 export function getIdToken(forceRefresh: boolean = true): Promise<string> {
-  return auth().currentUser.getIdToken(forceRefresh);
+  return firebaseAuth.currentUser.getIdToken(forceRefresh);
 }
 
 export function signInAsAnonymous(): Promise<auth.UserCredential> {
-  return auth().signInAnonymously();
+  return firebaseAuth.signInAnonymously();
 }
 
 export function signInAsTwitterUser(): Promise<void> {
-  return auth().currentUser.linkWithRedirect(twitterAuthProvider);
+  return firebaseAuth.currentUser.linkWithRedirect(twitterAuthProvider);
 }
 
 export function signOut(): Promise<void> {
-  return auth().signOut();
+  return firebaseAuth.signOut();
 }

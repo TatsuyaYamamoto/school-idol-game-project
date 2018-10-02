@@ -60,6 +60,8 @@ export { openModal, closeModal } from "./Modal";
 
 export { getLogger } from "./logger";
 
+export { firebaseDb, firebaseAuth } from "./firebase";
+
 export {
   init as initAuth,
   getCurrentUser,

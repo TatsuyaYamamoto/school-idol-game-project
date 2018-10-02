@@ -26,5 +26,9 @@ module.exports = {
     rules: [{ test: /\.tsx?$/, loader: "awesome-typescript-loader" }]
   },
 
-  plugins
+  plugins,
+
+  // https://github.com/pixijs/pixi-sound/issues/28
+  // Resolve node fs module for pixi-sound.
+  node: { fs: "empty" }
 };

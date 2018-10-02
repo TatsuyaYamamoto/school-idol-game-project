@@ -1,4 +1,6 @@
-import { firestore } from "firebase";
+import { firestore } from "firebase/app";
+
+import { firebaseDb } from "./index";
 import { Game, Member } from "./scheme";
 
 export interface PlaylogDocument extends firestore.DocumentData {
@@ -15,7 +17,7 @@ export interface PlaylogDocument extends firestore.DocumentData {
 
 export class Playlog {
   public static getColRef() {
-    return firestore().collection("playlogs");
+    return firebaseDb.collection("playlogs");
   }
 
   public static getDocRef(id: string) {

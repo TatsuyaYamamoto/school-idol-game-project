@@ -1,12 +1,16 @@
 import {
   User as FirebaseUser,
-  UserInfo as FirebaseUserInfo
+  UserInfo as FirebaseUserInfo,
+  auth,
+  firestore
 } from "firebase/app";
-import { auth, firestore } from "firebase";
+
 import UserCredential = firebase.auth.UserCredential;
 
 import { Twitter } from "twit";
 import TwitterUser = Twitter.User;
+
+import { firebaseAuth, firebaseDb } from "./index";
 
 export interface UserDocument extends firestore.DocumentData {
   uid: string;
@@ -55,7 +59,7 @@ export class User {
   private constructor(readonly firebaseUser: FirebaseUser) {}
 
   public static getColRef() {
-    return firestore().collection("users");
+    return firebaseDb.collection("users");
   }
 
   public static getDocRef(id: string) {
@@ -63,7 +67,7 @@ export class User {
   }
 
   public static getOwnRef() {
-    const { currentUser } = auth();
+    const { currentUser } = firebaseAuth;
 
     return User.getDocRef(currentUser.uid);
   }

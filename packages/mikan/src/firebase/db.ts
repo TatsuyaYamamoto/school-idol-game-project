@@ -1,7 +1,6 @@
-import { auth, firestore } from "firebase/app";
-import "firebase/auth";
-import "firebase/firestore";
+import { firestore } from "firebase/app";
 
+import { firebaseDb } from "./index";
 import { Game, Member } from "./scheme";
 import { getLogger } from "../logger";
 import { Playlog } from "./Playlog";

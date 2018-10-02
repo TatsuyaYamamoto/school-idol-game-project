@@ -1,6 +1,7 @@
-import { firestore } from "firebase";
+import { firestore } from "firebase/app";
+
+import { firebaseDb } from "./index";
 import { Game, Member } from "./scheme";
-import { PlaylogDocument } from "./Playlog";
 
 export interface HighscoreDocument extends firestore.DocumentData {
   userRef: firestore.DocumentReference;
@@ -16,7 +17,7 @@ export interface HighscoreDocument extends firestore.DocumentData {
 
 export class Highscore {
   public static getColRef() {
-    return firestore().collection("highscores");
+    return firebaseDb.collection("highscores");
   }
 
   public static getDocRef(id: string) {

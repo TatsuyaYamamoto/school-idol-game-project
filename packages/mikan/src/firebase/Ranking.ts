@@ -1,5 +1,6 @@
-import { firestore } from "firebase";
-import { Game, Member } from "./scheme";
+import { firestore } from "firebase/app";
+
+import { firebaseDb } from "./index";
 
 export interface RankItemDocument extends firestore.DocumentData {
   uid: string;
@@ -17,7 +18,7 @@ export interface RankingDocument extends firestore.DocumentData {
 
 export class Ranking {
   public static getColRef() {
-    return firestore().collection("ranking");
+    return firebaseDb.collection("ranking");
   }
 
   public static getDocRef(id: string) {
