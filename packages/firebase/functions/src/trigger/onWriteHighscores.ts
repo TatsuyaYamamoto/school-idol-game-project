@@ -60,7 +60,11 @@ export default functions.firestore
     let currentPoint =
       compareType === "desc" ? Number.MAX_VALUE : Number.MIN_VALUE;
     // ループ処理中、rank数
-    let currentRanking = 0;
+    let currentRank = 0;
+
+    //
+    let higherScoreCount = 0;
+
     // 一度にbatch処理するdocumentの数
     const maxSize = 100;
 
@@ -85,17 +89,13 @@ export default functions.firestore
       const batch = firestore().batch();
 
       for (const scoreDoc of scores.docs) {
+        higherScoreCount++;
         const highscore = scoreDoc.data() as HighscoreDocument;
 
         // 同率考慮の計算
         // prev itemのpointより低評価の場合、rank数をあげる
         if (shouldUpdate(highscore.point, currentPoint)) {
-          console.log(
-            `(${eventId}) rank count up ${currentRanking} -> ${currentRanking +
-              1}`
-          );
-
-          currentRanking++;
+          currentRank = higherScoreCount;
           currentPoint = highscore.point;
         }
 
@@ -106,7 +106,7 @@ export default functions.firestore
           uid: userDoc.uid,
           userName: userDoc.displayName,
           member: highscore.member,
-          rank: currentRanking,
+          rank: currentRank,
           point: highscore.point
         };
 
