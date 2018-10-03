@@ -8,16 +8,17 @@ interface Props {
   member: string;
 }
 
+const margin = 10;
 const Root = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
 
   padding: 0.2em 0.5em;
-  margin: 2em 0;
+  margin: ${margin}px;
   color: #565656;
   background: rgba(255, 222, 222, 0.27);
-  box-shadow: 0px 0px 0px 10px #ffeaea;
+  box-shadow: 0 0 0 ${margin}px #ffeaea;
   border: dashed 2px #ffc3c3;
   border-radius: 8px;
 `;

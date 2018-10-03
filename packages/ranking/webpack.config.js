@@ -23,7 +23,13 @@ module.exports = {
   },
 
   module: {
-    rules: [{ test: /\.tsx?$/, loader: "awesome-typescript-loader" }]
+    rules: [
+      { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
+      {
+        test: /\.css$/,
+        use: [{ loader: "style-loader" }, { loader: "css-loader" }]
+      }
+    ]
   },
 
   plugins,

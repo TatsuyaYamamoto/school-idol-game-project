@@ -1,21 +1,32 @@
 import * as React from "react";
 
 import {
-  initAuth,
   firebaseDb,
+  initAuth,
   MetadataDocument,
   RankItemDocument
 } from "@sokontokoro/mikan";
 
+import RankingList from "./RankingList";
+import {
+  IndexRange,
+  ListRowProps,
+  InfiniteLoader,
+  List,
+  AutoSizer,
+  WindowScroller
+} from "react-virtualized";
 import RankItem from "./RankItem";
 
 interface Props {}
 
 interface State {
   game: string;
-  offset: number;
-  limit: number;
-  rankingItems: RankItemDocument[];
+  initialized: boolean;
+  hasMoreItem: boolean;
+  isLoading: boolean;
+  rankingList: JSX.Element[];
+  lastVisibleSnapshot: any;
 }
 
 class Index extends React.Component<Props, State> {
@@ -24,59 +35,99 @@ class Index extends React.Component<Props, State> {
 
     this.state = {
       game: "maruten",
-      offset: 0,
-      limit: 10,
-      rankingItems: []
+      initialized: false,
+      hasMoreItem: true,
+      isLoading: false,
+      rankingList: [],
+      lastVisibleSnapshot: null
     };
   }
   public componentDidMount() {
-    this.load();
+    this.init();
   }
 
   render() {
-    const { rankingItems } = this.state;
+    const { initialized, hasMoreItem, isLoading, rankingList } = this.state;
 
     return (
       <div>
         <h2>Ranking!</h2>
-
-        <div>
-          {rankingItems.map(item => {
-            return (
-              <RankItem
-                key={item.uid}
-                userName={item.userName}
-                rank={item.rank}
-                point={item.point}
-                member={item.member}
-              />
-            );
-          })}
-        </div>
+        {initialized && (
+          <WindowScroller>
+            {({ height }) => (
+              <AutoSizer disableHeight>
+                {({ width }) => (
+                  <RankingList
+                    width={width}
+                    height={height}
+                    hasMoreItem={hasMoreItem}
+                    isLoading={isLoading}
+                    list={rankingList}
+                    loadMoreItem={this.loadMoreItem}
+                  />
+                )}
+              </AutoSizer>
+            )}
+          </WindowScroller>
+        )}
       </div>
     );
   }
 
-  private load = async () => {
-    await initAuth();
+  private loadMoreItem = async ({ startIndex, stopIndex }: IndexRange) => {
+    const { game, lastVisibleSnapshot } = this.state;
 
-    const { game, offset, limit } = this.state;
+    const limit = stopIndex - startIndex + 1;
+
+    console.log("loadMoreRows", startIndex, stopIndex);
 
     const metadataRef = firebaseDb.collection("metadata").doc(game);
-
     const metadata = (await metadataRef.get()).data() as MetadataDocument;
-    const scores = await metadata.rankingRef
-      .collection("list")
-      .orderBy("point", "desc")
-      .limit(limit)
-      .get();
 
-    const rankingItems: RankItemDocument[] = [];
+    let scores = null;
+    if (lastVisibleSnapshot) {
+      scores = await metadata.rankingRef
+        .collection("list")
+        .orderBy("point", "desc")
+        .startAfter(lastVisibleSnapshot)
+        .limit(limit)
+        .get();
+    } else {
+      scores = await metadata.rankingRef
+        .collection("list")
+        .orderBy("point", "desc")
+        .limit(limit)
+        .get();
+    }
+
+    if (scores.size === 0) {
+      console.log("no more scores");
+      this.setState({ hasMoreItem: false });
+      return;
+    }
+
+    const pushedItems = this.state.rankingList;
     scores.forEach(r => {
-      rankingItems.push(r.data() as RankItemDocument);
+      const doc = r.data() as RankItemDocument;
+      pushedItems.push(
+        <RankItem
+          rank={doc.rank}
+          userName={doc.userName}
+          point={doc.point}
+          member={doc.member}
+        />
+      );
     });
 
-    this.setState({ rankingItems });
+    this.setState({
+      rankingList: pushedItems,
+      lastVisibleSnapshot: scores.docs[scores.size - 1]
+    });
+  };
+
+  private init = async () => {
+    await initAuth();
+    this.setState({ initialized: true });
   };
 }
 
