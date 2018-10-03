@@ -1,4 +1,5 @@
 import * as React from "react";
+import { RouteComponentProps } from "react-router-dom";
 
 import {
   firebaseDb,
@@ -7,21 +8,14 @@ import {
   RankItemDocument
 } from "@sokontokoro/mikan";
 
+import { IndexRouteParams } from "../App";
 import RankingList from "./RankingList";
-import {
-  IndexRange,
-  ListRowProps,
-  InfiniteLoader,
-  List,
-  AutoSizer,
-  WindowScroller
-} from "react-virtualized";
+import { IndexRange, AutoSizer, WindowScroller } from "react-virtualized";
 import RankItem from "./RankItem";
 
 interface Props {}
 
 interface State {
-  game: string;
   initialized: boolean;
   hasMoreItem: boolean;
   isLoading: boolean;
@@ -29,12 +23,14 @@ interface State {
   lastVisibleSnapshot: any;
 }
 
-class Index extends React.Component<Props, State> {
+class Index extends React.Component<
+  Props & RouteComponentProps<IndexRouteParams>,
+  State
+> {
   constructor(params: any) {
     super(params);
 
     this.state = {
-      game: "maruten",
       initialized: false,
       hasMoreItem: true,
       isLoading: false,
@@ -75,7 +71,8 @@ class Index extends React.Component<Props, State> {
   }
 
   private loadMoreItem = async ({ startIndex, stopIndex }: IndexRange) => {
-    const { game, lastVisibleSnapshot } = this.state;
+    const { game } = this.props.match.params;
+    const { lastVisibleSnapshot } = this.state;
 
     const limit = stopIndex - startIndex + 1;
 
