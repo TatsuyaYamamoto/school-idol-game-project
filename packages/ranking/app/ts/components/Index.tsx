@@ -12,10 +12,12 @@ import { IndexRouteParams } from "../App";
 import RankingList from "./RankingList";
 import { IndexRange, AutoSizer, WindowScroller } from "react-virtualized";
 import RankItem from "./RankItem";
+import GameSelector from "./GameSelector";
 
 interface Props {}
 
 interface State {
+  initialIndex: number;
   initialized: boolean;
   hasMoreItem: boolean;
   isLoading: boolean;
@@ -23,14 +25,50 @@ interface State {
   lastVisibleSnapshot: any;
 }
 
+export const list = [
+  {
+    title: "ほのCar",
+    gameId: "maruten", // for dev
+    imageUrl:
+      "http://games.sokontokoro-factory.net/honocar/img/TITLE_LOGO_HONOKA.png"
+  },
+  {
+    title: "しゃかりん",
+    gameId: "maruten", // for dev
+    imageUrl: "http://games.sokontokoro-factory.net/shakarin/img/TITLE_LOGO.png"
+  },
+  {
+    title: "まるてん",
+    gameId: "maruten",
+    imageUrl:
+      "http://games.sokontokoro-factory.net/maruten/img/TITLE_LOGO_HANAMARU.png"
+  }
+];
+
+const defaultState = {
+  initialIndex: 0,
+  initialized: false,
+  hasMoreItem: true,
+  isLoading: false,
+  rankingList: [],
+  lastVisibleSnapshot: null
+};
+
 class Index extends React.Component<
   Props & RouteComponentProps<IndexRouteParams>,
   State
 > {
-  constructor(params: any) {
-    super(params);
+  state: State;
+
+  constructor(props: any) {
+    super(props);
+
+    const initialIndex = list.findIndex(({ gameId }) => {
+      return gameId === this.props.match.params.game;
+    });
 
     this.state = {
+      initialIndex,
       initialized: false,
       hasMoreItem: true,
       isLoading: false,
@@ -38,16 +76,33 @@ class Index extends React.Component<
       lastVisibleSnapshot: null
     };
   }
+
   public componentDidMount() {
     this.init();
   }
 
   render() {
-    const { initialized, hasMoreItem, isLoading, rankingList } = this.state;
+    console.log("index render", this.state);
+
+    const {
+      initialized,
+      initialIndex,
+      hasMoreItem,
+      isLoading,
+      rankingList
+    } = this.state;
 
     return (
       <div>
         <h2>Ranking!</h2>
+
+        <GameSelector
+          list={list}
+          initialIndex={initialIndex}
+          slickSettings={{}}
+          onSelected={this.onGameSelected}
+        />
+
         {initialized && (
           <WindowScroller>
             {({ height }) => (
@@ -69,6 +124,21 @@ class Index extends React.Component<
       </div>
     );
   }
+
+  private onGameSelected = (index: number) => {
+    console.log("on selected: " + index, defaultState);
+
+    this.props.history.replace(`/${list[index].gameId}`);
+
+    this.setState({
+      initialIndex: 0,
+      initialized: true,
+      hasMoreItem: true,
+      isLoading: false,
+      rankingList: [],
+      lastVisibleSnapshot: null
+    });
+  };
 
   private loadMoreItem = async ({ startIndex, stopIndex }: IndexRange) => {
     const { game } = this.props.match.params;

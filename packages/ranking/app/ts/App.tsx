@@ -8,7 +8,7 @@ import {
 
 import "react-virtualized/styles.css";
 
-import Index from "./components/Index";
+import { default as Index, list } from "./components/Index";
 
 export interface IndexRouteParams {
   game: string;
@@ -21,7 +21,7 @@ const App = () => (
     <Switch>
       <Route
         exact
-        path={`/:game(${supportedGames.join("|")})`}
+        path={`/:game(${list.map(i => i.gameId).join("|")})`}
         component={Index}
       />
       <Route render={() => <Redirect to={`/${supportedGames[0]}`} />} />
