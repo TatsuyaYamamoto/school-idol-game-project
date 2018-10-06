@@ -12,7 +12,6 @@ export async function postScore(
   game: Game,
   member: Member,
   point: number,
-  shouldUpdate: (prev, next) => boolean,
   label: object = {}
 ) {
   const userRef = User.getOwnRef();

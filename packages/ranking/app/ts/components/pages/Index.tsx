@@ -21,17 +21,17 @@ interface State {
 export const list = [
   {
     title: "ほのCar",
-    gameId: "maruten", // for dev
+    gameId: "honocar", // for dev
     url: "https://games.sokontokoro-factory.net/honocar/",
     imageUrl:
       "http://games.sokontokoro-factory.net/honocar/img/TITLE_LOGO_HONOKA.png"
   },
-  {
-    title: "しゃかりん",
-    gameId: "maruten", // for dev
-    url: "https://games.sokontokoro-factory.net/shakarin/",
-    imageUrl: "http://games.sokontokoro-factory.net/shakarin/img/TITLE_LOGO.png"
-  },
+  // {
+  //   title: "しゃかりん",
+  //   gameId: "maruten", // for dev
+  //   url: "https://games.sokontokoro-factory.net/shakarin/",
+  //   imageUrl: "http://games.sokontokoro-factory.net/shakarin/img/TITLE_LOGO.png"
+  // },
   {
     title: "まるてん",
     gameId: "maruten",

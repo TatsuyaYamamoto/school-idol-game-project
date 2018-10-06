@@ -1,9 +1,14 @@
 import * as alertify from "alertify/lib/alertify";
-import { t, tweetByWebIntent, getLogger, openModal } from "@sokontokoro/mikan";
+import {
+  t,
+  tweetByWebIntent,
+  getLogger,
+  openModal,
+  postScore
+} from "@sokontokoro/mikan";
 
 import globals from "../globals";
 import Engine from "./Engine";
-import { postScore } from "../api";
 import TopEngine from "./TopEngine";
 import GameEngine from "./GameEngine";
 import { to } from "../stateMachine";
@@ -39,27 +44,11 @@ class GameOverEngine extends Engine {
       value: this.passCarCount
     });
 
-    const {
-      gameStage,
-      player,
-      playCharacter,
-      ssObj,
-      imageObj,
-      textObj
-    } = globals;
+    const { gameStage, player, playCharacter } = globals;
 
-    postScore(this.passCarCount, playCharacter).then(response => {
+    postScore("honocar", playCharacter, this.passCarCount).then(() => {
       if (globals.isLogin) {
-        if (response.ok) {
-          alertify.log(t(Ids.REGISTER_SUCCESS), "success", 3000);
-          return;
-        }
-
-        if (response.status === 401) {
-          alertify.log(t(Ids.UNAUTHORIZED), "error", 3000);
-        } else {
-          alertify.log(t(Ids.UNEXPECTED_SERVER_ERROR), "error", 3000);
-        }
+        alertify.log(t(Ids.REGISTER_SUCCESS), "success", 3000);
       }
     });
 

@@ -23,11 +23,8 @@ export default class GameoverEngine {
     // プレイログ、ランキング登録
     const point = State.gameScore;
     const member = State.playCharacter;
-    function shouldUpdate(prev, next) {
-      return prev.point < next.point;
-    }
 
-    postScore("maruten", member, point, shouldUpdate).then(() => {
+    postScore("maruten", member, point).then(() => {
       if (getCurrentUser().isAnonymous) {
         return;
       }

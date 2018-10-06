@@ -1,10 +1,15 @@
 import * as alertify from "alertify/lib/alertify";
-import { openModal, t, openExternalSite } from "@sokontokoro/mikan";
+import {
+  openModal,
+  t,
+  openExternalSite,
+  signInAsTwitterUser,
+  signOut
+} from "@sokontokoro/mikan";
 
 import globals from "../globals";
 import Engine from "./Engine";
 import { soundTurnOff, soundTurnOn } from "../contentsLoader";
-import config from "../resources/config";
 import CreditEngine from "./CreditEngine";
 import HowToPlayEngine from "./HowToPlayEngine";
 import GameEngine from "./GameEngine";
@@ -227,7 +232,7 @@ function toggleSound() {
 function onClickLogin() {
   trackEvent(TRACK_ACTION.CLICK, { label: "login" });
 
-  window.location.href = config.api.login;
+  signInAsTwitterUser();
 }
 
 function onClickLogout() {
@@ -239,7 +244,10 @@ function onClickLogout() {
   alertify.confirm(t(Ids.LOGOUT_MESSAGE), function(result) {
     if (result) {
       soundObj.SOUND_OK.play();
-      window.location.href = config.api.logout;
+
+      signOut().then(() => {
+        location.reload();
+      });
     } else {
       soundObj.SOUND_BACK.play();
     }

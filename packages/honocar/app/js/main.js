@@ -11,14 +11,14 @@ import {
   initI18n,
   isSupportTouchEvents,
   pointerdown,
-  t
+  t,
+  initAuth
 } from "@sokontokoro/mikan";
 
 import { to } from "./stateMachine";
 import config from "./resources/config";
 import { default as stringResources, Ids } from "./resources/string";
 import { initGameScreenScale } from "./common";
-import { requestLogin } from "./api";
 import {
   loadContent,
   setTextProperties,
@@ -33,20 +33,12 @@ function init() {
   tracePage(TRACK_PAGES.INDEX);
 
   /*---------- ログインチェック ----------*/
-  globals.loginPromise = requestLogin()
-    .then(response => {
-      if (response.ok) {
+  globals.loginPromise = initAuth()
+    .then(user => {
+      if (!user.isAnonymous) {
         alertify.log(t(Ids.LOGIN_SUCCESS), "success", 3000);
 
-        return response.json().then(data => {
-          globals.isLogin = true;
-
-          globals.user.id = data.user_id;
-          globals.user.name = data.user_name;
-          globals.user.iconUrl = data.icon_url;
-        });
-      } else {
-        throw "fail to login";
+        globals.user.iconUrl = user.photoURL;
       }
     })
     .catch(e => {
