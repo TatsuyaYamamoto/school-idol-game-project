@@ -80,7 +80,7 @@ export default class PreloadState {
         );
       });
 
-      Promise.all([State.loginCheckPromise, brandingAnimation.promise])
+      Promise.all([State.firebaseInitPromise, brandingAnimation.promise])
         .then(() => {
           Object.keys(properties.asyncImage).forEach(key => {
             State.object.image[key] = PreloadEngine.getAsyncImageContent(

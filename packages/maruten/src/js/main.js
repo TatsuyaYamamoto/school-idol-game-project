@@ -4,7 +4,7 @@ import "createjs/builds/1.0.0/createjs.js";
 
 import * as alertify from "alertify/lib/alertify";
 
-import { initAuth, devFirebaseConfig } from "@sokontokoro/mikan";
+import { initAuth } from "@sokontokoro/mikan";
 
 import { STANDARD_PIXEL_SIZE } from "./static/config.js";
 import StateMachine from "./stateMachine.js";
@@ -13,7 +13,7 @@ import properties from "./static/properties";
 import State from "./state";
 
 window.onload = function() {
-  State.firebaseInitPromise = initAuth(devFirebaseConfig).then(user => {
+  State.firebaseInitPromise = initAuth().then(user => {
     if (!user.isAnonymous) {
       alertify.log("ランキングシステム ログイン中！", "success", 3000);
 

@@ -38,7 +38,6 @@ export default class RankingSection extends React.Component<Props, State> {
   }
 
   public static getDerivedStateFromProps(nextProps: Props, prevState: State) {
-    console.log("getDerivedStateFromProps", nextProps, prevState);
     if (nextProps.game !== prevState.game) {
       return {
         game: nextProps.game,

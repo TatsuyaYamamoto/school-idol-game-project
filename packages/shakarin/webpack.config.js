@@ -84,5 +84,9 @@ module.exports = {
     ]
   },
 
-  plugins
+  plugins,
+
+  // https://github.com/pixijs/pixi-sound/issues/28
+  // Resolve node fs module for pixi-sound.
+  node: { fs: "empty" }
 };

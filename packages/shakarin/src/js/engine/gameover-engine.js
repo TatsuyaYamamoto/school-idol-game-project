@@ -1,7 +1,8 @@
+import { getCurrentUser, postScore } from "@sokontokoro/mikan";
+import * as alertify from "alertify/lib/alertify";
+
 import State from "../state.js";
 import Util from "../util.js";
-import { postScore } from "../network.js";
-import * as alertify from "alertify/lib/alertify";
 
 export default class GameoverEngine {
   constructor(tick, player, callbackMenuState, callbackGameState) {
@@ -14,16 +15,12 @@ export default class GameoverEngine {
   }
 
   start() {
-    postScore(State.gameScore, "rin").then(response => {
-      if (!State.isLogin) {
+    postScore("shakarin", "rin", State.gameScore).then(() => {
+      if (getCurrentUser().isAnonymous) {
         return;
       }
 
-      if (response.ok) {
-        alertify.log("ランキングシステム　通信完了！", "success", 3000);
-        return;
-      }
-      throw "fail to login";
+      alertify.log("ランキングシステム　通信完了！", "success", 3000);
     });
 
     // フィニッシュアニメーション

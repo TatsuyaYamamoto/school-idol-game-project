@@ -7,16 +7,13 @@ export default {
   nextCheckFrame: 0,
   gameScore: 0,
 
-  tickListener: null,
-
   isSoundMute: false,
 
   playCharacter: "rin",
   player: null,
   shakeCount: null,
 
-  loginCheckPromise: null,
-  isLogin: false,
+  firebaseInitPromise: null,
 
   user: {
     id: "",

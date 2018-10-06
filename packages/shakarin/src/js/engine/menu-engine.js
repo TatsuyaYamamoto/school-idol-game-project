@@ -1,3 +1,10 @@
+import {
+  getCurrentUser,
+  signInAsTwitterUser,
+  signOut
+} from "@sokontokoro/mikan";
+import * as alertify from "alertify/lib/alertify";
+
 import State from "../state.js";
 import Util from "../util.js";
 import { config } from "../config.js";
@@ -19,7 +26,8 @@ export default class MenuEngine {
 
   start() {
     let targetChildren = [State.object.image.BACKGROUND];
-    if (State.isLogin) {
+
+    if (!getCurrentUser().isAnonymous) {
       targetChildren.push(
         State.object.image.BUTTON_TWITTER_LOGOUT,
         State.object.image.TWITTER_ICON
@@ -27,6 +35,7 @@ export default class MenuEngine {
     } else {
       targetChildren.push(State.object.image.BUTTON_TWITTER_LOGIN);
     }
+
     targetChildren.push(
       State.object.image.BUTTON_START,
       State.object.image.BUTTON_HOW,
@@ -115,7 +124,7 @@ export default class MenuEngine {
           State.object.sound.OK.stop();
           State.object.sound.OK.play();
 
-          window.location.href = config.api.login;
+          signInAsTwitterUser();
         } else {
           State.object.sound.BACK.stop();
           State.object.sound.BACK.play();
@@ -134,7 +143,9 @@ export default class MenuEngine {
             State.object.sound.OK.stop();
             State.object.sound.OK.play();
 
-            window.location.href = config.api.logout + "?redirect=shakarin";
+            signOut().then(() => {
+              location.reload();
+            });
           } else {
             State.object.sound.BACK.stop();
             State.object.sound.BACK.play();
