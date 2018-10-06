@@ -1,3 +1,9 @@
+import "alertify/themes/alertify.core.css";
+import "alertify/themes/alertify.default.css";
+
+import "createjs/builds/1.0.0/createjs.js";
+import "alertify/lib/alertify";
+
 import State from "./state.js";
 import { config } from "./config.js";
 import StateMachine from "./stateMachine.js";
@@ -5,6 +11,8 @@ import Util from "./util.js";
 import Network from "./network.js";
 
 window.onload = function() {
+  console.log("onload");
+
   /*---------- ログインチェック ----------*/
   // 完了後にコンテンツオブジェクトのセットアップを開始する
   State.deferredCheckLogin = Network.getUser();
