@@ -1,6 +1,7 @@
 import State from "../state.js";
 import Util from "../util.js";
-import Network from "../network.js";
+import { postScore } from "../network.js";
+import * as alertify from "alertify/lib/alertify";
 
 export default class GameoverEngine {
   constructor(tick, player, callbackMenuState, callbackGameState) {
@@ -13,12 +14,17 @@ export default class GameoverEngine {
   }
 
   start() {
-    // ランキング登録
-    if (State.isLogin) {
-      Network.postScore(State.gameScore);
-    }
-    // ロギング
-    Network.postPlayLog(State.gameScore);
+    postScore(State.gameScore, "rin").then(response => {
+      if (!State.isLogin) {
+        return;
+      }
+
+      if (response.ok) {
+        alertify.log("ランキングシステム　通信完了！", "success", 3000);
+        return;
+      }
+      throw "fail to login";
+    });
 
     // フィニッシュアニメーション
     this.player.finish();

@@ -15,40 +15,21 @@ export function getUser() {
   });
 }
 
-export default class Network {
-  static postScore(point) {
-    request
-      .post(config.api.score)
-      .withCredentials()
-      .type("application/json")
-      .send({ point: point })
-      .end((err, res) => {
-        if (res.ok) {
-          alertify.log("ランキングシステム　通信完了！", "success", 3000);
-        } else if (res.status == superagent.response.unauthorized) {
-          alertify.log(
-            "ログインセッションが切れてしまいました...再ログインして下さい。",
-            "error",
-            3000
-          );
-        } else {
-          alertify.log(
-            "ランキングシステムへの接続に失敗しました...",
-            "error",
-            3000
-          );
-        }
-      });
-  }
+export function postScore(point, member) {
+  const url = config.api.score;
+  const headers = {
+    "Content-Type": "application/json"
+  };
+  const body = JSON.stringify({
+    point,
+    member
+  });
 
-  static postPlayLog(point) {
-    request
-      .post(config.api.playlog)
-      .withCredentials()
-      .type("application/json")
-      .send({ point: point })
-      .end((err, res) => {
-        /* ignore */
-      });
-  }
+  return fetch(url, {
+    method: "POST",
+    mode: "cors",
+    credentials: "include",
+    headers,
+    body
+  });
 }

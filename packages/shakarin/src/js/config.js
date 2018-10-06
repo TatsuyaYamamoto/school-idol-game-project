@@ -1,11 +1,13 @@
 // 設定ファイル---------------------------------
-const apiServerOrigin = "http://api.sokontokoro-factory.net";
-const contextPath = "/lovelive";
+const baseUrl =
+  process.env.NODE_ENV === "production"
+    ? "//api.sokontokoro-factory.net/lovelive"
+    : "//api-dev.sokontokoro-factory.net/lovelive";
 
 export var config = {
   system: {
     FPS: 30,
-    timeLength: 26000,
+    timeLength: 2600,
     gamescrean: {
       width: 640,
       height: 896
@@ -13,12 +15,10 @@ export var config = {
     firstCheckFrame: 10
   },
   api: {
-    login:
-      apiServerOrigin + contextPath + "/auth/twitter/login?redirect=shakarin",
-    logout: apiServerOrigin + contextPath + "/auth/twitter/logout/",
-    score: apiServerOrigin + contextPath + "/scores/shakarin/me/",
-    user: apiServerOrigin + contextPath + "/users/me/",
-    playlog: apiServerOrigin + contextPath + "/scores/shakarin/playlog/"
+    login: baseUrl + "/auth/twitter/login?redirect=shakarin",
+    logout: baseUrl + "/auth/twitter/logout/",
+    score: baseUrl + "/games/shakarin/scores/",
+    user: baseUrl + "/users/me/"
   },
   link: {
     t28_twitter: "https://twitter.com/t28_tatsuya",
