@@ -1,5 +1,5 @@
 import * as React from "react";
-import { default as Slider, Settings } from "react-slick";
+import { default as Slider, Settings, CustomArrowProps } from "react-slick";
 import styled from "styled-components";
 
 interface Props {
@@ -13,7 +13,9 @@ interface Props {
 }
 
 const Root = styled.div`
-  margin: 40px;
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 30px;
 `;
 
 const SliderItem = styled.div`
@@ -25,7 +27,30 @@ const Image = styled.img`
   margin: 0 auto;
 `;
 
-const Title = styled.div``;
+const Title = styled.div`
+  font-size: 30px;
+`;
+
+const arrowSize = 50;
+const Arrow = styled.div`
+  width: ${arrowSize}px;
+  height: ${arrowSize}px;
+
+  &::before {
+    font-size: ${arrowSize}px;
+    color: #ff767b;
+  }
+`;
+
+const NextArrow: React.SFC<CustomArrowProps> = props => {
+  const { className, style, onClick } = props;
+  return <Arrow className={className} style={{ ...style }} onClick={onClick} />;
+};
+
+const PrevArrow: React.SFC<CustomArrowProps> = props => {
+  const { className, style, onClick } = props;
+  return <Arrow className={className} style={{ ...style }} onClick={onClick} />;
+};
 
 class GameSelector extends React.Component<Props> {
   private slickRef = React.createRef<Slider>();
@@ -43,7 +68,10 @@ class GameSelector extends React.Component<Props> {
     const settings: Settings = {
       infinite: false,
       dots: true,
+      arrows: true,
       beforeChange: this.beforeChange,
+      nextArrow: <NextArrow />,
+      prevArrow: <PrevArrow />,
       ...slickSettings
     };
 
