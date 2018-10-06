@@ -8,6 +8,7 @@ import { IndexRouteParams } from "../../App";
 import HeaderSection from "../organisms/HeaderSection";
 import ControlSection from "../organisms/ControlSection";
 import RankingSection from "../organisms/RankingSection";
+import FooterSection from "../organisms/FooterSection";
 
 interface Props {}
 
@@ -73,6 +74,7 @@ class Index extends React.Component<
           onGameSelected={this.onGameSelected}
         />
         <RankingSection initialized={initialized} game={game} />
+        <FooterSection />
       </React.Fragment>
     );
   }
