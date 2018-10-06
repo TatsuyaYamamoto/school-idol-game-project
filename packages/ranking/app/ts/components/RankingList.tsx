@@ -12,8 +12,6 @@ import {
 import RankItem from "./RankItem";
 
 interface Props {
-  width: number;
-  height: number;
   hasMoreItem: boolean;
   isLoading: boolean;
   list: JSX.Element[];
@@ -21,7 +19,7 @@ interface Props {
 }
 
 const RankingList: React.SFC<Props> = props => {
-  const { width, height, list, isLoading, hasMoreItem, loadMoreItem } = props;
+  const { list, isLoading, hasMoreItem, loadMoreItem } = props;
 
   const rowCount = hasMoreItem ? list.length + 5 : list.length;
 
@@ -51,18 +49,31 @@ const RankingList: React.SFC<Props> = props => {
       isRowLoaded={isRowLoaded}
       loadMoreRows={loadMoreRows}
       rowCount={rowCount}
+      threshold={10}
     >
       {({ onRowsRendered, registerChild }) => (
-        <List
-          height={height}
-          width={width}
-          onRowsRendered={onRowsRendered}
-          ref={registerChild}
-          rowCount={rowCount}
-          rowHeight={100}
-          rowRenderer={rowRenderer}
-          overscanRowCount={0}
-        />
+        <WindowScroller>
+          {({ height, isScrolling, onChildScroll, scrollTop }) => (
+            <AutoSizer disableHeight>
+              {({ width }) => (
+                <List
+                  ref={registerChild}
+                  autoHeight
+                  height={height}
+                  width={width}
+                  isScrolling={isScrolling}
+                  onScroll={onChildScroll}
+                  scrollTop={scrollTop}
+                  rowCount={rowCount}
+                  rowHeight={100}
+                  rowRenderer={rowRenderer}
+                  onRowsRendered={onRowsRendered}
+                  overscanRowCount={0}
+                />
+              )}
+            </AutoSizer>
+          )}
+        </WindowScroller>
       )}
     </InfiniteLoader>
   );

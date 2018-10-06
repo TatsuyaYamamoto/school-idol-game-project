@@ -92,34 +92,26 @@ class Index extends React.Component<
       rankingList
     } = this.state;
 
+    const initializing = <div>Initializing...</div>;
+
     return (
       <div>
         <h2>Ranking!</h2>
-
         <GameSelector
           list={list}
           initialIndex={initialIndex}
           slickSettings={{}}
           onSelected={this.onGameSelected}
         />
-
-        {initialized && (
-          <WindowScroller>
-            {({ height }) => (
-              <AutoSizer disableHeight>
-                {({ width }) => (
-                  <RankingList
-                    width={width}
-                    height={height}
-                    hasMoreItem={hasMoreItem}
-                    isLoading={isLoading}
-                    list={rankingList}
-                    loadMoreItem={this.loadMoreItem}
-                  />
-                )}
-              </AutoSizer>
-            )}
-          </WindowScroller>
+        {initialized ? (
+          <RankingList
+            hasMoreItem={hasMoreItem}
+            isLoading={isLoading}
+            list={rankingList}
+            loadMoreItem={this.loadMoreItem}
+          />
+        ) : (
+          initializing
         )}
       </div>
     );
