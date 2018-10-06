@@ -15,7 +15,7 @@ export default {
   player: null,
   shakeCount: null,
 
-  deferredCheckLogin: null,
+  loginCheckPromise: null,
   isLogin: false,
 
   user: {

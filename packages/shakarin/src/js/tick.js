@@ -3,7 +3,7 @@ import { config } from "./config.js";
 export default class TickEngine {
   constructor() {
     //ゲーム用タイマーの設定
-    createjs.Ticker.setFPS(config.system.FPS);
+    createjs.Ticker.framerate = config.system.FPS;
     createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
 
     this.ticker = null;

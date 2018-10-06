@@ -39,8 +39,8 @@ export default class MenuEngine {
 
     Util.addChildren(targetChildren);
 
-    if (State.object.sound.ZENKAI.playState != createjs.Sound.PLAY_SUCCEEDED) {
-      State.object.sound.ZENKAI.play("none", 0, 0, -1, 0.4, 0);
+    if (State.object.sound.ZENKAI.playState !== createjs.Sound.PLAY_SUCCEEDED) {
+      State.object.sound.ZENKAI.play({ loop: -1, volume: 0.4 });
     }
 
     this.tick.add(() => {
@@ -58,7 +58,9 @@ export default class MenuEngine {
       this.handleLinkButtonEventListener().remove();
 
       State.object.sound.ZENKAI.stop();
-      State.object.sound.OK.play("none", 0, 0, 0, 1, 0);
+      State.object.sound.OK.stop();
+      State.object.sound.OK.play();
+
       this.callbackGameState();
     };
 
@@ -66,7 +68,9 @@ export default class MenuEngine {
       this.tick.remove();
       this.handleLinkButtonEventListener().remove();
 
-      State.object.sound.OK.play("none", 0, 0, 0, 1, 0);
+      State.object.sound.OK.stop();
+      State.object.sound.OK.play();
+
       this.callbackHowToPlayState();
     };
 
@@ -74,7 +78,9 @@ export default class MenuEngine {
       this.tick.remove();
       this.handleLinkButtonEventListener().remove();
 
-      State.object.sound.OK.play("none", 0, 0, 0, 1, 0);
+      State.object.sound.OK.stop();
+      State.object.sound.OK.play();
+
       this.callbackCreditState();
     };
 
@@ -88,7 +94,9 @@ export default class MenuEngine {
     };
 
     const turnSoundSwitch = () => {
-      State.object.sound.TURN_SWITCH.play("none", 0, 0, 0, 1, 0);
+      State.object.sound.TURN_SWITCH.stop();
+      State.object.sound.TURN_SWITCH.play();
+
       if (State.isSoundMute) {
         State.object.ss.BUTTON_SOUND_SS.gotoAndPlay("on");
         Util.soundTurnOn();
@@ -99,27 +107,37 @@ export default class MenuEngine {
     };
 
     const login = () => {
-      State.object.sound.OK.play("none", 0, 0, 0, 1, 0);
+      State.object.sound.OK.stop();
+      State.object.sound.OK.play();
+
       alertify.confirm("ランキングシステムにログインします！", result => {
         if (result) {
-          State.object.sound.OK.play("none", 0, 0, 0, 1, 0);
+          State.object.sound.OK.stop();
+          State.object.sound.OK.play();
+
           window.location.href = config.api.login;
         } else {
-          State.object.sound.BACK.play("none", 0, 0, 0, 1, 0);
+          State.object.sound.BACK.stop();
+          State.object.sound.BACK.play();
         }
       });
     };
 
     const logout = () => {
-      State.object.sound.OK.play("none", 0, 0, 0, 1, 0);
+      State.object.sound.OK.stop();
+      State.object.sound.OK.play();
+
       alertify.confirm(
         "ログアウトします。ランキング登録はログイン中のみ有効です。",
         result => {
           if (result) {
-            State.object.sound.OK.play("none", 0, 0, 0, 1, 0);
+            State.object.sound.OK.stop();
+            State.object.sound.OK.play();
+
             window.location.href = config.api.logout + "?redirect=shakarin";
           } else {
-            State.object.sound.BACK.play("none", 0, 0, 0, 1, 0);
+            State.object.sound.BACK.stop();
+            State.object.sound.BACK.play();
           }
         }
       );

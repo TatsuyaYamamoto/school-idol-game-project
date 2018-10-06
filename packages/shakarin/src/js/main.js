@@ -8,14 +8,31 @@ import State from "./state.js";
 import { config } from "./config.js";
 import StateMachine from "./stateMachine.js";
 import Util from "./util.js";
-import Network from "./network.js";
+import { getUser } from "./network.js";
+import * as alertify from "alertify/lib/alertify";
+import properties from "maruten/src/js/static/properties";
 
 window.onload = function() {
-  console.log("onload");
-
   /*---------- ログインチェック ----------*/
   // 完了後にコンテンツオブジェクトのセットアップを開始する
-  State.deferredCheckLogin = Network.getUser();
+  State.loginCheckPromise = getUser()
+    .then(response => {
+      if (response.ok) {
+        State.isLogin = true;
+        alertify.log("ランキングシステム ログイン中！", "success", 3000);
+
+        return response.json().then(data => {
+          State.user.id = data.user_id;
+          State.user.name = data.user_name;
+          properties.asyncImage.TWITTER_ICON.url = data.icon_url;
+        });
+      } else {
+        throw "fail to login";
+      }
+    })
+    .catch(e => {
+      State.isLogin = false;
+    });
 
   /*---------- ゲーム画面の初期化 ----------*/
   State.screenScale = Util.initScreenScale(
@@ -57,11 +74,9 @@ window.onload = function() {
   // サウンド用イベント
   window.addEventListener("blur", function() {
     Util.soundTurnOff();
-    createjs.Ticker.setPaused(true);
   });
   window.addEventListener("focus", function() {
     Util.soundTurnOn();
-    createjs.Ticker.setPaused(false);
   });
 
   /*---------- StateMachien起動 ----------*/

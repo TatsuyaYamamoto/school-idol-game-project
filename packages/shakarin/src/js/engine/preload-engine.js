@@ -2,6 +2,7 @@ import State from "../state.js";
 import loadImageBase64 from "../imageBase64/loadImageBase64.js";
 import { config, properties, manifest } from "../config.js";
 import BrandingAnimation from "../branding-animation.js";
+import { DEBUG } from "maruten/src/js/static/config";
 
 export default class PreloadState {
   constructor(tick, callback) {
@@ -78,18 +79,20 @@ export default class PreloadState {
           prop
         );
       });
-      State.deferredCheckLogin.then(isLoggedin => {
-        Object.keys(properties.asyncImage).forEach(key => {
-          State.object.image[key] = PreloadState.getAsyncImageContent(
-            properties.asyncImage[key]
-          );
-        });
-      });
 
-      brandingAnimation.promise.then(() => {
-        this.tick.remove();
-        this.callback();
-      });
+      Promise.all([State.loginCheckPromise, brandingAnimation.promise])
+        .then(() => {
+          Object.keys(properties.asyncImage).forEach(key => {
+            State.object.image[key] = PreloadEngine.getAsyncImageContent(
+              properties.asyncImage[key]
+            );
+          });
+        })
+        .catch(() => {})
+        .then(() => {
+          this.tick.remove();
+          this.callback();
+        });
     });
 
     /* 読み込み開始 */

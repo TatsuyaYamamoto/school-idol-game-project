@@ -14,7 +14,8 @@ export default class Player {
   }
 
   shake(direction, shackCount) {
-    State.object.sound.SHAKE.play("none", 0, 0, 0, 1, 0);
+    State.object.sound.SHAKE.stop();
+    State.object.sound.SHAKE.play();
     var i = (shackCount % 2) + 1; // ex. L1 or L2
     this.img.gotoAndPlay(direction + i);
   }

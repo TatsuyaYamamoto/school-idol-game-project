@@ -18,7 +18,7 @@ export default class TopEngine {
     State.gameStage.update();
 
     if (State.object.sound.ZENKAI.playState != createjs.Sound.PLAY_SUCCEEDED) {
-      State.object.sound.ZENKAI.play("none", 0, 0, -1, 0.4, 0);
+      State.object.sound.ZENKAI.play({ loop: -1, volume: 0.4 });
     }
   }
 
@@ -36,7 +36,9 @@ export default class TopEngine {
   handleLinkButtonEventListener() {
     const goToMenu = () => {
       this.handleLinkButtonEventListener().remove();
-      State.object.sound.OK.play("none", 0, 0, 0, 1, 0);
+
+      State.object.sound.OK.stop();
+      State.object.sound.OK.play();
 
       this.callbackMenuGameState();
     };

@@ -45,7 +45,9 @@ export default class GameEngine {
         State.gameStage.update();
         break;
       case 10:
+        State.object.sound.PI1.stop();
         State.object.sound.PI1.play();
+
         State.object.text.GAMESTART_COUNT.text = "-2-";
 
         Util.removeAllChildren();
@@ -57,7 +59,9 @@ export default class GameEngine {
         State.gameStage.update();
         break;
       case 30:
+        State.object.sound.PI1.stop();
         State.object.sound.PI1.play();
+
         State.object.text.GAMESTART_COUNT.text = "-1-";
         // State.gameStage.addChild(State.object.image.BACKGROUND);
         // State.gameStage.addChild(_textObj.GAMESTART_COUNT);
@@ -65,7 +69,9 @@ export default class GameEngine {
         State.gameStage.update();
         break;
       case 50:
+        State.object.sound.PI2.stop();
         State.object.sound.PI2.play();
+
         Util.removeAllChildren();
 
         this.tick.remove();
@@ -90,7 +96,7 @@ export default class GameEngine {
         this.tick.add(() => {
           this.processGame();
         });
-        State.object.sound.GAME_LOOP.play("any", 0, 0, 0, 1, 0);
+        State.object.sound.GAME_LOOP.play({ interrupt: "any" });
         break;
     }
   }

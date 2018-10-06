@@ -26,6 +26,7 @@ function gameReady() {
       _gameStage.update();
       break;
     case 10:
+      _soundObj.PI1.stop();
       _soundObj.PI1.play();
       _textObj.GAMESTART_COUNT.text = "-2-";
       _gameStage.addChild(_imageObj.BACKGROUND);
@@ -34,6 +35,7 @@ function gameReady() {
       _gameStage.update();
       break;
     case 30:
+      _soundObj.PI1.stop();
       _soundObj.PI1.play();
       _textObj.GAMESTART_COUNT.text = "-1-";
       _gameStage.addChild(_imageObj.BACKGROUND);
@@ -42,6 +44,7 @@ function gameReady() {
       _gameStage.update();
       break;
     case 50:
+      _soundObj.PI2.stop();
       _soundObj.PI2.play();
       _gameStage.removeAllChildren();
       gameStatusReset();
@@ -65,7 +68,7 @@ function gameReady() {
       //ゲーム処理開始
       _tickListener = addTickEvent(processGame);
 
-      _soundObj.GAME_LOOP.play("any", 0, 0, 0, 1, 0);
+      _soundObj.GAME_LOOP.play({ interrupt: "any" });
 
       break;
   }
