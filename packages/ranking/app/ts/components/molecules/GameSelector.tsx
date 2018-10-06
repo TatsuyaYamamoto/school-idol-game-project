@@ -1,6 +1,10 @@
 import * as React from "react";
 import { default as Slider, Settings, CustomArrowProps } from "react-slick";
+import AutoBind from "autobind-decorator";
+
 import styled from "styled-components";
+import Arrow from "../atoms/GameSelectArrow";
+import GameSelectorItem from "./GameSelectorItem";
 
 interface Props {
   list: {
@@ -18,40 +22,27 @@ const Root = styled.div`
   padding: 30px;
 `;
 
-const SliderItem = styled.div`
-  text-align: center;
-`;
-
-const Image = styled.img`
-  height: 300px;
-  margin: 0 auto;
-`;
-
-const Title = styled.div`
-  font-size: 30px;
-`;
-
-const arrowSize = 50;
-const Arrow = styled.div`
-  width: ${arrowSize}px;
-  height: ${arrowSize}px;
-
-  &::before {
-    font-size: ${arrowSize}px;
-    color: #ff767b;
-  }
-`;
-
 const NextArrow: React.SFC<CustomArrowProps> = props => {
-  const { className, style, onClick } = props;
-  return <Arrow className={className} style={{ ...style }} onClick={onClick} />;
+  return (
+    <Arrow
+      className={props.className}
+      style={{ ...props.style }}
+      onClick={props.onClick}
+    />
+  );
 };
 
 const PrevArrow: React.SFC<CustomArrowProps> = props => {
-  const { className, style, onClick } = props;
-  return <Arrow className={className} style={{ ...style }} onClick={onClick} />;
+  return (
+    <Arrow
+      className={props.className}
+      style={{ ...props.style }}
+      onClick={props.onClick}
+    />
+  );
 };
 
+@AutoBind
 class GameSelector extends React.Component<Props> {
   private slickRef = React.createRef<Slider>();
   private pendingIdOfOnSelected: any = null;
@@ -80,20 +71,19 @@ class GameSelector extends React.Component<Props> {
     return (
       <Root>
         <Slider ref={this.slickRef} {...settings}>
-          {list.map(item => {
-            return (
-              <SliderItem key={item.title}>
-                <Image src={item.imageUrl} />
-                <Title>{item.title}</Title>
-              </SliderItem>
-            );
-          })}
+          {list.map(item => (
+            <GameSelectorItem
+              key={item.title}
+              title={item.title}
+              imageUrl={item.imageUrl}
+            />
+          ))}
         </Slider>
       </Root>
     );
   }
 
-  private beforeChange = (current: number, next: number) => {
+  private beforeChange(current: number, next: number) {
     if (this.beforeIndex === next) {
       return;
     }
@@ -107,7 +97,7 @@ class GameSelector extends React.Component<Props> {
     this.pendingIdOfOnSelected = setTimeout(() => {
       this.props.onSelected(next);
     }, 500);
-  };
+  }
 }
 
 export default GameSelector;

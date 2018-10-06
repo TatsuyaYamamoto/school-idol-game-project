@@ -8,7 +8,7 @@ import {
 
 import "react-virtualized/styles.css";
 
-import { default as Index, list } from "./components/Index";
+import { default as Index, list } from "./components/pages/Index";
 
 export interface IndexRouteParams {
   game: string;
