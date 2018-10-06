@@ -56,17 +56,19 @@ class GameSelector extends React.Component<Props> {
   private slickRef = React.createRef<Slider>();
   private pendingIdOfOnSelected: any = null;
 
+  // TODO {@link https://github.com/akiran/react-slick/pull/1272}
+  private beforeIndex: number = 0;
+
   componentDidMount() {
-    if (this.slickRef.current) {
-      this.slickRef.current.slickGoTo(this.props.initialIndex);
-    }
+    this.beforeIndex = this.props.initialIndex;
   }
 
   render() {
-    const { list, slickSettings } = this.props;
+    const { list, initialIndex, slickSettings } = this.props;
 
     const settings: Settings = {
       infinite: false,
+      initialSlide: initialIndex,
       dots: true,
       arrows: true,
       beforeChange: this.beforeChange,
@@ -92,6 +94,12 @@ class GameSelector extends React.Component<Props> {
   }
 
   private beforeChange = (current: number, next: number) => {
+    if (this.beforeIndex === next) {
+      return;
+    }
+
+    this.beforeIndex = next;
+
     if (this.pendingIdOfOnSelected) {
       clearTimeout(this.pendingIdOfOnSelected);
     }
