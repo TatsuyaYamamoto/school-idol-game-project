@@ -22,17 +22,20 @@ export const list = [
   {
     title: "ほのCar",
     gameId: "maruten", // for dev
+    url: "https://games.sokontokoro-factory.net/honocar/",
     imageUrl:
       "http://games.sokontokoro-factory.net/honocar/img/TITLE_LOGO_HONOKA.png"
   },
   {
     title: "しゃかりん",
     gameId: "maruten", // for dev
+    url: "https://games.sokontokoro-factory.net/shakarin/",
     imageUrl: "http://games.sokontokoro-factory.net/shakarin/img/TITLE_LOGO.png"
   },
   {
     title: "まるてん",
     gameId: "maruten",
+    url: "https://games.sokontokoro-factory.net/maruten/",
     imageUrl:
       "http://games.sokontokoro-factory.net/maruten/img/TITLE_LOGO_HANAMARU.png"
   }
@@ -72,6 +75,7 @@ class Index extends React.Component<
         <ControlSection
           initialIndex={initialIndex}
           onGameSelected={this.onGameSelected}
+          onJumpGame={this.onJumpGame}
         />
         <RankingSection initialized={initialized} game={game} />
         <FooterSection />
@@ -85,6 +89,14 @@ class Index extends React.Component<
     this.setState({
       game: list[index].gameId
     });
+  }
+
+  private onJumpGame() {
+    const index = list.findIndex(({ gameId }) => {
+      return gameId === this.props.match.params.game;
+    });
+
+    location.href = list[index].url;
   }
 
   private async init() {

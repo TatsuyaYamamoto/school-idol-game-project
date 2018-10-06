@@ -18,7 +18,7 @@ interface Props {
 
 const Root = styled.div`
   max-width: 500px;
-  margin: 50px auto;
+  margin: 0px auto;
   padding: 30px;
 `;
 
