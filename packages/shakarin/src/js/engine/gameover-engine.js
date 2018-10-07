@@ -1,4 +1,4 @@
-import { getCurrentUser, postScore } from "@sokontokoro/mikan";
+import { getCurrentUser, Playlog } from "@sokontokoro/mikan";
 import * as alertify from "alertify/lib/alertify";
 
 import State from "../state.js";
@@ -15,7 +15,7 @@ export default class GameoverEngine {
   }
 
   start() {
-    postScore("shakarin", "rin", State.gameScore).then(() => {
+    Playlog.save("shakarin", "rin", State.gameScore).then(() => {
       if (getCurrentUser().isAnonymous) {
         return;
       }

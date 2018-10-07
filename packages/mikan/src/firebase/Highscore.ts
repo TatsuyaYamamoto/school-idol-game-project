@@ -3,7 +3,7 @@ import { firestore } from "firebase/app";
 import { firebaseDb } from "./index";
 import { Game, Member } from "./scheme";
 
-export interface HighscoreDocument extends firestore.DocumentData {
+export interface HighscoreDocument /* extends firestore.DocumentData */ {
   userRef: firestore.DocumentReference;
   game: Game;
   member: Member;

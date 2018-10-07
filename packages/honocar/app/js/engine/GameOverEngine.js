@@ -4,7 +4,7 @@ import {
   tweetByWebIntent,
   getLogger,
   openModal,
-  postScore
+  Playlog
 } from "@sokontokoro/mikan";
 
 import globals from "../globals";
@@ -46,7 +46,7 @@ class GameOverEngine extends Engine {
 
     const { gameStage, player, playCharacter } = globals;
 
-    postScore("honocar", playCharacter, this.passCarCount).then(() => {
+    Playlog.save("honocar", playCharacter, this.passCarCount).then(() => {
       if (globals.isLogin) {
         alertify.log(t(Ids.REGISTER_SUCCESS), "success", 3000);
       }

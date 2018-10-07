@@ -2,7 +2,7 @@ import { firestore } from "firebase/app";
 
 import { firebaseDb } from "./index";
 
-export interface RankItemDocument extends firestore.DocumentData {
+export interface RankItemDocument /* extends firestore.DocumentData */ {
   uid: string;
   userName: string;
   member: string;

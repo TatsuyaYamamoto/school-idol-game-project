@@ -2,14 +2,14 @@ import { auth } from "firebase/app";
 
 import UserCredential = auth.UserCredential;
 
-import { firebaseAuth, firebaseDb } from "./index";
+import { firebaseAuth } from "./index";
 
 import { getLogger } from "../logger";
-import { User, UserDocument } from "./User";
-import { mergeUsers } from "./db";
+import { User } from "./User";
 
 const logger = getLogger("mikan/firebase/auth");
 const twitterAuthProvider = new auth.TwitterAuthProvider();
+let isInitRequested = false;
 
 /**
  * @see https://firebase.google.com/docs/reference/js/firebase.auth.Auth#getRedirectResult
@@ -24,8 +24,20 @@ interface AuthCredentialAlreadyInUseError extends auth.Error {
  * A promise of return value will be resolved when signing-in.
  */
 export function init(): Promise<User> {
-  firebaseDb.settings({ timestampsInSnapshots: true });
+  /**
+   * 2回実行する必要がない and テストをしない。
+   */
+  if (isInitRequested) {
+    logger.error("auth module initialization can execute just one time.");
+    return;
+  }
 
+  isInitRequested = true;
+
+  /**
+   * UID to be ignored {@link auth#onAuthStateChanged} event.
+   * firebase auth moduleのsignやlinkの実装上、期待しないUIDのイベントも実行される。
+   */
   let ignoreChangeStateUid: string = null;
 
   return new Promise((resolve, reject) => {
@@ -49,17 +61,18 @@ export function init(): Promise<User> {
          * Received firebase auth user data.
          * success to signed-in, and resolved init promise.
          */
-        logger.debug("signed-in.", user);
+        logger.debug("signed-in.", user.uid);
         resolve(User.from(user));
-      } else {
-        /**
-         * received NO firebase auth user data.
-         * This state occurs in cases such as "first access" or "signed-out by user".
-         * auth module disallows not to be signed-in, then requests to sign-in anonymously.
-         */
-        logger.debug("signed-out. try signing-in anonymously");
-        signInAsAnonymous();
+        return;
       }
+
+      /**
+       * received NO firebase auth user data.
+       * This state occurs in cases such as "first access" or "signed-out by user".
+       * mikan auth module disallows not to be signed-in, then requests to sign-in anonymously.
+       */
+      logger.debug("signed-out. try signing-in anonymously");
+      signInAsAnonymous();
     });
 
     firebaseAuth
@@ -75,7 +88,7 @@ export function init(): Promise<User> {
 
         /**
          * Success operation of link with IdP.
-         * Anonymous direbase user is linked twitter user information.
+         * Anonymous firebase user is linked twitter user information.
          * After this, {@link auth#onAuthStateChanged}'s callback is fired.
          */
         if (operationType === "link") {
@@ -95,12 +108,12 @@ export function init(): Promise<User> {
       })
       .catch(async (error: auth.Error) => {
         if (error.code === "auth/credential-already-in-use") {
-          logger.debug("received credential is already in use.", error);
-
           /**
            * User accepted to link between anonymous firebase user and twitter ID.
            * But accepted twitter ID is already linked with another firebase auth user.
            */
+          logger.debug("received credential is already in use.", error);
+
           const e = error as AuthCredentialAlreadyInUseError;
           const newerAnonymousUser = getCurrentUser();
 
@@ -114,18 +127,18 @@ export function init(): Promise<User> {
           /**
            * Sign-in as a firebase user to be linked with twitter ID.
            */
-          const userCredential: auth.UserCredential = await firebaseAuth.signInAndRetrieveDataWithCredential(
-            e.credential
+          const alreadyLinkedUser = User.from(
+            (await firebaseAuth.signInAndRetrieveDataWithCredential(
+              e.credential
+            )).user
           );
+
+          await alreadyLinkedUser.addDuplicatedRef(newerAnonymousUser);
 
           /**
            * Release ignoring flag.
            */
           ignoreChangeStateUid = null;
-
-          const olderLinkedUser = userCredential.user;
-
-          await mergeUsers();
         } else {
           // Unexpected error occurred.
           throw error;
@@ -134,6 +147,9 @@ export function init(): Promise<User> {
   });
 }
 
+/**
+ * Return current {@link User}.
+ */
 export function getCurrentUser(): User {
   const currentFirebaseUser = firebaseAuth.currentUser;
 
@@ -144,18 +160,37 @@ export function getCurrentUser(): User {
   return User.from(currentFirebaseUser);
 }
 
+/**
+ * Return Firebase ID Token.
+ *
+ * @param forceRefresh if false, try get from local storage.
+ * @return Promise<string>
+ */
 export function getIdToken(forceRefresh: boolean = true): Promise<string> {
   return firebaseAuth.currentUser.getIdToken(forceRefresh);
 }
 
+/**
+ * Sign in to firebase auth as anonymous user.
+ *
+ * @return Promise<auth.UserCredential>
+ */
 export function signInAsAnonymous(): Promise<auth.UserCredential> {
   return firebaseAuth.signInAnonymously();
 }
 
+/**
+ * Sign in firebase auth as Twitter User.
+ *
+ * @return Promise<void>
+ */
 export function signInAsTwitterUser(): Promise<void> {
   return firebaseAuth.currentUser.linkWithRedirect(twitterAuthProvider);
 }
 
+/**
+ * Sing out
+ */
 export function signOut(): Promise<void> {
   return firebaseAuth.signOut();
 }

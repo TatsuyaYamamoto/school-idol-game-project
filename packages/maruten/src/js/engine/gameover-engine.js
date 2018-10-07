@@ -3,7 +3,7 @@ import {
   openModal,
   tweetByWebIntent,
   getCurrentUser,
-  postScore
+  Playlog
 } from "@sokontokoro/mikan";
 
 import State from "../state.js";
@@ -24,7 +24,7 @@ export default class GameoverEngine {
     const point = State.gameScore;
     const member = State.playCharacter;
 
-    postScore("maruten", member, point).then(() => {
+    Playlog.save("maruten", member, point).then(() => {
       if (getCurrentUser().isAnonymous) {
         return;
       }

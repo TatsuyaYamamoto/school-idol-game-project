@@ -12,7 +12,7 @@ import TwitterUser = Twitter.User;
 
 import { firebaseAuth, firebaseDb } from "./index";
 
-export interface UserDocument extends firestore.DocumentData {
+export interface UserDocument /* extends firestore.DocumentData */ {
   uid: string;
   isAnonymous: boolean;
   displayName: string;
@@ -53,6 +53,7 @@ export interface UserDocument extends firestore.DocumentData {
   };
   createdAt: firestore.FieldValue;
   updatedAt: firestore.FieldValue;
+  duplicatedRefsByLink: firestore.DocumentReference[];
 }
 
 export class User {
@@ -88,7 +89,7 @@ export class User {
     if (providerId === "twitter.com") {
       const profile = additionalUserInfo.profile as TwitterUser;
 
-      const newDoc = {
+      const newDoc: UserDocument = {
         ...currentUserDoc,
         providers: {
           ...currentUserDoc.providers,
@@ -153,6 +154,28 @@ export class User {
     }
 
     return null;
+  }
+
+  public async addDuplicatedRef(duplicateUser) {
+    const duplicateUserRef = firestore()
+      .collection("users")
+      .doc(duplicateUser.uid);
+
+    const alreadyLinkedUserRef = firestore()
+      .collection("users")
+      .doc(this.uid);
+
+    const alreadyLinkedUserDoc = (await alreadyLinkedUserRef.get()).data() as UserDocument;
+    const duplicatedRefsByLink =
+      alreadyLinkedUserDoc.duplicatedRefsByLink || [];
+    duplicatedRefsByLink.push(duplicateUserRef);
+
+    const doc: UserDocument = {
+      ...alreadyLinkedUserDoc,
+      duplicatedRefsByLink
+    };
+
+    await alreadyLinkedUserRef.update(doc);
   }
 
   private getLinkedProviderData(): FirebaseUserInfo | null {

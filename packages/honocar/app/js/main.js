@@ -39,6 +39,7 @@ function init() {
         alertify.log(t(Ids.LOGIN_SUCCESS), "success", 3000);
 
         globals.user.iconUrl = user.photoURL;
+        globals.isLogin = true;
       }
     })
     .catch(e => {
