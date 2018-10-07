@@ -10,6 +10,7 @@ log.setLevel(log.levels.DEBUG);
   const originalFactory = log.methodFactory;
 
   // overwrite logging method.
+  // @ts-ignore
   log.methodFactory = function(methodName, logLevel, loggerName) {
     const rawMethod = originalFactory(methodName, logLevel, loggerName);
 
@@ -27,6 +28,6 @@ log.setLevel(log.levels.DEBUG);
   };
 })();
 
-export function getLogger(loggerName) {
+export function getLogger(loggerName: string) {
   return log.getLogger(loggerName);
 }

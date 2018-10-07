@@ -28,8 +28,7 @@ export function init(): Promise<User> {
    * 2回実行する必要がない and テストをしない。
    */
   if (isInitRequested) {
-    logger.error("auth module initialization can execute just one time.");
-    return;
+    throw new Error("auth module initialization can execute just one time.");
   }
 
   isInitRequested = true;
@@ -38,7 +37,7 @@ export function init(): Promise<User> {
    * UID to be ignored {@link auth#onAuthStateChanged} event.
    * firebase auth moduleのsignやlinkの実装上、期待しないUIDのイベントも実行される。
    */
-  let ignoreChangeStateUid: string = null;
+  let ignoreChangeStateUid: string | null = null;
 
   return new Promise((resolve, reject) => {
     /**
@@ -91,7 +90,7 @@ export function init(): Promise<User> {
          * Anonymous firebase user is linked twitter user information.
          * After this, {@link auth#onAuthStateChanged}'s callback is fired.
          */
-        if (operationType === "link") {
+        if (operationType === "link" && credential) {
           const idp = credential.signInMethod;
           logger.debug(
             `received redirect result and success to link with IdP; ${idp}`
@@ -127,13 +126,17 @@ export function init(): Promise<User> {
           /**
            * Sign-in as a firebase user to be linked with twitter ID.
            */
-          const alreadyLinkedUser = User.from(
-            (await firebaseAuth.signInAndRetrieveDataWithCredential(
-              e.credential
-            )).user
-          );
+          const alreadyLinkedFirebaseUser = (await firebaseAuth.signInAndRetrieveDataWithCredential(
+            e.credential
+          )).user;
 
-          await alreadyLinkedUser.addDuplicatedRef(newerAnonymousUser);
+          if (!alreadyLinkedFirebaseUser) {
+            throw new Error("");
+          }
+
+          await User.from(alreadyLinkedFirebaseUser).addDuplicatedRef(
+            newerAnonymousUser
+          );
 
           /**
            * Release ignoring flag.
@@ -167,7 +170,13 @@ export function getCurrentUser(): User {
  * @return Promise<string>
  */
 export function getIdToken(forceRefresh: boolean = true): Promise<string> {
-  return firebaseAuth.currentUser.getIdToken(forceRefresh);
+  const user = firebaseAuth.currentUser;
+
+  if (!user) {
+    throw new Error("No firebase authed user.");
+  }
+
+  return user.getIdToken(forceRefresh);
 }
 
 /**
@@ -185,7 +194,13 @@ export function signInAsAnonymous(): Promise<auth.UserCredential> {
  * @return Promise<void>
  */
 export function signInAsTwitterUser(): Promise<void> {
-  return firebaseAuth.currentUser.linkWithRedirect(twitterAuthProvider);
+  const user = firebaseAuth.currentUser;
+
+  if (!user) {
+    throw new Error("No firebase authed user.");
+  }
+
+  return user.linkWithRedirect(twitterAuthProvider);
 }
 
 /**

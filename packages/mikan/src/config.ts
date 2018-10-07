@@ -3,13 +3,13 @@
  */
 
 export interface Config {
-  rendererBackgroundColor: number;
+  rendererBackgroundColor: number | null;
 
   supportedLanguages: string[];
-  defaultLanguage: string;
+  defaultLanguage: string | null;
 
-  basicImageWidth: number;
-  basicImageHeight: number;
+  basicImageWidth: number | null;
+  basicImageHeight: number | null;
 }
 
 const config: Config = {

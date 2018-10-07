@@ -99,7 +99,7 @@ export function getRandomInteger(min: number, max: number): number {
  * @param text
  * @return {boolean}
  */
-export function copyTextToClipboard(text): boolean {
+export function copyTextToClipboard(text: string): boolean {
   const copyFrom = document.createElement("textarea");
   copyFrom.textContent = text;
 
@@ -153,7 +153,7 @@ export function getCurrentUrl(): string {
 /**
  * @see https://dev.twitter.com/web/tweet-button/web-intent
  */
-interface WebIntentParams {
+export interface WebIntentParams {
   text?: string;
   url?: string;
   hashtags?: string[];
@@ -188,7 +188,7 @@ export function tweetByWebIntent(params: WebIntentParams, popup = false) {
 
 let ExternalSiteWindowRef: Window | null = null;
 
-export function openExternalSite(url) {
+export function openExternalSite(url: string) {
   const target = "sokontokoro-factory.net_external_site";
   ExternalSiteWindowRef = window.open(url, target);
 

@@ -23,7 +23,7 @@ abstract class ViewContainer extends Container implements State {
   private _viewWidth: number;
   private _viewHeight: number;
 
-  private _elapsedTimeMillis: number;
+  private _elapsedTimeMillis: number = 0;
 
   constructor() {
     super();
@@ -127,7 +127,7 @@ abstract class ViewContainer extends Container implements State {
    * @param {boolean | EventListenerOptions} options
    */
   protected removeClickWindowEventListener(
-    listener?: EventListenerOrEventListenerObject,
+    listener: EventListenerOrEventListenerObject,
     options?: boolean | EventListenerOptions
   ): void {
     window.removeEventListener(

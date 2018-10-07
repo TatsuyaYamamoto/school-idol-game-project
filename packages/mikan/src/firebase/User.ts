@@ -6,6 +6,7 @@ import {
 } from "firebase/app";
 
 import UserCredential = firebase.auth.UserCredential;
+import DocumentReference = firestore.DocumentReference;
 
 import { Twitter } from "twit";
 import TwitterUser = Twitter.User;
@@ -67,14 +68,22 @@ export class User {
     return User.getColRef().doc(id);
   }
 
-  public static getOwnRef() {
+  public static getOwnRef(): DocumentReference {
     const { currentUser } = firebaseAuth;
+
+    if (!currentUser) {
+      throw new Error("No firebase auth current user.");
+    }
 
     return User.getDocRef(currentUser.uid);
   }
 
   public static async linkIdp(userCredential: UserCredential) {
     const { user, additionalUserInfo, credential } = userCredential;
+
+    if (!user || !additionalUserInfo || !credential) {
+      throw new Error("Fail to link. No userCredential is provided.");
+    }
 
     const providerId = credential.signInMethod;
     const userRef = User.getDocRef(user.uid);
@@ -96,8 +105,8 @@ export class User {
           [providerId]: {
             userId: profile.id_str,
             credential: {
-              accessToken: credential["accessToken"],
-              secret: credential["secret"]
+              accessToken: (<any>credential).accessToken,
+              secret: (<any>credential).secret
             },
             linkedAt: firestore.FieldValue.serverTimestamp()
           }
@@ -156,10 +165,10 @@ export class User {
     return null;
   }
 
-  public async addDuplicatedRef(duplicateUser) {
+  public async addDuplicatedRef(duplicate: User) {
     const duplicateUserRef = firestore()
       .collection("users")
-      .doc(duplicateUser.uid);
+      .doc(duplicate.uid);
 
     const alreadyLinkedUserRef = firestore()
       .collection("users")
@@ -179,8 +188,10 @@ export class User {
   }
 
   private getLinkedProviderData(): FirebaseUserInfo | null {
-    return this.firebaseUser.providerData.find(data => {
-      return data.uid !== null;
-    });
+    const providerData = this.firebaseUser.providerData.find(
+      data => !!data && data.uid !== null
+    );
+
+    return providerData || null;
   }
 }

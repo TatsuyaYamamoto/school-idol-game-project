@@ -100,9 +100,10 @@ abstract class Application extends PixiApplication implements State {
   onExit(): void {}
 
   protected to<T>(stateTag: string, params?: T): void {
-    this.stateMachine.change(stateTag, params);
+    const current = this.stateMachine.change(stateTag, params);
+
     this.stage.removeChildren();
-    this.stage.addChild(this.stateMachine.current);
+    this.stage.addChild(current);
   }
 }
 

@@ -12,11 +12,16 @@
 const eventTarget: EventTarget = document;
 
 /**
+ * Event list
+ */
+export type Events = { [key: string]: (event: any) => void };
+
+/**
  * Cache object that has added events.
  *
  * @type {any}
  */
-const cacheEvents = {};
+const cacheEvents: Events = {};
 
 /**
  * Fire an event has provided type.
@@ -37,7 +42,7 @@ export function dispatchEvent(type: string, detail?: object): void {
  *
  * @param events
  */
-export function addEvents(events: { [key: string]: (event) => void }): void {
+export function addEvents(events: Events): void {
   Object.keys(events).forEach(key => {
     eventTarget.addEventListener(key, events[key]);
     cacheEvents[key] = events[key];

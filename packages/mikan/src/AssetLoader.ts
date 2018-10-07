@@ -22,7 +22,9 @@ const SOUND_BASE_DIR = "assets/sound/";
  * @type {any}
  * @private
  */
-const assetsCache: { string: Asset } = Object.create(null);
+const assetsCache: {
+  [key: string]: Asset;
+} = Object.create(null);
 
 /**
  * Texture and Sound resource interface loaded with PIXI Loader.
@@ -44,7 +46,7 @@ export interface ImageManifest {
  * Sound manifest interface that the loader requires.
  */
 export interface SoundManifest {
-  [key: number]: any;
+  [key: string]: any;
 }
 
 /**
@@ -54,6 +56,8 @@ export interface SoundManifest {
 class AssetLoader extends loaders.Loader {
   constructor() {
     super();
+    // TODO check spec
+    // @ts-ignore
     this.on("complete", this.setAssets);
   }
 
@@ -64,7 +68,7 @@ class AssetLoader extends loaders.Loader {
    */
   public setImageManifest(imageManifest: ImageManifest): void {
     // Concat manifests with base and current language.
-    const targetManifest = Object.assign(
+    const targetManifest: ImageManifest = Object.assign(
       {},
       imageManifest[config.defaultLanguage],
       imageManifest[getCurrentLanguage()]
@@ -130,8 +134,15 @@ export function loadTexture(id: string | number): Texture {
  * @returns {PIXI.Texture[]}
  */
 export function loadFrames(id: string | number): Texture[] {
-  return Object.keys(assetsCache[`image@${id}`].textures).map(textureKey => {
-    return assetsCache[`image@${id}`].textures[textureKey];
+  const cache = assetsCache[`image@${id}`];
+  const textures = cache.textures;
+
+  if (!textures) {
+    throw new Error("Fail to load cached assets. ID: " + id);
+  }
+
+  return Object.keys(textures).map(textureKey => {
+    return textures[textureKey];
   });
 }
 

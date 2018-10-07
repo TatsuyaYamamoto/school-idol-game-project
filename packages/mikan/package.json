@@ -30,8 +30,10 @@
     "tippy.js": "^2.5.4"
   },
   "devDependencies": {
+    "@types/animejs": "^2.0.0",
     "@types/i18next": "^8.4.4",
     "@types/i18next-browser-languagedetector": "^2.0.1",
+    "@types/loglevel": "^1.5.3",
     "@types/pixi.js": "^4.8.0",
     "@types/twit": "^2.2.19",
     "typescript": "^3.0.1"

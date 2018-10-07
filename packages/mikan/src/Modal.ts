@@ -4,7 +4,7 @@
 import Swal, { SweetAlertOptions } from "sweetalert2";
 const tippy = require("tippy.js");
 
-interface Action {
+export interface Action {
   text: string;
   tooltipText?: string;
   type?: "confirm" | "cancel";
@@ -12,7 +12,7 @@ interface Action {
   onClick?: () => void;
 }
 
-interface ModalProps {
+export interface ModalProps {
   actions: Action[];
 }
 

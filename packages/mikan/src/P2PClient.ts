@@ -1,3 +1,4 @@
+// @ts-ignore
 import Peer from "skyway-js";
 import Autobind from "autobind-decorator";
 import { EventEmitter } from "eventemitter3";
@@ -6,18 +7,20 @@ import { mean } from "./Calculation";
 
 const logger = getLogger("p2p-client");
 
-enum EventType {
+export enum EventType {
   CONNECT = "connect",
   CLOSE = "close",
   DATA = "data"
 }
 
-type P2PMessage = any;
+export type P2PMessage = any;
 
-interface P2PData {
+export interface P2PData {
   message: P2PMessage;
   time: number;
 }
+
+export type PeerID = string;
 
 /**
  * P2P P2PClient.
@@ -30,11 +33,11 @@ class P2PClient extends EventEmitter {
   private static INSTANCE: P2PClient | null = null;
   private static PING_COUNT_FOR_AVERAGE = 5;
 
-  readonly peer;
-  private _connection = null;
+  readonly peer: Peer;
+  private _connection: Peer.Connection | null = null;
   private _averagePing: number = 0;
   private _pingHistory: number[] = [];
-  private _isDisconnectRequested;
+  private _isDisconnectRequested: boolean = false;
 
   /**
    * Constructor
@@ -48,7 +51,7 @@ class P2PClient extends EventEmitter {
     const peerOptions = {
       key,
       debug: 2,
-      logFunction: args => logger.debug(args)
+      logFunction: (args: any) => logger.debug(args)
     };
 
     if (peerId) {
@@ -69,7 +72,7 @@ class P2PClient extends EventEmitter {
    * @param key
    * @param peerId
    */
-  public static get(key?: string, peerId?: string) {
+  public static get(key?: string, peerId?: string): P2PClient {
     if (this.INSTANCE) {
       return this.INSTANCE;
     }
@@ -119,7 +122,7 @@ class P2PClient extends EventEmitter {
    *
    * @param remotePeerId
    */
-  public connect(remotePeerId) {
+  public connect(remotePeerId: PeerID) {
     logger.debug(`try connect. target PeerID: ${remotePeerId}`);
 
     // TODO: reconsider check state and try logic
@@ -149,6 +152,13 @@ class P2PClient extends EventEmitter {
   }
 
   public disconnect() {
+    if (!this._connection) {
+      logger.error(
+        "P2PClient doesn't have a connection. check whether you initialize a client or not."
+      );
+      return;
+    }
+
     logger.debug(`try disconnect with remote peerID: ${this.remotePeerId}`);
     this._isDisconnectRequested = true;
     this._connection.close();
@@ -197,15 +207,15 @@ class P2PClient extends EventEmitter {
     });
   }
 
-  private setConnection(connection) {
+  private setConnection(connection: any) {
+    connection.on("data", this.onDataReceived);
+    connection.on("close", this.onConnectionClosed);
+
     this._connection = connection;
     this._isDisconnectRequested = false;
-
-    this._connection.on("data", this.onDataReceived);
-    this._connection.on("close", this.onConnectionClosed);
   }
 
-  private onPeerOpened(id) {
+  private onPeerOpened(id: PeerID) {
     logger.debug(`peer is opened. PeerID: ${id}`);
   }
 
@@ -215,7 +225,7 @@ class P2PClient extends EventEmitter {
    * @param connection
    * @link https://webrtc.ecl.ntt.com/skyway-js-sdk-doc/ja/peer/#connection
    */
-  private onPeerConnected(connection) {
+  private onPeerConnected(connection: any) {
     const connId = connection.id;
     const peerId = connection.remoteId;
 
@@ -227,11 +237,11 @@ class P2PClient extends EventEmitter {
     this.emit(P2PClient.EVENTS.CONNECT);
   }
 
-  private onPeerError(e) {
+  private onPeerError(e: Error) {
     logger.error("peer error occurred.", e);
   }
 
-  private onPeerClosed(id) {
+  private onPeerClosed(id: PeerID) {
     logger.debug(`peer is disconnected. PeerID: ${id}`);
   }
 
@@ -256,7 +266,7 @@ class P2PClient extends EventEmitter {
     this._connection = null;
   }
 
-  private calcAveragePing(newPing) {
+  private calcAveragePing(newPing: number) {
     this._pingHistory.push(newPing);
     this._averagePing = mean(this._pingHistory);
     if (P2PClient.PING_COUNT_FOR_AVERAGE < this._pingHistory.length) {
