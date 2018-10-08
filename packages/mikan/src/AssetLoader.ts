@@ -103,11 +103,11 @@ class AssetLoader extends loaders.Loader {
   /**
    * Fire on complete load resources.
    *
-   * @param {AssetLoader} loader
+   * @param {AssetLoader} _loader
    * @param {{[string]: Asset}} assets
    * @private
    */
-  private setAssets(loader: AssetLoader, assets: { [key: string]: Asset }) {
+  private setAssets(_loader: AssetLoader, assets: { [key: string]: Asset }) {
     const assetIds = Object.keys(assets);
 
     assetIds.forEach(id => {

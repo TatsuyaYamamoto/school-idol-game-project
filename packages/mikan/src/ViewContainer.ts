@@ -132,7 +132,8 @@ abstract class ViewContainer extends Container implements State {
   ): void {
     window.removeEventListener(
       isSupportTouchEvent() ? "touchstart" : "click",
-      listener
+      listener,
+      options
     );
   }
 
@@ -199,14 +200,11 @@ abstract class ViewContainer extends Container implements State {
    * @param {string} stateTag
    * @param {T} params
    */
-  protected to<T>(stateTag: string, params?: T) {
-    if (!this.stateMachine) {
-      return;
-    }
+  protected to<T>(stateTag: string, params?: T): void {
+    const current = this.stateMachine.change(stateTag, params);
 
-    this.stateMachine.change(stateTag, params);
     this.applicationLayer.removeChildren();
-    this.applicationLayer.addChild(this.stateMachine.current);
+    this.applicationLayer.addChild(current);
   }
 }
 

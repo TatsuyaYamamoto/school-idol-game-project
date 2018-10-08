@@ -25,7 +25,7 @@ const SPINNER_OPTS = {
   // position: 'relative' // Element positioning
 };
 
-const spinner = new Spinner(SPINNER_OPTS).spin().el;
+const spinner = new Spinner(SPINNER_OPTS).spin().el as HTMLElement;
 
 const background = document.createElement("div");
 background.style.position = "absolute";

@@ -3,13 +3,13 @@
  */
 
 export interface Config {
-  rendererBackgroundColor: number | null;
+  rendererBackgroundColor: number;
 
   supportedLanguages: string[];
-  defaultLanguage: string | null;
+  defaultLanguage: string;
 
-  basicImageWidth: number | null;
-  basicImageHeight: number | null;
+  basicImageWidth: number;
+  basicImageHeight: number;
 }
 
 const config: Config = {
@@ -23,13 +23,13 @@ const config: Config = {
    * Basic width of the application view.
    * This app's assets is draw as premise of this.
    */
-  basicImageWidth: null,
+  basicImageWidth: 0,
 
   /**
    * Basic height of the application view.
    * This app's assets is draw as premise of this.
    */
-  basicImageHeight: null,
+  basicImageHeight: 0,
 
   /**
    * Languages that this i18n module supports.*
@@ -40,7 +40,7 @@ const config: Config = {
    * Default language.
    * This is fallback when user required unsupported language.
    */
-  defaultLanguage: null
+  defaultLanguage: ""
 };
 
 export default config;

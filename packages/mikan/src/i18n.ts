@@ -14,9 +14,6 @@ import * as i18next from "i18next";
 import * as Detector from "i18next-browser-languagedetector";
 
 import config from "./config";
-import { getLogger } from "./logger";
-
-const logger = getLogger("mikan/i18n");
 
 /**
  * Single instance to be set with {@link initI18n}.

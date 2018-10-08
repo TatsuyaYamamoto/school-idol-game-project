@@ -1,5 +1,4 @@
-// @ts-ignore
-import Peer from "skyway-js";
+const Peer = require("skyway-js");
 import Autobind from "autobind-decorator";
 import { EventEmitter } from "eventemitter3";
 import { getLogger } from "./logger";
@@ -13,7 +12,11 @@ export enum EventType {
   DATA = "data"
 }
 
+export type Peer = any;
+
 export type P2PMessage = any;
+
+export type Connection = any;
 
 export interface P2PData {
   message: P2PMessage;
@@ -34,7 +37,7 @@ class P2PClient extends EventEmitter {
   private static PING_COUNT_FOR_AVERAGE = 5;
 
   readonly peer: Peer;
-  private _connection: Peer.Connection | null = null;
+  private _connection: Connection | null = null;
   private _averagePing: number = 0;
   private _pingHistory: number[] = [];
   private _isDisconnectRequested: boolean = false;

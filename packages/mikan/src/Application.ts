@@ -80,12 +80,12 @@ abstract class Application extends PixiApplication implements State {
   }
 
   /**
-   * @param {number} elapsedMS    Time elapsed in milliseconds from last frame to this frame.
+   * @param {number} _elapsedMS    Time elapsed in milliseconds from last frame to this frame.
    *                              If the platform supports DOMHighResTimeStamp, this value will have a precision of 1 µs.
    * @inheritDoc
    * @override
    */
-  update(elapsedMS: number): void {}
+  update(_elapsedMS: number): void {}
 
   /**
    * @inheritDoc

@@ -103,7 +103,7 @@ export function init(): Promise<User> {
           return;
         }
 
-        throw new Error(`unexpected redirect result is received.`);
+        reject(`unexpected redirect result is received.`);
       })
       .catch(async (error: auth.Error) => {
         if (error.code === "auth/credential-already-in-use") {
@@ -131,7 +131,10 @@ export function init(): Promise<User> {
           )).user;
 
           if (!alreadyLinkedFirebaseUser) {
-            throw new Error("");
+            reject(
+              "unexpected error. could not get user in already-in-use event."
+            );
+            return;
           }
 
           await User.from(alreadyLinkedFirebaseUser).addDuplicatedRef(
@@ -144,7 +147,7 @@ export function init(): Promise<User> {
           ignoreChangeStateUid = null;
         } else {
           // Unexpected error occurred.
-          throw error;
+          reject(error);
         }
       });
   });

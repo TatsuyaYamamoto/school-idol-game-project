@@ -1,7 +1,6 @@
 import {
   User as FirebaseUser,
   UserInfo as FirebaseUserInfo,
-  auth,
   firestore
 } from "firebase/app";
 

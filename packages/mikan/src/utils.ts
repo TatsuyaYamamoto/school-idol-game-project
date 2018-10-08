@@ -165,7 +165,7 @@ const TWITTER_INTENT_ENDPOINT = "https://twitter.com/intent/tweet";
 /**
  * @see https://dev.twitter.com/web/tweet-button/web-intent
  */
-export function tweetByWebIntent(params: WebIntentParams, popup = false) {
+export function tweetByWebIntent(params: WebIntentParams, _popup = false) {
   const queries: string[] = [];
 
   if (!!params.hashtags) {
