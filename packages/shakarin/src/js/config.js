@@ -7,7 +7,7 @@ const baseUrl =
 export var config = {
   system: {
     FPS: 30,
-    timeLength: 2600,
+    timeLength: 26000,
     gamescrean: {
       width: 640,
       height: 896

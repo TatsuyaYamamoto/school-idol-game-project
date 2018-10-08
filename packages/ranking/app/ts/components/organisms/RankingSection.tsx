@@ -4,11 +4,14 @@ import AutoBind from "autobind-decorator";
 import {
   firebaseDb,
   MetadataDocument,
-  RankItemDocument
+  RankItemDocument,
+  getLogger
 } from "@sokontokoro/mikan";
 
 import RankingList from "../molecules/RankingList";
 import RankItem from "../molecules/RankItem";
+
+const logger = getLogger("RankingSection");
 
 interface Props {
   game: string;
@@ -17,7 +20,6 @@ interface Props {
 
 interface State {
   hasMoreItem: boolean;
-  isLoading: boolean;
   game: string;
   rankingList: JSX.Element[];
   lastVisibleSnapshot: any;
@@ -31,7 +33,6 @@ export default class RankingSection extends React.Component<Props, State> {
     this.state = {
       game: this.props.game,
       hasMoreItem: true,
-      isLoading: false,
       rankingList: [],
       lastVisibleSnapshot: null
     };
@@ -39,10 +40,11 @@ export default class RankingSection extends React.Component<Props, State> {
 
   public static getDerivedStateFromProps(nextProps: Props, prevState: State) {
     if (nextProps.game !== prevState.game) {
+      logger.debug(`change game. ${prevState.game} -> ${nextProps.game}`);
+
       return {
         game: nextProps.game,
         hasMoreItem: true,
-        isLoading: false,
         rankingList: [],
         lastVisibleSnapshot: null
       };
@@ -53,7 +55,7 @@ export default class RankingSection extends React.Component<Props, State> {
 
   public render() {
     const { initialized } = this.props;
-    const { hasMoreItem, isLoading, rankingList } = this.state;
+    const { hasMoreItem, rankingList } = this.state;
 
     const initializing = <div>Initializing...</div>;
 
@@ -62,7 +64,6 @@ export default class RankingSection extends React.Component<Props, State> {
         {initialized ? (
           <RankingList
             hasMoreItem={hasMoreItem}
-            isLoading={isLoading}
             list={rankingList}
             loadMoreItem={this.loadMoreItem}
           />
@@ -74,6 +75,7 @@ export default class RankingSection extends React.Component<Props, State> {
   }
 
   private async loadMoreItem({ startIndex, stopIndex }: IndexRange) {
+    console.log("load", startIndex, stopIndex);
     const { lastVisibleSnapshot, game } = this.state;
 
     const limit = stopIndex - startIndex + 1;
@@ -97,7 +99,7 @@ export default class RankingSection extends React.Component<Props, State> {
     }
 
     if (scores.size === 0) {
-      console.log("no more scores");
+      logger.debug("no more scores");
       this.setState({ hasMoreItem: false });
       return;
     }

@@ -29,7 +29,7 @@ const SiteName = styled.a`
   text-decoration: none;
 
   &::before {
-    content: "${`© 2014-${currentYear}Sokontokoro Factory, All rights reserved.`}";
+    content: "${`© 2014-${currentYear} Sokontokoro Factory, All rights reserved.`}";
     
     @media (max-width:480px) {
       content: "${`© Sokontokoro Factory`}"

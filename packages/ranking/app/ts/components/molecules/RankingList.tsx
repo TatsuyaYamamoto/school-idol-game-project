@@ -13,19 +13,14 @@ import RankItem from "./RankItem";
 
 interface Props {
   hasMoreItem: boolean;
-  isLoading: boolean;
   list: JSX.Element[];
   loadMoreItem: (params: IndexRange) => Promise<any>;
 }
 
 const RankingList: React.SFC<Props> = props => {
-  const { list, isLoading, hasMoreItem, loadMoreItem } = props;
+  const { list, hasMoreItem, loadMoreItem } = props;
 
   const rowCount = hasMoreItem ? list.length + 5 : list.length;
-
-  const loadMoreRows = isLoading
-    ? async (params: IndexRange) => {}
-    : loadMoreItem;
 
   const isRowLoaded = ({ index }: Index) => !hasMoreItem || index < list.length;
 
@@ -47,7 +42,7 @@ const RankingList: React.SFC<Props> = props => {
   return (
     <InfiniteLoader
       isRowLoaded={isRowLoaded}
-      loadMoreRows={loadMoreRows}
+      loadMoreRows={loadMoreItem}
       rowCount={rowCount}
       threshold={10}
     >
