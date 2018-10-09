@@ -8,7 +8,7 @@ export interface HighscoreDocument /* extends firestore.DocumentData */ {
   game: Game;
   member: Member;
   point: number;
-  label: string | null;
+  label: object;
   count: number;
   createdAt: firestore.FieldValue;
   updatedAt: firestore.FieldValue;

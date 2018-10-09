@@ -3,12 +3,7 @@ import { firestore } from "firebase-admin";
 
 import { PlaylogDocument, HighscoreDocument } from "@sokontokoro/mikan";
 
-import {
-  getHighscoreColRef,
-  getHighscoreSnapshot,
-  getCompare,
-  loadedMetadata
-} from "../utils";
+import { getHighscoreColRef, getCompare, loadedMetadata } from "../utils";
 
 export default functions.firestore
   .document("playlogs/{playlogId}")
@@ -23,23 +18,53 @@ export default functions.firestore
        * Check targer log
        */
       const playlogDoc = snapshot.data() as PlaylogDocument;
-      const highscoreSnapshot = await getHighscoreSnapshot(
-        playlogDoc.game,
-        playlogDoc.userRef
-      );
+      const query = getHighscoreColRef()
+        .where("game", "==", playlogDoc.game)
+        .where("userRef", "==", playlogDoc.userRef);
+      const { compareType } = await loadedMetadata(playlogDoc.game);
+      const shouldUpdate = getCompare(compareType);
 
-      if (highscoreSnapshot === null) {
-        console.log(`prev score snapshot is empty. create new document.`);
-        await addHighscore(playlogDoc);
-      } else {
-        console.log(
-          `prev score snapshot is found. check if the score is updated.`
-        );
-        await updateHighscore(playlogDoc, highscoreSnapshot);
-      }
+      await firestore().runTransaction(async transaction => {
+        const snapshot = await transaction.get(query);
+
+        if (snapshot.empty) {
+          console.log(`prev score snapshot is empty. create new document.`);
+
+          await transaction.create(getHighscoreColRef().doc(), {
+            userRef: playlogDoc.userRef,
+            game: playlogDoc.game,
+            member: playlogDoc.member,
+            point: playlogDoc.point,
+            label: playlogDoc.label,
+            count: 1,
+            createdAt: firestore.FieldValue.serverTimestamp(),
+            updatedAt: firestore.FieldValue.serverTimestamp(),
+            brokenAt: firestore.FieldValue.serverTimestamp()
+          } as HighscoreDocument);
+        } /* exist */ else {
+          console.log(
+            `prev score snapshot is found. check if the score is updated.`
+          );
+          const prevScoreRef = snapshot.docs[0].ref;
+          const prevScoreDoc = snapshot.docs[0].data() as HighscoreDocument;
+
+          const newHighscore: HighscoreDocument = {
+            ...prevScoreDoc,
+            count: prevScoreDoc.count + 1,
+            updatedAt: firestore.FieldValue.serverTimestamp()
+          };
+
+          if (shouldUpdate(prevScoreDoc.point, playlogDoc.point)) {
+            newHighscore.point = playlogDoc.point;
+            newHighscore.brokenAt = firestore.FieldValue.serverTimestamp();
+          }
+
+          await transaction.update(prevScoreRef, newHighscore);
+        }
+      });
 
       console.log({
-        message: `start playlogs/${snapshot.id}#onCreate success.`
+        message: `end playlogs/${snapshot.id}#onCreate success.`
       });
     } catch (e) {
       console.log({
@@ -48,49 +73,3 @@ export default functions.firestore
       });
     }
   });
-
-async function addHighscore({
-  userRef,
-  game,
-  member,
-  point,
-  label
-}: PlaylogDocument) {
-  const highscore = {
-    userRef,
-    game,
-    member,
-    point,
-    label,
-    count: 1,
-    createdAt: firestore.FieldValue.serverTimestamp(),
-    updatedAt: firestore.FieldValue.serverTimestamp(),
-    brokenAt: firestore.FieldValue.serverTimestamp()
-  };
-
-  await getHighscoreColRef().add(highscore);
-}
-
-async function updateHighscore(
-  { game, point }: PlaylogDocument,
-  highscoreSnapshot: firestore.DocumentSnapshot
-) {
-  const { compareType } = await loadedMetadata(game);
-  const shouldUpdate = getCompare(compareType);
-
-  const prevScoreRef = highscoreSnapshot.ref;
-  const prevScore = highscoreSnapshot.data() as HighscoreDocument;
-
-  const score: HighscoreDocument = {
-    ...prevScore,
-    count: prevScore.count + 1,
-    updatedAt: firestore.FieldValue.serverTimestamp()
-  };
-
-  if (shouldUpdate(prevScore.point, point)) {
-    score.point = point;
-    score.brokenAt = firestore.FieldValue.serverTimestamp();
-  }
-
-  await prevScoreRef.update(score);
-}

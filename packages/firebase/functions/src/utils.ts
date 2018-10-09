@@ -5,26 +5,6 @@ export function getHighscoreColRef() {
   return adminFirestore().collection("highscores");
 }
 
-export async function getHighscoreSnapshot(
-  game: string,
-  userRef: /* adminFirestore.DocumentReference */ any
-): Promise<adminFirestore.DocumentSnapshot | null> {
-  const snapshot = await getHighscoreColRef()
-    .where("game", "==", game)
-    .where("userRef", "==", userRef)
-    .get();
-
-  if (snapshot.empty) {
-    return null;
-  }
-
-  if (!snapshot.docs[0].exists) {
-    return null;
-  }
-
-  return snapshot.docs[0];
-}
-
 export function getMetadataRef(game: string): adminFirestore.DocumentReference {
   return adminFirestore()
     .collection("metadata")
