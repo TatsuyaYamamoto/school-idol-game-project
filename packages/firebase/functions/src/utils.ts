@@ -1,5 +1,9 @@
 import { firestore as adminFirestore } from "firebase-admin";
 import { MetadataDocument } from "@sokontokoro/mikan";
+import { IncomingWebhook } from "@slack/client";
+import { config } from "firebase-functions";
+
+const webhook = new IncomingWebhook(config().slack.webhook_url);
 
 export function getHighscoreColRef() {
   return adminFirestore().collection("highscores");
@@ -63,4 +67,20 @@ export async function addDocWithBatch(
     }
     await batch.commit();
   }
+}
+
+export function sendToSlack(
+  title: string,
+  text: string,
+  color: "good" | "warning" | "danger" = "good"
+) {
+  return webhook.send({
+    attachments: [
+      {
+        title,
+        text,
+        color
+      }
+    ]
+  });
 }

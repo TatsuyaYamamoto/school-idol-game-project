@@ -24,6 +24,11 @@ program
   .action(clearFirestore);
 
 program
+  .command("publish <topic> <data>")
+  .description("send FCM message")
+  .action(publish);
+
+program
   .command("health")
   .description("health check each resources")
   .action(healthCheck);
@@ -97,4 +102,18 @@ async function healthCheck() {
   const authUserIds = await auth.listUsers().then(({ users }) => {
     return users.map(user => user.uid);
   });
+}
+
+async function publish(topic, data, cmd) {
+  const message = {
+    data: JSON.parse(data),
+    topic
+  };
+  console.log("message: ", message);
+
+  const response = await admin.messaging().send(message);
+
+  console.log("Successfully sent message:", response);
+
+  process.exit();
 }

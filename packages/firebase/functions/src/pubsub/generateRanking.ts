@@ -1,7 +1,10 @@
-import * as functions from "firebase-functions";
 import { firestore } from "firebase-admin";
+import { pubsub } from "firebase-functions";
+
 import {
+  MetadataDocument,
   HighscoreDocument,
+  RankingDocument,
   RankItemDocument,
   UserDocument
 } from "@sokontokoro/mikan";
@@ -10,75 +13,84 @@ import {
   getCompare,
   getHighscoreColRef,
   getMetadataRef,
-  loadedMetadata
+  loadedMetadata,
+  sendToSlack
 } from "../utils";
 
-export default functions.firestore
-  .document("highscores/{scoreId}")
-  .onWrite(async (change, context) => {
-    try {
-      console.log({
-        message: `start playlogs/${change.after.id}#onWrite event.`,
-        detail: [change, context]
-      });
+export default pubsub
+  .topic("generate-ranking")
+  .onPublish(async (_message, context) => {
+    console.log(`published "generate-ranking" topic. ID: ${context.eventId}`);
 
-      /**
-       * Check not to be delete event.
-       */
-      if (!change.after.exists) {
-        console.log(`unexpected trigger! document is deleted.`);
-        return;
+    const games = ["honocar", "shakarin", "maruten"];
+    const messages = [];
+
+    try {
+      for (const game of games) {
+        console.log(`start creation. game: ${game}`);
+
+        const metadataRef = getMetadataRef(game);
+        const newRankingRef = firestore()
+          .collection("ranking")
+          .doc();
+        const newRankingListRef = newRankingRef.collection("list");
+
+        /**
+         * step 1
+         * Load all highscore resources and calculate ranking list.
+         */
+        const rankingList = await createRankingList(game);
+
+        console.log(
+          `create ranking item docs. game: ${game}, size: ${rankingList.length}`
+        );
+
+        /**
+         * step 2
+         * save new ranking list with batch
+         */
+        await addDocWithBatch(newRankingListRef, rankingList);
+
+        console.log(
+          `success to create new ranking resource; ${newRankingRef.path}`
+        );
+
+        /**
+         * step 3
+         * update metadata about this ranking
+         */
+        await firestore().runTransaction(async transaction => {
+          await transaction.set(newRankingRef, {
+            game,
+            totalCount: rankingList.length,
+            createdAt: firestore.FieldValue.serverTimestamp()
+          } as RankingDocument);
+
+          await transaction.update(metadataRef, {
+            rankingRef: newRankingRef
+          } as Partial<MetadataDocument>);
+        });
+
+        console.log(`success! game: ${game}`);
+        messages.push(`${game}: ${getRankingDocUrl(newRankingRef.id)}`);
       }
 
-      const highscoreDoc = change.after.data() as HighscoreDocument;
-      const game = highscoreDoc.game;
-      const newRankingRef = firestore()
-        .collection("ranking")
-        .doc();
-      const rankingListRef = newRankingRef.collection("list");
+      console.log(`It's completed to create ranking; ${games.join(", ")}.`);
 
-      /**
-       * step 1
-       * Load all highscore resources and calculate ranking list.
-       */
-      const rankingList = await createRankingList(game);
-
-      console.log(
-        `create ranking item docs. game: ${game}, size: ${rankingList.length}`
-      );
-
-      /**
-       * step 2
-       * save new ranking list with batch
-       */
-      await addDocWithBatch(rankingListRef, rankingList);
-
-      console.log(
-        `success to create new ranking resource; ${newRankingRef.path}`
-      );
-
-      /**
-       * step 3
-       * update metadata about this ranking
-       */
-      await Promise.all([
-        newRankingRef.set({
-          game: highscoreDoc.game,
-          createdAt: firestore.FieldValue.serverTimestamp()
-        }),
-        getMetadataRef(highscoreDoc.game).update({
-          rankingRef: newRankingRef
-        })
-      ]);
-
-      console.log(`completed!`);
+      await sendToSlack("ランキング計算完了", messages.join("\n"));
     } catch (e) {
-      console.log({
+      console.error({
         message: "FATAL ERROR! catch unhandled error.",
         detail: e
       });
     }
   });
+
+function getRankingDocUrl(id: string) {
+  return `https://console.firebase.google.com/u/2/project/${
+    process.env.GCLOUD_PROJECT
+  }/database/firestore/data~2Franking~2F${id}`;
+}
 
 async function createRankingList(game: string): Promise<RankItemDocument[]> {
   const { compareType } = await loadedMetadata(game);

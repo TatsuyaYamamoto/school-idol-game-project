@@ -11,6 +11,7 @@ export interface RankItemDocument /* extends firestore.DocumentData */ {
 }
 
 export interface RankingDocument extends firestore.DocumentData {
+  totalCount: number;
   list: firestore.CollectionReference;
   game: string;
   createdAt: firestore.FieldValue;

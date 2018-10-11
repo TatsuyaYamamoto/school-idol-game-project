@@ -1,0 +1,4 @@
+cron:
+  - description: "publish 'generate-ranking' topic"
+    url: /publish/generate-ranking
+    schedule: every 24 hours synchronized

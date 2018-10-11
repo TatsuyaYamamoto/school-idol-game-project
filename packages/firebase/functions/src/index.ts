@@ -3,8 +3,8 @@ import { initializeApp, firestore } from "firebase-admin";
 
 import onCreateUser from "./trigger/onCreateUser";
 import onCreatePlaylog from "./trigger/onCreatePlaylog";
-import onWriteHighscores from "./trigger/onWriteHighscores";
 
+import generateRanking from "./pubsub/generateRanking";
 import cloudFunctionsWarnLog from "./pubsub/cloudFunctionsWarnLog";
 
 initializeApp();
@@ -17,7 +17,7 @@ export const helloWorld = functions.https.onRequest((_request, response) => {
 });
 
 // Trigger
-export { onCreateUser, onCreatePlaylog, onWriteHighscores };
+export { onCreateUser, onCreatePlaylog };
 
 // pubsub
-export { cloudFunctionsWarnLog };
+export { cloudFunctionsWarnLog, generateRanking };

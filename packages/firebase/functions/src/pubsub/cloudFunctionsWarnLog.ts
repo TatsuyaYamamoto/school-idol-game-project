@@ -1,15 +1,6 @@
 import { pubsub } from "firebase-functions";
-import { IncomingWebhook, IncomingWebhookSendArguments } from "@slack/client";
 
-const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_TO_FIREBASE || "";
-
-const LOG_COLORS = {
-  DEBUG: "#4175e1",
-  INFO: "#76a9fa",
-  WARNING: "warning",
-  ERROR: "danger",
-  CRITICAL: "#ff0000"
-};
+import { sendToSlack } from "../utils";
 
 export default pubsub
   .topic("cloud-functions-warn-log")
@@ -31,19 +22,7 @@ export default pubsub
 
       const title = `Catch unhandled error! *${function_name}* <${logUrl}|Open log>`;
       const text = JSON.stringify(data, null, "\t");
-
-      const body: IncomingWebhookSendArguments = {
-        attachments: [
-          {
-            title,
-            text,
-            color: (<any>LOG_COLORS)[data.severity]
-          }
-        ]
-      };
-
-      const webhook = new IncomingWebhook(SLACK_WEBHOOK_URL);
-      const result = await webhook.send(body);
+      const result = await sendToSlack(title, text, "danger");
 
       console.log({
         message: "slack nitif is success.",
