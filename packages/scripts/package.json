@@ -1,0 +1,16 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "description": "util scripts for games",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "firestore": "ts-node ./src/firestore/index.ts"
+  },
+  "dependencies": {
+    "commander": "^2.19.0"
+  },
+  "devDependencies": {
+    "ts-node": "^7.0.1"
+  }
+}

@@ -1,9 +1,7 @@
-#!/usr/bin/env node
+import * as program from "commander";
+import * as admin from "firebase-admin";
 
-const program = require("commander");
-const admin = require("firebase-admin");
-
-const serviceAccount = require("../../../../../../.ssh/service_account/school-idol-game-development-firebase-adminsdk-9pa6d-bcd3574005");
+const serviceAccount = require("../../../../../../../../../.ssh/service_account/school-idol-game-development-firebase-adminsdk-9pa6d-bcd3574005");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -49,7 +47,7 @@ async function clearFirestore() {
   );
 
   for (const rankingDoc of rankingSnapshot.docs) {
-    const rankingListSnapshot = await rankingDoc.collection("list").get();
+    const rankingListSnapshot = await rankingDoc.ref.collection("list").get();
     console.log(
       `"ranking/${rankingDoc.id}" has ${rankingListSnapshot.size} docs.`
     );
@@ -62,15 +60,7 @@ async function clearFirestore() {
   console.log(`"ranking/**/list"'s all docs are deleted.`);
 
   // Step2. delete root collections
-  const cols = [
-    "users",
-    "highscores",
-    "playlogs",
-    "users",
-    "users_deleted",
-    "ranking",
-    "ranking"
-  ];
+  const cols = ["users", "users_deleted", "highscores", "playlogs", "ranking"];
 
   await Promise.all(
     cols.map(async col => {
@@ -82,7 +72,7 @@ async function clearFirestore() {
         await doc.ref.delete();
       }
 
-      console.log(`${col}'s all docs are deleted.`);
+      console.log(`=> all docs are deleted.`);
     })
   );
 
@@ -92,19 +82,19 @@ async function clearFirestore() {
 
     return Promise.all(users.map(user => auth.deleteUser(user.uid)));
   });
-  console.log(`all auth users are deleted.`);
+  console.log(`=> all auth users are deleted.`);
 
   process.exit();
 }
 
 async function healthCheck() {
   console.log("should auth user === /databases/{database}/documents.users");
-  const authUserIds = await auth.listUsers().then(({ users }) => {
+  await auth.listUsers().then(({ users }) => {
     return users.map(user => user.uid);
   });
 }
 
-async function publish(topic, data, cmd) {
+async function publish(topic: string, data: any, _cmd: any) {
   const message = {
     data: JSON.parse(data),
     topic
