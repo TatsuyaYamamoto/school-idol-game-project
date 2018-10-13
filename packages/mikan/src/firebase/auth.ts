@@ -91,7 +91,7 @@ export function init(): Promise<User> {
          * After this, {@link auth#onAuthStateChanged}'s callback is fired.
          */
         if (operationType === "link" && credential) {
-          const idp = credential.signInMethod;
+          const idp = credential.providerId;
           logger.debug(
             `received redirect result and success to link with IdP; ${idp}`
           );

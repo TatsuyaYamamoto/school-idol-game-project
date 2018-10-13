@@ -11,11 +11,13 @@ import { Twitter } from "twit";
 import TwitterUser = Twitter.User;
 
 import { firebaseAuth, firebaseDb } from "./index";
+import { Credential, CredentialDocument } from "./Credential";
 
 export interface UserDocument /* extends firestore.DocumentData */ {
   uid: string;
   isAnonymous: boolean;
   displayName: string;
+  photoURL: string | null;
   highscoreRefs: {
     [game: string]: firestore.DocumentReference;
   };
@@ -34,16 +36,11 @@ export interface UserDocument /* extends firestore.DocumentData */ {
        */
       userId: string;
       /**
-       * Credential as IdP's user.
+       * Credential reference as IdP's user.
+       *
+       * @link CredentialDocument
        */
-
-      credential:
-        | {
-            // for twitter
-            accessToken: string;
-            secret: string;
-          }
-        | {};
+      credentialRef: DocumentReference;
 
       /**
        * Time that the user is lined to IdP's account.
@@ -84,10 +81,11 @@ export class User {
       throw new Error("Fail to link. No userCredential is provided.");
     }
 
-    const providerId = credential.signInMethod;
-    const userRef = User.getDocRef(user.uid);
-    const currentUserDoc = (await userRef.get()).data() as UserDocument;
+    const { providerId } = credential;
+    const currentUserRef = User.getDocRef(user.uid);
+    const currentUserDoc = (await currentUserRef.get()).data() as UserDocument;
     const currentProviders = currentUserDoc.providers || {};
+    const newCredentialRef = Credential.getColRef().doc();
     const isFirstLink = Object.keys(currentProviders).length === 0;
 
     if (!isFirstLink && currentUserDoc.providers[providerId]) {
@@ -97,27 +95,38 @@ export class User {
     if (providerId === "twitter.com") {
       const profile = additionalUserInfo.profile as TwitterUser;
 
-      const newDoc: UserDocument = {
+      const newCredential: CredentialDocument = {
+        userRef: currentUserRef,
+        providerId: providerId,
+        data: {
+          accessToken: (<any>credential).accessToken,
+          secret: (<any>credential).secret
+        }
+      };
+
+      const updatedUserDoc: UserDocument = {
         ...currentUserDoc,
+        isAnonymous: false,
         providers: {
           ...currentUserDoc.providers,
           [providerId]: {
             userId: profile.id_str,
-            credential: {
-              accessToken: (<any>credential).accessToken,
-              secret: (<any>credential).secret
-            },
-            linkedAt: firestore.FieldValue.serverTimestamp()
+            linkedAt: firestore.FieldValue.serverTimestamp(),
+            credentialRef: newCredentialRef
           }
         }
       };
 
       if (isFirstLink) {
-        newDoc.displayName = profile.name;
-        newDoc.isAnonymous = false;
+        updatedUserDoc.displayName = profile.name;
+        updatedUserDoc.photoURL = profile.profile_image_url_https;
       }
 
-      await userRef.update(newDoc);
+      await firestore().runTransaction(async transaction => {
+        await transaction.update(currentUserRef, updatedUserDoc);
+        await transaction.set(newCredentialRef, newCredential);
+      });
+
       return;
     }
 

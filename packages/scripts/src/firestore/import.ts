@@ -6,6 +6,10 @@ import {
   UserDocument
 } from "@sokontokoro/mikan";
 
+export const MIGRATION_TMP_VALUE_USER_REF = "ANONYMOUS_IN_OLD_SYSTEM";
+export const MIGRATION_TMP_VALUE_CREDENTIAL_REF = "NO_CREDENTIAL_IN_OLD_SYSTEM";
+export const MIGRATION_TMP_VALUE_PHOTO_URL = "NO_PHOTO_URL_IN_OLD_SYSTEM";
+
 export default async function(database: string, options: any) {
   const {
     user,
@@ -76,13 +80,14 @@ export default async function(database: string, options: any) {
       uid: newUserRef.id,
       isAnonymous: false,
       displayName: user[`NAME`],
+      photoURL: MIGRATION_TMP_VALUE_PHOTO_URL,
       highscoreRefs: {
         /* pending */
       },
       providers: {
         [`twitter.com`]: {
           userId: user[`ID`],
-          credential: {},
+          credentialRef: MIGRATION_TMP_VALUE_CREDENTIAL_REF as any,
           linkedAt: longToDate(parseInt(user[`CREATE_DATE`]))
         }
       },
@@ -251,7 +256,7 @@ export default async function(database: string, options: any) {
 
       for (const l of logs) {
         batch.set(playlogColRef.doc(), {
-          userRef: "ANONYMOUS_IN_OLD_SYSTEM",
+          userRef: MIGRATION_TMP_VALUE_USER_REF as any,
           game: l[`GAME`].toLowerCase(),
           member: l[`member`].toLowerCase(),
           point: l[`POINT`],
@@ -260,7 +265,7 @@ export default async function(database: string, options: any) {
           language: l[`LOCALE`],
           languages: l[`LOCALE`],
           createdAt: longToDate(l[`PLAY_DATE`])
-        });
+        } as PlaylogDocument);
       }
 
       batch.commit();

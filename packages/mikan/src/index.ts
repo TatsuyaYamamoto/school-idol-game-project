@@ -75,6 +75,11 @@ export { Game, Member } from "./firebase/scheme";
 export { User, UserDocument } from "./firebase/User";
 export { Playlog, PlaylogDocument } from "./firebase/Playlog";
 export { Highscore, HighscoreDocument } from "./firebase/Highscore";
+export {
+  Credential,
+  CredentialDocument,
+  ProviderId
+} from "./firebase/Credential";
 export { Ranking, RankingDocument, RankItemDocument } from "./firebase/Ranking";
 export { MetadataDocument } from "./firebase/Metadata";
 
