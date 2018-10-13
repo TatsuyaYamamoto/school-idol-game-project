@@ -16,7 +16,7 @@ export interface PlaylogDocument /* extends firestore.DocumentData */ {
   userAgent: string;
   language: string;
   languages: string;
-  createdAt: firestore.FieldValue;
+  createdAt: firestore.FieldValue | Date;
 }
 
 export class Playlog {

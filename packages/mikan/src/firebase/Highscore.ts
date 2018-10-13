@@ -10,9 +10,9 @@ export interface HighscoreDocument /* extends firestore.DocumentData */ {
   point: number;
   label: object;
   count: number;
-  createdAt: firestore.FieldValue;
-  updatedAt: firestore.FieldValue;
-  brokenAt: firestore.FieldValue;
+  createdAt: firestore.FieldValue | Date;
+  updatedAt: firestore.FieldValue | Date;
+  brokenAt: firestore.FieldValue | Date;
 }
 
 export class Highscore {

@@ -1,6 +1,8 @@
 import * as program from "commander";
 import * as admin from "firebase-admin";
 
+import importFirestore, { splitList } from "./import";
+
 const serviceAccount = require("../../../../../../../../../.ssh/service_account/school-idol-game-development-firebase-adminsdk-9pa6d-bcd3574005");
 
 admin.initializeApp({
@@ -25,6 +27,33 @@ program
   .command("publish <topic> <data>")
   .description("send FCM message")
   .action(publish);
+
+program
+  .command("import <database>")
+  .description("import docs from mysql records")
+  .option("-u --user <user>", "user to use when connecting to server", "root")
+  .option(
+    "-p --password <password>",
+    "password to use when connecting to server",
+    ""
+  )
+  .option("-h --host <host>", "hostname to connect", "localhost")
+  .option(
+    "-l --no-login-user-log",
+    "ignore loading and write playlog of login user"
+  )
+  .option(
+    "-a --no-anonymous-user-log",
+    "ignore loading and write playlog of anonymous user"
+  )
+  .option(
+    "-c --limit-user-count <n>",
+    "for debug. count of loading target user",
+    /^([1-9][0-9]*|0)$/,
+    0
+  )
+
+  .action(importFirestore);
 
 program
   .command("health")
@@ -62,19 +91,23 @@ async function clearFirestore() {
   // Step2. delete root collections
   const cols = ["users", "users_deleted", "highscores", "playlogs", "ranking"];
 
-  await Promise.all(
-    cols.map(async col => {
-      const snapshot = await db.collection(col).get();
+  for (const col of cols) {
+    const snapshot = await db.collection(col).get();
+    const targetRefs: admin.firestore.DocumentReference[] = [];
+    for (const doc of snapshot.docs) {
+      targetRefs.push(doc.ref);
+    }
 
-      console.log(`"${col}" has ${snapshot.size} docs. try to delete.`);
+    console.log(`"${col}" has ${targetRefs.length} docs. try to delete.`);
 
-      for (const doc of snapshot.docs) {
-        await doc.ref.delete();
-      }
+    for (const batchTargetRefs of splitList(targetRefs, 100)) {
+      const batch = admin.firestore().batch();
+      batchTargetRefs.forEach(ref => batch.delete(ref));
+      batch.commit();
+    }
 
-      console.log(`=> all docs are deleted.`);
-    })
-  );
+    console.log(`=> all docs are deleted.`);
+  }
 
   // Step3. Delete all auth users
   await auth.listUsers().then(({ users }) => {

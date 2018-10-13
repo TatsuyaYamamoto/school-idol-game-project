@@ -48,11 +48,11 @@ export interface UserDocument /* extends firestore.DocumentData */ {
       /**
        * Time that the user is lined to IdP's account.
        */
-      linkedAt: firestore.FieldValue;
+      linkedAt: firestore.FieldValue | Date;
     };
   };
-  createdAt: firestore.FieldValue;
-  updatedAt: firestore.FieldValue;
+  createdAt: firestore.FieldValue | Date;
+  updatedAt: firestore.FieldValue | Date;
   duplicatedRefsByLink: firestore.DocumentReference[];
 }
 

@@ -8,9 +8,11 @@
     "firestore": "ts-node ./src/firestore/index.ts"
   },
   "dependencies": {
-    "commander": "^2.19.0"
+    "commander": "^2.19.0",
+    "mysql": "^2.16.0"
   },
   "devDependencies": {
+    "@types/mysql": "^2.15.5",
     "ts-node": "^7.0.1"
   }
 }
