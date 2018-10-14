@@ -1,17 +1,18 @@
 service cloud.firestore {
   match /databases/{database}/documents {
-  	match /metadata/{dataType} {
-    	allow get: if request.auth.uid != null;
+  	match /users/{userId} {
+			allow create: if true;
+    	allow get, update: if true;
+    }
+
+    match /metadata/{dataType} {
+    	allow get: if isAuthenticated();
     }
 
     match /ranking/{rankingId} {
     	match /list/{rankItemId} {
-   		 	allow get: if request.auth.uid != null;
+   		 	allow list: if isAuthenticated();
 	    }
-    }
-
-    match /users/{userId} {
-    	allow get, create, update: if matchOwnUserRef(request.resource.data.userRef);
     }
 
     match /highscores/{scoreId} {
@@ -25,6 +26,14 @@ service cloud.firestore {
     match /credentials/{credentialId} {
     	allow create, update: if matchOwnUserRef(request.resource.data.userRef)
     }
+
+		function isAuthenticated() {
+    	return request.auth != null;
+    }
+
+    function matchOwnUserId(userId) {
+  		return request.auth == userId;
+		}
 
     function matchOwnUserRef(ref) {
   		return matchUserRef(ref, request.auth.uid);
