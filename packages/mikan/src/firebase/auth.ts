@@ -33,7 +33,7 @@ export function init(): Promise<UserDocument> {
 
   isInitRequested = true;
 
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     /**
      * First state change event will fire after getting redirect result; {@link auth#getRedirectResult}.
      */
@@ -108,7 +108,7 @@ export function init(): Promise<UserDocument> {
           resolve(snapshot.data() as UserDocument);
         }
 
-        reject(`unexpected redirect result is received.`);
+        throw new Error(`unexpected redirect result is received.`);
       })
       .catch(async (error: auth.Error) => {
         if (error.code === "auth/credential-already-in-use") {
@@ -138,10 +138,9 @@ export function init(): Promise<UserDocument> {
           const alreadyLinkedFirebaseUser = newCredential.user;
 
           if (!alreadyLinkedFirebaseUser) {
-            reject(
+            throw new Error(
               "unexpected error. could not get user in already-in-use event."
             );
-            return;
           }
 
           const reLinkedUser = await User.linkIdp(
@@ -153,12 +152,16 @@ export function init(): Promise<UserDocument> {
 
           const snapshot = await User.getDocRef(reLinkedUser.uid).get();
           resolve(snapshot.data() as UserDocument);
-        } else {
-          logger.error(error);
-
-          // Unexpected error occurred.
-          reject(error);
+          return;
         }
+
+        if (error.code === "auth/user-cancelled") {
+          logger.error(error);
+          return;
+        }
+
+        // Unexpected error occurred.
+        throw error;
       });
   });
 }
