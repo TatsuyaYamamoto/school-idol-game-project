@@ -1,7 +1,8 @@
 import * as program from "commander";
 import * as admin from "firebase-admin";
 
-import importFirestore, { splitList } from "./import";
+import importFirestore from "./import";
+import clearFirestore from "./clear";
 
 const serviceAccount = require("../../../../../../../../../.ssh/service_account/school-idol-game-development-firebase-adminsdk-9pa6d-bcd3574005");
 
@@ -10,8 +11,8 @@ admin.initializeApp({
   databaseURL: "https://oimo-no-mikiri-development.firebaseio.com"
 });
 
-const auth = admin.auth();
-const db = admin.firestore();
+export const auth = admin.auth();
+export const db = admin.firestore();
 db.settings({
   timestampsInSnapshots: true
 });
@@ -64,60 +65,6 @@ program.parse(process.argv);
 
 if (program.args.length === 0) {
   program.outputHelp();
-}
-
-async function clearFirestore() {
-  // Step1. delete subcollection of ranking
-
-  const rankingSnapshot = await db.collection("ranking").get();
-
-  console.log(
-    `"ranking" has ${rankingSnapshot.size} docs. try to delete recursively.`
-  );
-
-  for (const rankingDoc of rankingSnapshot.docs) {
-    const rankingListSnapshot = await rankingDoc.ref.collection("list").get();
-    console.log(
-      `"ranking/${rankingDoc.id}" has ${rankingListSnapshot.size} docs.`
-    );
-
-    for (const rankingListItemDoc of rankingListSnapshot.docs) {
-      await rankingListItemDoc.ref.delete();
-    }
-  }
-
-  console.log(`"ranking/**/list"'s all docs are deleted.`);
-
-  // Step2. delete root collections
-  const cols = ["users", "users_deleted", "highscores", "playlogs", "ranking"];
-
-  for (const col of cols) {
-    const snapshot = await db.collection(col).get();
-    const targetRefs: admin.firestore.DocumentReference[] = [];
-    for (const doc of snapshot.docs) {
-      targetRefs.push(doc.ref);
-    }
-
-    console.log(`"${col}" has ${targetRefs.length} docs. try to delete.`);
-
-    for (const batchTargetRefs of splitList(targetRefs, 100)) {
-      const batch = admin.firestore().batch();
-      batchTargetRefs.forEach(ref => batch.delete(ref));
-      batch.commit();
-    }
-
-    console.log(`=> all docs are deleted.`);
-  }
-
-  // Step3. Delete all auth users
-  await auth.listUsers().then(({ users }) => {
-    console.log(`"auth" has ${users.length} users`);
-
-    return Promise.all(users.map(user => auth.deleteUser(user.uid)));
-  });
-  console.log(`=> all auth users are deleted.`);
-
-  process.exit();
 }
 
 async function healthCheck() {
