@@ -1,4 +1,5 @@
 import * as admin from "firebase-admin";
+import DocumentReference = admin.firestore.DocumentReference;
 import * as mysql from "mysql";
 import {
   HighscoreDocument,
@@ -63,7 +64,7 @@ export default async function(database: string, options: any) {
   const savedUsers: {
     oldSystemUid: string;
     newSystemUid: string;
-    newSystemUserRef: any;
+    newSystemUserRef: DocumentReference;
   }[] = [];
   const userDocs: UserDocument[] = [];
 
@@ -154,7 +155,14 @@ export default async function(database: string, options: any) {
   /**
    * 1. Create docs
    */
-  const scoreDocs: any[] = [];
+  const scoreDocs: {
+    doc: HighscoreDocument;
+    ref: DocumentReference;
+  }[] = [];
+  const updateUsers: {
+    doc: Partial<UserDocument>;
+    ref: DocumentReference;
+  }[] = [];
 
   for (const user of savedUsers) {
     const scores = await query(
@@ -168,39 +176,68 @@ export default async function(database: string, options: any) {
         .join(", ")}`
     );
 
+    let highscoreRefs: { [game: string]: DocumentReference } = {};
+
     for (const s of scores) {
+      const highscoreRef = highscoreColRef.doc();
+      const game = s[`GAME`].toLowerCase();
+
       scoreDocs.push({
-        userRef: user.newSystemUserRef,
-        game: s[`GAME`].toLowerCase(),
-        member: s[`member`].toLowerCase(),
-        point: s[`POINT`],
-        label: {},
-        count: s[`COUNT`],
-        createdAt: longToDate(parseInt(s[`CREATE_DATE`])),
-        updatedAt: longToDate(parseInt(s[`FINAL_DATE`] || s[`CREATE_DATE`])),
-        brokenAt: longToDate(parseInt(s[`UPDATE_DATE`] || s[`CREATE_DATE`])),
-        testUserId: s[`USER_ID`]
-      } as HighscoreDocument);
+        ref: highscoreRef,
+        doc: {
+          userRef: user.newSystemUserRef,
+          game,
+          member: s[`member`].toLowerCase(),
+          point: s[`POINT`],
+          label: {},
+          count: s[`COUNT`],
+          createdAt: longToDate(parseInt(s[`CREATE_DATE`])),
+          updatedAt: longToDate(parseInt(s[`FINAL_DATE`] || s[`CREATE_DATE`])),
+          brokenAt: longToDate(parseInt(s[`UPDATE_DATE`] || s[`CREATE_DATE`])),
+          testUserId: s[`USER_ID`]
+        } as HighscoreDocument
+      });
+
+      highscoreRefs[game] = highscoreRef;
     }
+
+    updateUsers.push({
+      doc: {
+        highscoreRefs
+      },
+      ref: user.newSystemUserRef
+    });
   }
 
   console.log(`load scores. count: ${scoreDocs.length}`);
 
   /**
-   * 2. Import docs
+   * 2. Import highscore docs
    */
   let highscoreCount = 0;
   for (const batchTargetScoreDocs of splitList(scoreDocs, 100)) {
     const batch = admin.firestore().batch();
-    batchTargetScoreDocs.forEach(scoreDoc => {
+    batchTargetScoreDocs.forEach(score => {
       highscoreCount++;
-      batch.set(highscoreColRef.doc(), scoreDoc);
+      batch.set(score.ref, score.doc);
     });
     await batch.commit();
-    console.log("commit highscores with batch");
+    console.log("commit to set highscore docs with batch");
   }
 
-  console.log(`success to import ${highscoreCount} docs to highscore`);
+  /**
+   * 3. Update user docs
+   */
+  for (const batchTargetUsers of splitList(updateUsers, 100)) {
+    const batch = admin.firestore().batch();
+    batchTargetUsers.forEach(user => {
+      batch.update(user.ref, user.doc);
+    });
+    await batch.commit();
+    console.log("commit to update user docs with batch");
+  }
+
+  console.log(`success to import ${highscoreCount} docs to highscore.`);
 
   /************************************************************************
    * playlog (login user only)

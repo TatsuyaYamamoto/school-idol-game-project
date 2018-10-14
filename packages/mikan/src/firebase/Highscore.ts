@@ -1,10 +1,11 @@
+import { firestore as adminFirestore } from "firebase-admin";
 import { firestore } from "firebase/app";
 
 import { firebaseDb } from "./index";
 import { Game, Member } from "./scheme";
 
 export interface HighscoreDocument /* extends firestore.DocumentData */ {
-  userRef: firestore.DocumentReference;
+  userRef: firestore.DocumentReference | adminFirestore.DocumentReference;
   game: Game;
   member: Member;
   point: number;

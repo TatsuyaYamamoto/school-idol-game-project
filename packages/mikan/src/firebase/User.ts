@@ -1,3 +1,4 @@
+import { firestore as adminFirestore } from "firebase-admin";
 import { User as FirebaseUser, firestore } from "firebase/app";
 
 import UserCredential = firebase.auth.UserCredential;
@@ -35,7 +36,9 @@ export interface UserDocument /* extends firestore.DocumentData */ {
   displayName: string;
   photoURL: string | null;
   highscoreRefs: {
-    [game: string]: firestore.DocumentReference;
+    [game: string]:
+      | firestore.DocumentReference
+      | adminFirestore.DocumentReference;
   };
 
   /**
