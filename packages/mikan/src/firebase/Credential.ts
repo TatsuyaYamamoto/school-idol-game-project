@@ -1,4 +1,3 @@
-import { firestore as adminFirestore } from "firebase-admin";
 import { firestore } from "firebase/app";
 
 import QuerySnapshot = firestore.QuerySnapshot;
@@ -13,7 +12,7 @@ import { firebaseDb } from "./index";
 export type ProviderId = "twitter.com";
 
 export interface CredentialDocument /* extends firestore.DocumentData */ {
-  userRef: DocumentReference | adminFirestore.DocumentReference;
+  userRef: firebase.firestore.DocumentReference;
   providerId: ProviderId;
   data:
     | {
@@ -22,8 +21,8 @@ export interface CredentialDocument /* extends firestore.DocumentData */ {
         secret: string;
       }
     | {};
-  createdAt: firestore.FieldValue | Date;
-  updatedAt: firestore.FieldValue | Date;
+  createdAt: firebase.firestore.FieldValue | Date;
+  updatedAt: firebase.firestore.FieldValue | Date;
 }
 
 export class Credential {

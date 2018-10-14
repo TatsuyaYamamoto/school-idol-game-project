@@ -24,7 +24,7 @@ const App = () => (
         path={`/:game(${list.map(i => i.gameId).join("|")})`}
         component={Index}
       />
-      <Route render={() => <Redirect to={`/${supportedGames[0]}`} />} />
+      <Route render={() => <Redirect to={`/${list[0].gameId}`} />} />
     </Switch>
   </Router>
 );

@@ -1,4 +1,3 @@
-import { firestore as adminFirestore } from "firebase-admin";
 import { firestore } from "firebase/app";
 
 import { firebaseDb } from "./index";
@@ -9,7 +8,7 @@ import { getLogger } from "../logger";
 const logger = getLogger("mikan/firebase/db");
 
 export interface PlaylogDocument /* extends firestore.DocumentData */ {
-  userRef: firestore.DocumentReference | adminFirestore.DocumentReference;
+  userRef: firebase.firestore.DocumentReference;
   game: Game;
   member: Member;
   point: number;
@@ -17,7 +16,7 @@ export interface PlaylogDocument /* extends firestore.DocumentData */ {
   userAgent: string;
   language: string;
   languages: string;
-  createdAt: firestore.FieldValue | Date;
+  createdAt: firebase.firestore.FieldValue | Date;
 }
 
 export class Playlog {

@@ -12,9 +12,9 @@ export interface RankItemDocument /* extends firestore.DocumentData */ {
 
 export interface RankingDocument extends firestore.DocumentData {
   totalCount: number;
-  list: firestore.CollectionReference;
+  list: firebase.firestore.CollectionReference;
   game: string;
-  createdAt: firestore.FieldValue;
+  createdAt: firebase.firestore.FieldValue;
 }
 
 export class Ranking {

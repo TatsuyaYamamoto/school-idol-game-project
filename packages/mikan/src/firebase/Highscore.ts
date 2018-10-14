@@ -1,19 +1,16 @@
-import { firestore as adminFirestore } from "firebase-admin";
-import { firestore } from "firebase/app";
-
 import { firebaseDb } from "./index";
 import { Game, Member } from "./scheme";
 
 export interface HighscoreDocument /* extends firestore.DocumentData */ {
-  userRef: firestore.DocumentReference | adminFirestore.DocumentReference;
+  userRef: firebase.firestore.DocumentReference;
   game: Game;
   member: Member;
   point: number;
   label: object;
   count: number;
-  createdAt: firestore.FieldValue | Date;
-  updatedAt: firestore.FieldValue | Date;
-  brokenAt: firestore.FieldValue | Date;
+  createdAt: firebase.firestore.FieldValue | Date;
+  updatedAt: firebase.firestore.FieldValue | Date;
+  brokenAt: firebase.firestore.FieldValue | Date;
 }
 
 export class Highscore {

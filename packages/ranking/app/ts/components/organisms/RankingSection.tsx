@@ -1,6 +1,7 @@
 import * as React from "react";
 import { IndexRange } from "react-virtualized";
 import AutoBind from "autobind-decorator";
+
 import {
   firebaseDb,
   MetadataDocument,
@@ -10,6 +11,7 @@ import {
 
 import RankingList from "../molecules/RankingList";
 import RankItem from "../molecules/RankItem";
+import { QuerySnapshot } from "@google-cloud/firestore";
 
 const logger = getLogger("RankingSection");
 
@@ -75,14 +77,13 @@ export default class RankingSection extends React.Component<Props, State> {
   }
 
   private async loadMoreItem({ startIndex, stopIndex }: IndexRange) {
-    console.log("load", startIndex, stopIndex);
     const { lastVisibleSnapshot, game } = this.state;
 
     const limit = stopIndex - startIndex + 1;
     const metadataRef = firebaseDb.collection("metadata").doc(game);
     const metadata = (await metadataRef.get()).data() as MetadataDocument;
 
-    let scores = null;
+    let scores: firebase.firestore.QuerySnapshot;
     if (lastVisibleSnapshot) {
       scores = await metadata.rankingRef
         .collection("list")

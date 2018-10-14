@@ -1,4 +1,3 @@
-import { firestore as adminFirestore } from "firebase-admin";
 import { User as FirebaseUser, firestore } from "firebase/app";
 
 import UserCredential = firebase.auth.UserCredential;
@@ -22,12 +21,12 @@ export interface ProviderData {
    *
    * @link CredentialDocument
    */
-  credentialRef: DocumentReference;
+  credentialRef: firebase.firestore.DocumentReference;
 
   /**
    * Time that the user is lined to IdP's account.
    */
-  linkedAt: firestore.FieldValue | Date;
+  linkedAt: firebase.firestore.FieldValue | Date;
 }
 
 export interface UserDocument /* extends firestore.DocumentData */ {
@@ -36,9 +35,7 @@ export interface UserDocument /* extends firestore.DocumentData */ {
   displayName: string;
   photoURL: string | null;
   highscoreRefs: {
-    [game: string]:
-      | firestore.DocumentReference
-      | adminFirestore.DocumentReference;
+    [game: string]: firebase.firestore.DocumentReference;
   };
 
   /**
@@ -49,9 +46,9 @@ export interface UserDocument /* extends firestore.DocumentData */ {
   providers: {
     [providerId: string]: ProviderData;
   };
-  createdAt: firestore.FieldValue | Date;
-  updatedAt: firestore.FieldValue | Date;
-  duplicatedRefsByLink: firestore.DocumentReference[];
+  createdAt: firebase.firestore.FieldValue | Date;
+  updatedAt: firebase.firestore.FieldValue | Date;
+  duplicatedRefsByLink: firebase.firestore.DocumentReference[];
 }
 
 export class User {
