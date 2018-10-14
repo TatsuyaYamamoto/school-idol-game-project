@@ -25,6 +25,7 @@ export default functions.firestore
       const playlogDoc = snapshot.data() as PlaylogDocument;
       const game = playlogDoc.game;
       const userRef = playlogDoc.userRef as DocumentReference;
+      const userDoc = (await userRef.get()).data() as UserDocument;
 
       const highscoreSnapshot = await getHighscoreColRef()
         .where("game", "==", game)
@@ -57,6 +58,16 @@ export default functions.firestore
         };
 
         batch.set(highscoreRef, doc);
+
+        // Create user batch
+        const updateUserDoc: Partial<UserDocument> = {
+          highscoreRefs: {
+            ...userDoc.highscoreRefs,
+            [game]: highscoreRef
+          }
+        };
+
+        batch.update(userRef, updateUserDoc);
       } else {
         console.log(
           `prev score snapshot is found. check if the score is updated.`
@@ -76,15 +87,6 @@ export default functions.firestore
 
         batch.update(highscoreRef, doc);
       }
-
-      // Create user batch
-      const updateUserDoc: Partial<UserDocument> = {
-        highscoreRefs: {
-          [game]: highscoreRef
-        }
-      };
-
-      batch.update(userRef, updateUserDoc);
 
       // execute!
       await batch.commit();
