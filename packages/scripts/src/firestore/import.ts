@@ -196,7 +196,7 @@ export default async function(database: string, options: any) {
       highscoreCount++;
       batch.set(highscoreColRef.doc(), scoreDoc);
     });
-    batch.commit();
+    await batch.commit();
     console.log("commit highscores with batch");
   }
 

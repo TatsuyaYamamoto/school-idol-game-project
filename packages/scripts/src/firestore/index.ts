@@ -63,8 +63,8 @@ program
 
 program.parse(process.argv);
 
-if (program.args.length === 0) {
-  program.outputHelp();
+if (process.argv.length === 2) {
+  program.help();
 }
 
 async function healthCheck() {
