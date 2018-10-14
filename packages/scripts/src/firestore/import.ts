@@ -4,11 +4,11 @@ import * as mysql from "mysql";
 import {
   HighscoreDocument,
   PlaylogDocument,
-  UserDocument
+  UserDocument,
+  CredentialDocument
 } from "@sokontokoro/mikan";
 
 export const MIGRATION_TMP_VALUE_USER_REF = "ANONYMOUS_IN_OLD_SYSTEM";
-export const MIGRATION_TMP_VALUE_CREDENTIAL_REF = "NO_CREDENTIAL_IN_OLD_SYSTEM";
 export const MIGRATION_TMP_VALUE_PHOTO_URL = "NO_PHOTO_URL_IN_OLD_SYSTEM";
 
 export default async function(database: string, options: any) {
@@ -45,6 +45,7 @@ export default async function(database: string, options: any) {
   const userColRef = admin.firestore().collection("users");
   const highscoreColRef = admin.firestore().collection("highscores");
   const playlogColRef = admin.firestore().collection("playlogs");
+  const credentialColRef = admin.firestore().collection("credentials");
 
   /************************************************************************
    * USER/firestore
@@ -67,9 +68,14 @@ export default async function(database: string, options: any) {
     newSystemUserRef: DocumentReference;
   }[] = [];
   const userDocs: UserDocument[] = [];
+  const importCredentials: {
+    doc: CredentialDocument;
+    ref: DocumentReference;
+  }[] = [];
 
   for (const user of users) {
     const newUserRef = userColRef.doc();
+    const newCredentialRef = credentialColRef.doc();
 
     savedUsers.push({
       oldSystemUid: user[`ID`],
@@ -88,7 +94,7 @@ export default async function(database: string, options: any) {
       providers: {
         [`twitter.com`]: {
           userId: user[`ID`],
-          credentialRef: MIGRATION_TMP_VALUE_CREDENTIAL_REF as any,
+          credentialRef: newCredentialRef as any,
           linkedAt: longToDate(parseInt(user[`CREATE_DATE`]))
         }
       },
@@ -98,10 +104,21 @@ export default async function(database: string, options: any) {
       ),
       duplicatedRefsByLink: []
     });
+
+    importCredentials.push({
+      doc: {
+        userRef: newUserRef,
+        providerId: `twitter.com`,
+        data: {},
+        createdAt: longToDate(parseInt(user[`CREATE_DATE`])),
+        updatedAt: longToDate(parseInt(user[`CREATE_DATE`]))
+      },
+      ref: newCredentialRef
+    });
   }
 
   /**
-   * 2. import docs
+   * 2. import user docs
    */
   let userCount = 0;
 
@@ -115,6 +132,20 @@ export default async function(database: string, options: any) {
 
     await batch.commit();
     console.log("commit users with batch");
+  }
+
+  /**
+   * 3. import credential docs
+   */
+  for (const batchTargetCredentials of splitList(importCredentials, 100)) {
+    const batch = admin.firestore().batch();
+
+    batchTargetCredentials.forEach(credential => {
+      batch.set(credential.ref, credential.doc);
+    });
+
+    await batch.commit();
+    console.log("commit credentials with batch");
   }
 
   console.log(`success to import ${userCount} docs to users`);
@@ -155,7 +186,7 @@ export default async function(database: string, options: any) {
   /**
    * 1. Create docs
    */
-  const scoreDocs: {
+  const importScores: {
     doc: HighscoreDocument;
     ref: DocumentReference;
   }[] = [];
@@ -182,7 +213,7 @@ export default async function(database: string, options: any) {
       const highscoreRef = highscoreColRef.doc();
       const game = s[`GAME`].toLowerCase();
 
-      scoreDocs.push({
+      importScores.push({
         ref: highscoreRef,
         doc: {
           userRef: user.newSystemUserRef,
@@ -209,13 +240,13 @@ export default async function(database: string, options: any) {
     });
   }
 
-  console.log(`load scores. count: ${scoreDocs.length}`);
+  console.log(`load scores. count: ${importScores.length}`);
 
   /**
    * 2. Import highscore docs
    */
   let highscoreCount = 0;
-  for (const batchTargetScoreDocs of splitList(scoreDocs, 100)) {
+  for (const batchTargetScoreDocs of splitList(importScores, 100)) {
     const batch = admin.firestore().batch();
     batchTargetScoreDocs.forEach(score => {
       highscoreCount++;
