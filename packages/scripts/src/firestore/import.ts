@@ -9,7 +9,6 @@ import {
 } from "@sokontokoro/mikan";
 
 export const MIGRATION_TMP_VALUE_USER_REF = "ANONYMOUS_IN_OLD_SYSTEM";
-export const MIGRATION_TMP_VALUE_PHOTO_URL = "NO_PHOTO_URL_IN_OLD_SYSTEM";
 
 export default async function(database: string, options: any) {
   const {
@@ -87,7 +86,7 @@ export default async function(database: string, options: any) {
       uid: newUserRef.id,
       isAnonymous: false,
       displayName: user[`NAME`],
-      photoURL: MIGRATION_TMP_VALUE_PHOTO_URL,
+      photoURL: null,
       highscoreRefs: {
         /* pending */
       },

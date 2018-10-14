@@ -160,6 +160,9 @@ export class User {
 
       if (isFirstLinkForUser) {
         newUserDoc.displayName = profile.name;
+      }
+
+      if (!userDoc.photoURL) {
         newUserDoc.photoURL = profile.profile_image_url_https;
       }
 
@@ -206,4 +209,5 @@ export class User {
 // TODO
 function getRandomAnonymousName() {
   return "いかした学園生";
+    "ﾅﾆｿﾚｲﾐﾜｶﾝﾅｲ", // maki
 }
