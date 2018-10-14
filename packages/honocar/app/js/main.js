@@ -33,18 +33,12 @@ function init() {
   tracePage(TRACK_PAGES.INDEX);
 
   /*---------- ログインチェック ----------*/
-  globals.loginPromise = initAuth()
-    .then(user => {
-      if (!user.isAnonymous) {
-        alertify.log(t(Ids.LOGIN_SUCCESS), "success", 3000);
-
-        globals.user.iconUrl = user.photoURL;
-        globals.isLogin = true;
-      }
-    })
-    .catch(e => {
-      globals.isLogin = false;
-    });
+  globals.loginPromise = initAuth().then(user => {
+    if (!user.isAnonymous) {
+      alertify.log(t(Ids.LOGIN_SUCCESS), "success", 3000);
+    }
+    globals.loginUser = user;
+  });
 
   //ゲーム画面の初期
   globals.gameStage = new createjs.Stage("gameScrean");

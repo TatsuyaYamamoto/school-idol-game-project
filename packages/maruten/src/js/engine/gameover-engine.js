@@ -1,10 +1,5 @@
 import * as alertify from "alertify/lib/alertify";
-import {
-  openModal,
-  tweetByWebIntent,
-  getCurrentUser,
-  Playlog
-} from "@sokontokoro/mikan";
+import { openModal, tweetByWebIntent, Playlog } from "@sokontokoro/mikan";
 
 import State from "../state.js";
 import Util from "../util.js";
@@ -25,7 +20,7 @@ export default class GameoverEngine {
     const member = State.playCharacter;
 
     Playlog.save("maruten", member, point).then(() => {
-      if (getCurrentUser().isAnonymous) {
+      if (State.loginUser.isAnonymous) {
         return;
       }
       alertify.log("ランキングシステム　通信完了！", "success", 3000);

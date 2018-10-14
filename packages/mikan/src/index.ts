@@ -64,7 +64,6 @@ export { firebaseDb, firebaseAuth } from "./firebase";
 
 export {
   init as initAuth,
-  getCurrentUser,
   getIdToken,
   signInAsAnonymous,
   signInAsTwitterUser,

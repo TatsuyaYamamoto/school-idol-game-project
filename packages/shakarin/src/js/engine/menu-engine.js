@@ -1,8 +1,4 @@
-import {
-  getCurrentUser,
-  signInAsTwitterUser,
-  signOut
-} from "@sokontokoro/mikan";
+import { signInAsTwitterUser, signOut } from "@sokontokoro/mikan";
 import * as alertify from "alertify/lib/alertify";
 
 import State from "../state.js";
@@ -27,7 +23,7 @@ export default class MenuEngine {
   start() {
     let targetChildren = [State.object.image.BACKGROUND];
 
-    if (!getCurrentUser().isAnonymous) {
+    if (!State.loginUser.isAnonymous) {
       targetChildren.push(
         State.object.image.BUTTON_TWITTER_LOGOUT,
         State.object.image.TWITTER_ICON

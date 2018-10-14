@@ -11,13 +11,9 @@ export default {
 
   playCharacter: CHARACTER.HANAMARU,
 
+  loginUser: null,
   firebaseInitPromise: null,
 
-  user: {
-    id: "",
-    name: "",
-    iconURL: ""
-  },
   object: {
     image: {},
     spritesheet: {},

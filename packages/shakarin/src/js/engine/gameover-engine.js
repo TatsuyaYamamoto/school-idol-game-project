@@ -1,4 +1,4 @@
-import { getCurrentUser, Playlog } from "@sokontokoro/mikan";
+import { Playlog } from "@sokontokoro/mikan";
 import * as alertify from "alertify/lib/alertify";
 
 import State from "../state.js";
@@ -16,11 +16,9 @@ export default class GameoverEngine {
 
   start() {
     Playlog.save("shakarin", "rin", State.gameScore).then(() => {
-      if (getCurrentUser().isAnonymous) {
-        return;
+      if (!State.loginUser.isAnonymous) {
+        alertify.log("ランキングシステム　通信完了！", "success", 3000);
       }
-
-      alertify.log("ランキングシステム　通信完了！", "success", 3000);
     });
 
     // フィニッシュアニメーション

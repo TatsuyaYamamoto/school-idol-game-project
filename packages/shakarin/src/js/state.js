@@ -13,13 +13,9 @@ export default {
   player: null,
   shakeCount: null,
 
+  loginUser: null,
   firebaseInitPromise: null,
 
-  user: {
-    id: "",
-    name: "",
-    iconURL: ""
-  },
   object: {
     image: {},
     ss: {},

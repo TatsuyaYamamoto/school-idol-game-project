@@ -47,7 +47,7 @@ class GameOverEngine extends Engine {
     const { gameStage, player, playCharacter } = globals;
 
     Playlog.save("honocar", playCharacter, this.passCarCount).then(() => {
-      if (globals.isLogin) {
+      if (!globals.loginUser.isAnonymous) {
         alertify.log(t(Ids.REGISTER_SUCCESS), "success", 3000);
       }
     });

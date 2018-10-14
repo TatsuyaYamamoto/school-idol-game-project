@@ -1,7 +1,6 @@
 import * as functions from "firebase-functions";
 import { initializeApp, firestore } from "firebase-admin";
 
-import onCreateUser from "./trigger/onCreateUser";
 import onCreatePlaylog from "./trigger/onCreatePlaylog";
 
 import generateRanking from "./pubsub/generateRanking";
@@ -17,7 +16,7 @@ export const helloWorld = functions.https.onRequest((_request, response) => {
 });
 
 // Trigger
-export { onCreateUser, onCreatePlaylog };
+export { onCreatePlaylog };
 
 // pubsub
 export { cloudFunctionsWarnLog, generateRanking };

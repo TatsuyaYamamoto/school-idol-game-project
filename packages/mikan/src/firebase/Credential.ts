@@ -20,6 +20,8 @@ export interface CredentialDocument /* extends firestore.DocumentData */ {
         secret: string;
       }
     | {};
+  createdAt: firestore.FieldValue;
+  updatedAt: firestore.FieldValue;
 }
 
 export class Credential {

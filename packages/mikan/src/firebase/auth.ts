@@ -5,7 +5,7 @@ import UserCredential = auth.UserCredential;
 import { firebaseAuth } from "./index";
 
 import { getLogger } from "../logger";
-import { User } from "./User";
+import { User, UserDocument } from "./User";
 
 const logger = getLogger("mikan/firebase/auth");
 const twitterAuthProvider = new auth.TwitterAuthProvider();
@@ -23,7 +23,7 @@ interface AuthCredentialAlreadyInUseError extends auth.Error {
  * Initialize auth module.
  * A promise of return value will be resolved when signing-in.
  */
-export function init(): Promise<User> {
+export function init(): Promise<UserDocument> {
   /**
    * 2回実行する必要がない and テストをしない。
    */
@@ -33,46 +33,49 @@ export function init(): Promise<User> {
 
   isInitRequested = true;
 
-  /**
-   * UID to be ignored {@link auth#onAuthStateChanged} event.
-   * firebase auth moduleのsignやlinkの実装上、期待しないUIDのイベントも実行される。
-   */
-  let ignoreChangeStateUid: string | null = null;
-
   return new Promise((resolve, reject) => {
     /**
      * First state change event will fire after getting redirect result; {@link auth#getRedirectResult}.
      */
-    firebaseAuth.onAuthStateChanged(user => {
-      /**
-       * If {@code ignoreChangeStateUid} is set value, ignore this state change.
-       * In many cases to set, redirect result error.
-       */
-      if (user && user.uid === ignoreChangeStateUid) {
-        logger.debug(
-          `received changing auth state event to be ignored. uid: ${user.uid}`
-        );
-        return;
-      }
+    const unsubscribe = firebaseAuth.onAuthStateChanged(
+      async authUser => {
+        if (authUser) {
+          /**
+           * Received firebase auth user data.
+           * success to signed-in, and resolved init promise.
+           */
+          logger.debug("signed-in.", authUser.uid);
 
-      if (user) {
+          let snapshot = await User.getDocRef(authUser.uid).get();
+
+          if (!snapshot.exists) {
+            logger.debug("new user. try create a user doc");
+            await User.create(authUser);
+            snapshot = await User.getDocRef(authUser.uid).get();
+            logger.debug("success to create");
+          }
+
+          unsubscribe();
+          resolve(snapshot.data() as UserDocument);
+
+          return;
+        }
+
         /**
-         * Received firebase auth user data.
-         * success to signed-in, and resolved init promise.
+         * received NO firebase auth user data.
+         * This state occurs in cases such as "first access" or "signed-out by user".
+         * mikan auth module disallows not to be signed-in, then requests to sign-in anonymously.
          */
-        logger.debug("signed-in.", user.uid);
-        resolve(User.from(user));
-        return;
+        logger.debug("signed-out. try signing-in anonymously");
+        signInAsAnonymous();
+      },
+      e => {
+        logger.error(e);
+      },
+      () => {
+        logger.debug("auth state change observer is unsubscribed.");
       }
-
-      /**
-       * received NO firebase auth user data.
-       * This state occurs in cases such as "first access" or "signed-out by user".
-       * mikan auth module disallows not to be signed-in, then requests to sign-in anonymously.
-       */
-      logger.debug("signed-out. try signing-in anonymously");
-      signInAsAnonymous();
-    });
+    );
 
     firebaseAuth
       .getRedirectResult()
@@ -96,11 +99,13 @@ export function init(): Promise<User> {
             `received redirect result and success to link with IdP; ${idp}`
           );
 
-          await User.linkIdp(userCredential);
+          unsubscribe();
 
+          const firebaseUser = await User.linkIdp(userCredential);
           logger.debug("success update linked firebase user.");
 
-          return;
+          const snapshot = await User.getDocRef(firebaseUser.uid).get();
+          resolve(snapshot.data() as UserDocument);
         }
 
         reject(`unexpected redirect result is received.`);
@@ -114,21 +119,23 @@ export function init(): Promise<User> {
           logger.debug("received credential is already in use.", error);
 
           const e = error as AuthCredentialAlreadyInUseError;
-          const newerAnonymousUser = getCurrentUser();
+          const newerAnonymousUser = firebaseAuth.currentUser;
 
-          /**
-           * while processing {@link auth#signInAndRetrieveDataWithCredential},
-           * {@link auth#onAuthStateChanged}'s callback is fired and provides anonymous user to be tried linking.
-           * {@code ignoreChangeStateUid} prevents to continue {@link auth#onAuthStateChanged}'s process.
-           */
-          ignoreChangeStateUid = newerAnonymousUser.uid;
+          if (!newerAnonymousUser) {
+            throw new Error(
+              "unexpected error. could not get newer anonymous user."
+            );
+          }
+
+          unsubscribe();
 
           /**
            * Sign-in as a firebase user to be linked with twitter ID.
            */
-          const alreadyLinkedFirebaseUser = (await firebaseAuth.signInAndRetrieveDataWithCredential(
+          const newCredential = await firebaseAuth.signInAndRetrieveDataWithCredential(
             e.credential
-          )).user;
+          );
+          const alreadyLinkedFirebaseUser = newCredential.user;
 
           if (!alreadyLinkedFirebaseUser) {
             reject(
@@ -137,33 +144,23 @@ export function init(): Promise<User> {
             return;
           }
 
-          await User.from(alreadyLinkedFirebaseUser).addDuplicatedRef(
+          const reLinkedUser = await User.linkIdp(
+            newCredential,
             newerAnonymousUser
           );
 
-          /**
-           * Release ignoring flag.
-           */
-          ignoreChangeStateUid = null;
+          logger.debug("success to re-link firebase user.");
+
+          const snapshot = await User.getDocRef(reLinkedUser.uid).get();
+          resolve(snapshot.data() as UserDocument);
         } else {
+          logger.error(error);
+
           // Unexpected error occurred.
           reject(error);
         }
       });
   });
-}
-
-/**
- * Return current {@link User}.
- */
-export function getCurrentUser(): User {
-  const currentFirebaseUser = firebaseAuth.currentUser;
-
-  if (!currentFirebaseUser) {
-    throw new Error("no current user received.");
-  }
-
-  return User.from(currentFirebaseUser);
 }
 
 /**

@@ -16,9 +16,10 @@ window.onload = function() {
   State.firebaseInitPromise = initAuth().then(user => {
     if (!user.isAnonymous) {
       alertify.log("ランキングシステム ログイン中！", "success", 3000);
-
       properties.asyncImage.TWITTER_ICON.url = user.photoURL;
     }
+
+    State.loginUser = user;
   });
 
   /*---------- ゲーム画面の初期化 ----------*/

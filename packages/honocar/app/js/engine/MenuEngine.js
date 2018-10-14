@@ -48,7 +48,7 @@ class MenuEngine extends Engine {
     gameStage.addChild(imageObj.GAME_BACKGROUND);
     gameStage.addChild(imageObj.WHITE_SHEET);
 
-    if (globals.isLogin) {
+    if (!globals.loginUser.isAnonymous) {
       gameStage.addChild(imageObj.BUTTON_TWITTER_LOGOUT);
       gameStage.addChild(imageObj.TWITTER_ICON);
     } else {

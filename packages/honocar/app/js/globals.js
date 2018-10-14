@@ -5,7 +5,6 @@ export default {
   gameScrean: null,
   gameScreenScale: null,
   loginPromise: null,
-  isLogin: false,
   queue: null,
   playCharacter: getCharacter(),
   player: null,
@@ -15,9 +14,5 @@ export default {
   ssObj: {},
   soundObj: {},
   textObj: {},
-  user: {
-    id: "",
-    name: "",
-    iconUrl: ""
-  }
+  loginUser: null
 };

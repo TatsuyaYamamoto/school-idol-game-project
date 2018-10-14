@@ -1,7 +1,6 @@
 import {
   openModal,
   openExternalSite,
-  getCurrentUser,
   signInAsTwitterUser,
   signOut
 } from "@sokontokoro/mikan";
@@ -23,7 +22,7 @@ export default class MenuEngine {
 
   start() {
     const targetChildren = [State.object.image.BACKGROUND];
-    if (!getCurrentUser().isAnonymous) {
+    if (!State.loginUser.isAnonymous) {
       targetChildren.push(
         State.object.image.BUTTON_TWITTER_LOGOUT,
         State.object.image.TWITTER_ICON

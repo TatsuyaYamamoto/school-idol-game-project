@@ -1,8 +1,9 @@
+import PreloadEngine from "./preload-engine";
+
 import State from "../state.js";
 import loadImageBase64 from "../imageBase64/loadImageBase64.js";
 import { config, properties, manifest } from "../config.js";
 import BrandingAnimation from "../branding-animation.js";
-import { DEBUG } from "maruten/src/js/static/config";
 
 export default class PreloadState {
   constructor(tick, callback) {
@@ -82,13 +83,21 @@ export default class PreloadState {
 
       Promise.all([State.firebaseInitPromise, brandingAnimation.promise])
         .then(() => {
-          Object.keys(properties.asyncImage).forEach(key => {
-            State.object.image[key] = PreloadEngine.getAsyncImageContent(
-              properties.asyncImage[key]
-            );
-          });
+          // load twitter icon
+          const image = new createjs.Bitmap(State.loginUser.photoURL);
+          image.x =
+            State.gameScrean.width * properties.asyncImage.TWITTER_ICON.ratioX;
+          image.y =
+            State.gameScrean.height * properties.asyncImage.TWITTER_ICON.ratioY;
+          image.scaleY = image.scaleX =
+            State.screenScale * properties.asyncImage.TWITTER_ICON.scale;
+          image.alpha = properties.asyncImage.TWITTER_ICON.alpha;
+
+          State.object.image["TWITTER_ICON"] = image;
         })
-        .catch(() => {})
+        .catch(e => {
+          console.log(e);
+        })
         .then(() => {
           this.tick.remove();
           this.callback();
@@ -113,16 +122,6 @@ export default class PreloadState {
     image.scaleY = image.scaleX = State.screenScale * property.scale;
     image.alpha = property.alpha;
     image.rotation = property.rotation;
-    return image;
-  }
-
-  static getAsyncImageContent(property) {
-    var image = new createjs.Bitmap(property.url);
-    image.x = State.gameScrean.width * property.ratioX;
-    image.y = State.gameScrean.height * property.ratioY;
-    image.scaleY = image.scaleX = State.screenScale * property.scale;
-    image.alpha = property.alpha;
-
     return image;
   }
 

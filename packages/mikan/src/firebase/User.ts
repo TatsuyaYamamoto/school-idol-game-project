@@ -1,17 +1,33 @@
-import {
-  User as FirebaseUser,
-  UserInfo as FirebaseUserInfo,
-  firestore
-} from "firebase/app";
+import { User as FirebaseUser, firestore } from "firebase/app";
 
 import UserCredential = firebase.auth.UserCredential;
 import DocumentReference = firestore.DocumentReference;
+import AdditionalUserInfo = firebase.auth.AdditionalUserInfo;
+import AuthCredential = firebase.auth.AuthCredential;
 
 import { Twitter } from "twit";
 import TwitterUser = Twitter.User;
 
 import { firebaseAuth, firebaseDb } from "./index";
 import { Credential, CredentialDocument } from "./Credential";
+
+export interface ProviderData {
+  /**
+   * User ID in IdP
+   */
+  userId: string;
+  /**
+   * Credential reference as IdP's user.
+   *
+   * @link CredentialDocument
+   */
+  credentialRef: DocumentReference;
+
+  /**
+   * Time that the user is lined to IdP's account.
+   */
+  linkedAt: firestore.FieldValue | Date;
+}
 
 export interface UserDocument /* extends firestore.DocumentData */ {
   uid: string;
@@ -25,28 +41,10 @@ export interface UserDocument /* extends firestore.DocumentData */ {
   /**
    * Additional provider-specific information.
    * Add item after {@link auth#linkWithRedirect}.
+   * @link ProviderId
    */
   providers: {
-    /**
-     * string constant identifying each providers.
-     */
-    [providerId: string]: {
-      /**
-       * User ID in IdP
-       */
-      userId: string;
-      /**
-       * Credential reference as IdP's user.
-       *
-       * @link CredentialDocument
-       */
-      credentialRef: DocumentReference;
-
-      /**
-       * Time that the user is lined to IdP's account.
-       */
-      linkedAt: firestore.FieldValue | Date;
-    };
+    [providerId: string]: ProviderData;
   };
   createdAt: firestore.FieldValue | Date;
   updatedAt: firestore.FieldValue | Date;
@@ -54,8 +52,6 @@ export interface UserDocument /* extends firestore.DocumentData */ {
 }
 
 export class User {
-  private constructor(readonly firebaseUser: FirebaseUser) {}
-
   public static getColRef() {
     return firebaseDb.collection("users");
   }
@@ -74,132 +70,137 @@ export class User {
     return User.getDocRef(currentUser.uid);
   }
 
-  public static async linkIdp(userCredential: UserCredential) {
-    const { user, additionalUserInfo, credential } = userCredential;
+  public static async create(user: FirebaseUser): Promise<void> {
+    const newDocRef = User.getColRef().doc(user.uid);
 
-    if (!user || !additionalUserInfo || !credential) {
-      throw new Error("Fail to link. No userCredential is provided.");
-    }
+    await newDocRef.set({
+      uid: user.uid,
+      isAnonymous: true,
+      displayName: getRandomAnonymousName(),
+      highscoreRefs: {},
+      providers: {},
+      createdAt: firestore.FieldValue.serverTimestamp(),
+      updatedAt: firestore.FieldValue.serverTimestamp(),
+      duplicatedRefsByLink: []
+    });
+  }
+
+  /**
+   * ID ProviderのCredentialをUser Docに紐づける。
+   * 同一のprovide idがlink済みの場合(duplicatedUser!==nullの場合)、credential情報の更新と、duplicatedUserのreferenceをuserに書き込む
+   *
+   * @param newCredential
+   * @param duplicatedUser
+   */
+  public static async linkIdp(
+    newCredential: UserCredential,
+    duplicatedUser: FirebaseUser | null = null
+  ): Promise<FirebaseUser> {
+    const {
+      user,
+      additionalUserInfo,
+      credential
+    } = User.shouldFulfilledCredential(newCredential);
 
     const { providerId } = credential;
-    const currentUserRef = User.getDocRef(user.uid);
-    const currentUserDoc = (await currentUserRef.get()).data() as UserDocument;
-    const currentProviders = currentUserDoc.providers || {};
-    const newCredentialRef = Credential.getColRef().doc();
-    const isFirstLink = Object.keys(currentProviders).length === 0;
+    /**
+     * Update target user
+     */
+    const userRef = User.getDocRef(user.uid);
+    const userDoc = (await userRef.get()).data() as UserDocument;
 
-    if (!isFirstLink && currentUserDoc.providers[providerId]) {
-      throw new Error(`received duplicated IdP's credential; ${providerId} `);
-    }
+    const provider = userDoc.providers[providerId];
+    const isNewCredentialForIdp = !provider;
+    const credentialRef = isNewCredentialForIdp
+      ? Credential.getColRef().doc()
+      : provider.credentialRef;
+
+    const isFirstLinkForUser = Object.keys(userDoc.providers).length === 0;
 
     if (providerId === "twitter.com") {
       const profile = additionalUserInfo.profile as TwitterUser;
 
-      const newCredential: CredentialDocument = {
-        userRef: currentUserRef,
-        providerId: providerId,
+      const batch = firestore().batch();
+
+      // create batch of creation or updating credential
+      const newCredentialDoc: Partial<CredentialDocument> = {
         data: {
           accessToken: (<any>credential).accessToken,
           secret: (<any>credential).secret
-        }
+        },
+        updatedAt: firestore.FieldValue.serverTimestamp()
       };
 
-      const updatedUserDoc: UserDocument = {
-        ...currentUserDoc,
-        isAnonymous: false,
-        providers: {
-          ...currentUserDoc.providers,
-          [providerId]: {
-            userId: profile.id_str,
-            linkedAt: firestore.FieldValue.serverTimestamp(),
-            credentialRef: newCredentialRef
-          }
-        }
-      };
+      if (isNewCredentialForIdp) {
+        newCredentialDoc.userRef = userRef;
+        newCredentialDoc.providerId = providerId;
+        newCredentialDoc.createdAt = firestore.FieldValue.serverTimestamp();
 
-      if (isFirstLink) {
-        updatedUserDoc.displayName = profile.name;
-        updatedUserDoc.photoURL = profile.profile_image_url_https;
+        batch.set(credentialRef, newCredentialDoc);
+      } else {
+        batch.update(credentialRef, newCredentialDoc);
       }
 
-      await firestore().runTransaction(async transaction => {
-        await transaction.update(currentUserRef, updatedUserDoc);
-        await transaction.set(newCredentialRef, newCredential);
-      });
+      // create batch of updating user
+      const newUserDoc: Partial<UserDocument> = {
+        isAnonymous: false
+      };
 
-      return;
+      newUserDoc.providers = {
+        ...newUserDoc.providers,
+        [providerId]: {
+          userId: profile.id_str,
+          linkedAt: firestore.FieldValue.serverTimestamp(),
+          credentialRef
+        }
+      };
+
+      if (isFirstLinkForUser) {
+        newUserDoc.displayName = profile.name;
+        newUserDoc.photoURL = profile.profile_image_url_https;
+      }
+
+      if (duplicatedUser) {
+        newUserDoc.duplicatedRefsByLink = userDoc.duplicatedRefsByLink.concat([
+          User.getDocRef(duplicatedUser.uid)
+        ]);
+      }
+
+      batch.update(userRef, newUserDoc);
+
+      // execute batch
+      await batch.commit();
+
+      return user;
     }
 
     throw new Error(`provided provider; ${providerId}, is not supported.`);
   }
 
-  public static from(firebaseUser: FirebaseUser) {
-    return new User(firebaseUser);
-  }
+  private static shouldFulfilledCredential(
+    userCredential: UserCredential
+  ): {
+    user: FirebaseUser;
+    additionalUserInfo: AdditionalUserInfo;
+    credential: AuthCredential;
+  } {
+    const { user, additionalUserInfo, credential } = userCredential;
 
-  get isAnonymous(): boolean {
-    return this.firebaseUser.isAnonymous;
-  }
-
-  get uid(): string {
-    return this.firebaseUser.uid;
-  }
-
-  get displayName(): string | null {
-    if (this.firebaseUser.displayName) {
-      return this.firebaseUser.displayName;
+    if (!user || !additionalUserInfo || !credential) {
+      throw new Error(
+        "Provided userCredential has no FirebaseUser, AdditionalUserInfo or AuthCredential."
+      );
     }
 
-    const linkedProviderData = this.getLinkedProviderData();
-
-    if (linkedProviderData) {
-      return linkedProviderData.displayName;
-    }
-
-    return null;
-  }
-
-  get photoURL(): string | null {
-    if (this.firebaseUser.photoURL) {
-      return this.firebaseUser.photoURL;
-    }
-
-    const linkedProviderData = this.getLinkedProviderData();
-
-    if (linkedProviderData) {
-      return linkedProviderData.photoURL;
-    }
-
-    return null;
-  }
-
-  public async addDuplicatedRef(duplicate: User) {
-    const duplicateUserRef = firestore()
-      .collection("users")
-      .doc(duplicate.uid);
-
-    const alreadyLinkedUserRef = firestore()
-      .collection("users")
-      .doc(this.uid);
-
-    const alreadyLinkedUserDoc = (await alreadyLinkedUserRef.get()).data() as UserDocument;
-    const duplicatedRefsByLink =
-      alreadyLinkedUserDoc.duplicatedRefsByLink || [];
-    duplicatedRefsByLink.push(duplicateUserRef);
-
-    const doc: UserDocument = {
-      ...alreadyLinkedUserDoc,
-      duplicatedRefsByLink
+    return {
+      user,
+      additionalUserInfo,
+      credential
     };
-
-    await alreadyLinkedUserRef.update(doc);
   }
+}
 
-  private getLinkedProviderData(): FirebaseUserInfo | null {
-    const providerData = this.firebaseUser.providerData.find(
-      data => !!data && data.uid !== null
-    );
-
-    return providerData || null;
-  }
+// TODO
+function getRandomAnonymousName() {
+  return "いかした学園生";
 }
