@@ -1,4 +1,6 @@
 import { firestore } from "firebase/app";
+import CollectionReference = firestore.CollectionReference;
+import FieldValue = firestore.FieldValue;
 
 import { firebaseDb } from "./index";
 
@@ -10,11 +12,11 @@ export interface RankItemDocument /* extends firestore.DocumentData */ {
   point: number;
 }
 
-export interface RankingDocument extends firestore.DocumentData {
+export interface RankingDocument /* extends firestore.DocumentData */ {
   totalCount: number;
-  list: firebase.firestore.CollectionReference;
+  list: CollectionReference;
   game: string;
-  createdAt: firebase.firestore.FieldValue;
+  createdAt: FieldValue;
 }
 
 export class Ranking {

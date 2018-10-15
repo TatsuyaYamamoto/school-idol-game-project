@@ -67,7 +67,7 @@ export default pubsub
           } as RankingDocument);
 
           await transaction.update(metadataRef, {
-            rankingRef: newRankingRef
+            rankingRef: newRankingRef as any
           } as Partial<MetadataDocument>);
         });
 

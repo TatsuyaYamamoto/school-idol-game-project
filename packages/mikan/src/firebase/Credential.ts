@@ -1,5 +1,6 @@
 import { firestore } from "firebase/app";
 
+import FieldValue = firestore.FieldValue;
 import QuerySnapshot = firestore.QuerySnapshot;
 import DocumentReference = firestore.DocumentReference;
 import CollectionReference = firestore.CollectionReference;
@@ -12,7 +13,7 @@ import { firebaseDb } from "./index";
 export type ProviderId = "twitter.com";
 
 export interface CredentialDocument /* extends firestore.DocumentData */ {
-  userRef: firebase.firestore.DocumentReference;
+  userRef: DocumentReference;
   providerId: ProviderId;
   data:
     | {
@@ -21,8 +22,8 @@ export interface CredentialDocument /* extends firestore.DocumentData */ {
         secret: string;
       }
     | {};
-  createdAt: firebase.firestore.FieldValue | Date;
-  updatedAt: firebase.firestore.FieldValue | Date;
+  createdAt: FieldValue | Date;
+  updatedAt: FieldValue | Date;
 }
 
 export class Credential {

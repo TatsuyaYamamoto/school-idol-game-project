@@ -1,5 +1,6 @@
 import { User as FirebaseUser, firestore } from "firebase/app";
 
+import FieldValue = firestore.FieldValue;
 import UserCredential = firebase.auth.UserCredential;
 import DocumentReference = firestore.DocumentReference;
 import AdditionalUserInfo = firebase.auth.AdditionalUserInfo;
@@ -21,12 +22,12 @@ export interface ProviderData {
    *
    * @link CredentialDocument
    */
-  credentialRef: firebase.firestore.DocumentReference;
+  credentialRef: DocumentReference;
 
   /**
    * Time that the user is lined to IdP's account.
    */
-  linkedAt: firebase.firestore.FieldValue | Date;
+  linkedAt: FieldValue | Date;
 }
 
 export interface UserDocument /* extends firestore.DocumentData */ {
@@ -35,7 +36,7 @@ export interface UserDocument /* extends firestore.DocumentData */ {
   displayName: string;
   photoURL: string | null;
   highscoreRefs: {
-    [game: string]: firebase.firestore.DocumentReference;
+    [game: string]: DocumentReference;
   };
 
   /**
@@ -46,9 +47,9 @@ export interface UserDocument /* extends firestore.DocumentData */ {
   providers: {
     [providerId: string]: ProviderData;
   };
-  createdAt: firebase.firestore.FieldValue | Date;
-  updatedAt: firebase.firestore.FieldValue | Date;
-  duplicatedRefsByLink: firebase.firestore.DocumentReference[];
+  createdAt: FieldValue | Date;
+  updatedAt: FieldValue | Date;
+  duplicatedRefsByLink: DocumentReference[];
 }
 
 export class User {
@@ -79,8 +80,8 @@ export class User {
       displayName: getRandomAnonymousName(),
       highscoreRefs: {},
       providers: {},
-      createdAt: firestore.FieldValue.serverTimestamp(),
-      updatedAt: firestore.FieldValue.serverTimestamp(),
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
       duplicatedRefsByLink: []
     });
   }
@@ -128,13 +129,13 @@ export class User {
           accessToken: (<any>credential).accessToken,
           secret: (<any>credential).secret
         },
-        updatedAt: firestore.FieldValue.serverTimestamp()
+        updatedAt: FieldValue.serverTimestamp()
       };
 
       if (isNewCredentialForIdp) {
         newCredentialDoc.userRef = userRef;
         newCredentialDoc.providerId = providerId;
-        newCredentialDoc.createdAt = firestore.FieldValue.serverTimestamp();
+        newCredentialDoc.createdAt = FieldValue.serverTimestamp();
 
         batch.set(credentialRef, newCredentialDoc);
       } else {
@@ -150,7 +151,7 @@ export class User {
         ...newUserDoc.providers,
         [providerId]: {
           userId: profile.id_str,
-          linkedAt: firestore.FieldValue.serverTimestamp(),
+          linkedAt: FieldValue.serverTimestamp(),
           credentialRef
         }
       };

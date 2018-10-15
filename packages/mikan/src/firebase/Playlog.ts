@@ -1,4 +1,6 @@
 import { firestore } from "firebase/app";
+import DocumentReference = firestore.DocumentReference;
+import FieldValue = firestore.FieldValue;
 
 import { firebaseDb } from "./index";
 import { Game, Member } from "./scheme";
@@ -8,7 +10,7 @@ import { getLogger } from "../logger";
 const logger = getLogger("mikan/firebase/db");
 
 export interface PlaylogDocument /* extends firestore.DocumentData */ {
-  userRef: firebase.firestore.DocumentReference;
+  userRef: DocumentReference;
   game: Game;
   member: Member;
   point: number;
@@ -16,7 +18,7 @@ export interface PlaylogDocument /* extends firestore.DocumentData */ {
   userAgent: string;
   language: string;
   languages: string;
-  createdAt: firebase.firestore.FieldValue | Date;
+  createdAt: FieldValue | Date;
 }
 
 export class Playlog {
@@ -47,7 +49,7 @@ export class Playlog {
       userAgent: navigator.userAgent,
       language: navigator.languages[0],
       languages: navigator.languages.join(";"),
-      createdAt: firestore.FieldValue.serverTimestamp()
+      createdAt: FieldValue.serverTimestamp()
     };
 
     return Playlog.getColRef().add(doc);

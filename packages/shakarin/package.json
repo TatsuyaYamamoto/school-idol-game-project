@@ -8,7 +8,10 @@
   "description": "js simple game, thanks lovelive",
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server"
+    "clean": "rm -rf dist",
+    "start": "yarn clean && webpack-dev-server",
+    "build": "yarn clean && webpack",
+    "build:pro": "npm run clean && NODE_ENV=production webpack"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",

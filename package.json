@@ -8,7 +8,9 @@
   "private": true,
   "scripts": {
     "precommit": "pretty-quick --staged",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "ws": " yarn workspace ",
+    "wss": "yarn workspaces"
   },
   "config": {
     "commitizen": {

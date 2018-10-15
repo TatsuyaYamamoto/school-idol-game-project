@@ -1,6 +1,5 @@
 import * as functions from "firebase-functions";
 import { firestore } from "firebase-admin";
-import DocumentReference = firestore.DocumentReference;
 
 import {
   PlaylogDocument,
@@ -24,7 +23,7 @@ export default functions.firestore
        */
       const playlogDoc = snapshot.data() as PlaylogDocument;
       const game = playlogDoc.game;
-      const userRef = playlogDoc.userRef as DocumentReference;
+      const userRef = playlogDoc.userRef;
       const userDoc = (await userRef.get()).data() as UserDocument;
 
       const highscoreSnapshot = await getHighscoreColRef()
@@ -63,11 +62,11 @@ export default functions.firestore
         const updateUserDoc: Partial<UserDocument> = {
           highscoreRefs: {
             ...userDoc.highscoreRefs,
-            [game]: highscoreRef
+            [game]: highscoreRef as any
           }
         };
 
-        batch.update(userRef, updateUserDoc);
+        batch.update(userRef as any, updateUserDoc);
       } else {
         console.log(
           `prev score snapshot is found. check if the score is updated.`
