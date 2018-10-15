@@ -9,17 +9,11 @@ export const CHARACTER = {
   YOU: "you"
 };
 
-export const ENDPOINT = {
-  LOGIN:
-    apiServerOrigin + contextPath + "/auth/twitter/login/?redirect=maruten",
-  LOGOUT:
-    apiServerOrigin + contextPath + "/auth/twitter/logout/?redirect=maruten",
-  SCORES: apiServerOrigin + contextPath + "/games/maruten/scores/",
-  USERS: apiServerOrigin + contextPath + "/users/me/"
-};
-
 export const LINK = {
-  RANKING: "http://games.sokontokoro-factory.net/ranking/?game=maruten",
+  RANKING:
+    process.env.NODE_ENV === "production"
+      ? "//games.sokontokoro-factory.net/#/ranking/maruten"
+      : "//games-dev.sokontokoro-factory.net/#/ranking/maruten",
   SOKONTOKORO_HOME: "https://www.sokontokoro-factory.net",
   T28_TWITTER: "https://twitter.com/t28_tatsuya",
   SANZASHI_TWITTER: "https://twitter.com/xxsanzashixx",

@@ -1,9 +1,4 @@
 // 設定ファイル---------------------------------
-const baseUrl =
-  process.env.NODE_ENV === "production"
-    ? "//api.sokontokoro-factory.net/lovelive"
-    : "//api-dev.sokontokoro-factory.net/lovelive";
-
 export var config = {
   system: {
     FPS: 30,
@@ -14,13 +9,11 @@ export var config = {
     },
     firstCheckFrame: 10
   },
-  api: {
-    login: baseUrl + "/auth/twitter/login?redirect=shakarin",
-    logout: baseUrl + "/auth/twitter/logout/",
-    score: baseUrl + "/games/shakarin/scores/",
-    user: baseUrl + "/users/me/"
-  },
   link: {
+    ranking:
+      process.env.NODE_ENV === "production"
+        ? "//games.sokontokoro-factory.net/#/ranking/shakarin"
+        : "//games-dev.sokontokoro-factory.net/#/ranking/shakarin",
     t28_twitter: "https://twitter.com/t28_tatsuya",
     sokontokoro: "http://sokontokoro-factory.net",
     sanzashi: "https://twitter.com/xxsanzashixx",

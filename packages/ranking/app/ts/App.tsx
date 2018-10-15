@@ -21,13 +21,13 @@ const App = () => (
     <Switch>
       <Route
         exact
-        path={`/:game(${list.map(i => i.gameId).join("|")})`}
+        path={`/ranking/:game(${list.map(i => i.gameId).join("|")})`}
         render={props => {
           tracePage();
           return <Index {...props} />;
         }}
       />
-      <Route render={() => <Redirect to={`/${list[0].gameId}`} />} />
+      <Route render={() => <Redirect to={`/ranking/${list[0].gameId}`} />} />
     </Switch>
   </Router>
 );

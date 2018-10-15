@@ -17,6 +17,7 @@ import { to } from "../stateMachine";
 import SelectCharaEngine from "./SelectCharaEngine";
 import { Ids } from "../resources/string";
 import { tracePage, trackEvent, TRACK_ACTION, TRACK_PAGES } from "../tracker";
+import config from "../resources/config";
 
 class MenuEngine extends Engine {
   constructor(props) {
@@ -176,8 +177,6 @@ function onClick2Ranking() {
   globals.soundObj.SOUND_OK.stop();
   globals.soundObj.SOUND_OK.play();
 
-  const url = "http://games.sokontokoro-factory.net/ranking/?game=honocar";
-
   openModal({
     text: t(Ids.OPEN_EXTERNAL_SITE_INFO, {
       url: "games.sokontokoro-factory.net"
@@ -187,7 +186,7 @@ function onClick2Ranking() {
         text: "OK",
         onClick: () => {
           trackEvent(TRACK_ACTION.CLICK, { label: "ranking" });
-          openExternalSite(url);
+          openExternalSite(config.link.ranking);
         }
       },
       {

@@ -1,12 +1,3 @@
-import { getCurrentUrl } from "@sokontokoro/mikan";
-
-const baseUrl =
-  process.env.NODE_ENV === "production"
-    ? "//api.sokontokoro-factory.net/lovelive"
-    : "//api-dev.sokontokoro-factory.net/lovelive";
-
-const currentUrl = getCurrentUrl();
-
 export default {
   system: {
     framerate: 30,
@@ -25,13 +16,11 @@ export default {
     },
     difficultyLength: 0.3
   },
-  api: {
-    login: baseUrl + "/auth/twitter/login?redirect=" + currentUrl,
-    logout: baseUrl + "/auth/twitter/logout?redirect=" + currentUrl,
-    score: baseUrl + "/games/honocar/scores/",
-    user: baseUrl + "/users/me/"
-  },
   link: {
+    ranking:
+      process.env.NODE_ENV === "production"
+        ? "//games.sokontokoro-factory.net/#/ranking/honocar"
+        : "//games-dev.sokontokoro-factory.net/#/ranking/honocar",
     t28_twitter: "https://twitter.com/t28_tatsuya",
     sokontokoro: "http://sokontokoro-factory.net",
     sanzashi: "https://twitter.com/xxsanzashixx",

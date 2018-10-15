@@ -84,7 +84,7 @@ class Index extends React.Component<
   }
 
   private onGameSelected(index: number) {
-    this.props.history.replace(`/${list[index].gameId}`);
+    this.props.history.replace(`/ranking/${list[index].gameId}`);
 
     this.setState({
       game: list[index].gameId

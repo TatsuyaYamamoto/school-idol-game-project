@@ -94,8 +94,7 @@ export default class MenuEngine {
     };
 
     const goToRanking = () => {
-      window.location.href =
-        "http://games.sokontokoro-factory.net/ranking/?game=shakarin";
+      window.location.href = config.link.ranking;
     };
 
     const turnSoundSwitch = () => {

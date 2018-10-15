@@ -7,7 +7,7 @@ import {
 
 import State from "../state.js";
 import Util from "../util.js";
-import { ENDPOINT, LINK, CHARACTER } from "../static/constant.js";
+import { LINK, CHARACTER } from "../static/constant.js";
 
 export default class MenuEngine {
   constructor(stateMachine) {
