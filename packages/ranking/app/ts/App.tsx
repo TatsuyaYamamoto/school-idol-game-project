@@ -8,13 +8,13 @@ import {
 
 import "react-virtualized/styles.css";
 
+import { tracePage } from "@sokontokoro/mikan";
+
 import { default as Index, list } from "./components/pages/Index";
 
 export interface IndexRouteParams {
   game: string;
 }
-
-const supportedGames = ["maruten"];
 
 const App = () => (
   <Router>
@@ -22,7 +22,10 @@ const App = () => (
       <Route
         exact
         path={`/:game(${list.map(i => i.gameId).join("|")})`}
-        component={Index}
+        render={props => {
+          tracePage();
+          return <Index {...props} />;
+        }}
       />
       <Route render={() => <Redirect to={`/${list[0].gameId}`} />} />
     </Switch>

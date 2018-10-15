@@ -144,10 +144,11 @@ export function getCurrentUrl(): string {
   const protocol = location.protocol;
   const host = location.hostname;
   const path = location.pathname;
+  const hash = location.hash;
   const port =
     !location.port || location.port === "80" ? `` : `:${location.port}`;
 
-  return protocol + "//" + host + port + path;
+  return protocol + "//" + host + port + path + hash;
 }
 
 /**

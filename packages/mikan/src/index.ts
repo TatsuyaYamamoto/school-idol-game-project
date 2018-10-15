@@ -60,6 +60,8 @@ export { openModal, closeModal } from "./Modal";
 
 export { getLogger } from "./logger";
 
+export { tracePage, trackEvent, trackTiming } from "./Tracker";
+
 export { firebaseDb, firebaseAuth } from "./firebase";
 
 export {
