@@ -105,22 +105,31 @@ export default class RankingSection extends React.Component<Props, State> {
       return;
     }
 
-    const pushedItems = this.state.rankingList;
-    scores.forEach(r => {
-      const doc = r.data() as RankItemDocument;
-      pushedItems.push(
-        <RankItem
-          rank={doc.rank}
-          userName={doc.userName}
-          point={doc.point}
-          member={doc.member}
-        />
-      );
-    });
+    this.setState(state => {
+      if (state.game !== game) {
+        logger.debug(
+          `active game; ${game} is changed. ignore this game ranking list push.`
+        );
+        return null;
+      }
 
-    this.setState({
-      rankingList: pushedItems,
-      lastVisibleSnapshot: scores.docs[scores.size - 1]
+      const pushedItems = state.rankingList;
+      scores.forEach(r => {
+        const doc = r.data() as RankItemDocument;
+        pushedItems.push(
+          <RankItem
+            rank={doc.rank}
+            userName={doc.userName}
+            point={doc.point}
+            member={doc.member}
+          />
+        );
+      });
+
+      return {
+        rankingList: pushedItems,
+        lastVisibleSnapshot: scores.docs[scores.size - 1]
+      };
     });
   }
 }
