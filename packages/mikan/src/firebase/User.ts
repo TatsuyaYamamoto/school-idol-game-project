@@ -203,8 +203,33 @@ export class User {
   }
 }
 
-// TODO
 function getRandomAnonymousName() {
-  return "いかした学園生";
+  const candidates = [
+    "パン好きな", // honoka
+    "かしこかわいい", // eri
+    "枕を忘れた", // kotori
+    "アイドルは無しな", // umi
+    "ラーメン好きな", // rin
     "ﾅﾆｿﾚｲﾐﾜｶﾝﾅｲ", // maki
+    "カードが告げる", // nozomi
+    "ご飯を炊いた", // hanayo
+    "バックダンサーな", // nico
+    "アホ毛の", // chika
+    "お断りする", // riko
+    "ハグをせまる", // kanan
+    "プリンを食べる", // dia
+    "制服を着た", // you
+    "悪いのは", // yoshiko
+    "未来の", // hanamaru
+    "2年振りに輝く", // mari
+    "お芋好きな" // ruby
+  ];
+
+  const min = 0;
+  const max = candidates.length - 1;
+  const index = Math.floor(Math.random() * (max + 1 - min)) + min;
+
+  const prefix = candidates[index];
+
+  return `${prefix}学園生`;
 }
