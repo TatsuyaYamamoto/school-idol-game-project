@@ -1,16 +1,37 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
+const isProduction = process.env.NODE_ENV === "production";
+
+const htmlParams = {
+  title: "DEV ランキング",
+  noIndex: true,
+  trackingCode: "UA-64858827-8",
+  description: "そこんところ工房のゲームランキング",
+  keyword:
+    "ラブライブ！,LoveLive！,ラブライブ！サンシャイン!!,スクールアイドル,μ’s,ミューズ,Aqours,アクア,ゲーム,ミニゲーム,ランキング",
+  ogUrl: "https://games.sokontokoro-factory.net/ranking/",
+  ogImage: "https://games.sokontokoro-factory.net/rankig/img/ogp.png"
+};
+
+isProduction &&
+  Object.assign(htmlParams, {
+    title: "スコアランキング -そこんところ工房-",
+    trackingCode: "UA-64858827-4",
+    noIndex: false
+  });
+
 const plugins = [
   new HtmlWebpackPlugin({
     template: "app/index.ejs",
+    templateParameters: htmlParams,
     hash: true
   })
 ];
 
 module.exports = {
-  mode: "development",
+  mode: isProduction ? "production" : "development",
 
-  devtool: "source-map",
+  devtool: isProduction ? "none" : "source-map",
 
   entry: "./app/ts/index.tsx",
   output: {
