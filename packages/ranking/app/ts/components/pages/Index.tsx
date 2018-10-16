@@ -18,26 +18,29 @@ interface State {
   game: string;
 }
 
+const domain =
+  process.env.NODE_ENV === "production"
+    ? "games.sokontokoro-factory.net"
+    : "games-dev.sokontokoro-factory.net";
+
 export const list = [
   {
     title: "ほのCar",
     gameId: "honocar",
-    url: "https://games.sokontokoro-factory.net/honocar/",
-    imageUrl:
-      "http://games.sokontokoro-factory.net/honocar/img/TITLE_LOGO_HONOKA.png"
+    url: `https://${domain}/honocar/`,
+    imageUrl: `http://${domain}/honocar/img/TITLE_LOGO_HONOKA.png`
   },
   {
     title: "しゃかりん",
     gameId: "shakarin",
-    url: "https://games.sokontokoro-factory.net/shakarin/",
-    imageUrl: "http://games.sokontokoro-factory.net/shakarin/img/TITLE_LOGO.png"
+    url: `https://${domain}/shakarin/`,
+    imageUrl: `http://${domain}/shakarin/img/TITLE_LOGO.png`
   },
   {
     title: "まるてん",
     gameId: "maruten",
-    url: "https://games.sokontokoro-factory.net/maruten/",
-    imageUrl:
-      "http://games.sokontokoro-factory.net/maruten/img/TITLE_LOGO_HANAMARU.png"
+    url: `https://${domain}/maruten/`,
+    imageUrl: `http://${domain}/maruten/img/TITLE_LOGO_HANAMARU.png`
   }
 ];
 
