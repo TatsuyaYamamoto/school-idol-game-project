@@ -13,8 +13,7 @@ import {
   getCompare,
   getHighscoreColRef,
   getMetadataRef,
-  loadedMetadata,
-  sendToSlack
+  loadedMetadata
 } from "../utils";
 
 export default pubsub
@@ -23,7 +22,6 @@ export default pubsub
     console.log(`published "generate-ranking" topic. ID: ${context.eventId}`);
 
     const games = ["honocar", "shakarin", "maruten"];
-    const messages = [];
 
     try {
       for (const game of games) {
@@ -72,12 +70,9 @@ export default pubsub
         });
 
         console.log(`success! game: ${game}`);
-        messages.push(`${game}: ${getRankingDocUrl(newRankingRef.id)}`);
       }
 
       console.log(`It's completed to create ranking; ${games.join(", ")}.`);
-
-      await sendToSlack("ランキング計算完了", messages.join("\n"));
     } catch (e) {
       console.error({
         message: "FATAL ERROR! catch unhandled error.",
@@ -85,12 +80,6 @@ export default pubsub
       });
     }
   });
-
-function getRankingDocUrl(id: string) {
-  return `https://console.firebase.google.com/u/2/project/${
-    process.env.GCLOUD_PROJECT
-  }/database/firestore/data~2Franking~2F${id}`;
-}
 
 async function createRankingList(game: string): Promise<RankItemDocument[]> {
   const { compareType } = await loadedMetadata(game);

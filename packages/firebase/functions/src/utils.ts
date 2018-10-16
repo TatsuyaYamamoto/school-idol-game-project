@@ -1,7 +1,8 @@
 import { firestore as adminFirestore } from "firebase-admin";
-import { MetadataDocument } from "@sokontokoro/mikan";
+import { config, EventContext } from "firebase-functions";
+
 import { IncomingWebhook } from "@slack/client";
-import { config } from "firebase-functions";
+import { MetadataDocument } from "@sokontokoro/mikan";
 
 const webhook = new IncomingWebhook(config().slack.webhook_url);
 
@@ -69,11 +70,48 @@ export async function addDocWithBatch(
   }
 }
 
-export function sendToSlack(
-  title: string,
-  text: string,
-  color: "good" | "warning" | "danger" = "good"
-) {
+/**
+ * @see catchErrorWrapper
+ */
+type Handler<T> = (value: T, context: EventContext) => PromiseLike<any>;
+
+/**
+ * unhandled errorをthrowさせないためのtry-catch wrapper function
+ *
+ * @param fn
+ */
+export function catchErrorWrapper<T>(fn: Handler<T>): Handler<T> {
+  return async function(change, context) {
+    try {
+      await fn(change, context);
+    } catch (e) {
+      console.error({
+        message: "FATAL ERROR! catch unhandled error.",
+        detail: e
+      });
+    }
+  };
+}
+
+export function getDocUrl(collection: string, id: string) {
+  return `https://console.firebase.google.com/u/0/project/${
+    process.env.GCLOUD_PROJECT
+  }/database/firestore/data~2F${collection}~2F${id}`;
+}
+
+export function slackUrl(url: string, text: string) {
+  return `<${url}|${text}>`;
+}
+
+export function sendToSlack({
+  title,
+  text,
+  color = "good"
+}: {
+  title?: string;
+  text: string;
+  color?: "good" | "warning" | "danger";
+}) {
   return webhook.send({
     attachments: [
       {

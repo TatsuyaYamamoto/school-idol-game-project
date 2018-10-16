@@ -22,7 +22,11 @@ export default pubsub
 
       const title = `Catch unhandled error! *${function_name}* <${logUrl}|Open log>`;
       const text = JSON.stringify(data, null, "\t");
-      const result = await sendToSlack(title, text, "danger");
+      const result = await sendToSlack({
+        title,
+        text,
+        color: "danger"
+      });
 
       console.log({
         message: "slack nitif is success.",
