@@ -106,9 +106,13 @@ export function init(): Promise<UserDocument> {
 
           const snapshot = await User.getDocRef(firebaseUser.uid).get();
           resolve(snapshot.data() as UserDocument);
+          return;
         }
 
-        throw new Error(`unexpected redirect result is received.`);
+        /**
+         * Undefined redirect operation
+         */
+        throwErrorAsUndefinedRedirectOperation(userCredential);
       })
       .catch(async (error: auth.Error) => {
         if (error.code === "auth/credential-already-in-use") {
@@ -211,4 +215,29 @@ export function signInAsTwitterUser(): Promise<void> {
  */
 export function signOut(): Promise<void> {
   return firebaseAuth.signOut();
+}
+
+function throwErrorAsUndefinedRedirectOperation(
+  userCredential: UserCredential
+) {
+  const { operationType, credential, user } = userCredential;
+
+  let message = `unexpected redirect result is received.`;
+
+  if (user) {
+    message += ` user id: ${user.uid}`;
+  } else {
+    message += ` user is null`;
+  }
+
+  message += `, operationType: ${operationType}`;
+
+  if (credential) {
+    const { providerId, signInMethod } = credential;
+    message += `, providerId: ${providerId}, signInMethod: ${signInMethod}`;
+  } else {
+    message += `, credential is null`;
+  }
+
+  throw new Error(message);
 }
