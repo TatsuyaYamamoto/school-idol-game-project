@@ -3,7 +3,6 @@ import DocumentReference = admin.firestore.DocumentReference;
 import * as mysql from "mysql";
 import {
   HighscoreDocument,
-  PlaylogDocument,
   UserDocument,
   CredentialDocument
 } from "@sokontokoro/mikan";
@@ -11,22 +10,13 @@ import {
 export const MIGRATION_TMP_VALUE_USER_REF = "ANONYMOUS_IN_OLD_SYSTEM";
 
 export default async function(database: string, options: any) {
-  const {
-    user,
-    password,
-    host,
-    loginUserLog,
-    anonymousUserLog,
-    limitUserCount
-  } = options;
+  const { user, password, host, limitUserCount } = options;
 
   console.log(`start migration.
  mysql database     : ${database}
  firebase project id: ${
    (<any>admin.app().options.credential).certificate.projectId
  }
- login user log     : ${loginUserLog ? "enable" : "disable"}
- anonymous user log : ${loginUserLog ? "enable" : "disable"}
  limit user count   : ${limitUserCount === 0 ? "no limit" : limitUserCount}`);
 
   const connection = mysql.createConnection({
@@ -43,7 +33,6 @@ export default async function(database: string, options: any) {
 
   const userColRef = admin.firestore().collection("users");
   const highscoreColRef = admin.firestore().collection("highscores");
-  const playlogColRef = admin.firestore().collection("playlogs");
   const credentialColRef = admin.firestore().collection("credentials");
 
   /************************************************************************
@@ -269,76 +258,6 @@ export default async function(database: string, options: any) {
 
   console.log(`success to import ${highscoreCount} docs to highscore.`);
 
-  /************************************************************************
-   * playlog (login user only)
-   */
-  if (!loginUserLog) {
-    console.log("ignore login user playlog process");
-  } else {
-    for (const user of savedUsers) {
-      const gamelogs = await query(
-        connection,
-        `SELECT * FROM game_log WHERE USER_ID = "${user.oldSystemUid}"`
-      );
-
-      const batch = admin.firestore().batch();
-
-      for (const l of gamelogs) {
-        const newLogRef = playlogColRef.doc();
-        batch.set(newLogRef, {
-          userRef: user.newSystemUserRef as any,
-          game: l[`GAME`].toLowerCase(),
-          member: l[`member`].toLowerCase(),
-          point: l[`POINT`],
-          label: {},
-          userAgent: l[`USER_AGENT`],
-          language: l[`LOCALE`],
-          languages: l[`LOCALE`],
-          createdAt: longToDate(parseInt(l[`PLAY_DATE`]))
-        } as PlaylogDocument);
-      }
-      batch.commit();
-    }
-
-    console.log("success to save playlog doc");
-  }
-
-  /************************************************************************
-   * playlog anonymous user
-   */
-  if (!anonymousUserLog) {
-    console.log("ignore anonymous user playlog process");
-  } else {
-    const anonymousGameLogs = await query(
-      connection,
-      "SELECT * FROM game_log WHERE USER_ID IS NULL LIMIT 10"
-    );
-
-    console.log(`load anonymous game log. count: ${anonymousGameLogs.length}`);
-
-    const batchTargetList = splitList(anonymousGameLogs, 3);
-
-    for (const logs of batchTargetList) {
-      const batch = admin.firestore().batch();
-
-      for (const l of logs) {
-        batch.set(playlogColRef.doc(), {
-          userRef: MIGRATION_TMP_VALUE_USER_REF as any,
-          game: l[`GAME`].toLowerCase(),
-          member: l[`member`].toLowerCase(),
-          point: l[`POINT`],
-          label: {},
-          userAgent: l[`USER_AGENT`],
-          language: l[`LOCALE`],
-          languages: l[`LOCALE`],
-          createdAt: longToDate(l[`PLAY_DATE`])
-        } as PlaylogDocument);
-      }
-
-      batch.commit();
-    }
-  }
-
   connection.end();
   console.log("end 🍊");
   process.exit();
@@ -360,7 +279,7 @@ export function splitList<T>(targetList: T[], maxSize: number): T[][] {
   }, init2DList);
 }
 
-function longToDate(longValue: number) {
+export function longToDate(longValue: number) {
   if (/* ex. 1482579369787 */ 1 * 1000 * 1000 * 1000 * 1000 < longValue) {
     return new Date(longValue);
   } /* ex. 1451691249 */ else {
@@ -368,7 +287,7 @@ function longToDate(longValue: number) {
   }
 }
 
-async function query(connection: mysql.Connection, sql: string) {
+export async function query(connection: mysql.Connection, sql: string) {
   return new Promise<any[]>((resolve, reject) => {
     connection.query(sql, function(
       error: Error,

@@ -2,6 +2,7 @@ import * as program from "commander";
 import * as admin from "firebase-admin";
 
 import importFirestore from "./import";
+import importLogsFirestore from "./import-logs";
 import clearFirestore from "./clear";
 
 const serviceAccount = require("../../../../../../../../../.ssh/service_account/school-idol-game-development-firebase-adminsdk-9pa6d-bcd3574005");
@@ -40,21 +41,24 @@ program
   )
   .option("-h --host <host>", "hostname to connect", "localhost")
   .option(
-    "-l --no-login-user-log",
-    "ignore loading and write playlog of login user"
-  )
-  .option(
-    "-a --no-anonymous-user-log",
-    "ignore loading and write playlog of anonymous user"
-  )
-  .option(
     "-c --limit-user-count <n>",
     "for debug. count of loading target user",
     /^([1-9][0-9]*|0)$/,
     0
   )
-
   .action(importFirestore);
+
+program
+  .command("import-logs <database>")
+  .description("import docs from mysql records")
+  .option("-u --user <user>", "user to use when connecting to server", "root")
+  .option(
+    "-p --password <password>",
+    "password to use when connecting to server",
+    ""
+  )
+  .option("-h --host <host>", "hostname to connect", "localhost")
+  .action(importLogsFirestore);
 
 program
   .command("health")
