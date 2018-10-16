@@ -19,8 +19,10 @@ export default async function clearFirestore() {
       `"ranking/${rankingDoc.id}" has ${rankingListSnapshot.size} docs.`
     );
 
-    for (const rankingListItemDoc of rankingListSnapshot.docs) {
-      await rankingListItemDoc.ref.delete();
+    for (const batchTarget of splitList(rankingListSnapshot.docs, 300)) {
+      const batch = firestore().batch();
+      batchTarget.forEach(item => batch.delete(item.ref));
+      await batch.commit();
     }
   }
 
@@ -41,7 +43,7 @@ export default async function clearFirestore() {
     for (const batchTargetRefs of splitList(targetRefs, 100)) {
       const batch = db.batch();
       batchTargetRefs.forEach(ref => batch.delete(ref));
-      batch.commit();
+      await batch.commit();
     }
 
     console.log(`=> all docs are deleted.`);
@@ -65,7 +67,7 @@ export default async function clearFirestore() {
 
     console.log(`${batchTarget.length} users are deleted.`);
 
-    await wait(1000);
+    await wait(1500);
   }
   console.log(`=> all auth users are deleted.`);
 

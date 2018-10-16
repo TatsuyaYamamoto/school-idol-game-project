@@ -106,7 +106,7 @@ export default async function(database: string, options: any) {
 
     importCredentials.push({
       doc: {
-        userRef: newUserRef,
+        userRef: newUserRef as any,
         providerId: `twitter.com`,
         data: {},
         createdAt: longToDate(parseInt(user[`CREATE_DATE`])),
@@ -206,7 +206,7 @@ export default async function(database: string, options: any) {
         .join(", ")}`
     );
 
-    let highscoreRefs: { [game: string]: DocumentReference } = {};
+    let highscoreRefs: { [game: string]: DocumentReference | any } = {};
 
     for (const s of scores) {
       const highscoreRef = highscoreColRef.doc();
@@ -215,7 +215,7 @@ export default async function(database: string, options: any) {
       importScores.push({
         ref: highscoreRef,
         doc: {
-          userRef: user.newSystemUserRef,
+          userRef: user.newSystemUserRef as any,
           game,
           member: s[`member`].toLowerCase(),
           point: s[`POINT`],
@@ -286,7 +286,7 @@ export default async function(database: string, options: any) {
       for (const l of gamelogs) {
         const newLogRef = playlogColRef.doc();
         batch.set(newLogRef, {
-          userRef: user.newSystemUserRef,
+          userRef: user.newSystemUserRef as any,
           game: l[`GAME`].toLowerCase(),
           member: l[`member`].toLowerCase(),
           point: l[`POINT`],
