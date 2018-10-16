@@ -1,12 +1,14 @@
 {
   "name": "ranking",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "ranking page of lovelive games",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server",
-    "build": "webpack"
+    "clean": "rm -rf dist",
+    "start": "    yarn clean && webpack-dev-server",
+    "build": "    yarn clean &&                     webpack",
+    "build:pro": "yarn clean && NODE_ENV=production webpack"
   },
   "dependencies": {
     "autobind-decorator": "^2.1.0",
