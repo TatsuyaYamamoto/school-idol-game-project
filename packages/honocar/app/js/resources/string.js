@@ -31,7 +31,9 @@ export const Ids = {
   ONLINE_DIALOG_DISCONNECTED_TITLE: "online_dialog_disconnected_title",
   ONLINE_DIALOG_DISCONNECTED_TEXT: "online_dialog_disconnected_text",
 
-  OPEN_EXTERNAL_SITE_INFO: "open_external_site_info"
+  OPEN_EXTERNAL_SITE_INFO: "open_external_site_info",
+  OPEN_RANKING_INFO: "open_ranking_info",
+  OPEN_HOMEPAGE_INFO: "open_homepage_info"
 };
 
 export default {
@@ -69,7 +71,7 @@ LEFT, RIGHTボタン(キーボードの←→でも可！)
       [Ids.PASS_COUNT]: "よけたー {{ count }} 台",
 
       [Ids.LINK_ME]:
-        "プログラム、音楽、思いつき：T28\rhttp://sokontokoro-factory.net",
+        "プログラム、音楽、思いつき：T28\rhttps://twitter.com/t28_tatsuya",
       [Ids.LINK_SANZASHI]:
         "イラスト：さんざし\rhttps://twitter.com/xxsanzashixx",
       [Ids.LINK_SOUND_EFFECT]:
@@ -106,7 +108,9 @@ LEFT, RIGHTボタン(キーボードの←→でも可！)
       [Ids.ONLINE_DIALOG_DISCONNECTED_TEXT]:
         "通信相手の接続が切れてしまいました。Topに戻ります。",
 
-      [Ids.OPEN_EXTERNAL_SITE_INFO]: "外部サイト({{ url }})を開きます！"
+      [Ids.OPEN_EXTERNAL_SITE_INFO]: "外部サイト({{ domain }})を開きます！",
+      [Ids.OPEN_RANKING_INFO]: "ランキングページを開きます！",
+      [Ids.OPEN_HOMEPAGE_INFO]: "ホームページへ移動します！"
     }
   }
 };

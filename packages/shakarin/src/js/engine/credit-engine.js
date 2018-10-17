@@ -1,3 +1,5 @@
+import { openExternalSite, openModal, t } from "@sokontokoro/mikan";
+
 import State from "../state.js";
 import Util from "../util.js";
 import { config } from "../config.js";
@@ -37,19 +39,29 @@ export default class CreditEngine {
     };
 
     const goToSoundeffect = () => {
-      window.location.href = config.link.soundeffect;
+      CreditEngine.showLinkDialog(
+        config.link.soundeffect,
+        "soundeffect-lab.info"
+      );
     };
 
     const goToOnJin = () => {
-      window.location.href = config.link.on_jin;
+      CreditEngine.showLinkDialog(config.link.on_jin, "on-jin.com");
     };
 
     const goToSokontokoro = () => {
-      window.location.href = config.link.sokontokoro;
+      CreditEngine.showLinkDialog(config.link.t28_twitter, "twitter.com");
     };
 
     const goToSanzashi = () => {
-      window.location.href = config.link.sanzashi;
+      CreditEngine.showLinkDialog(config.link.sanzashi, "twitter.com");
+    };
+
+    const goToLovelive = () => {
+      CreditEngine.showLinkDialog(
+        config.link.lovelive,
+        "www.lovelive-anime.jp"
+      );
     };
 
     return {
@@ -71,6 +83,10 @@ export default class CreditEngine {
           "mousedown",
           goToSanzashi
         );
+        State.object.text.LINK_LOVELIVE.addEventListener(
+          "mousedown",
+          goToLovelive
+        );
       },
       remove: () => {
         State.object.image.BUTTON_BACK_MENU_FROM_CREDIT.removeAllEventListeners(
@@ -80,7 +96,36 @@ export default class CreditEngine {
         State.object.text.LINK_ONJIN.removeAllEventListeners("mousedown");
         State.object.text.LINK_SOKONTOKORO.removeAllEventListeners("mousedown");
         State.object.text.LINK_SANZASHI.removeAllEventListeners("mousedown");
+        State.object.text.LINK_LOVELIVE.removeAllEventListeners("mousedown");
       }
     };
+  }
+
+  static showLinkDialog(url, displayDomain) {
+    State.object.sound.OK.stop();
+    State.object.sound.OK.play();
+
+    openModal({
+      text: `外部サイト(${displayDomain})にアクセスします！`,
+      actions: [
+        {
+          text: "OK",
+          onClick: () => {
+            State.object.sound.OK.stop();
+            State.object.sound.OK.play();
+
+            openExternalSite(url);
+          }
+        },
+        {
+          text: "CANCEL",
+          type: "cancel",
+          onClick: () => {
+            State.object.sound.BACK.stop();
+            State.object.sound.BACK.play();
+          }
+        }
+      ]
+    });
   }
 }

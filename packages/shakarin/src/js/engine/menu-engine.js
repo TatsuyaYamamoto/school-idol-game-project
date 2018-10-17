@@ -1,5 +1,9 @@
-import { signInAsTwitterUser, signOut } from "@sokontokoro/mikan";
-import * as alertify from "alertify/lib/alertify";
+import {
+  openExternalSite,
+  openModal,
+  signInAsTwitterUser,
+  signOut
+} from "@sokontokoro/mikan";
 
 import State from "../state.js";
 import Util from "../util.js";
@@ -89,12 +93,60 @@ export default class MenuEngine {
       this.callbackCreditState();
     };
 
-    const goToTwitterHome = () => {
-      window.location.href = config.link.t28_twitter;
+    const goToHomepage = () => {
+      State.object.sound.OK.stop();
+      State.object.sound.OK.play();
+
+      openModal({
+        text: "ホームページを開きます！",
+        actions: [
+          {
+            text: "OK",
+            onClick: () => {
+              State.object.sound.OK.stop();
+              State.object.sound.OK.play();
+
+              openExternalSite(config.link.homepage);
+            }
+          },
+          {
+            text: "CANCEL",
+            type: "cancel",
+            onClick: () => {
+              State.object.sound.BACK.stop();
+              State.object.sound.BACK.play();
+            }
+          }
+        ]
+      });
     };
 
     const goToRanking = () => {
-      window.location.href = config.link.ranking;
+      State.object.sound.OK.stop();
+      State.object.sound.OK.play();
+
+      openModal({
+        text: "ランキングページを開きます！",
+        actions: [
+          {
+            text: "OK",
+            onClick: () => {
+              State.object.sound.OK.stop();
+              State.object.sound.OK.play();
+
+              openExternalSite(config.link.ranking);
+            }
+          },
+          {
+            text: "CANCEL",
+            type: "cancel",
+            onClick: () => {
+              State.object.sound.BACK.stop();
+              State.object.sound.BACK.play();
+            }
+          }
+        ]
+      });
     };
 
     const turnSoundSwitch = () => {
@@ -114,39 +166,16 @@ export default class MenuEngine {
       State.object.sound.OK.stop();
       State.object.sound.OK.play();
 
-      alertify.confirm("ランキングシステムにログインします！", result => {
-        if (result) {
-          State.object.sound.OK.stop();
-          State.object.sound.OK.play();
-
-          signInAsTwitterUser();
-        } else {
-          State.object.sound.BACK.stop();
-          State.object.sound.BACK.play();
-        }
-      });
+      signInAsTwitterUser();
     };
 
     const logout = () => {
       State.object.sound.OK.stop();
       State.object.sound.OK.play();
 
-      alertify.confirm(
-        "ログアウトします。ランキング登録はログイン中のみ有効です。",
-        result => {
-          if (result) {
-            State.object.sound.OK.stop();
-            State.object.sound.OK.play();
-
-            signOut().then(() => {
-              location.reload();
-            });
-          } else {
-            State.object.sound.BACK.stop();
-            State.object.sound.BACK.play();
-          }
-        }
-      );
+      signOut().then(() => {
+        location.reload();
+      });
     };
 
     return {
@@ -170,7 +199,7 @@ export default class MenuEngine {
         );
         State.object.image.BUTTON_TWITTER_TOP.addEventListener(
           "mousedown",
-          goToTwitterHome
+          goToHomepage
         );
         State.object.image.BUTTON_RANKING.addEventListener(
           "mousedown",

@@ -1,9 +1,12 @@
+import { openExternalSite, openModal, t } from "@sokontokoro/mikan";
+
 import globals from "../globals";
 import config from "../resources/config";
 import Engine from "./Engine";
 import MenuEngine from "./MenuEngine";
 import { to } from "../stateMachine";
-import { tracePage, TRACK_PAGES } from "../tracker";
+import { tracePage, TRACK_ACTION, TRACK_PAGES, trackEvent } from "../tracker";
+import { Ids } from "../resources/string";
 
 class CreditEngine extends Engine {
   init() {
@@ -26,8 +29,9 @@ class CreditEngine extends Engine {
 
     textObj.TEXT_LINK_1.addEventListener("mousedown", onClickSoundEffect);
     textObj.TEXT_LINK_2.addEventListener("mousedown", onClickOnJin);
-    textObj.TEXT_LINK_ME.addEventListener("mousedown", onClickSokontokoro);
+    textObj.TEXT_LINK_ME.addEventListener("mousedown", onClickT28);
     textObj.TEXT_LINK_SAN.addEventListener("mousedown", onClickSanzashi);
+    textObj.TEXT_LINK_LOVELIVE.addEventListener("mousedown", onClickLovelive);
     imageObj.BUTTON_BACK_TOP_FROM_CREDIT.addEventListener(
       "mousedown",
       onClickBack
@@ -39,8 +43,9 @@ class CreditEngine extends Engine {
 
     textObj.TEXT_LINK_1.removeEventListener("mousedown", onClickSoundEffect);
     textObj.TEXT_LINK_2.removeEventListener("mousedown", onClickOnJin);
-    textObj.TEXT_LINK_ME.removeEventListener("mousedown", onClickSokontokoro);
+    textObj.TEXT_LINK_ME.removeEventListener("mousedown", onClickT28);
     textObj.TEXT_LINK_SAN.removeEventListener("mousedown", onClickSanzashi);
+    textObj.TEXT_LINK_LOVELIVE.addEventListener("mousedown", onClickLovelive);
     imageObj.BUTTON_BACK_TOP_FROM_CREDIT.removeEventListener(
       "mousedown",
       onClickBack
@@ -55,19 +60,54 @@ function onClickBack() {
 }
 
 function onClickSoundEffect() {
-  window.location.href = config.link.soundeffect;
+  showLinkDialog(config.link.soundeffect, "soundeffect-lab.info");
 }
 
 function onClickOnJin() {
-  window.location.href = config.link.on_jin;
+  showLinkDialog(config.link.on_jin, "on-jin.com");
 }
 
-function onClickSokontokoro() {
-  window.location.href = config.link.sokontokoro;
+function onClickT28() {
+  showLinkDialog(config.link.t28_twitter, "twitter.com");
 }
 
 function onClickSanzashi() {
-  window.location.href = config.link.sanzashi;
+  showLinkDialog(config.link.sanzashi, "twitter.com");
+}
+
+function onClickLovelive() {
+  showLinkDialog(config.link.lovelive, "www.lovelive-anime.jp");
+}
+
+function showLinkDialog(url, displayDomain) {
+  globals.soundObj.SOUND_OK.stop();
+  globals.soundObj.SOUND_OK.play();
+
+  openModal({
+    text: t(Ids.OPEN_EXTERNAL_SITE_INFO, {
+      domain: displayDomain
+    }),
+    actions: [
+      {
+        text: "OK",
+        onClick: () => {
+          globals.soundObj.SOUND_OK.stop();
+          globals.soundObj.SOUND_OK.play();
+
+          trackEvent(TRACK_ACTION.CLICK, { label: "credit_link" });
+          openExternalSite(url);
+        }
+      },
+      {
+        text: "CANCEL",
+        type: "cancel",
+        onClick: () => {
+          globals.soundObj.SOUND_BACK.stop();
+          globals.soundObj.SOUND_BACK.play();
+        }
+      }
+    ]
+  });
 }
 
 export default new CreditEngine();

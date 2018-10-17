@@ -178,20 +178,25 @@ function onClick2Ranking() {
   globals.soundObj.SOUND_OK.play();
 
   openModal({
-    text: t(Ids.OPEN_EXTERNAL_SITE_INFO, {
-      url: "games.sokontokoro-factory.net"
-    }),
+    text: t(Ids.OPEN_RANKING_INFO),
     actions: [
       {
         text: "OK",
         onClick: () => {
+          globals.soundObj.SOUND_OK.stop();
+          globals.soundObj.SOUND_OK.play();
+
           trackEvent(TRACK_ACTION.CLICK, { label: "ranking" });
           openExternalSite(config.link.ranking);
         }
       },
       {
         text: "CANCEL",
-        type: "cancel"
+        type: "cancel",
+        onClick: () => {
+          globals.soundObj.SOUND_BACK.stop();
+          globals.soundObj.SOUND_BACK.play();
+        }
       }
     ]
   });
@@ -229,27 +234,22 @@ function toggleSound() {
 }
 
 function onClickLogin() {
+  globals.soundObj.SOUND_OK.stop();
+  globals.soundObj.SOUND_OK.play();
+
   trackEvent(TRACK_ACTION.CLICK, { label: "login" });
 
   signInAsTwitterUser();
 }
 
 function onClickLogout() {
+  globals.soundObj.SOUND_OK.stop();
+  globals.soundObj.SOUND_OK.play();
+
   trackEvent(TRACK_ACTION.CLICK, { label: "logout" });
 
-  const { soundObj } = globals;
-
-  soundObj.SOUND_OK.play();
-  alertify.confirm(t(Ids.LOGOUT_MESSAGE), function(result) {
-    if (result) {
-      soundObj.SOUND_OK.play();
-
-      signOut().then(() => {
-        location.reload();
-      });
-    } else {
-      soundObj.SOUND_BACK.play();
-    }
+  signOut().then(() => {
+    location.reload();
   });
 }
 
@@ -257,23 +257,26 @@ function onClickHome() {
   globals.soundObj.SOUND_OK.stop();
   globals.soundObj.SOUND_OK.play();
 
-  const url = "http://www.sokontokoro-factory.net/";
-
   openModal({
-    text: t(Ids.OPEN_EXTERNAL_SITE_INFO, {
-      url: "www.sokontokoro-factory.net"
-    }),
+    text: t(Ids.OPEN_HOMEPAGE_INFO),
     actions: [
       {
         text: "OK",
         onClick: () => {
+          globals.soundObj.SOUND_OK.stop();
+          globals.soundObj.SOUND_OK.play();
+
           trackEvent(TRACK_ACTION.CLICK, { label: "home" });
-          openExternalSite(url);
+          openExternalSite(config.link.homepage);
         }
       },
       {
         text: "CANCEL",
-        type: "cancel"
+        type: "cancel",
+        onClick: () => {
+          globals.soundObj.SOUND_BACK.stop();
+          globals.soundObj.SOUND_BACK.play();
+        }
       }
     ]
   });

@@ -117,7 +117,7 @@ export default class MenuEngine {
       State.object.sound.OK.play();
 
       openModal({
-        text: "ホームページににアクセスします！",
+        text: "ホームページを開きます！",
         actions: [
           {
             text: "OK",
@@ -145,12 +145,12 @@ export default class MenuEngine {
       State.object.sound.OK.play();
 
       openModal({
-        text: "ランキングページにアクセスします！",
+        text: "ランキングページを開きます！",
         actions: [
           {
             text: "OK",
             onClick: () => {
-              State.object.sound.BACK.stop();
+              State.object.sound.OK.stop();
               State.object.sound.OK.play();
 
               openExternalSite(LINK.RANKING);
@@ -185,57 +185,15 @@ export default class MenuEngine {
       State.object.sound.OK.stop();
       State.object.sound.OK.play();
 
-      openModal({
-        text: "ランキングシステムにログインします！",
-        actions: [
-          {
-            text: "OK",
-            onClick: () => {
-              State.object.sound.BACK.stop();
-              State.object.sound.OK.play();
-
-              signInAsTwitterUser();
-            }
-          },
-          {
-            text: "CANCEL",
-            type: "cancel",
-            onClick: () => {
-              State.object.sound.BACK.stop();
-              State.object.sound.BACK.play();
-            }
-          }
-        ]
-      });
+      signInAsTwitterUser();
     };
 
     const logout = () => {
       State.object.sound.OK.play();
       State.object.sound.OK.stop();
 
-      openModal({
-        text: "ログアウトします。ランキング登録はログイン中のみ有効です。",
-        actions: [
-          {
-            text: "OK",
-            onClick: () => {
-              State.object.sound.OK.stop();
-              State.object.sound.OK.play();
-
-              signOut().then(() => {
-                location.reload();
-              });
-            }
-          },
-          {
-            text: "CANCEL",
-            type: "cancel",
-            onClick: () => {
-              State.object.sound.BACK.stop();
-              State.object.sound.BACK.play();
-            }
-          }
-        ]
+      signOut().then(() => {
+        location.reload();
       });
     };
 

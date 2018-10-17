@@ -121,11 +121,14 @@ class GameOverEngine extends Engine {
     globals.soundObj.SOUND_OK.play();
 
     openModal({
-      text: t(Ids.OPEN_EXTERNAL_SITE_INFO, { url: "twitter.com" }),
+      text: t(Ids.OPEN_EXTERNAL_SITE_INFO, { domain: "twitter.com" }),
       actions: [
         {
           text: "OK",
           onClick: () => {
+            globals.soundObj.SOUND_OK.stop();
+            globals.soundObj.SOUND_OK.play();
+
             const count = this.passCarCount;
             const chara = globals.playCharacter;
 
@@ -133,14 +136,18 @@ class GameOverEngine extends Engine {
 
             tweetByWebIntent({
               text: getTweetText(count, chara),
-              url: "http://games.sokontokoro-factory.net/honocar/",
+              url: "https://games.sokontokoro-factory.net/honocar/",
               hashtags: ["ほのCar", "そこんところ工房"]
             });
           }
         },
         {
           text: "CANCEL",
-          type: "cancel"
+          type: "cancel",
+          onClick: () => {
+            globals.soundObj.SOUND_BACK.stop();
+            globals.soundObj.SOUND_BACK.play();
+          }
         }
       ]
     });

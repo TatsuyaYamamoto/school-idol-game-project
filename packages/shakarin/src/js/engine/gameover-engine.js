@@ -1,4 +1,4 @@
-import { Playlog } from "@sokontokoro/mikan";
+import { openModal, Playlog, tweetByWebIntent } from "@sokontokoro/mikan";
 import * as alertify from "alertify/lib/alertify";
 
 import State from "../state.js";
@@ -68,10 +68,35 @@ export default class GameoverEngine {
       this.callbackGameState();
     };
     const tweet = () => {
-      window.location.href = `https://twitter.com/intent/tweet
-?hashtags=しゃかりん！+%23そこんところ工房
-&text=${this.getTweetText()}
-&url=http://games.sokontokoro-factory.net/shakarin/`;
+      State.object.sound.OK.stop();
+      State.object.sound.OK.play();
+
+      openModal({
+        text: "外部サイト(twitter.com)にアクセスします！",
+        actions: [
+          {
+            text: "OK",
+            onClick: () => {
+              State.object.sound.OK.stop();
+              State.object.sound.OK.play();
+
+              tweetByWebIntent({
+                text: this.getTweetText(),
+                url: "https://games.sokontokoro-factory.net/shakarin/",
+                hashtags: ["しゃかりん", "そこんところ工房"]
+              });
+            }
+          },
+          {
+            text: "CANCEL",
+            type: "cancel",
+            onClick: () => {
+              State.object.sound.BACK.stop();
+              State.object.sound.BACK.play();
+            }
+          }
+        ]
+      });
     };
 
     return {

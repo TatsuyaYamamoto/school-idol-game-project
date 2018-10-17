@@ -86,18 +86,21 @@ export default class GameoverEngine {
       this.callbackGameState();
     };
     const tweet = () => {
+      State.object.sound.OK.stop();
+      State.object.sound.OK.play();
+
       openModal({
         text: "外部サイト(twitter.com)にアクセスします！",
         actions: [
           {
             text: "OK",
             onClick: () => {
-              State.object.sound.BACK.stop();
+              State.object.sound.OK.stop();
               State.object.sound.OK.play();
 
               tweetByWebIntent({
                 text: GameoverEngine.getTweetText(),
-                url: "http://games.sokontokoro-factory.net/maruten/",
+                url: "https://games.sokontokoro-factory.net/maruten/",
                 hashtags: ["まるてん", "そこんところ工房"]
               });
             }

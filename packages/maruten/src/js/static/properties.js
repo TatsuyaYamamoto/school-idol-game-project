@@ -497,7 +497,7 @@ export default {
       family: "Arial",
       align: "center",
       lineHeight: 0.07,
-      text: "プログラム、音楽、思いつき：T28\rhttp://sokontokoro-factory.net"
+      text: "プログラム、音楽、思いつき：T28\rhttps://twitter.com/t28_tatsuya"
     },
     LINK_SANZASHI: {
       ratioX: 0.5,

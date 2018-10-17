@@ -1,8 +1,12 @@
-const apiServerOrigin =
+const wwwAuthority =
   process.env.NODE_ENV === "production"
-    ? "//api.sokontokoro-factory.net"
-    : "//api-dev.sokontokoro-factory.net";
-const contextPath = "/lovelive";
+    ? "//www.sokontokoro-factory.net"
+    : "//www-dev.sokontokoro-factory.net";
+
+const gamesAuthority =
+  process.env.NODE_ENV === "production"
+    ? "//games.sokontokoro-factory.net"
+    : "//games-dev.sokontokoro-factory.net";
 
 export const CHARACTER = {
   HANAMARU: "hanamaru",
@@ -10,13 +14,11 @@ export const CHARACTER = {
 };
 
 export const LINK = {
-  RANKING:
-    process.env.NODE_ENV === "production"
-      ? "//games.sokontokoro-factory.net/#/ranking/maruten"
-      : "//games-dev.sokontokoro-factory.net/#/ranking/maruten",
-  SOKONTOKORO_HOME: "https://www.sokontokoro-factory.net",
+  RANKING: `${gamesAuthority}/#/ranking/maruten`,
+  SOKONTOKORO_HOME: `${wwwAuthority}/`,
   T28_TWITTER: "https://twitter.com/t28_tatsuya",
   SANZASHI_TWITTER: "https://twitter.com/xxsanzashixx",
   SOUNDEFFECT_HOME: "http://soundeffect-lab.info/",
-  ONJIN_HOME: "http://on-jin.com/"
+  ONJIN_HOME: "http://on-jin.com/",
+  LOVELIVE: "http://lovelive-anime.jp"
 };
