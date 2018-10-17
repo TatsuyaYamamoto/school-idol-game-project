@@ -140,11 +140,13 @@ export function vibrate(patternMillis: number | number[]) {
   }
 }
 
-export function getCurrentUrl(): string {
+export function getCurrentUrl(
+  option: { path: boolean; hash: boolean } = { path: true, hash: true }
+): string {
   const protocol = location.protocol;
   const host = location.hostname;
-  const path = location.pathname;
-  const hash = location.hash;
+  const path = option.path ? location.pathname : "";
+  const hash = option.hash ? location.hash : "";
   const port =
     !location.port || location.port === "80" ? `` : `:${location.port}`;
 
@@ -187,26 +189,26 @@ export function tweetByWebIntent(params: WebIntentParams, _popup = false) {
   openExternalSite(url);
 }
 
-let ExternalSiteWindowRef: Window | null = null;
-
+/**
+ * Open provided URL with new window.
+ * if denied to open new window; popup permission, security error..., try change window#location.
+ *
+ * @param url
+ */
 export function openExternalSite(url: string) {
-  const target = "sokontokoro-factory.net_external_site";
-  ExternalSiteWindowRef = window.open(url, target);
-
   logger.debug(`open external site; ${url}`);
+  window.open(url);
 
   setTimeout(() => {
-    const opened =
-      !window.focus() ||
-      (ExternalSiteWindowRef && ExternalSiteWindowRef.focus());
-
-    if (opened) {
+    if (!window.document.hasFocus()) {
+      // success to open new window
       return;
     }
 
-    logger.error(
+    logger.info(
       `fail to open with new window object. change location to; ${url}`
     );
+
     window.location.href = url;
   }, 500);
 }
