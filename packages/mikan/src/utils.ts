@@ -154,16 +154,25 @@ export function getCurrentUrl(
 }
 
 /**
+ * @see https://support.google.com/analytics/answer/1033863?hl=ja
  * @see https://support.google.com/urchin/answer/28307?hl=en
  */
 export interface UrchinTrackingModuleParams {
-  // どこから？
+  // プロパティにトラフィックを誘導した広告主、サイト、出版物、その他を識別します（Google、ニュースレター 4、屋外広告など）
+  // 例) summer-mailer: サマーセール用のメール キャンペーン経由のトラフィックを識別
   source: string;
-  // どんな種類の？
-  medium?: string;
-  //
+  // 広告メディアやマーケティング メディアを識別します（CPC 広告、バナー、メール ニュースレターなど）。
+  // 例) email: メール キャンペーンとアプリ内キャンペーン経由のトラフィックを識別
+  medium: string;
+  // 商品のキャンペーン名、テーマ、プロモーション コードなどを指定します。
+  // 例) summer-sale: キャンペーン全体のトラフィックを識別
+  campaign: string;
+
+  // 有料検索向けキーワードを特定します。検索広告キャンペーンにタグを設定する場合は、utm_term を使用してキーワードを指定することができます。
+  term?: string;
+  // 似通ったコンテンツや同じ広告内のリンクを区別するために使用します。
+  // たとえば、メールのメッセージに行動を促すフレーズのリンクが 2 つある場合は、utm_content を使用して別々の値を設定し、どちらが効果的か判断できます。
   content?: string;
-  campaign?: string;
 }
 
 /**
@@ -184,7 +193,7 @@ const TWITTER_INTENT_ENDPOINT = "https://twitter.com/intent/tweet";
  */
 export function tweetByWebIntent(
   params: WebIntentParams,
-  utm: UrchinTrackingModuleParams = { source: "twitter" }
+  utm: UrchinTrackingModuleParams
 ) {
   const queries: string[] = [];
 
@@ -204,11 +213,11 @@ export function tweetByWebIntent(
     }
 
     if (utm.content) {
-      url += `&content=${utm.content}`;
+      url += `&utm_content=${utm.content}`;
     }
 
     if (utm.campaign) {
-      url += `&campaign=${utm.campaign}`;
+      url += `&utm_campaign=${utm.campaign}`;
     }
 
     queries.push(`url=${encodeURIComponent(url)}`);

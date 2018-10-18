@@ -100,11 +100,19 @@ export default class GameoverEngine {
               State.object.sound.OK.stop();
               State.object.sound.OK.play();
 
-              tweetByWebIntent({
-                text: this.getTweetText(),
-                url: "https://games.sokontokoro-factory.net/shakarin/",
-                hashtags: ["しゃかりん", "そこんところ工房"]
-              });
+              tweetByWebIntent(
+                {
+                  text: this.getTweetText(),
+                  url: "https://games.sokontokoro-factory.net/shakarin/",
+                  hashtags: ["しゃかりん", "そこんところ工房"]
+                },
+                {
+                  source: "twitter",
+                  medium: "result-share",
+                  campaign: "none",
+                  content: `${State.loginUser.uid}${Date.now()}`
+                }
+              );
             }
           },
           {

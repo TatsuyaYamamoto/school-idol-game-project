@@ -139,11 +139,19 @@ class GameOverEngine extends Engine {
 
             trackEvent(TRACK_ACTION.CLICK, { label: "tweet" });
 
-            tweetByWebIntent({
-              text: getTweetText(count, chara),
-              url: "https://games.sokontokoro-factory.net/honocar/",
-              hashtags: ["ほのCar", "そこんところ工房"]
-            });
+            tweetByWebIntent(
+              {
+                text: getTweetText(count, chara),
+                url: "https://games.sokontokoro-factory.net/honocar/",
+                hashtags: ["ほのCar", "そこんところ工房"]
+              },
+              {
+                source: "twitter",
+                medium: "result-share",
+                campaign: "none",
+                content: `${globals.loginUser.uid}${Date.now()}`
+              }
+            );
           }
         },
         {
