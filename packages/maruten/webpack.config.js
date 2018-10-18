@@ -3,12 +3,13 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
+const config = require("../../package.json").config.sokontokoro;
 const isProduction = process.env.NODE_ENV === "production";
 
 const htmlParams = {
   title: "DEV まるてん!",
   noIndex: true,
-  trackingCode: "UA-64858827-8",
+  trackingCode: config.trackingCode.dev,
   description: "まるがよしこを堕天させるゲームです。(?)2015そこんところ工房",
   keyword:
     "ラブライブ！サンシャイン!!,LoveLive！,国木田花丸, はなまる, 津島善子, よしこ, ヨハネ,ゲーム,フリゲ,フリーゲーム",
@@ -20,7 +21,7 @@ const htmlParams = {
 isProduction &&
   Object.assign(htmlParams, {
     title: "まるてん！ver.1.1 -そこんところ工房-",
-    trackingCode: "UA-64858827-5",
+    trackingCode: config.trackingCode.pro,
     noIndex: false
   });
 

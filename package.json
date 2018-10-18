@@ -15,6 +15,12 @@
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
+    },
+    "sokontokoro": {
+      "trackingCode": {
+        "dev": "UA-127664761-2",
+        "pro": "UA-127664761-1"
+      }
     }
   },
   "workspaces": [

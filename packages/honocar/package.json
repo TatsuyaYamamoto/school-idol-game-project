@@ -12,14 +12,6 @@
     "build": "npm run clean && webpack",
     "build:pro": "npm run clean && NODE_ENV=production webpack"
   },
-  "config": {
-    "sokontokoro": {
-      "trackingCode": {
-        "dev": "UA-64858827-8",
-        "pro": "UA-64858827-2"
-      }
-    }
-  },
   "devDependencies": {
     "@babel/core": "^7.0.1",
     "@babel/preset-env": "^7.0.0",

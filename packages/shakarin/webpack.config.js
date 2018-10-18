@@ -3,12 +3,13 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
+const config = require("../../package.json").config.sokontokoro;
 const isProduction = process.env.NODE_ENV === "production";
 
 const htmlParams = {
   title: "しゃかりん！ -DEVELOPMENT-",
   noIndex: true,
-  trackingCode: "UA-64858827-8",
+  trackingCode: config.trackingCode.dev,
   description:
     "ひたすら凛ちゃんがマラカスをしゃかしゃかするゲームです。(?)2015そこんところ工房",
   ogpUrl: "https://games.sokontokoro-factory.net/shakarin/",
@@ -19,7 +20,7 @@ const htmlParams = {
 isProduction &&
   Object.assign(htmlParams, {
     title: "しゃかりん！ -そこんところ工房-",
-    trackingCode: "UA-64858827-3",
+    trackingCode: config.trackingCode.pro,
     noIndex: false
   });
 
