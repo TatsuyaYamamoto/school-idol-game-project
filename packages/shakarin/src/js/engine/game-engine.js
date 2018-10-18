@@ -1,7 +1,11 @@
+import { tracePage } from "@sokontokoro/mikan";
+
 import State from "../state.js";
-import { config } from "../config.js";
 import Util from "../util.js";
 import Player from "../player.js";
+
+import { config } from "../config.js";
+import { TRACK_PAGES } from "../config";
 
 export default class GameEngine {
   constructor(tick, callbackState) {
@@ -22,6 +26,8 @@ export default class GameEngine {
 
   //ゲーム初期化-----------------------------------------
   start() {
+    tracePage(TRACK_PAGES.GAME);
+
     this.allButtonDisable();
     this.handleButtonEventListener().add();
     this.handleKeyDownEventListener().add();

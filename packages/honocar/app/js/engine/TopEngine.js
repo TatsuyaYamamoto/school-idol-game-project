@@ -6,7 +6,8 @@ import {
   pointerdown,
   openModal,
   P2PClient,
-  t
+  t,
+  tracePage
 } from "@sokontokoro/mikan";
 import { parse } from "query-string";
 
@@ -18,7 +19,7 @@ import OnlineGameEngine from "./OnlineGameEngine";
 import { trySyncGameStart } from "../common";
 import { Ids } from "../resources/string";
 import objectProps from "../resources/object-props";
-import { tracePage, TRACK_PAGES } from "../tracker";
+import { TRACK_PAGES } from "../resources/config";
 
 const logger = getLogger("top-engine");
 

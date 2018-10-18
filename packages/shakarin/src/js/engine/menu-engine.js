@@ -2,12 +2,15 @@ import {
   openExternalSite,
   openModal,
   signInAsTwitterUser,
-  signOut
+  signOut,
+  tracePage,
+  trackEvent
 } from "@sokontokoro/mikan";
 
 import State from "../state.js";
 import Util from "../util.js";
 import { config } from "../config.js";
+import { TRACK_PAGES, TRACK_ACTION } from "../config";
 
 export default class MenuEngine {
   constructor(
@@ -25,6 +28,8 @@ export default class MenuEngine {
   }
 
   start() {
+    tracePage(TRACK_PAGES.MENU);
+
     let targetChildren = [State.object.image.BACKGROUND];
 
     if (!State.loginUser.isAnonymous) {
@@ -97,6 +102,8 @@ export default class MenuEngine {
       State.object.sound.OK.stop();
       State.object.sound.OK.play();
 
+      trackEvent(TRACK_ACTION.CLICK, { label: "home" });
+
       openModal({
         text: "ホームページを開きます！",
         actions: [
@@ -124,6 +131,8 @@ export default class MenuEngine {
     const goToRanking = () => {
       State.object.sound.OK.stop();
       State.object.sound.OK.play();
+
+      trackEvent(TRACK_ACTION.CLICK, { label: "ranking" });
 
       openModal({
         text: "ランキングページを開きます！",
@@ -156,9 +165,13 @@ export default class MenuEngine {
       if (State.isSoundMute) {
         State.object.ss.BUTTON_SOUND_SS.gotoAndPlay("on");
         Util.soundTurnOn();
+
+        trackEvent(TRACK_ACTION.CLICK, { label: "sound_on" });
       } else {
         State.object.ss.BUTTON_SOUND_SS.gotoAndPlay("off");
         Util.soundTurnOff();
+
+        trackEvent(TRACK_ACTION.CLICK, { label: "sound_off" });
       }
     };
 
@@ -166,12 +179,16 @@ export default class MenuEngine {
       State.object.sound.OK.stop();
       State.object.sound.OK.play();
 
+      trackEvent(TRACK_ACTION.CLICK, { label: "login" });
+
       signInAsTwitterUser();
     };
 
     const logout = () => {
       State.object.sound.OK.stop();
       State.object.sound.OK.play();
+
+      trackEvent(TRACK_ACTION.CLICK, { label: "logout" });
 
       signOut().then(() => {
         location.reload();

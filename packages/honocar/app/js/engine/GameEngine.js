@@ -1,15 +1,17 @@
-import { t } from "@sokontokoro/mikan";
+import { t, tracePage } from "@sokontokoro/mikan";
 
 import Player from "../character/Player";
 import Car from "../character/Car";
-import globals from "../globals";
-import properties from "../resources/object-props";
-import config from "../resources/config";
+
 import Engine from "./Engine";
 import GameOverEngine from "./GameOverEngine";
 import { to } from "../stateMachine";
+
+import globals from "../globals";
+
+import properties from "../resources/object-props";
 import { Ids } from "../resources/string";
-import { tracePage, TRACK_PAGES } from "../tracker";
+import { default as config, TRACK_PAGES } from "../resources/config";
 
 let cars = [];
 let gameFrame = 0;

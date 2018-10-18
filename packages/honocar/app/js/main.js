@@ -12,12 +12,11 @@ import {
   isSupportTouchEvents,
   pointerdown,
   t,
-  initAuth
+  initAuth,
+  tracePage
 } from "@sokontokoro/mikan";
 
 import { to } from "./stateMachine";
-import config from "./resources/config";
-import { default as stringResources, Ids } from "./resources/string";
 import { initGameScreenScale } from "./common";
 import {
   loadContent,
@@ -25,9 +24,12 @@ import {
   soundTurnOff,
   soundTurnOn
 } from "./contentsLoader";
-import globals from "./globals";
 import TopEngine from "./engine/TopEngine";
-import { tracePage, TRACK_PAGES } from "./tracker";
+
+import globals from "./globals";
+
+import { default as config, TRACK_PAGES } from "./resources/config";
+import { default as stringResources, Ids } from "./resources/string";
 
 function init() {
   tracePage(TRACK_PAGES.INDEX);

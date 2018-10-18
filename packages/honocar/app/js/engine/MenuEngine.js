@@ -1,10 +1,11 @@
-import * as alertify from "alertify/lib/alertify";
 import {
   openModal,
   t,
   openExternalSite,
   signInAsTwitterUser,
-  signOut
+  signOut,
+  tracePage,
+  trackEvent
 } from "@sokontokoro/mikan";
 
 import globals from "../globals";
@@ -15,9 +16,13 @@ import HowToPlayEngine from "./HowToPlayEngine";
 import GameEngine from "./GameEngine";
 import { to } from "../stateMachine";
 import SelectCharaEngine from "./SelectCharaEngine";
+
 import { Ids } from "../resources/string";
-import { tracePage, trackEvent, TRACK_ACTION, TRACK_PAGES } from "../tracker";
-import config from "../resources/config";
+import {
+  default as config,
+  TRACK_ACTION,
+  TRACK_PAGES
+} from "../resources/config";
 
 class MenuEngine extends Engine {
   constructor(props) {

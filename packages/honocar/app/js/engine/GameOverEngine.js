@@ -4,7 +4,8 @@ import {
   tweetByWebIntent,
   getLogger,
   openModal,
-  Playlog
+  Playlog,
+  tracePage
 } from "@sokontokoro/mikan";
 
 import globals from "../globals";
@@ -13,8 +14,9 @@ import TopEngine from "./TopEngine";
 import GameEngine from "./GameEngine";
 import { to } from "../stateMachine";
 import { getTweetText } from "../common";
+
 import { Ids } from "../resources/string";
-import { TRACK_ACTION, trackEvent } from "../tracker";
+import { TRACK_ACTION, TRACK_PAGES } from "../resources/config";
 
 const logger = getLogger("gameover");
 
@@ -27,6 +29,8 @@ class GameOverEngine extends Engine {
 
   init(params) {
     super.init();
+
+    tracePage(TRACK_PAGES.GAMEOVER);
 
     const {
       BUTTON_BACK_TOP,

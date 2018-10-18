@@ -5,6 +5,7 @@ import manifest from "../static/manifest.js";
 import BrandingAnimation from "../branding-animation.js";
 
 import { DEBUG } from "../static/config.js";
+import { trackTiming } from "@sokontokoro/mikan";
 
 export default class PreloadEngine {
   constructor(stateMachine) {
@@ -18,6 +19,8 @@ export default class PreloadEngine {
    * ContentStateのエントリーメソッド
    */
   start() {
+    const start = Date.now();
+
     const loadImage = PreloadEngine.getLoadImage();
     const loadText = PreloadEngine.getLoadText();
     const brandingAnimation = new BrandingAnimation({
@@ -55,6 +58,8 @@ export default class PreloadEngine {
      * ロード完了イベント
      */
     this.queue.on("complete", () => {
+      trackTiming("load", Date.now() - start, { category: "assets" });
+
       // すべてのコンテンツに設定を付与する
       Object.keys(properties.spritesheet).forEach(key => {
         const prop = properties.spritesheet[key];

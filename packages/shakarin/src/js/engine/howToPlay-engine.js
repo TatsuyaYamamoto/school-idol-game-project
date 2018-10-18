@@ -1,6 +1,10 @@
+import { tracePage } from "@sokontokoro/mikan";
+
 import State from "../state.js";
 import Util from "../util.js";
 import GameEngine from "./game-engine.js";
+
+import { TRACK_PAGES } from "../config";
 
 export default class HowToPlayEngine extends GameEngine {
   constructor(tick, callbackState) {
@@ -10,6 +14,9 @@ export default class HowToPlayEngine extends GameEngine {
   // @Override
   start() {
     super.allButtonDisable();
+
+    tracePage(TRACK_PAGES.HOW_TO_PLAY);
+
     this.handleLinkButtonEventListener().add();
     this.handleButtonEventListener().add();
     this.handleKeyDownEventListener().add();

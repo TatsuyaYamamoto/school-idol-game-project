@@ -1,12 +1,13 @@
-import { t } from "@sokontokoro/mikan";
+import { t, tracePage } from "@sokontokoro/mikan";
 
 import globals from "../globals";
 import Player from "../character/Player";
 import { to } from "../stateMachine";
 import Engine from "./Engine";
 import MenuEngine from "./MenuEngine";
+
 import { Ids } from "../resources/string";
-import { tracePage, TRACK_PAGES } from "../tracker";
+import { TRACK_PAGES } from "../resources/config";
 
 //ゲーム初期化-----------------------------------------
 

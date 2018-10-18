@@ -2,12 +2,14 @@ import {
   openModal,
   openExternalSite,
   signInAsTwitterUser,
-  signOut
+  signOut,
+  trackEvent
 } from "@sokontokoro/mikan";
 
 import State from "../state.js";
 import Util from "../util.js";
 import { LINK, CHARACTER } from "../static/constant.js";
+import { TRACK_ACTION } from "../static/config.js";
 
 export default class MenuEngine {
   constructor(stateMachine) {
@@ -116,6 +118,8 @@ export default class MenuEngine {
       State.object.sound.OK.stop();
       State.object.sound.OK.play();
 
+      trackEvent(TRACK_ACTION.CLICK, { label: "home" });
+
       openModal({
         text: "ホームページを開きます！",
         actions: [
@@ -143,6 +147,8 @@ export default class MenuEngine {
     const goToRanking = () => {
       State.object.sound.OK.stop();
       State.object.sound.OK.play();
+
+      trackEvent(TRACK_ACTION.CLICK, { label: "ranking" });
 
       openModal({
         text: "ランキングページを開きます！",
@@ -175,9 +181,13 @@ export default class MenuEngine {
       if (State.isSoundMute) {
         State.object.spritesheet.BUTTON_SOUND_SPRITESHEET.gotoAndPlay("on");
         Util.soundTurnOn();
+
+        trackEvent(TRACK_ACTION.CLICK, { label: "sound_on" });
       } else {
         State.object.spritesheet.BUTTON_SOUND_SPRITESHEET.gotoAndPlay("off");
         Util.soundTurnOff();
+
+        trackEvent(TRACK_ACTION.CLICK, { label: "sound_off" });
       }
     };
 
@@ -186,6 +196,8 @@ export default class MenuEngine {
       State.object.sound.OK.play();
 
       signInAsTwitterUser();
+
+      trackEvent(TRACK_ACTION.CLICK, { label: "login" });
     };
 
     const logout = () => {
@@ -195,6 +207,8 @@ export default class MenuEngine {
       signOut().then(() => {
         location.reload();
       });
+
+      trackEvent(TRACK_ACTION.CLICK, { label: "logout" });
     };
 
     const changeCharaAndRstart = () => {
@@ -212,6 +226,8 @@ export default class MenuEngine {
           State.playCharacter = CHARACTER.HANAMARU;
           break;
       }
+
+      trackEvent(TRACK_ACTION.SELECT_CHARA, { label: State.playCharacter });
 
       this.callbackTopState();
     };

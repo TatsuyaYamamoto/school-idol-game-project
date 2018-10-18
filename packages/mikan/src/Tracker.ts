@@ -79,7 +79,7 @@ export function trackTiming(
   name: string,
   value: number,
   optionalParams: {
-    category?: string;
+    category?: string | "assets";
     label?: string;
   } = {}
 ) {

@@ -1,9 +1,16 @@
 import * as alertify from "alertify/lib/alertify";
-import { openModal, tweetByWebIntent, Playlog } from "@sokontokoro/mikan";
+import {
+  openModal,
+  tweetByWebIntent,
+  Playlog,
+  trackEvent,
+  tracePage
+} from "@sokontokoro/mikan";
 
 import State from "../state.js";
 import Util from "../util.js";
 import { CHARACTER } from "../static/constant.js";
+import { TRACK_ACTION, TRACK_PAGES } from "shakarin/src/js/config";
 
 export default class GameoverEngine {
   constructor(tick, callbackMenuState, callbackGameState) {
@@ -18,6 +25,12 @@ export default class GameoverEngine {
     // プレイログ、ランキング登録
     const point = State.gameScore;
     const member = State.playCharacter;
+
+    tracePage(TRACK_PAGES.GAMEOVER);
+
+    trackEvent(TRACK_ACTION.GAMEOVER, {
+      value: State.gameScore
+    });
 
     Playlog.save("maruten", member, point).then(() => {
       if (State.loginUser.isAnonymous) {
@@ -75,6 +88,8 @@ export default class GameoverEngine {
       State.object.sound.BACK.play();
 
       this.callbackMenuState();
+
+      trackEvent(TRACK_ACTION.CLICK, { label: "back_from_gameover" });
     };
     const restart = () => {
       this.tick.remove();
@@ -84,10 +99,14 @@ export default class GameoverEngine {
       State.object.sound.BACK.play();
 
       this.callbackGameState();
+
+      trackEvent(TRACK_ACTION.CLICK, { label: "restart" });
     };
     const tweet = () => {
       State.object.sound.OK.stop();
       State.object.sound.OK.play();
+
+      trackEvent(TRACK_ACTION.CLICK, { label: "tweet" });
 
       openModal({
         text: "外部サイト(twitter.com)にアクセスします！",

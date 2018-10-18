@@ -11,6 +11,8 @@ import Item from "../character/item.js";
 import Feather from "../character/feather.js";
 import ThrowAction from "./throwAction.js";
 import Timer from "../timer.js";
+import { tracePage } from "@sokontokoro/mikan";
+import { TRACK_PAGES } from "../static/config";
 
 export default class GameEngine {
   constructor(tick, callbackState) {
@@ -39,6 +41,8 @@ export default class GameEngine {
 
   //ゲーム初期化-----------------------------------------
   start() {
+    tracePage(TRACK_PAGES.GAME);
+
     Util.removeAllChildren();
     Util.addChildren([
       State.object.image.BACKGROUND,

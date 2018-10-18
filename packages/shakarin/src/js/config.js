@@ -31,6 +31,25 @@ export var config = {
   }
 };
 
+// tracking ---------------------------------
+const basePath = `/shakarin`;
+
+export const TRACK_PAGES = {
+  INDEX: `${basePath}`,
+  TOP: `${basePath}#top`,
+  MENU: `${basePath}#menu`,
+  HOW_TO_PLAY: `${basePath}#how_to_play`,
+  CREDIT: `${basePath}#credit`,
+  GAME: `${basePath}#game`,
+  GAMEOVER: `${basePath}#GAMEOVER`
+};
+
+export const TRACK_ACTION = {
+  CLICK: "click",
+  SELECT_CHARA: "select_chara",
+  GAMEOVER: "gameover"
+};
+
 //定数----------------------------------------
 
 export var properties = {

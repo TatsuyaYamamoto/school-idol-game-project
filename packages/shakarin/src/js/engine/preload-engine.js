@@ -1,9 +1,8 @@
-import PreloadEngine from "./preload-engine";
-
 import State from "../state.js";
 import loadImageBase64 from "../imageBase64/loadImageBase64.js";
 import { config, properties, manifest } from "../config.js";
 import BrandingAnimation from "../branding-animation.js";
+import { trackTiming } from "@sokontokoro/mikan";
 
 export default class PreloadState {
   constructor(tick, callback) {
@@ -16,6 +15,8 @@ export default class PreloadState {
    * ContentStateのエントリーメソッド
    */
   start() {
+    const start = Date.now();
+
     const loadImage = PreloadState.getLoadImage();
     const loadText = PreloadState.getLoadText();
     const brandingAnimation = new BrandingAnimation({
@@ -53,6 +54,8 @@ export default class PreloadState {
      * ロード完了イベント
      */
     this.queue.on("complete", () => {
+      trackTiming("load", Date.now() - start, { category: "assets" });
+
       // すべてのコンテンツに設定を付与する
       Object.keys(properties.ss).forEach(key => {
         const prop = properties.ss[key];

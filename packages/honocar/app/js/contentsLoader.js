@@ -1,10 +1,10 @@
-import { t } from "@sokontokoro/mikan";
+import { t, trackTiming } from "@sokontokoro/mikan";
+
+import globals from "./globals";
 
 import manifest from "./resources/manifest";
 import properties from "./resources/object-props";
-import globals from "./globals";
 import { Ids } from "./resources/string";
-import { trackTiming } from "./tracker";
 
 function loadAnimation() {
   const q = new createjs.LoadQueue();
@@ -58,7 +58,7 @@ export function loadContent() {
 
         createjs.Ticker.removeEventListener("tick", update);
 
-        trackTiming(Date.now() - start);
+        trackTiming("load", Date.now() - start, { category: "assets" });
         resolve();
       });
     });

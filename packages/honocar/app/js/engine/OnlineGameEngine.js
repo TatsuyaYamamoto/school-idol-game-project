@@ -1,4 +1,4 @@
-import { P2PClient, getLogger } from "@sokontokoro/mikan";
+import { P2PClient, getLogger, tracePage } from "@sokontokoro/mikan";
 
 import Player from "../character/Player";
 import globals from "../globals";
@@ -8,7 +8,8 @@ import { checkButton, checkDistance, passCountText } from "./GameEngine";
 import OnlineGameOverEngine from "./OnlineGameOverEngine";
 import { to } from "../stateMachine";
 import Car from "../character/Car";
-import { tracePage, TRACK_PAGES } from "../tracker";
+
+import { TRACK_PAGES } from "../resources/config";
 
 const MAX_WAIT_TIME = 150;
 const logger = getLogger("online-game-engine");

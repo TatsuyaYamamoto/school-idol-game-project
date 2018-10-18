@@ -1,11 +1,17 @@
-import { openExternalSite, openModal, t } from "@sokontokoro/mikan";
+import {
+  openExternalSite,
+  openModal,
+  t,
+  tracePage,
+  trackEvent
+} from "@sokontokoro/mikan";
 
 import globals from "../globals";
 import config from "../resources/config";
 import Engine from "./Engine";
 import MenuEngine from "./MenuEngine";
 import { to } from "../stateMachine";
-import { tracePage, TRACK_ACTION, TRACK_PAGES, trackEvent } from "../tracker";
+import { TRACK_PAGES, TRACK_ACTION } from "../resources/config";
 import { Ids } from "../resources/string";
 
 class CreditEngine extends Engine {

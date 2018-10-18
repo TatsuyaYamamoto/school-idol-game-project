@@ -1,8 +1,16 @@
-import { openModal, Playlog, tweetByWebIntent } from "@sokontokoro/mikan";
 import * as alertify from "alertify/lib/alertify";
+
+import {
+  openModal,
+  Playlog,
+  tracePage,
+  trackEvent,
+  tweetByWebIntent
+} from "@sokontokoro/mikan";
 
 import State from "../state.js";
 import Util from "../util.js";
+import { TRACK_PAGES, TRACK_ACTION } from "../config";
 
 export default class GameoverEngine {
   constructor(tick, player, callbackMenuState, callbackGameState) {
@@ -15,6 +23,12 @@ export default class GameoverEngine {
   }
 
   start() {
+    tracePage(TRACK_PAGES.GAMEOVER);
+
+    trackEvent(TRACK_ACTION.GAMEOVER, {
+      value: State.gameScore
+    });
+
     Playlog.save("shakarin", "rin", State.gameScore).then(() => {
       if (!State.loginUser.isAnonymous) {
         alertify.log("ランキングシステム　通信完了！", "success", 3000);
@@ -57,6 +71,8 @@ export default class GameoverEngine {
       State.object.sound.BACK.play();
 
       this.callbackMenuState();
+
+      trackEvent(TRACK_ACTION.CLICK, { label: "back_from_gameover" });
     };
     const restart = () => {
       this.tick.remove();
@@ -66,10 +82,14 @@ export default class GameoverEngine {
       State.object.sound.BACK.play();
 
       this.callbackGameState();
+
+      trackEvent(TRACK_ACTION.CLICK, { label: "restart" });
     };
     const tweet = () => {
       State.object.sound.OK.stop();
       State.object.sound.OK.play();
+
+      trackEvent(TRACK_ACTION.CLICK, { label: "tweet" });
 
       openModal({
         text: "外部サイト(twitter.com)にアクセスします！",

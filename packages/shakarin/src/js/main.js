@@ -4,15 +4,18 @@ import "alertify/themes/alertify.default.css";
 import "createjs/builds/1.0.0/createjs.js";
 import * as alertify from "alertify/lib/alertify";
 
-import { initAuth } from "@sokontokoro/mikan";
+import { initAuth, tracePage } from "@sokontokoro/mikan";
 
+import StateMachine from "./stateMachine.js";
+
+import Util from "./util.js";
 import State from "./state.js";
 import { config } from "./config.js";
-import StateMachine from "./stateMachine.js";
-import Util from "./util.js";
-import properties from "maruten/src/js/static/properties";
+import { TRACK_PAGES } from "./config";
 
 window.onload = function() {
+  tracePage(TRACK_PAGES.INDEX);
+
   /*---------- ログインチェック ----------*/
   // 完了後にコンテンツオブジェクトのセットアップを開始する
   State.firebaseInitPromise = initAuth().then(user => {

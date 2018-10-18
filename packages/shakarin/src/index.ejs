@@ -42,6 +42,8 @@
         dataLayer.push(arguments);
       }
 
+      window.__TRACKING_CODE__ = '<%= trackingCode %>'
+
       gtag('js', new Date());
       gtag('config', '<%= trackingCode %>', {'send_page_view': false});
     </script>

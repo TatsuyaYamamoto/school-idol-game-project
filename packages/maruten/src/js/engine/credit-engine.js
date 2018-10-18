@@ -1,7 +1,14 @@
+import {
+  openExternalSite,
+  openModal,
+  tracePage,
+  trackEvent
+} from "@sokontokoro/mikan";
+
 import State from "../state.js";
 import Util from "../util.js";
 import { LINK } from "../static/constant.js";
-import { openExternalSite, openModal, t } from "@sokontokoro/mikan";
+import { TRACK_PAGES, TRACK_ACTION } from "../static/config";
 
 export default class CreditEngine {
   constructor(callbackMenuGameState) {
@@ -11,6 +18,8 @@ export default class CreditEngine {
   }
 
   start() {
+    tracePage(TRACK_PAGES.CREDIT);
+
     Util.addChildren([
       State.object.image.BACKGROUND,
       State.object.image.BUTTON_BACK_MENU_FROM_CREDIT,
@@ -98,6 +107,8 @@ export default class CreditEngine {
   static showLinkDialog(url, displayDomain) {
     State.object.sound.OK.stop();
     State.object.sound.OK.play();
+
+    trackEvent(TRACK_ACTION.CLICK, { label: "credit_link" });
 
     openModal({
       text: `外部サイト(${displayDomain})にアクセスします！`,

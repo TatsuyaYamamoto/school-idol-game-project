@@ -1,4 +1,11 @@
-import { closeModal, openModal, P2PClient, t } from "@sokontokoro/mikan";
+import {
+  closeModal,
+  openModal,
+  P2PClient,
+  t,
+  tracePage,
+  trackEvent
+} from "@sokontokoro/mikan";
 
 import Engine from "./Engine";
 import globals from "../globals";
@@ -7,8 +14,9 @@ import { trySyncGameStart } from "../common";
 import TopEngine from "./TopEngine";
 import OnlineGameEngine from "./OnlineGameEngine";
 import { to } from "../stateMachine";
+
 import { Ids } from "../resources/string";
-import { TRACK_ACTION, trackEvent } from "../tracker";
+import { TRACK_ACTION, TRACK_PAGES } from "../resources/config";
 
 class OnlineGameOverEngine extends Engine {
   init(params) {
@@ -24,6 +32,7 @@ class OnlineGameOverEngine extends Engine {
       textObj
     } = globals;
 
+    tracePage(TRACK_PAGES.GAMEOVER_ONLINE);
     trackEvent(TRACK_ACTION.GAMEOVER, {
       label: "multi",
       value: params.passCarCount

@@ -154,7 +154,21 @@ export function getCurrentUrl(
 }
 
 /**
+ * @see https://support.google.com/urchin/answer/28307?hl=en
+ */
+export interface UrchinTrackingModuleParams {
+  // どこから？
+  source: string;
+  // どんな種類の？
+  medium?: string;
+  //
+  content?: string;
+  campaign?: string;
+}
+
+/**
  * @see https://dev.twitter.com/web/tweet-button/web-intent
+ * @see https://ga-dev-tools.appspot.com/campaign-url-builder/
  */
 export interface WebIntentParams {
   text?: string;
@@ -168,7 +182,10 @@ const TWITTER_INTENT_ENDPOINT = "https://twitter.com/intent/tweet";
 /**
  * @see https://dev.twitter.com/web/tweet-button/web-intent
  */
-export function tweetByWebIntent(params: WebIntentParams, _popup = false) {
+export function tweetByWebIntent(
+  params: WebIntentParams,
+  utm: UrchinTrackingModuleParams = { source: "twitter" }
+) {
   const queries: string[] = [];
 
   if (!!params.hashtags) {
@@ -178,7 +195,23 @@ export function tweetByWebIntent(params: WebIntentParams, _popup = false) {
     queries.push(`text=${encodeURIComponent(params.text)}`);
   }
   if (!!params.url) {
-    queries.push(`url=${encodeURIComponent(params.url)}`);
+    let url = params.url.endsWith("?") ? params.url : params.url + "?";
+
+    url += `&utm_source=${utm.source}`;
+
+    if (utm.medium) {
+      url += `&utm_medium=${utm.medium}`;
+    }
+
+    if (utm.content) {
+      url += `&content=${utm.content}`;
+    }
+
+    if (utm.campaign) {
+      url += `&campaign=${utm.campaign}`;
+    }
+
+    queries.push(`url=${encodeURIComponent(url)}`);
   }
   if (!!params.via) {
     queries.push(`via=${encodeURIComponent(params.via)}`);
