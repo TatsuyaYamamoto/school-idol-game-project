@@ -4,18 +4,15 @@ import "alertify/themes/alertify.default.css";
 import "createjs/builds/1.0.0/createjs.js";
 import * as alertify from "alertify/lib/alertify";
 
-import { initAuth, tracePage } from "@sokontokoro/mikan";
+import { initAuth, initTracker } from "@sokontokoro/mikan";
 
 import StateMachine from "./stateMachine.js";
 
 import Util from "./util.js";
 import State from "./state.js";
-import { config } from "./config.js";
-import { TRACK_PAGES } from "./config";
+import { config, TRACK_PAGES } from "./config.js";
 
 window.onload = function() {
-  tracePage(TRACK_PAGES.INDEX);
-
   /*---------- ログインチェック ----------*/
   // 完了後にコンテンツオブジェクトのセットアップを開始する
   State.firebaseInitPromise = initAuth().then(user => {
@@ -24,6 +21,11 @@ window.onload = function() {
     }
 
     State.loginUser = user;
+
+    initTracker({
+      uid: user.uid,
+      firstPath: TRACK_PAGES.INDEX
+    });
   });
 
   /*---------- ゲーム画面の初期化 ----------*/

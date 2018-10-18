@@ -13,7 +13,8 @@ import {
   pointerdown,
   t,
   initAuth,
-  tracePage
+  tracePage,
+  initTracker
 } from "@sokontokoro/mikan";
 
 import { to } from "./stateMachine";
@@ -32,14 +33,17 @@ import { default as config, TRACK_PAGES } from "./resources/config";
 import { default as stringResources, Ids } from "./resources/string";
 
 function init() {
-  tracePage(TRACK_PAGES.INDEX);
-
   /*---------- ログインチェック ----------*/
   globals.loginPromise = initAuth().then(user => {
     if (!user.isAnonymous) {
       alertify.log(t(Ids.LOGIN_SUCCESS), "success", 3000);
     }
     globals.loginUser = user;
+
+    initTracker({
+      uid: user.uid,
+      firstPath: TRACK_PAGES.INDEX
+    });
   });
 
   //ゲーム画面の初期

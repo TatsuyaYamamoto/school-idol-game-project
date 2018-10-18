@@ -7,7 +7,7 @@ import {
 
 import State from "../state.js";
 import Util from "../util.js";
-import { default as config, TRACK_PAGES, TRACK_ACTION } from "../config.js";
+import { config, TRACK_PAGES, TRACK_ACTION } from "../config.js";
 
 export default class CreditEngine {
   constructor(callbackMenuGameState) {

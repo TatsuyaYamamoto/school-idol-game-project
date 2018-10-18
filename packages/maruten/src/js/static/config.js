@@ -21,7 +21,8 @@ export const TRACK_PAGES = {
   MENU: `${basePath}#menu`,
   HOW_TO_PLAY: `${basePath}#how_to_play`,
   CREDIT: `${basePath}#credit`,
-  GAME: `${basePath}#game`
+  GAME: `${basePath}#game`,
+  GAMEOVER: `${basePath}#gameover`
 };
 
 export const TRACK_ACTION = {

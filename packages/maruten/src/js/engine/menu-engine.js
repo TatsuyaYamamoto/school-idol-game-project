@@ -3,13 +3,14 @@ import {
   openExternalSite,
   signInAsTwitterUser,
   signOut,
-  trackEvent
+  trackEvent,
+  tracePage
 } from "@sokontokoro/mikan";
 
 import State from "../state.js";
 import Util from "../util.js";
 import { LINK, CHARACTER } from "../static/constant.js";
-import { TRACK_ACTION } from "../static/config.js";
+import { TRACK_ACTION, TRACK_PAGES } from "../static/config.js";
 
 export default class MenuEngine {
   constructor(stateMachine) {
@@ -23,6 +24,8 @@ export default class MenuEngine {
   }
 
   start() {
+    tracePage(TRACK_PAGES.MENU);
+
     const targetChildren = [State.object.image.BACKGROUND];
     if (!State.loginUser.isAnonymous) {
       targetChildren.push(

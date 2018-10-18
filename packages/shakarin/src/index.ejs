@@ -42,10 +42,8 @@
         dataLayer.push(arguments);
       }
 
+      // init ga in mikan/Tracker
       window.__TRACKING_CODE__ = '<%= trackingCode %>'
-
-      gtag('js', new Date());
-      gtag('config', '<%= trackingCode %>', {'send_page_view': false});
     </script>
 
     <script>

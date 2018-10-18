@@ -1,6 +1,10 @@
+import { tracePage } from "@sokontokoro/mikan";
+
 import State from "../state.js";
 import Util from "../util.js";
+
 import { CHARACTER } from "../static/constant.js";
+import { TRACK_PAGES } from "../static/config";
 
 export default class TopEngine {
   constructor(callbackMenuGameState) {
@@ -10,6 +14,8 @@ export default class TopEngine {
   }
 
   start() {
+    tracePage(TRACK_PAGES.TOP);
+
     Util.addChildren([
       State.object.image.BACKGROUND,
       TopEngine.getTitleLogChild(),

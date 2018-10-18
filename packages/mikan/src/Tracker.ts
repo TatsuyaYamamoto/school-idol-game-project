@@ -1,25 +1,49 @@
 /**
  * @fileOverview Google Analytics convenience methods
- */
-import { getCurrentUrl } from "./utils";
-
-/**
- * page tracking
- *
  *
  * @example
+ *  <!-- Global site tag (tracker.js) - Google Analytics -->
  *  <script async src="https://www.googletagmanager.com/gtag/js?id=<%= trackingCode %>"></script>
  *  <script>
  *    window.dataLayer = window.dataLayer || [];
+ *
  *    function gtag() {
  *      dataLayer.push(arguments);
  *    }
  *
- *    // important!!
+ *    // init ga in mikan/Tracker
  *    window.__TRACKING_CODE__ = '<%= trackingCode %>'
+ */
+import { getCurrentUrl } from "./utils";
+
+interface TrackerInitParams {
+  firstPath: string;
+  uid: string;
+}
+
+/**
+ * init tracker module
  *
- *    gtag('js', new Date());
- *    gtag('config', '<%= trackingCode %>', {'send_page_view': false});
+ * @param uid
+ * @param firstPath
+ */
+export function init({ uid, firstPath }: TrackerInitParams) {
+  const trackingCode = (<any>window)["__TRACKING_CODE__"];
+
+  // @ts-ignore
+  gtag("js", new Date());
+
+  // @ts-ignore
+  gtag("config", trackingCode, { send_page_view: false });
+
+  // @ts-ignore
+  gtag("set", { user_id: uid });
+
+  tracePage(`${firstPath}${location.search}`);
+}
+
+/**
+ * page tracking
  *
  * @param pagePath
  * @link https://developers.google.com/analytics/devguides/collection/gtagjs/pages?hl=ja

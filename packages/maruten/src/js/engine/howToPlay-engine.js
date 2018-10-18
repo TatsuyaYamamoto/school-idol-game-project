@@ -1,8 +1,11 @@
+import { tracePage } from "@sokontokoro/mikan";
+
 import State from "../state.js";
 import Util from "../util.js";
 import GameEngine from "./game-engine.js";
 import Enemy from "../character/enemy.js";
 import { CHARACTER } from "../static/constant.js";
+import { TRACK_PAGES } from "../static/config";
 
 export default class HowToPlayEngine extends GameEngine {
   constructor(tick, callbackMenuGameState) {
@@ -11,6 +14,8 @@ export default class HowToPlayEngine extends GameEngine {
 
   // @Override
   start() {
+    tracePage(TRACK_PAGES.HOW_TO_PLAY);
+
     this.handleLinkButtonEventListener().add();
 
     const targetChildren = [

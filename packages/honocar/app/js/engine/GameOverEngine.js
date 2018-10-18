@@ -5,7 +5,8 @@ import {
   getLogger,
   openModal,
   Playlog,
-  tracePage
+  tracePage,
+  trackEvent
 } from "@sokontokoro/mikan";
 
 import globals from "../globals";
