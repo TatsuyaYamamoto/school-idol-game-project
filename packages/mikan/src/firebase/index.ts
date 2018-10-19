@@ -2,9 +2,10 @@ import { auth, initializeApp, firestore } from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 
-import { devConfig } from "./config";
+import { devConfig, proConfig } from "./config";
 
-initializeApp(devConfig);
+const config = process.env.NODE_ENV === "production" ? proConfig : devConfig;
+initializeApp(config);
 
 export const firebaseAuth = auth();
 

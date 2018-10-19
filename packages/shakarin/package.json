@@ -2,16 +2,17 @@
   "name": "shakarin",
   "version": "1.2.0",
   "homepage": "https://github.com/TatsuyaYamamoto/shakarin",
-  "authors": [
-    "TatsuyaYamamoto <yamamoto.tatsuya@fujixerox.co.jp>"
-  ],
+  "author": "TatsuyaYamamoto <yamamoto.tatsuya@fujixerox.co.jp>",
   "description": "js simple game, thanks lovelive",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf dist",
     "start": "yarn clean && webpack-dev-server",
-    "build": "yarn clean && webpack",
-    "build:pro": "npm run clean && NODE_ENV=production webpack"
+    "build": "    yarn clean &&                     webpack",
+    "build:pro": "yarn clean && NODE_ENV=production webpack",
+    "deploy": "                    yarn build     && gsutil -m rsync -d -r dist/ gs://games-dev.sokontokoro-factory.net/shakarin/",
+    "deploy:pro": "yarn confirm && yarn build:pro && gsutil -m rsync -d -r dist/ gs://games.sokontokoro-factory.net/shakarin/",
+    "confirm": "../../production-confirm.js"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
