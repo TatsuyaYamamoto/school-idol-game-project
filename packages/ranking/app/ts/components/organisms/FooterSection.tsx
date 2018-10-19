@@ -46,7 +46,7 @@ const SiteVersion = styled.a`
   &::before {
     content: "${`Currently v${version}`}";
     @media (max-width:480px) {
-      content:""
+      content: "${`v${version}`}";
     }
   }
 `;
