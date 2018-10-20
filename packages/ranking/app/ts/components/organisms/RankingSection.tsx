@@ -17,7 +17,6 @@ const logger = getLogger("RankingSection");
 
 interface Props {
   game: string;
-  initialized: boolean;
 }
 
 interface State {
@@ -56,22 +55,15 @@ export default class RankingSection extends React.Component<Props, State> {
   }
 
   public render() {
-    const { initialized } = this.props;
     const { hasMoreItem, rankingList } = this.state;
-
-    const initializing = <div>Initializing...</div>;
 
     return (
       <React.Fragment>
-        {initialized ? (
-          <RankingList
-            hasMoreItem={hasMoreItem}
-            list={rankingList}
-            loadMoreItem={this.loadMoreItem}
-          />
-        ) : (
-          initializing
-        )}
+        <RankingList
+          hasMoreItem={hasMoreItem}
+          list={rankingList}
+          loadMoreItem={this.loadMoreItem}
+        />
       </React.Fragment>
     );
   }

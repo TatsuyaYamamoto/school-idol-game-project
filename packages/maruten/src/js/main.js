@@ -4,7 +4,7 @@ import "createjs/builds/1.0.0/createjs.js";
 
 import * as alertify from "alertify/lib/alertify";
 
-import { initAuth, initTracker } from "@sokontokoro/mikan";
+import { initAuth, initTracker, tracePage } from "@sokontokoro/mikan";
 
 import { STANDARD_PIXEL_SIZE, TRACK_PAGES } from "./static/config.js";
 import StateMachine from "./stateMachine.js";
@@ -21,10 +21,8 @@ window.onload = function() {
 
     State.loginUser = user;
 
-    initTracker({
-      uid: user.uid,
-      firstPath: TRACK_PAGES.INDEX
-    });
+    initTracker(user.uid);
+    tracePage(TRACK_PAGES.INDEX);
   });
 
   /*---------- ゲーム画面の初期化 ----------*/

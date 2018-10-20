@@ -14,12 +14,6 @@
  *    // init ga in mikan/Tracker
  *    window.__TRACKING_CODE__ = '<%= trackingCode %>'
  */
-import { getCurrentUrl } from "./utils";
-
-interface TrackerInitParams {
-  firstPath: string;
-  uid: string;
-}
 
 /**
  * init tracker module
@@ -27,19 +21,17 @@ interface TrackerInitParams {
  * @param uid
  * @param firstPath
  */
-export function init({ uid, firstPath }: TrackerInitParams) {
+export function init(uid: string) {
   const trackingCode = (<any>window)["__TRACKING_CODE__"];
 
   // @ts-ignore
   gtag("js", new Date());
 
   // @ts-ignore
-  gtag("config", trackingCode, { send_page_view: false });
-
-  // @ts-ignore
   gtag("set", { user_id: uid });
 
-  tracePage(`${firstPath}${location.search}`);
+  // @ts-ignore
+  gtag("config", trackingCode, { send_page_view: false });
 }
 
 /**
@@ -50,13 +42,11 @@ export function init({ uid, firstPath }: TrackerInitParams) {
  */
 export function tracePage(pagePath?: string) {
   const trackingCode = (<any>window)["__TRACKING_CODE__"];
-  const page_location = getCurrentUrl();
   const page_path = pagePath || location.pathname + location.hash;
 
   // @ts-ignore
   gtag("config", trackingCode, {
     page_title: document.title,
-    page_location,
     page_path
   });
 }

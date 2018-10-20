@@ -10,6 +10,7 @@ import "react-virtualized/styles.css";
 
 import { tracePage } from "@sokontokoro/mikan";
 
+import Initialize from "./components/pages/Initialize";
 import { default as Index, list } from "./components/pages/Index";
 
 export interface IndexRouteParams {
@@ -17,19 +18,21 @@ export interface IndexRouteParams {
 }
 
 const App = () => (
-  <Router>
-    <Switch>
-      <Route
-        exact
-        path={`/ranking/:game(${list.map(i => i.gameId).join("|")})`}
-        render={props => {
-          tracePage();
-          return <Index {...props} />;
-        }}
-      />
-      <Route render={() => <Redirect to={`/ranking/${list[0].gameId}`} />} />
-    </Switch>
-  </Router>
+  <Initialize>
+    <Router>
+      <Switch>
+        <Route
+          exact
+          path={`/ranking/:game(${list.map(i => i.gameId).join("|")})`}
+          render={props => {
+            tracePage();
+            return <Index {...props} />;
+          }}
+        />
+        <Route render={() => <Redirect to={`/ranking/${list[0].gameId}`} />} />
+      </Switch>
+    </Router>
+  </Initialize>
 );
 
 export default App;

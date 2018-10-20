@@ -40,10 +40,8 @@ function init() {
     }
     globals.loginUser = user;
 
-    initTracker({
-      uid: user.uid,
-      firstPath: TRACK_PAGES.INDEX
-    });
+    initTracker(user.uid);
+    tracePage(TRACK_PAGES.INDEX);
   });
 
   //ゲーム画面の初期

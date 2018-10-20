@@ -2,8 +2,6 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import AutoBind from "autobind-decorator";
 
-import { initAuth } from "@sokontokoro/mikan";
-
 import { IndexRouteParams } from "../../App";
 import HeaderSection from "../organisms/HeaderSection";
 import ControlSection from "../organisms/ControlSection";
@@ -14,7 +12,6 @@ interface Props {}
 
 interface State {
   initialIndex: number;
-  initialized: boolean;
   game: string;
 }
 
@@ -60,17 +57,12 @@ class Index extends React.Component<
 
     this.state = {
       initialIndex,
-      initialized: false,
       game: list[initialIndex].gameId
     };
   }
 
-  public componentDidMount() {
-    this.init();
-  }
-
   public render() {
-    const { initialized, initialIndex, game } = this.state;
+    const { initialIndex, game } = this.state;
 
     return (
       <React.Fragment>
@@ -80,7 +72,7 @@ class Index extends React.Component<
           onGameSelected={this.onGameSelected}
           onJumpGame={this.onJumpGame}
         />
-        <RankingSection initialized={initialized} game={game} />
+        <RankingSection game={game} />
         <FooterSection />
       </React.Fragment>
     );
@@ -100,11 +92,6 @@ class Index extends React.Component<
     });
 
     location.href = list[index].url;
-  }
-
-  private async init() {
-    await initAuth();
-    this.setState({ initialized: true });
   }
 }
 
