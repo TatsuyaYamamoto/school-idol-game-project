@@ -235,10 +235,16 @@ export function tweetByWebIntent(
  * Open provided URL with new window.
  * if denied to open new window; popup permission, security error..., try change window#location.
  *
+ * @param popup
  * @param url
  */
-export function openExternalSite(url: string) {
+export function openExternalSite(url: string, popup: boolean = true) {
   logger.debug(`open external site; ${url}`);
+
+  if (!popup) {
+    window.location.href = url;
+    return;
+  }
   window.open(url);
 
   setTimeout(() => {

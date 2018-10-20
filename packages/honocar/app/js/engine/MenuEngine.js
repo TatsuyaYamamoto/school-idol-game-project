@@ -192,7 +192,7 @@ function onClick2Ranking() {
           globals.soundObj.SOUND_OK.play();
 
           trackEvent(TRACK_ACTION.CLICK, { label: "ranking" });
-          openExternalSite(config.link.ranking);
+          openExternalSite(config.link.ranking, false);
         }
       },
       {
@@ -272,7 +272,7 @@ function onClickHome() {
           globals.soundObj.SOUND_OK.play();
 
           trackEvent(TRACK_ACTION.CLICK, { label: "home" });
-          openExternalSite(config.link.homepage);
+          openExternalSite(config.link.homepage, false);
         }
       },
       {

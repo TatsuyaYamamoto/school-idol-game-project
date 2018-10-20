@@ -113,7 +113,7 @@ export default class MenuEngine {
               State.object.sound.OK.stop();
               State.object.sound.OK.play();
 
-              openExternalSite(config.link.homepage);
+              openExternalSite(config.link.homepage, false);
             }
           },
           {
@@ -143,7 +143,7 @@ export default class MenuEngine {
               State.object.sound.OK.stop();
               State.object.sound.OK.play();
 
-              openExternalSite(config.link.ranking);
+              openExternalSite(config.link.ranking, false);
             }
           },
           {

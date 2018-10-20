@@ -132,7 +132,7 @@ export default class MenuEngine {
               State.object.sound.BACK.stop();
               State.object.sound.OK.play();
 
-              openExternalSite(LINK.SOKONTOKORO_HOME);
+              openExternalSite(LINK.SOKONTOKORO_HOME, false);
             }
           },
           {
@@ -162,7 +162,7 @@ export default class MenuEngine {
               State.object.sound.OK.stop();
               State.object.sound.OK.play();
 
-              openExternalSite(LINK.RANKING);
+              openExternalSite(LINK.RANKING, false);
             }
           },
           {
