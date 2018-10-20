@@ -1,16 +1,18 @@
 import * as alertify from "alertify/lib/alertify";
 
 import {
+  createUrchinTrackingModuleQuery,
   openModal,
   Playlog,
   tracePage,
   trackEvent,
-  tweetByWebIntent
+  tweetByWebIntent,
+  convertYyyyMmDd
 } from "@sokontokoro/mikan";
 
 import State from "../state.js";
 import Util from "../util.js";
-import { TRACK_PAGES, TRACK_ACTION } from "../config";
+import { TRACK_PAGES, TRACK_ACTION, config } from "../config";
 
 export default class GameoverEngine {
   constructor(tick, player, callbackMenuState, callbackGameState) {
@@ -100,19 +102,19 @@ export default class GameoverEngine {
               State.object.sound.OK.stop();
               State.object.sound.OK.play();
 
-              tweetByWebIntent(
-                {
-                  text: this.getTweetText(),
-                  url: "https://games.sokontokoro-factory.net/shakarin/",
-                  hashtags: ["しゃかりん", "そこんところ工房"]
-                },
-                {
-                  source: "twitter",
-                  medium: "result-share",
-                  campaign: "none",
-                  content: `${State.loginUser.uid}${Date.now()}`
-                }
-              );
+              const yyyymmdd = convertYyyyMmDd(new Date());
+              const utmQuery = createUrchinTrackingModuleQuery({
+                campaign: `result-share_${yyyymmdd}`,
+                source: "twitter",
+                medium: "social"
+              });
+              const url = `${config.link.game}?${utmQuery.join("&")}`;
+
+              tweetByWebIntent({
+                text: this.getTweetText(),
+                url,
+                hashtags: ["しゃかりん", "そこんところ工房"]
+              });
             }
           },
           {

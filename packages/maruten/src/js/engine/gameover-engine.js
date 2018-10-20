@@ -4,13 +4,15 @@ import {
   tweetByWebIntent,
   Playlog,
   trackEvent,
-  tracePage
+  tracePage,
+  createUrchinTrackingModuleQuery,
+  convertYyyyMmDd
 } from "@sokontokoro/mikan";
 
 import State from "../state.js";
 import Util from "../util.js";
-import { CHARACTER } from "../static/constant.js";
-import { TRACK_ACTION, TRACK_PAGES } from "shakarin/src/js/config";
+import { CHARACTER, LINK } from "../static/constant.js";
+import { TRACK_ACTION, TRACK_PAGES } from "../static/config";
 
 export default class GameoverEngine {
   constructor(tick, callbackMenuState, callbackGameState) {
@@ -28,9 +30,7 @@ export default class GameoverEngine {
 
     tracePage(TRACK_PAGES.GAMEOVER);
 
-    trackEvent(TRACK_ACTION.GAMEOVER, {
-      value: State.gameScore
-    });
+    trackEvent(TRACK_ACTION.GAMEOVER, { value: State.gameScore });
 
     Playlog.save("maruten", member, point).then(() => {
       if (State.loginUser.isAnonymous) {
@@ -117,19 +117,19 @@ export default class GameoverEngine {
               State.object.sound.OK.stop();
               State.object.sound.OK.play();
 
-              tweetByWebIntent(
-                {
-                  text: GameoverEngine.getTweetText(),
-                  url: "https://games.sokontokoro-factory.net/maruten/",
-                  hashtags: ["まるてん", "そこんところ工房"]
-                },
-                {
-                  source: "twitter",
-                  medium: "result-share",
-                  campaign: "none",
-                  content: `${State.loginUser.uid}${Date.now()}`
-                }
-              );
+              const yyyymmdd = convertYyyyMmDd(new Date());
+              const utmQuery = createUrchinTrackingModuleQuery({
+                campaign: `result-share_${yyyymmdd}`,
+                source: "twitter",
+                medium: "social"
+              });
+              const url = `${LINK.GAME}?${utmQuery.join("&")}`;
+
+              tweetByWebIntent({
+                text: GameoverEngine.getTweetText(),
+                url,
+                hashtags: ["まるてん", "そこんところ工房"]
+              });
             }
           },
           {

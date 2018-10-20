@@ -27,6 +27,7 @@ export default {
     difficultyLength: 0.3
   },
   link: {
+    game: `https:${gamesAuthority}/honocar`,
     homepage: `${wwwAuthority}/`,
     ranking: `${gamesAuthority}/#/ranking/honocar`,
     t28_twitter: "https://twitter.com/t28_tatsuya",

@@ -20,7 +20,8 @@ export var config = {
     firstCheckFrame: 10
   },
   link: {
-    homepage: `${wwwAuthority}/`,
+    homepage: `https:${wwwAuthority}/`,
+    game: `https:${gamesAuthority}/shakarin`,
     ranking: `${gamesAuthority}/#/ranking/shakarin`,
     t28_twitter: "https://twitter.com/t28_tatsuya",
     sokontokoro: "http://sokontokoro-factory.net",

@@ -14,6 +14,7 @@ export const CHARACTER = {
 };
 
 export const LINK = {
+  GAME: `https:${gamesAuthority}/maruten`,
   RANKING: `${gamesAuthority}/#/ranking/maruten`,
   SOKONTOKORO_HOME: `${wwwAuthority}/`,
   T28_TWITTER: "https://twitter.com/t28_tatsuya",

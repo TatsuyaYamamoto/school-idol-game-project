@@ -6,7 +6,9 @@ import {
   openModal,
   Playlog,
   tracePage,
-  trackEvent
+  trackEvent,
+  createUrchinTrackingModuleQuery,
+  convertYyyyMmDd
 } from "@sokontokoro/mikan";
 
 import globals from "../globals";
@@ -17,7 +19,11 @@ import { to } from "../stateMachine";
 import { getTweetText } from "../common";
 
 import { Ids } from "../resources/string";
-import { TRACK_ACTION, TRACK_PAGES } from "../resources/config";
+import {
+  TRACK_ACTION,
+  TRACK_PAGES,
+  default as config
+} from "../resources/config";
 
 const logger = getLogger("gameover");
 
@@ -139,19 +145,19 @@ class GameOverEngine extends Engine {
 
             trackEvent(TRACK_ACTION.CLICK, { label: "tweet" });
 
-            tweetByWebIntent(
-              {
-                text: getTweetText(count, chara),
-                url: "https://games.sokontokoro-factory.net/honocar/",
-                hashtags: ["ほのCar", "そこんところ工房"]
-              },
-              {
-                source: "twitter",
-                medium: "result-share",
-                campaign: "none",
-                content: `${globals.loginUser.uid}${Date.now()}`
-              }
-            );
+            const yyyymmdd = convertYyyyMmDd(new Date());
+            const utmQuery = createUrchinTrackingModuleQuery({
+              campaign: `result-share_${yyyymmdd}`,
+              source: "twitter",
+              medium: "social"
+            });
+            const url = `${config.link.game}?${utmQuery.join("&")}`;
+
+            tweetByWebIntent({
+              text: getTweetText(count, chara),
+              url,
+              hashtags: ["ほのCar", "そこんところ工房"]
+            });
           }
         },
         {

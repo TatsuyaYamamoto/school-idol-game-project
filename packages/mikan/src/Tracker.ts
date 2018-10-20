@@ -105,3 +105,46 @@ export function trackTiming(
     event_label: optionalParams.label
   });
 }
+
+/**
+ * @see https://support.google.com/analytics/answer/1033863?hl=ja
+ * @see https://support.google.com/urchin/answer/28307?hl=en
+ * @see https://liapoc.com/utm-parameter.html
+ */
+export interface UrchinTrackingModuleParams {
+  // プロパティにトラフィックを誘導した広告主、サイト、出版物、その他を識別します（Google、ニュースレター 4、屋外広告など）
+  // 例) summer-mailer: サマーセール用のメール キャンペーン経由のトラフィックを識別
+  source: string;
+  // 広告メディアやマーケティング メディアを識別します（CPC 広告、バナー、メール ニュースレターなど）。
+  // 例) email: メール キャンペーンとアプリ内キャンペーン経由のトラフィックを識別
+  medium: string;
+  // 商品のキャンペーン名、テーマ、プロモーション コードなどを指定します。
+  // 例) summer-sale: キャンペーン全体のトラフィックを識別
+  campaign: string;
+
+  // 有料検索向けキーワードを特定します。検索広告キャンペーンにタグを設定する場合は、utm_term を使用してキーワードを指定することができます。
+  term?: string;
+  // 似通ったコンテンツや同じ広告内のリンクを区別するために使用します。
+  // たとえば、メールのメッセージに行動を促すフレーズのリンクが 2 つある場合は、utm_content を使用して別々の値を設定し、どちらが効果的か判断できます。
+  content?: string;
+}
+
+export function createUrchinTrackingModuleQuery(
+  params: UrchinTrackingModuleParams
+): string[] {
+  const query: string[] = [];
+
+  query.push(`utm_source=${params.source}`);
+  query.push(`utm_medium=${params.medium}`);
+  query.push(`utm_campaign=${params.campaign}`);
+
+  if (params.term) {
+    query.push(`utm_term=${params.term}`);
+  }
+
+  if (params.content) {
+    query.push(`utm_content=${params.content}`);
+  }
+
+  return query;
+}

@@ -47,7 +47,8 @@ export {
   vibrate,
   getCurrentUrl,
   tweetByWebIntent,
-  openExternalSite
+  openExternalSite,
+  convertYyyyMmDd
 } from "./utils";
 
 export { default as ViewContainer } from "./ViewContainer";
@@ -64,7 +65,8 @@ export {
   init as initTracker,
   tracePage,
   trackEvent,
-  trackTiming
+  trackTiming,
+  createUrchinTrackingModuleQuery
 } from "./Tracker";
 
 export { firebaseDb, firebaseAuth } from "./firebase";
