@@ -6,14 +6,17 @@
     "node": ">=8"
   },
   "scripts": {
-    "deploy": "gcloud app deploy",
-    "deploy:cron": "gcloud app deploy cron.yaml",
+    "deploy": "                         gcloud app deploy app.yaml            --project school-idol-game-development",
+    "deploy:pro": "     yarn confirm && gcloud app deploy app-production.yaml --project school-idol-game-production",
+    "deploy:cron": "                    gcloud app deploy cron.yaml           --project school-idol-game-development",
+    "deploy:cron:pro": "yarn confirm && gcloud app deploy cron.yaml           --project school-idol-game-production",
     "start": "node app/index.js",
     "lint": "repo-tools lint",
     "pretest": "npm run lint",
     "system-test": "repo-tools test app",
     "test": "npm run system-test",
-    "e2e-test": "repo-tools test deploy"
+    "e2e-test": "repo-tools test deploy",
+    "confirm": "../../../production-confirm.js"
   },
   "dependencies": {
     "@google-cloud/pubsub": "^0.20.1",

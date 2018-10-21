@@ -1,7 +1,7 @@
 const PubSub = require("@google-cloud/pubsub");
 
 const pubsubClient = new PubSub({
-  projectId: "school-idol-game-development"
+  projectId: process.env.GOOGLE_CLOUD_PROJECT
 });
 
 function publish(topic, message) {
