@@ -16,13 +16,13 @@ export const ADD_TIME_SECONDS_BY_ITEM = 4;
 const basePath = `/maruten`;
 
 export const TRACK_PAGES = {
-  INDEX: `${basePath}`,
-  TOP: `${basePath}#top`,
-  MENU: `${basePath}#menu`,
-  HOW_TO_PLAY: `${basePath}#how_to_play`,
-  CREDIT: `${basePath}#credit`,
-  GAME: `${basePath}#game`,
-  GAMEOVER: `${basePath}#gameover`
+  INDEX: `${basePath}/`,
+  TOP: `${basePath}/#/top`,
+  MENU: `${basePath}/#/menu`,
+  HOW_TO_PLAY: `${basePath}/#/how_to_play`,
+  CREDIT: `${basePath}/#/credit`,
+  GAME: `${basePath}/#/game`,
+  GAMEOVER: `${basePath}/#/gameover`
 };
 
 export const TRACK_ACTION = {
