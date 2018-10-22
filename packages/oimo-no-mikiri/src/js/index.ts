@@ -6,7 +6,8 @@ import {
   initI18n,
   isSupportTouchEvent,
   initTracker,
-  tracePage
+  tracePage,
+  initAuth
 } from "@sokontokoro/mikan";
 
 import ApplicationState from "./fsm/ApplicationState";
@@ -27,8 +28,9 @@ import { VirtualPageViews } from "./helper/tracker";
 require("../fonts/PixelMplus10-Regular.css");
 require("../fonts/g_brushtappitsu_freeH.css");
 
-// initialize modules
-initFirebase().then(user => {
+// initialize firebase modules
+initFirebase();
+initAuth().then(user => {
   initTracker(user.uid);
 });
 

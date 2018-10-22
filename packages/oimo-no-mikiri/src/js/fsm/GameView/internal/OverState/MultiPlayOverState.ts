@@ -1,4 +1,10 @@
-import { trackEvent } from "@sokontokoro/mikan";
+import {
+  convertYyyyMmDd,
+  createUrchinTrackingModuleQuery,
+  t,
+  trackEvent,
+  tweetByWebIntent
+} from "@sokontokoro/mikan";
 
 import {
   default as OverState,
@@ -11,7 +17,8 @@ import TweetButton from "../../../../texture/sprite/button/TweetButton";
 import Actor from "../../../../models/Actor";
 
 import { Action, Category } from "../../../../helper/tracker";
-import { tweetMultiPlayResult } from "../../../../helper/network";
+import { Ids as StringIds } from "../../../../resources/string";
+import { URL } from "../../../../Constants";
 
 export interface EnterParams extends AbstractEnterParams {
   onePlayerWins: number;
@@ -65,7 +72,35 @@ class MultiPlayOverState extends OverState {
       label: "result_tweet"
     });
 
-    tweetMultiPlayResult(winner, winnerWins, loserWins);
+    let tweetText;
+    if (winner === Actor.PLAYER) {
+      tweetText = t(StringIds[StringIds.MULTI_GAME_RESULT_TWEET_HANAMARU_WIN], {
+        winnerWins,
+        loserWins
+      });
+    }
+
+    if (winner === Actor.OPPONENT) {
+      tweetText = t(StringIds[StringIds.MULTI_GAME_RESULT_TWEET_RUBY_WIN], {
+        winnerWins,
+        loserWins
+      });
+    }
+
+    const yyyymmdd = convertYyyyMmDd(new Date());
+    const utmQuery = createUrchinTrackingModuleQuery({
+      campaign: `result-share_${yyyymmdd}`,
+      source: "twitter",
+      medium: "social"
+    });
+    const url = `${URL.OIMO_NO_MIKIRI}?${utmQuery.join("&")}`;
+    const hashtags = ["おいものみきり", "そこんところ工房"];
+
+    tweetByWebIntent({
+      text: tweetText,
+      url,
+      hashtags
+    });
   };
 }
 

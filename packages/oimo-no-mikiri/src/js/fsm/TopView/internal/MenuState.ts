@@ -6,7 +6,10 @@ import {
   play,
   toggleSound,
   tracePage,
-  trackEvent
+  trackEvent,
+  openExternalSite,
+  openModal,
+  t
 } from "@sokontokoro/mikan";
 
 import { Events } from "../TopView";
@@ -18,11 +21,11 @@ import SelectMultiPlayModeBoard from "../../../texture/containers/SelectMultiPla
 
 import Mode from "../../../models/Mode";
 
-import { goTo } from "../../../helper/network";
 import { Action, Category, VirtualPageViews } from "../../../helper/tracker";
 
 import { URL } from "../../../Constants";
 import { Ids as SoundIds } from "../../../resources/sound";
+import { Ids as StringIds } from "../../../resources/string";
 
 @AutoBind
 class MenuState extends TopViewState {
@@ -119,9 +122,32 @@ class MenuState extends TopViewState {
    * @private
    */
   private _onSelectHome = () => {
-    goTo(URL.TWITTER_HOME_T28);
+    play(SoundIds.SOUND_OK);
 
-    trackEvent(Action.TAP, { category: Category.BUTTON, label: "home" });
+    openModal({
+      text: t(StringIds[StringIds.MODAL_GO_HOMEPAGE]),
+      actions: [
+        {
+          text: "OK",
+          onClick: () => {
+            play(SoundIds.SOUND_OK);
+
+            trackEvent(Action.TAP, {
+              category: Category.BUTTON,
+              label: "home"
+            });
+            openExternalSite(URL.SOKONTOKORO_HOME, false);
+          }
+        },
+        {
+          text: "CANCEL",
+          type: "cancel",
+          onClick: () => {
+            play(SoundIds.SOUND_CANCEL);
+          }
+        }
+      ]
+    });
   };
 
   /**

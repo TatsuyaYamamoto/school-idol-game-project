@@ -40,6 +40,7 @@ export enum Ids {
 
   INVITE_MULTI_PLAY_MESSAGE,
 
+  MODAL_GO_HOMEPAGE,
   MODAL_CREATE_ROOM_TITLE,
   MODAL_CREATE_ROOM_TEXT,
   MODAL_CREATE_ROOM_BUTTON_COPY,
@@ -129,6 +130,7 @@ In multi play mode,
         Ids.INVITE_MULTI_PLAY_MESSAGE
       ]]: `Let's bake a sweet potato with me, zura~!`,
 
+      [Ids[Ids.MODAL_GO_HOMEPAGE]]: `Go Homepage!`,
       [Ids[Ids.MODAL_CREATE_ROOM_TITLE]]: `Created new room!`,
       [Ids[
         Ids.MODAL_CREATE_ROOM_TEXT
@@ -205,6 +207,7 @@ In multi play mode,
 
       [Ids[Ids.INVITE_MULTI_PLAY_MESSAGE]]: `おいも一緒に焼くずらー！`,
 
+      [Ids[Ids.MODAL_GO_HOMEPAGE]]: `ホームページにアクセスします`,
       [Ids[Ids.MODAL_CREATE_ROOM_TITLE]]: `ルームを作成しました！`,
       [Ids[
         Ids.MODAL_CREATE_ROOM_TEXT

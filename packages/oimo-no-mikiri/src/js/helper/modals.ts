@@ -1,8 +1,7 @@
-import { t, copyTextToClipboard } from "@sokontokoro/mikan";
+import { t, copyTextToClipboard, tweetByWebIntent } from "@sokontokoro/mikan";
 
 import { default as SweetAlert } from "sweetalert2";
 import * as tippy from "tippy.js";
-import { showTweetView } from "./network";
 
 import { Ids as StringIds } from "../resources/string";
 
@@ -67,7 +66,11 @@ export function openCreateRoomModal(gameId: string) {
       copyTextToClipboard(url);
     });
     tweetButton.addEventListener("click", () => {
-      showTweetView(t(StringIds[StringIds.INVITE_MULTI_PLAY_MESSAGE]), url);
+      tweetByWebIntent({
+        text: t(StringIds[StringIds.INVITE_MULTI_PLAY_MESSAGE]),
+        url,
+        hashtags: ["おいものみきり", "そこんところ工房"]
+      });
     });
     cancelButton.addEventListener("click", () => {
       resolve("cancel");
