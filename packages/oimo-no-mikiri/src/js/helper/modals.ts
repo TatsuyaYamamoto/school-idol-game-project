@@ -1,8 +1,7 @@
-import { t, copyTextToClipboard } from "@sokontokoro/mikan";
+import { t, copyTextToClipboard, tweetByWebIntent } from "@sokontokoro/mikan";
 
 import { default as SweetAlert } from "sweetalert2";
 import * as tippy from "tippy.js";
-import { showTweetView } from "./network";
 
 import { Ids as StringIds } from "../resources/string";
 
@@ -16,8 +15,8 @@ export function openCreateRoomModal(gameId: string) {
   }?gameId=${gameId}`;
 
   SweetAlert({
-    title: t(StringIds.MODAL_CREATE_ROOM_TITLE),
-    text: t(StringIds.MODAL_CREATE_ROOM_TEXT),
+    title: t(StringIds[StringIds.MODAL_CREATE_ROOM_TITLE]),
+    text: t(StringIds[StringIds.MODAL_CREATE_ROOM_TEXT]),
     showConfirmButton: false,
     allowOutsideClick: false,
     allowEscapeKey: false
@@ -28,20 +27,24 @@ export function openCreateRoomModal(gameId: string) {
   baseButton.style.cssText = "padding: 0.4em;";
 
   const copyButton = <HTMLButtonElement>baseButton.cloneNode();
-  copyButton.textContent = t(StringIds.MODAL_CREATE_ROOM_BUTTON_COPY);
+  copyButton.textContent = t(
+    StringIds[StringIds.MODAL_CREATE_ROOM_BUTTON_COPY]
+  );
   copyButton.id = "button-create-room-copy-url";
   copyButton.classList.add("swal2-confirm");
   copyButton.setAttribute(
     "title",
-    t(StringIds.MODAL_CREATE_ROOM_BUTTON_COPY_SUCCESS)
+    t(StringIds[StringIds.MODAL_CREATE_ROOM_BUTTON_COPY_SUCCESS])
   );
 
   const tweetButton = <HTMLButtonElement>baseButton.cloneNode();
-  tweetButton.textContent = t(StringIds.MODAL_CREATE_ROOM_BUTTON_TWEET);
+  tweetButton.textContent = t(
+    StringIds[StringIds.MODAL_CREATE_ROOM_BUTTON_TWEET]
+  );
   tweetButton.classList.add("swal2-confirm");
 
   const cancelButton = <HTMLButtonElement>baseButton.cloneNode();
-  cancelButton.textContent = t(StringIds.MODAL_CANCEL);
+  cancelButton.textContent = t(StringIds[StringIds.MODAL_CANCEL]);
   cancelButton.classList.add("swal2-cancel");
 
   const alertActions = document.querySelectorAll(".swal2-actions")[0];
@@ -63,7 +66,11 @@ export function openCreateRoomModal(gameId: string) {
       copyTextToClipboard(url);
     });
     tweetButton.addEventListener("click", () => {
-      showTweetView(t(StringIds.INVITE_MULTI_PLAY_MESSAGE), url);
+      tweetByWebIntent({
+        text: t(StringIds[StringIds.INVITE_MULTI_PLAY_MESSAGE]),
+        url,
+        hashtags: ["おいものみきり", "そこんところ工房"]
+      });
     });
     cancelButton.addEventListener("click", () => {
       resolve("cancel");
@@ -73,8 +80,8 @@ export function openCreateRoomModal(gameId: string) {
 
 export function openJoinRoomModal(roomId) {
   return SweetAlert({
-    title: t(StringIds.MODAL_JOIN_ROOM_TITLE),
-    text: t(StringIds.MODAL_JOIN_ROOM_TEXT, { roomId }),
+    title: t(StringIds[StringIds.MODAL_JOIN_ROOM_TITLE]),
+    text: t(StringIds[StringIds.MODAL_JOIN_ROOM_TEXT], { roomId }),
     showConfirmButton: false,
     allowOutsideClick: false,
     allowEscapeKey: false
@@ -83,7 +90,7 @@ export function openJoinRoomModal(roomId) {
 
 export function openReadyRoomModal() {
   return SweetAlert({
-    title: t(StringIds.MODAL_GAME_READY_TITLE),
+    title: t(StringIds[StringIds.MODAL_GAME_READY_TITLE]),
     showConfirmButton: false,
     allowOutsideClick: false,
     allowEscapeKey: false
@@ -91,14 +98,14 @@ export function openReadyRoomModal() {
 }
 
 export function openRejectJoinRoomModal(type) {
-  let text = t(StringIds.MODAL_ERROR_UNEXPECTED);
+  let text = t(StringIds[StringIds.MODAL_ERROR_UNEXPECTED]);
 
   switch (type) {
     case "already_fulfilled":
-      text = t(StringIds.MODAL_REJECT_JOIN_FULFILLED_TEXT);
+      text = t(StringIds[StringIds.MODAL_REJECT_JOIN_FULFILLED_TEXT]);
       break;
     case "no_game":
-      text = t(StringIds.MODAL_REJECT_JOIN_NO_GAME_TEXT);
+      text = t(StringIds[StringIds.MODAL_REJECT_JOIN_NO_GAME_TEXT]);
       break;
   }
 
@@ -112,7 +119,7 @@ export function openRejectJoinRoomModal(type) {
 
 export function openWaitingRestartModal() {
   return SweetAlert({
-    text: t(StringIds.MODAL_WAIT_RESTART_TEXT),
+    text: t(StringIds[StringIds.MODAL_WAIT_RESTART_TEXT]),
     showConfirmButton: false,
     allowOutsideClick: false,
     allowEscapeKey: false
@@ -121,7 +128,7 @@ export function openWaitingRestartModal() {
 
 export function openRestartConfirmModal() {
   return SweetAlert({
-    text: t(StringIds.MODAL_CONFIRM_RESTART_TEXT),
+    text: t(StringIds[StringIds.MODAL_CONFIRM_RESTART_TEXT]),
     showConfirmButton: true,
     showCancelButton: true,
     allowOutsideClick: false,
@@ -131,7 +138,7 @@ export function openRestartConfirmModal() {
 
 export function openMemberLeftModal() {
   return SweetAlert({
-    text: t(StringIds.MODAL_MEMBER_LEFT_TEXT),
+    text: t(StringIds[StringIds.MODAL_MEMBER_LEFT_TEXT]),
     showConfirmButton: false,
     allowOutsideClick: false,
     allowEscapeKey: false
@@ -140,14 +147,18 @@ export function openMemberLeftModal() {
 
 export function openConfirmCloseGameModal() {
   return SweetAlert({
-    title: t(StringIds.MODAL_CONFIRM_CLOSE_GAME_TITLE),
-    text: t(StringIds.MODAL_CONFIRM_CLOSE_GAME_TEXT),
+    title: t(StringIds[StringIds.MODAL_CONFIRM_CLOSE_GAME_TITLE]),
+    text: t(StringIds[StringIds.MODAL_CONFIRM_CLOSE_GAME_TEXT]),
     showConfirmButton: true,
     confirmButtonColor: "#3085d6",
-    confirmButtonText: t(StringIds.MODAL_CONFIRM_CLOSE_GAME_BUTTON_CONFIRM),
+    confirmButtonText: t(
+      StringIds[StringIds.MODAL_CONFIRM_CLOSE_GAME_BUTTON_CONFIRM]
+    ),
     showCancelButton: true,
     cancelButtonColor: "#d33",
-    cancelButtonText: t(StringIds.MODAL_CONFIRM_CLOSE_GAME_BUTTON_CANCEL),
+    cancelButtonText: t(
+      StringIds[StringIds.MODAL_CONFIRM_CLOSE_GAME_BUTTON_CANCEL]
+    ),
     reverseButtons: true,
     allowOutsideClick: false,
     allowEscapeKey: false

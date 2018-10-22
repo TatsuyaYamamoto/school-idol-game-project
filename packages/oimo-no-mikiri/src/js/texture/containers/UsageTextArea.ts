@@ -12,7 +12,7 @@ class UsageTextArea extends Container {
   constructor() {
     super();
 
-    this._text = new Text(t(Ids.HOW_TO_PLAY_INFORMATION), {
+    this._text = new Text(t(Ids[Ids.HOW_TO_PLAY_INFORMATION]), {
       fontSize: 16
     });
 

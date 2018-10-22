@@ -5,7 +5,8 @@ import {
   dispatchEvent,
   removeEvents,
   play,
-  vibrate
+  vibrate,
+  trackEvent
 } from "@sokontokoro/mikan";
 
 import GameView, { EnterParams, Events, InnerStates } from "./GameView";
@@ -35,7 +36,7 @@ import Actor from "../../models/Actor";
 import { isSingleMode } from "../../models/Game";
 import { BattleEvents } from "../../models/Battle";
 
-import { Action, Category, trackEvent } from "../../helper/tracker";
+import { Action, Category } from "../../helper/tracker";
 import { Ids as SoundIds } from "../../resources/sound";
 
 import { VIBRATE_TIME } from "../../Constants";
@@ -175,7 +176,7 @@ class LocalGameView extends GameView {
    *
    */
   protected onFixedResult() {
-    const { bestTime, winner, mode } = this.game;
+    const { bestTime, winner, mode, currentRound } = this.game;
 
     console.log(
       `Fixed the game! player win: ${this.game.getWins(
@@ -188,6 +189,7 @@ class LocalGameView extends GameView {
         winner,
         bestTime,
         mode,
+        round: currentRound,
         straightWins: this.game.straightWins
       });
     } else {
@@ -195,6 +197,7 @@ class LocalGameView extends GameView {
         winner,
         bestTime,
         mode,
+        round: currentRound,
         onePlayerWins: this.game.getWins(Actor.PLAYER),
         twoPlayerWins: this.game.getWins(Actor.OPPONENT)
       });
@@ -216,7 +219,10 @@ class LocalGameView extends GameView {
   protected onBackToTopRequested() {
     super.onBackToTopRequested();
 
-    trackEvent(Category.BUTTON, Action.TAP, "back_to_menu");
+    trackEvent(Action.TAP, {
+      category: Category.BUTTON,
+      label: "back_to_menu"
+    });
   }
 }
 

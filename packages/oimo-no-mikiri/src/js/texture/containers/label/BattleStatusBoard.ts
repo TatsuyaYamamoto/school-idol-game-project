@@ -38,7 +38,7 @@ class BattleStatusBoard extends Container {
     super();
 
     this._onePlayerWinsLabel = new Text(
-      t(StringIds.LABEL_WINS),
+      t(StringIds[StringIds.LABEL_WINS]),
       winsLabelStyle
     );
     this._onePlayerWinsLabel.position.set(-1 * width * 0.3, -1 * height * 0.05);
@@ -47,7 +47,7 @@ class BattleStatusBoard extends Container {
     this._onePlayerWins.position.set(-1 * width * 0.3, height * 0.05);
 
     this._twoPlayerWinsLabel = new Text(
-      t(StringIds.LABEL_WINS),
+      t(StringIds[StringIds.LABEL_WINS]),
       winsLabelStyle
     );
     this._twoPlayerWinsLabel.position.set(width * 0.3, -1 * height * 0.05);
@@ -56,7 +56,7 @@ class BattleStatusBoard extends Container {
     this._twoPlayerWins.position.set(width * 0.3, height * 0.05);
 
     this._battleLeftLabel = new Text(
-      t(StringIds.LABEL_BATTLE_LEFT),
+      t(StringIds[StringIds.LABEL_BATTLE_LEFT]),
       battleLeftLabelStyle
     );
     this._battleLeftLabel.position.set(0, -1 * height * 0.05);

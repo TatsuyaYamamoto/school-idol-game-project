@@ -8,7 +8,8 @@ import {
   vibrate,
   show as showConnecting,
   hide as hideConnecting,
-  removeEvents
+  removeEvents,
+  trackEvent
 } from "@sokontokoro/mikan";
 
 import GameView, { EnterParams, Events, InnerStates } from "./GameView";
@@ -30,7 +31,7 @@ import {
 import Actor from "../../models/Actor";
 import { Events as AppEvents } from "../ApplicationState";
 
-import { Action, Category, trackEvent } from "../../helper/tracker";
+import { Action, Category } from "../../helper/tracker";
 import {
   closeModal,
   openMemberLeftModal,
@@ -175,7 +176,7 @@ class OnlineGameView extends GameView {
   };
 
   private onResultFixed = async () => {
-    const { bestTime, winner, mode } = this.game;
+    const { bestTime, winner, mode, currentRound } = this.game;
     const onePlayerWins = this.game.getWins(Actor.PLAYER);
     const twoPlayerWins = this.game.getWins(Actor.OPPONENT);
 
@@ -211,6 +212,7 @@ class OnlineGameView extends GameView {
       winner,
       bestTime,
       mode,
+      round: currentRound,
       onePlayerWins,
       twoPlayerWins
     });
@@ -254,7 +256,10 @@ class OnlineGameView extends GameView {
 
     (<OnlineGame>this.game).leave();
 
-    trackEvent(Category.BUTTON, Action.TAP, "back_to_menu");
+    trackEvent(Action.TAP, {
+      category: Category.BUTTON,
+      label: "back_to_menu"
+    });
   }
 }
 

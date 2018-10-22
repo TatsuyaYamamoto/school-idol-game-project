@@ -35,7 +35,7 @@ class Shitake extends Opponent {
   }
 
   public get name(): string {
-    return t(StringIds.CHARA_NAME_SHITAKE);
+    return t(StringIds[StringIds.CHARA_NAME_SHITAKE]);
   }
 }
 

@@ -35,7 +35,7 @@ class Wataame extends Opponent {
   }
 
   public get name(): string {
-    return t(StringIds.CHARA_NAME_WATAAME);
+    return t(StringIds[StringIds.CHARA_NAME_WATAAME]);
   }
 }
 

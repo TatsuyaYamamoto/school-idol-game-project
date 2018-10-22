@@ -35,7 +35,7 @@ class EnemyRuby extends Opponent {
   }
 
   public get name(): string {
-    return t(StringIds.CHARA_NAME_ENEMY_RUBY);
+    return t(StringIds[StringIds.CHARA_NAME_ENEMY_RUBY]);
   }
 }
 

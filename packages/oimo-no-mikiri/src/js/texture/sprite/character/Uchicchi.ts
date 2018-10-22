@@ -35,7 +35,7 @@ class Uchicchi extends Opponent {
   }
 
   public get name(): string {
-    return t(StringIds.CHARA_NAME_UCHICCHI);
+    return t(StringIds[StringIds.CHARA_NAME_UCHICCHI]);
   }
 }
 

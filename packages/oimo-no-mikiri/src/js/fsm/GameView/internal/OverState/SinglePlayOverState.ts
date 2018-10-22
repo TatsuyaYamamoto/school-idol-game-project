@@ -1,4 +1,14 @@
 import {
+  convertYyyyMmDd,
+  createUrchinTrackingModuleQuery,
+  getRandomInteger,
+  Playlog,
+  t,
+  trackEvent,
+  tweetByWebIntent
+} from "@sokontokoro/mikan";
+
+import {
   default as OverState,
   EnterParams as AbstractEnterParams
 } from "./OverState";
@@ -6,8 +16,9 @@ import {
 import TweetButton from "../../../../texture/sprite/button/TweetButton";
 import StraightWins from "../../../../texture/containers/GameResultPaper/StraightWins";
 
-import { postPlayLog, tweetGameResult } from "../../../../helper/network";
-import { Action, Category, trackEvent } from "../../../../helper/tracker";
+import { Action, Category } from "../../../../helper/tracker";
+import { Ids as StringIds } from "../../../../resources/string";
+import { URL } from "../../../../Constants";
 
 export interface EnterParams extends AbstractEnterParams {
   straightWins: number;
@@ -52,16 +63,53 @@ class SinglePlayOverState extends OverState {
       this.gameOverLogo
     );
 
-    const { bestTime, straightWins, mode } = params;
+    const { bestTime, straightWins, mode, round } = params;
 
-    // logging result.
-    postPlayLog(bestTime, mode, straightWins);
+    // logging
+    Playlog.save("oimo-no-mikiri", "hanamaru", bestTime, {
+      mode,
+      straightWins,
+      round
+    }).then(() => {});
   }
 
   private _onClickTweetButton = (bestTime: number, wins: number) => {
-    trackEvent(Category.BUTTON, Action.TAP, "result_tweet");
+    trackEvent(Action.TAP, {
+      category: Category.BUTTON,
+      label: "result_tweet"
+    });
 
-    tweetGameResult(bestTime, wins);
+    let tweetText =
+      getRandomInteger(0, 1) === 0
+        ? t(StringIds[StringIds.GAME_RESULT_TWEET1], { bestTime, wins })
+        : t(StringIds[StringIds.GAME_RESULT_TWEET2], { bestTime, wins });
+
+    if (wins === 0) {
+      tweetText = t(StringIds[StringIds.GAME_RESULT_TWEET_ZERO_POINT], {
+        wins
+      });
+    }
+
+    if (wins === 5) {
+      tweetText = t(StringIds[StringIds.GAME_RESULT_TWEET_COMPLETE], {
+        bestTime,
+        wins
+      });
+    }
+
+    const yyyymmdd = convertYyyyMmDd(new Date());
+    const utmQuery = createUrchinTrackingModuleQuery({
+      campaign: `result-share_${yyyymmdd}`,
+      source: "twitter",
+      medium: "social"
+    });
+    const url = `${URL.OIMO_NO_MIKIRI}?${utmQuery.join("&")}`;
+    const hashtags = ["おいものみきり", "そこんところ工房"];
+    tweetByWebIntent({
+      text: tweetText,
+      url,
+      hashtags
+    });
   };
 }
 
