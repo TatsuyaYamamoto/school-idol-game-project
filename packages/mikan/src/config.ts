@@ -2,7 +2,7 @@
  * @fileOverview Configuration that the application uses globally.
  */
 
-interface Config {
+export interface Config {
   rendererBackgroundColor: number;
 
   supportedLanguages: string[];
@@ -23,13 +23,13 @@ const config: Config = {
    * Basic width of the application view.
    * This app's assets is draw as premise of this.
    */
-  basicImageWidth: null,
+  basicImageWidth: 0,
 
   /**
    * Basic height of the application view.
    * This app's assets is draw as premise of this.
    */
-  basicImageHeight: null,
+  basicImageHeight: 0,
 
   /**
    * Languages that this i18n module supports.*
@@ -40,7 +40,7 @@ const config: Config = {
    * Default language.
    * This is fallback when user required unsupported language.
    */
-  defaultLanguage: null
+  defaultLanguage: ""
 };
 
 export default config;

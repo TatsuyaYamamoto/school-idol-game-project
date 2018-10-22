@@ -23,7 +23,7 @@ abstract class ViewContainer extends Container implements State {
   private _viewWidth: number;
   private _viewHeight: number;
 
-  private _elapsedTimeMillis: number;
+  private _elapsedTimeMillis: number = 0;
 
   constructor() {
     super();
@@ -127,12 +127,13 @@ abstract class ViewContainer extends Container implements State {
    * @param {boolean | EventListenerOptions} options
    */
   protected removeClickWindowEventListener(
-    listener?: EventListenerOrEventListenerObject,
+    listener: EventListenerOrEventListenerObject,
     options?: boolean | EventListenerOptions
   ): void {
     window.removeEventListener(
       isSupportTouchEvent() ? "touchstart" : "click",
-      listener
+      listener,
+      options
     );
   }
 
@@ -199,14 +200,11 @@ abstract class ViewContainer extends Container implements State {
    * @param {string} stateTag
    * @param {T} params
    */
-  protected to<T>(stateTag: string, params?: T) {
-    if (!this.stateMachine) {
-      return;
-    }
+  protected to<T>(stateTag: string, params?: T): void {
+    const current = this.stateMachine.change(stateTag, params);
 
-    this.stateMachine.change(stateTag, params);
     this.applicationLayer.removeChildren();
-    this.applicationLayer.addChild(this.stateMachine.current);
+    this.applicationLayer.addChild(current);
   }
 }
 

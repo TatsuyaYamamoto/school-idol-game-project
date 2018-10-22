@@ -19,15 +19,15 @@
 
 ### Game
 
-* [`honocar`](./packages/honocar#README.md)
-* `shakarin` // TODO
-* `maruten` // TODO
-* `yamidori` // TODO
-* [`oimo-no-mikiri`](./packages/oimo-no-mikiri#README.md)
+- [`honocar`](./packages/honocar#README.md)
+- `shakarin` // TODO
+- `maruten` // TODO
+- `yamidori` // TODO
+- [`oimo-no-mikiri`](./packages/oimo-no-mikiri#README.md)
 
 ### Others
 
-* `game-ranking` // TODO
+- `game-ranking` // TODO
 
 ## Contributing
 
@@ -37,8 +37,8 @@ Follow [pure prettier policy](https://prettier.io/)
 
 ### Commit Message
 
-* Follow [Angular/Commit Message Guidelines](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines)
-* Utility script with [Commitizen](https://github.com/commitizen/cz-cli)
+- Follow [Angular/Commit Message Guidelines](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines)
+- Utility script with [Commitizen](https://github.com/commitizen/cz-cli)
   ```
   $ yarn commit
   ```

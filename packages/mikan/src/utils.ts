@@ -2,6 +2,9 @@
  * @fileOverview Convenience utilities.
  */
 import config from "./config";
+import { getLogger } from "./logger";
+
+const logger = getLogger("mikan:util");
 
 /**
  * Detecting iOS
@@ -48,14 +51,36 @@ export function getScale(): number {
   return width / config.basicImageWidth;
 }
 
+export function isSupportPointerEvents(): boolean {
+  return "onpointerdown" in window;
+}
+
 /**
  * Return true if running browser is supporting touch events.
  * @see https://github.com/Modernizr/Modernizr/blob/v3.3.1/feature-detects/touchevents.js
  * @return {boolean}
  */
+export function isSupportTouchEvents(): boolean {
+  return "ontouchstart" in window;
+}
+
+/**
+ * @deprecated
+ */
 export function isSupportTouchEvent(): boolean {
   return "ontouchstart" in window;
 }
+
+export const pointerdown: "pointerdown" | "touchstart" | "mousedown" = (() => {
+  if (isSupportPointerEvents()) {
+    return "pointerdown";
+  }
+  if (isSupportTouchEvents()) {
+    return "touchstart";
+  }
+
+  return "mousedown";
+})();
 
 /**
  * Get integer. this value is generated randomly between min and max.
@@ -74,7 +99,7 @@ export function getRandomInteger(min: number, max: number): number {
  * @param text
  * @return {boolean}
  */
-export function copyTextToClipboard(text): boolean {
+export function copyTextToClipboard(text: string): boolean {
   const copyFrom = document.createElement("textarea");
   copyFrom.textContent = text;
 
@@ -113,4 +138,92 @@ export function vibrate(patternMillis: number | number[]) {
   if (!isSucceed) {
     console.error("Failed to vibrate.");
   }
+}
+
+export function getCurrentUrl(
+  option: { path: boolean; hash: boolean } = { path: true, hash: true }
+): string {
+  const protocol = location.protocol;
+  const host = location.hostname;
+  const path = option.path ? location.pathname : "";
+  const hash = option.hash ? location.hash : "";
+  const port =
+    !location.port || location.port === "80" ? `` : `:${location.port}`;
+
+  return protocol + "//" + host + port + path + hash;
+}
+
+/**
+ * @see https://dev.twitter.com/web/tweet-button/web-intent
+ * @see https://ga-dev-tools.appspot.com/campaign-url-builder/
+ */
+export interface WebIntentParams {
+  text?: string;
+  url?: string;
+  hashtags?: string[];
+  via?: string;
+}
+
+const TWITTER_INTENT_ENDPOINT = "https://twitter.com/intent/tweet";
+
+/**
+ * @see https://dev.twitter.com/web/tweet-button/web-intent
+ */
+export function tweetByWebIntent(params: WebIntentParams) {
+  const queries: string[] = [];
+
+  if (!!params.hashtags) {
+    queries.push(`hashtags=${encodeURIComponent(params.hashtags.join(","))}`);
+  }
+  if (!!params.text) {
+    queries.push(`text=${encodeURIComponent(params.text)}`);
+  }
+  if (!!params.url) {
+    queries.push(`url=${encodeURIComponent(params.url)}`);
+  }
+  if (!!params.via) {
+    queries.push(`via=${encodeURIComponent(params.via)}`);
+  }
+
+  const url = `${TWITTER_INTENT_ENDPOINT}?${queries.join("&")}`;
+
+  openExternalSite(url);
+}
+
+/**
+ * Open provided URL with new window.
+ * if denied to open new window; popup permission, security error..., try change window#location.
+ *
+ * @param popup
+ * @param url
+ */
+export function openExternalSite(url: string, popup: boolean = true) {
+  logger.debug(`open external site; ${url}`);
+
+  if (!popup) {
+    window.location.href = url;
+    return;
+  }
+  window.open(url);
+
+  setTimeout(() => {
+    if (!window.document.hasFocus()) {
+      // success to open new window
+      return;
+    }
+
+    logger.info(
+      `fail to open with new window object. change location to; ${url}`
+    );
+
+    window.location.href = url;
+  }, 500);
+}
+
+export function convertYyyyMmDd(date: Date) {
+  const yyyy = date.getFullYear();
+  const mm = ("00" + (date.getMonth() + 1)).slice(-2);
+  const dd = ("00" + date.getDate()).slice(-2);
+
+  return `${yyyy}${mm}${dd}`;
 }

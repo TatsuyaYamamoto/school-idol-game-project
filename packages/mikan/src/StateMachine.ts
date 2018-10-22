@@ -12,10 +12,10 @@ export type DeliverableConverter = (source?: Deliverable) => Deliverable;
  * @class
  */
 class StateMachine<S extends State> {
-  private _currentState: S;
+  private _currentState: S | undefined;
   private _states: Map<String | number, S> = new Map();
 
-  public get current(): S {
+  public get current(): S | undefined {
     return this._currentState;
   }
 
@@ -63,7 +63,7 @@ class StateMachine<S extends State> {
 
     // Set next state and make new state enter.
     this._currentState = nextState;
-    this._currentState.onEnter(params);
+    this._currentState.onEnter(params || {});
 
     return this._currentState;
   }

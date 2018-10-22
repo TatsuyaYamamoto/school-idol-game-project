@@ -1,7 +1,19 @@
 **/dist/
 **/functions/lib/
+**/appengine/env-variables.yaml
+**/appengine/env-variables-production.yaml
 
-# Created by https://www.gitignore.io/api/node,macos,windows,intellij+all
+
+# Created by https://www.gitignore.io/api/node,macos,windows,intellij+all,firebase
+
+### Firebase ###
+.idea
+**/node_modules/*
+**/.firebaserc
+
+### Firebase Patch ###
+.runtimeconfig.json
+.firebase/
 
 ### Intellij+all ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
@@ -13,6 +25,9 @@
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+
+# Generated files
+.idea/**/contentModel.xml
 
 # Sensitive or high-churn files
 .idea/**/dataSources/
@@ -64,6 +79,9 @@ fabric.properties
 
 # Editor-based Rest Client
 .idea/httpRequests
+
+# Android studio 3.1+ serialized cache file
+.idea/caches/build_file_checksums.ser
 
 ### Intellij+all Patch ###
 # Ignores the whole .idea folder and all .iml files
@@ -129,7 +147,7 @@ coverage
 # nyc test coverage
 .nyc_output
 
-# Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
+# Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
 
 # Bower dependency directory (https://bower.io/)
@@ -207,5 +225,4 @@ $RECYCLE.BIN/
 *.lnk
 
 
-# End of https://www.gitignore.io/api/node,macos,windows,intellij+all
-
+# End of https://www.gitignore.io/api/node,macos,windows,intellij+all,firebase

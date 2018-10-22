@@ -53,12 +53,12 @@ class BrandLogoAnimation extends Container {
   private _hammer: HammerSprite;
   private _characters: BrandLogoText[];
 
-  private _hammerTimeLine;
-  private _charTimeLine;
+  private _hammerTimeLine: any;
+  private _charTimeLine: any;
 
   private _promise: Promise<any>;
 
-  constructor(width?, height?) {
+  constructor(width?: number, height?: number) {
     super();
 
     this._width = width || 400;
@@ -99,38 +99,38 @@ class BrandLogoAnimation extends Container {
     return this._promise;
   }
 
-  private defineHammerTimeLineItems(onComplete) {
+  private defineHammerTimeLineItems(onComplete: Function) {
     this._hammerTimeLine
       .add({
         targets: this._hammer,
         rotation: [
           {
-            value: -90 * Math.PI / 180,
+            value: (-90 * Math.PI) / 180,
             duration: TIMELINE.EXPANSION * DURATION_SCALE
           },
           { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE },
           {
-            value: -90 * Math.PI / 180,
+            value: (-90 * Math.PI) / 180,
             duration: TIMELINE.EXPANSION * DURATION_SCALE
           },
           { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE },
           {
-            value: -90 * Math.PI / 180,
+            value: (-90 * Math.PI) / 180,
             duration: TIMELINE.EXPANSION * DURATION_SCALE
           },
           { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE },
           {
-            value: -90 * Math.PI / 180,
+            value: (-90 * Math.PI) / 180,
             duration: TIMELINE.EXPANSION * DURATION_SCALE
           },
           { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE },
           {
-            value: -90 * Math.PI / 180,
+            value: (-90 * Math.PI) / 180,
             duration: TIMELINE.EXPANSION * DURATION_SCALE
           },
           { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE },
           {
-            value: -90 * Math.PI / 180,
+            value: (-90 * Math.PI) / 180,
             duration: TIMELINE.EXPANSION * DURATION_SCALE
           },
           { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE }
@@ -170,9 +170,9 @@ class BrandLogoAnimation extends Container {
       });
   }
 
-  private defineCharacterTimeLineItems(onComplete) {
+  private defineCharacterTimeLineItems(onComplete: Function) {
     // 各文字の最終的なx方向の位置を計算
-    const positions = this._characters.map((c, index, array) => {
+    const positions = this._characters.map((_, index, array) => {
       const cellTotal = array.length + 5;
       const cellIndex = index + 3;
       return (cellIndex - cellTotal / 2) / cellTotal;
@@ -189,7 +189,7 @@ class BrandLogoAnimation extends Container {
         targets: this._characters // 'そこんところ' only
           .filter(c => c.text !== "工" && c.text !== "房")
           .map(c => c.scale),
-        delay: (el, i, l) => {
+        delay: (_el: any, i: number, _l: any) => {
           return (
             ((TIMELINE.EXPANSION + TIMELINE.SHRINK) * i + 50) * DURATION_SCALE
           );
@@ -218,9 +218,10 @@ class BrandLogoAnimation extends Container {
        */
       .add({
         targets: this._characters,
-        x: (el, i, l) => this.x + this._width * positions[i],
+        x: (_el: any, i: number, _l: any) =>
+          this.x + this._width * positions[i],
         duration: TIMELINE.CHARACTER_EXTEND * DURATION_SCALE,
-        delay: (el, i, l) => {
+        delay: (_el: any, _i: number, _l: any) => {
           return TIMELINE.CHARACTER_WAITING * DURATION_SCALE;
         },
         easing: "linear"

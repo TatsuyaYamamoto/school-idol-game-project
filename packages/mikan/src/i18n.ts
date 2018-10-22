@@ -21,7 +21,7 @@ import config from "./config";
  * @type {i18next.i18n}
  * @private
  */
-let i18n: i18next.i18n = null;
+let i18n: i18next.i18n | null = null;
 
 /**
  * Initialize i18next module.
@@ -57,7 +57,14 @@ export function initI18n(
  * @see i18n#t
  */
 // tslint:disable-next-line:function-name
-export function t(key, options?): string {
+export function t(
+  key: string | string[],
+  options?: { [key: string]: any }
+): string {
+  if (!i18n) {
+    throw new Error("i18n module is not initialized.");
+  }
+
   return i18n.t(key, options);
 }
 
@@ -72,6 +79,10 @@ export function changeLanguage(
   language: string,
   callback?: i18next.Callback
 ): void {
+  if (!i18n) {
+    throw new Error("i18n module is not initialized.");
+  }
+
   if (isDefinedLanguage(language)) {
     i18n.changeLanguage(language, callback);
   } else {
@@ -86,6 +97,10 @@ export function changeLanguage(
  * @return {string}
  */
 export function getCurrentLanguage(): string {
+  if (!i18n) {
+    throw new Error("i18n module is not initialized.");
+  }
+
   // Step against rewriting directly by user.
   // remove locale if it exists.
   const lang = i18n.language.substr(0, 2);

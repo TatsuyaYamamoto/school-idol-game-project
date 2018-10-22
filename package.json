@@ -8,15 +8,23 @@
   "private": true,
   "scripts": {
     "precommit": "pretty-quick --staged",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "ws": " yarn workspace ",
+    "wss": "yarn workspaces"
   },
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
+    },
+    "sokontokoro": {
+      "trackingCode": {
+        "dev": "UA-127664761-2",
+        "pro": "UA-127664761-1"
+      }
     }
   },
   "workspaces": [
-    "packages/*"
+    "packages/**/*"
   ],
   "dependencies": {},
   "devDependencies": {
