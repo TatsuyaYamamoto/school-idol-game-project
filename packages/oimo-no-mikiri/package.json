@@ -1,6 +1,6 @@
 {
   "name": "oimo-no-mikiri",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "LoveLive fun game! Outclass an oimo.",
   "main": "index.js",
   "scripts": {
