@@ -37,7 +37,7 @@ class Hanamaru extends Player {
   }
 
   public get name(): string {
-    return t(StringIds.CHARA_NAME_HANAMARU);
+    return t(StringIds[StringIds.CHARA_NAME_HANAMARU]);
   }
 }
 

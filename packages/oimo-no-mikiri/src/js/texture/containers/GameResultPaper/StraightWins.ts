@@ -12,7 +12,7 @@ class StraightWins extends Container {
 
   constructor(wins: number) {
     super();
-    this._label = new Text(t(StringIds.LABEL_STRAIGHT_WINS), {
+    this._label = new Text(t(StringIds[StringIds.LABEL_STRAIGHT_WINS]), {
       fontFamily: "g_brushtappitsu_freeH",
       fontSize: 50,
       padding: 5 // prevent to cut off words.

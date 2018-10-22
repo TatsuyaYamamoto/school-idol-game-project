@@ -27,15 +27,18 @@ export function goTo(href: string): void {
 export function tweetGameResult(bestTime: number, wins: number): void {
   let tweetText =
     getRandomInteger(0, 1) === 0
-      ? t(StringIds.GAME_RESULT_TWEET1, { bestTime, wins })
-      : t(StringIds.GAME_RESULT_TWEET2, { bestTime, wins });
+      ? t(StringIds[StringIds.GAME_RESULT_TWEET1], { bestTime, wins })
+      : t(StringIds[StringIds.GAME_RESULT_TWEET2], { bestTime, wins });
 
   if (wins === 0) {
-    tweetText = t(StringIds.GAME_RESULT_TWEET_ZERO_POINT, { wins });
+    tweetText = t(StringIds[StringIds.GAME_RESULT_TWEET_ZERO_POINT], { wins });
   }
 
   if (wins === 5) {
-    tweetText = t(StringIds.GAME_RESULT_TWEET_COMPLETE, { bestTime, wins });
+    tweetText = t(StringIds[StringIds.GAME_RESULT_TWEET_COMPLETE], {
+      bestTime,
+      wins
+    });
   }
 
   goTo(
@@ -49,10 +52,13 @@ export function tweetGameResult(bestTime: number, wins: number): void {
 
 export function tweetMultiPlayResult(winner: Actor, winnerWins, loserWins) {
   if (winner === Actor.PLAYER) {
-    const tweetText = t(StringIds.MULTI_GAME_RESULT_TWEET_HANAMARU_WIN, {
-      winnerWins,
-      loserWins
-    });
+    const tweetText = t(
+      StringIds[StringIds.MULTI_GAME_RESULT_TWEET_HANAMARU_WIN],
+      {
+        winnerWins,
+        loserWins
+      }
+    );
     goTo(
       `${
         URL.TWITTER_TWEET_PAGE
@@ -64,7 +70,7 @@ export function tweetMultiPlayResult(winner: Actor, winnerWins, loserWins) {
   }
 
   if (winner === Actor.OPPONENT) {
-    const tweetText = t(StringIds.MULTI_GAME_RESULT_TWEET_RUBY_WIN, {
+    const tweetText = t(StringIds[StringIds.MULTI_GAME_RESULT_TWEET_RUBY_WIN], {
       winnerWins,
       loserWins
     });

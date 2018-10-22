@@ -66,8 +66,8 @@ class BattleResultLabelBoard extends Container {
       VERTICAL_SUPPORT_LANGUAGES.indexOf(getCurrentLanguage()) >= 0;
     const resultLabel =
       type === "playerWin" || type === "opponentWin"
-        ? t(StringIds.LABEL_WINNER)
-        : t(StringIds.LABEL_FALSE_START);
+        ? t(StringIds[StringIds.LABEL_WINNER])
+        : t(StringIds[StringIds.LABEL_FALSE_START]);
 
     const labelPositionY = isVertical ? -1 * height * 0.45 : -1 * height * 0.4;
     const characterLabelPositionX = width * 0.3;

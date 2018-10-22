@@ -158,12 +158,14 @@ class ResultState extends GameViewState {
     const periodTimeMillis = 100;
 
     const timeLine = anime.timeline({
+      // @ts-ignore
       targets: target.position,
       easing: "linear",
       loop: 3
     });
 
     timeLine
+      // @ts-ignore
       .add({ x: right, duration: periodTimeMillis / 4 })
       .add({ x: center, duration: periodTimeMillis / 4 })
       .add({ x: left, duration: periodTimeMillis / 4 })
@@ -174,12 +176,14 @@ class ResultState extends GameViewState {
 
   protected whiteOut = (onStartRefresh: Function, onComplete: Function) => {
     const timeLine = anime.timeline({
+      // @ts-ignore
       targets: this.whiteLayer,
       easing: "linear"
     });
 
     timeLine
       // Start white out.
+      // @ts-ignore
       .add({
         alpha: 1,
         duration: 100

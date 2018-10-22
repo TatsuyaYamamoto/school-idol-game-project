@@ -39,7 +39,7 @@ class LittleDaemon extends Opponent {
   }
 
   public get name(): string {
-    return t(StringIds.CHARA_NAME_LITTLE_DAEMON);
+    return t(StringIds[StringIds.CHARA_NAME_LITTLE_DAEMON]);
   }
 }
 

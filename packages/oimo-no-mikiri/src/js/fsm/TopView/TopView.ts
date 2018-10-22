@@ -33,7 +33,6 @@ import {
   openReadyRoomModal,
   openRejectJoinRoomModal
 } from "../../helper/modals";
-import { showTweetView } from "../../helper/network";
 
 export enum Events {
   TAP_TITLE = "GameView@TAP_TITLE",

@@ -20,7 +20,7 @@ export class TopTime extends Container {
   constructor(topTime: number) {
     super();
 
-    this._label = new Text(t(StringIds.LABEL_TOP_TIME), {
+    this._label = new Text(t(StringIds[StringIds.LABEL_TOP_TIME]), {
       fontFamily: "g_brushtappitsu_freeH",
       fontSize: 20,
       // textBaseline: 'middle',

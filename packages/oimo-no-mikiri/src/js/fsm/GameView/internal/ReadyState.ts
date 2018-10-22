@@ -128,6 +128,7 @@ class ReadyState extends GameViewState {
     const { PLAY_READY_SOUND } = ANIMATION_TIME_LINE;
     const timeLine = anime.timeline({ autoplay: false });
 
+    // @ts-ignore
     timeLine.add({
       offset: PLAY_READY_SOUND,
       begin: () => play(SoundIds.SOUND_READY)
@@ -155,6 +156,7 @@ class ReadyState extends GameViewState {
     } = ANIMATION_TIME_LINE;
 
     const timeLine = anime.timeline({
+      // @ts-ignore
       targets: values,
       easing: "linear",
       autoplay: false,
@@ -166,6 +168,7 @@ class ReadyState extends GameViewState {
 
     timeLine
       // black out
+      // @ts-ignore
       .add({
         brightness: 0.2,
         contrast: 0.8,
@@ -203,6 +206,7 @@ class ReadyState extends GameViewState {
     } = ANIMATION_TIME_LINE;
 
     const timeLine = anime.timeline({
+      // @ts-ignore
       easing: "linear",
       targets: values,
       autoplay: false,
@@ -214,6 +218,7 @@ class ReadyState extends GameViewState {
 
     timeLine
       // show
+      // @ts-ignore
       .add({
         offset: SHOW_CLOSEUP_LINE_IMAGES,
         begin: () => {

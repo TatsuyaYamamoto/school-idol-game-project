@@ -35,7 +35,7 @@ class Ruby extends Opponent {
   }
 
   public get name(): string {
-    return t(StringIds.CHARA_NAME_RUBY);
+    return t(StringIds[StringIds.CHARA_NAME_RUBY]);
   }
 }
 

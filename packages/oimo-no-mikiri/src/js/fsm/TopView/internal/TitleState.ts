@@ -49,7 +49,7 @@ class TitleState extends TopViewState {
     });
     this._appVersion.position.set(this.viewWidth * 0.9, this.viewHeight * 0.95);
 
-    this._tapInfoText = new Text(t(StringIds.TAP_DISPLAY_INFO), {
+    this._tapInfoText = new Text(t(StringIds[StringIds.TAP_DISPLAY_INFO]), {
       fontSize: 40,
       stroke: "#ffffff",
       strokeThickness: 2

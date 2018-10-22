@@ -20,7 +20,7 @@ class PlayerWins extends Container {
       padding: 5 // prevent to cut off words.
     });
 
-    this._winsLabel = new Text(t(StringIds.LABEL_WINS), {
+    this._winsLabel = new Text(t(StringIds[StringIds.LABEL_WINS]), {
       fontFamily: "g_brushtappitsu_freeH",
       fontSize: 30,
       padding: 5 // prevent to cut off words.
