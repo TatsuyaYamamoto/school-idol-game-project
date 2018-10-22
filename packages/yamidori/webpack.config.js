@@ -2,49 +2,51 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 
-const indexPugPath =
-  process.env.NODE_ENV === "production"
-    ? "src/index.production.pug"
-    : "src/index.pug";
+const config = require("../../package.json").config.sokontokoro;
+const isProduction = process.env.NODE_ENV === "production";
+
+const htmlParams = {
+  title: "やみどり！ -DEVELOPMENT-",
+  noIndex: true,
+  trackingCode: config.trackingCode.dev,
+  description:
+    "ことりちゃんが、あの闇でケーキな鍋を完成させる、、、のを阻止するブラウザゲームです！そこんところ工房のファンゲームです。",
+  ogpUrl: "https://games.sokontokoro-factory.net/yamidori/",
+  ogpImageUrl:
+    "https://games.sokontokoro-factory.net/yamidori/assets/image/ogp.jpg"
+};
+
+isProduction &&
+  Object.assign(htmlParams, {
+    title: "やみどり！ -そこんところ工房-",
+    trackingCode: config.trackingCode.pro,
+    noIndex: false
+  });
 
 const plugins = [
   new HtmlWebpackPlugin({
-    template: `!!pug-loader!${indexPugPath}`
+    templateParameters: htmlParams,
+    template: "src/index.ejs",
+    hash: true
   }),
-  new CopyWebpackPlugin([
-    { context: "src/assets", from: "**/*", to: "assets" }
-  ]),
-  new webpack.DefinePlugin({
-    "process.env": {
-      NODE_ENV: JSON.stringify(process.env.NODE_ENV)
-    }
-  })
+  new CopyWebpackPlugin([{ context: "src/assets", from: "**/*", to: "assets" }])
 ];
 
-if (process.env.NODE_ENV === "production") {
-  plugins.push(
-    new UglifyJsPlugin({
-      compress: {
-        drop_console: true
-      },
-      comments: false
-    })
-  );
-}
+module.exports = {
+  mode: isProduction ? "production" : "development",
 
-const config = {
-  entry: {
-    bundle: path.resolve(__dirname, "src/js/index.ts")
-  },
+  entry: path.resolve(__dirname, "src/js/index.ts"),
+
   output: {
     path: path.resolve(__dirname, "dist/"),
-    filename: "[name].js"
+    filename: "bundle.js"
   },
+
   resolve: {
     extensions: [".js", ".ts"]
   },
+
   module: {
     rules: [
       {
@@ -56,13 +58,10 @@ const config = {
       { test: /\.woff$/, loader: "url-loader" }
     ]
   },
+
   // https://github.com/pixijs/pixi-sound/issues/28
   // Resolve node fs module for pixi-sound.
   node: { fs: "empty" },
-  plugins: plugins,
-  devServer: {
-    port: 8000
-  }
-};
 
-module.exports = config;
+  plugins: plugins
+};

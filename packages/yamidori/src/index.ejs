@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <% if (noIndex) { %>
+        <meta name=”robots” content=”noindex,follow”/>
+    <% } %>
+
+    <meta charset="utf-8"/>
+    <title><%= title %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="<%= description %>"/>
+    <meta name="keyword" content="ラブライブ！,LoveLive！,高坂穂乃果, ホノカチャン, ゲーム,フリゲ,フリーゲーム">
+
+    <meta property="og:title" content="<%= title %>"/>
+    <meta property="og:site_name" content="<%= title %>"/>
+    <meta property="og:type" content="article"/>
+    <meta property="og:description" content="<%= description %>"/>
+    <meta property="og:url" content="<%= ogpUrl %>"/>
+    <meta property="og:image" content="<%= ogpImageUrl %>"/>
+
+    <!-- Global site tag (tracker.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<%= trackingCode %>"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+
+      // init ga in mikan/Tracker
+      window.__TRACKING_CODE__ = '<%= trackingCode %>';
+    </script>
+
+    <script>
+      window.addEventListener("error", function(e) {
+        console.error(e);
+        gtag("event", "exception", { description: e.message, fatal: true });
+      });
+    </script>
+</head>
+<body>
+<div id="main">
+    <canvas id="gameScrean"></canvas>
+</div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 import { interaction } from "pixi.js";
 import Sound from "pixi-sound/lib/Sound";
-import * as swal from "sweetalert";
+const swal = require("sweetalert");
 
 import { Events } from "../../view/TopViewState";
 import { dispatchEvent } from "../../../framework/EventUtils";

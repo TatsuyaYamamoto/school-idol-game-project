@@ -1,4 +1,4 @@
-import { Sound } from "pixi-sound/lib/Sound";
+import Sound from "pixi-sound/lib/Sound";
 
 import State from "../../../framework/State";
 
