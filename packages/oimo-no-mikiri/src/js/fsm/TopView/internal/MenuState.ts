@@ -4,7 +4,9 @@ import {
   Deliverable,
   dispatchEvent,
   play,
-  toggleSound
+  toggleSound,
+  tracePage,
+  trackEvent
 } from "@sokontokoro/mikan";
 
 import { Events } from "../TopView";
@@ -17,13 +19,7 @@ import SelectMultiPlayModeBoard from "../../../texture/containers/SelectMultiPla
 import Mode from "../../../models/Mode";
 
 import { goTo } from "../../../helper/network";
-import {
-  Action,
-  Category,
-  trackEvent,
-  trackPageView,
-  VirtualPageViews
-} from "../../../helper/tracker";
+import { Action, Category, VirtualPageViews } from "../../../helper/tracker";
 
 import { URL } from "../../../Constants";
 import { Ids as SoundIds } from "../../../resources/sound";
@@ -49,7 +45,7 @@ class MenuState extends TopViewState {
     super.onEnter(params);
 
     // Tracking
-    trackPageView(VirtualPageViews.MENU);
+    tracePage(VirtualPageViews.MENU);
 
     this._menuBoard = new MenuBoard(this.viewHeight, this.viewHeight);
     this._menuBoard.position.set(this.viewWidth * 0.5, this.viewHeight * 0.5);
@@ -125,7 +121,7 @@ class MenuState extends TopViewState {
   private _onSelectHome = () => {
     goTo(URL.TWITTER_HOME_T28);
 
-    trackEvent(Category.BUTTON, Action.TAP, "home");
+    trackEvent(Action.TAP, { category: Category.BUTTON, label: "home" });
   };
 
   /**
@@ -136,7 +132,10 @@ class MenuState extends TopViewState {
     play(SoundIds.SOUND_TOGGLE_SOUND);
     toggleSound();
 
-    trackEvent(Category.BUTTON, Action.TAP, "toggle_sound");
+    trackEvent(Action.TAP, {
+      category: Category.BUTTON,
+      label: "toggle_sound"
+    });
   };
 
   /**
@@ -186,7 +185,7 @@ class MenuState extends TopViewState {
 
     dispatchEvent(Events.FIXED_PLAY_MODE, { mode });
 
-    trackEvent(Category.BUTTON, Action.TAP, mode);
+    trackEvent(Action.TAP, { category: Category.BUTTON, label: mode });
   };
 
   private turnSoundOn() {

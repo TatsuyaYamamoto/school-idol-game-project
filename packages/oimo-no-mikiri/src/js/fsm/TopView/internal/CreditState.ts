@@ -1,4 +1,10 @@
-import { Deliverable, dispatchEvent, t, play } from "@sokontokoro/mikan";
+import {
+  Deliverable,
+  dispatchEvent,
+  t,
+  play,
+  tracePage
+} from "@sokontokoro/mikan";
 
 import TopViewState from "./TopViewState";
 import { Events } from "../TopView";
@@ -6,7 +12,7 @@ import { Events } from "../TopView";
 import CreditItem from "../../../texture/sprite/text/CreditItem";
 import BackToMenuButton from "../../../texture/sprite/button/BackToMenuButton";
 
-import { trackPageView, VirtualPageViews } from "../../../helper/tracker";
+import { VirtualPageViews } from "../../../helper/tracker";
 
 import { Ids as SoundIds } from "../../../resources/sound";
 import { Ids as StringIds } from "../../../resources/string";
@@ -37,7 +43,7 @@ class CreditState extends TopViewState {
     super.onEnter(params);
 
     // Tracking
-    trackPageView(VirtualPageViews.CREDIT);
+    tracePage(VirtualPageViews.CREDIT);
 
     this._t28Credit = new CreditItem(
       t(StringIds[StringIds.CREDIT_T28]),

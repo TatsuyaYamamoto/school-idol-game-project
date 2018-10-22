@@ -1,6 +1,11 @@
 import { Texture, Sprite, Container } from "pixi.js";
 
-import { Deliverable, dispatchEvent, play } from "@sokontokoro/mikan";
+import {
+  Deliverable,
+  dispatchEvent,
+  play,
+  trackEvent
+} from "@sokontokoro/mikan";
 
 import GameViewState from "../GameViewState";
 import { Events } from "../../GameView";
@@ -16,7 +21,7 @@ import WinnerName from "../../../../texture/containers/GameResultPaper/WinnerNam
 import Actor from "../../../../models/Actor";
 import Mode from "../../../../models/Mode";
 
-import { Action, Category, trackEvent } from "../../../../helper/tracker";
+import { Action, Category } from "../../../../helper/tracker";
 
 import { Ids as SoundIds } from "../../../../resources/sound";
 
@@ -24,6 +29,7 @@ export interface EnterParams extends Deliverable {
   winner: Actor;
   bestTime: number;
   mode: Mode;
+  round: number;
 }
 
 abstract class OverState extends GameViewState {
@@ -58,7 +64,7 @@ abstract class OverState extends GameViewState {
   onEnter(params: EnterParams): void {
     super.onEnter(params);
 
-    const { winner, bestTime, mode } = params;
+    const { winner, bestTime, mode, round } = params;
 
     this._gameOverLogo = new GameOverLogo();
     this._gameOverLogo.position.set(
@@ -124,7 +130,7 @@ abstract class OverState extends GameViewState {
     );
 
     // track result
-    this._trackAchievementToGa(bestTime, mode, winner);
+    this._trackAchievementToGa(mode, round);
   }
 
   /**
@@ -147,7 +153,10 @@ abstract class OverState extends GameViewState {
     dispatchEvent(Events.RESTART_GAME);
     play(SoundIds.SOUND_OK);
 
-    trackEvent(Category.BUTTON, Action.TAP, "restart_game");
+    trackEvent(Action.TAP, {
+      category: Category.BUTTON,
+      label: "restart_game"
+    });
   };
 
   /**
@@ -158,12 +167,12 @@ abstract class OverState extends GameViewState {
     dispatchEvent(Events.BACK_TO_TOP);
   };
 
-  private _trackAchievementToGa = (
-    bestTime: number,
-    mode: Mode,
-    winner: Actor
-  ) => {
-    trackEvent(Category.ACHIEVEMENT, `Fixed_${mode}`, winner, bestTime);
+  private _trackAchievementToGa = (mode: Mode, round: number) => {
+    trackEvent(Action.GAMEOVER, {
+      category: Category.ACHIEVEMENT,
+      label: `Fixed_${mode}`,
+      value: round
+    });
   };
 
   protected _from = (texture: Texture): Sprite => {

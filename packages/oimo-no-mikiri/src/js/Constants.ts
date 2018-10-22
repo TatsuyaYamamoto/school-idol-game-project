@@ -132,11 +132,6 @@ export const URL = {
   KIRBY_HOME: "https://www.nintendo.co.jp/n02/shvc/p_akfj/"
 };
 
-export const GOOGLE_ANALYTICS_ACCOUNT_ID =
-  process.env.NODE_ENV === "production"
-    ? "UA-64858827-7" // For oimo production tracking.
-    : "UA-64858827-8"; // For test tracking.
-
 export const FIREBASE_OPTIONS =
   process.env.NODE_ENV === "production"
     ? {

@@ -1,30 +1,36 @@
 /**
  * @fileOverview Entry point of the application.
  */
-import { config, initI18n, isSupportTouchEvent } from "@sokontokoro/mikan";
+import {
+  config,
+  initI18n,
+  isSupportTouchEvent,
+  initTracker,
+  tracePage
+} from "@sokontokoro/mikan";
 
 import ApplicationState from "./fsm/ApplicationState";
 import { default as resources } from "./resources/string";
-import { init as initTracker, trackError } from "./helper/tracker";
 import { init as initFirebase } from "./helper/firebase";
 import {
   SUPPORTED_LANGUAGES,
   DEFAULT_LANGUAGE,
   BASIC_IMAGE_WIDTH,
-  BASIC_IMAGE_HEIGHT,
-  GOOGLE_ANALYTICS_ACCOUNT_ID
+  BASIC_IMAGE_HEIGHT
 } from "./Constants";
 
 // Network fetch module
 import "whatwg-fetch";
+import { VirtualPageViews } from "./helper/tracker";
 
 // Brand logo text font
 require("../fonts/PixelMplus10-Regular.css");
 require("../fonts/g_brushtappitsu_freeH.css");
 
 // initialize modules
-initTracker(GOOGLE_ANALYTICS_ACCOUNT_ID);
-initFirebase();
+initFirebase().then(user => {
+  initTracker(user.uid);
+});
 
 /**
  * Game rendering target on html.
@@ -54,6 +60,8 @@ const app = new ApplicationState();
  * Initialize the application.
  */
 function init() {
+  tracePage(VirtualPageViews.INITIAL);
+
   mainElement.style.display = "block";
   firstGestureGuideElement.style.display = "none";
 
@@ -79,7 +87,3 @@ function init() {
 window.addEventListener(isSupportTouchEvent() ? "touchstart" : "click", init, {
   once: true
 });
-
-window.onerror = function(msg, file, line, column, err) {
-  trackError(err);
-};

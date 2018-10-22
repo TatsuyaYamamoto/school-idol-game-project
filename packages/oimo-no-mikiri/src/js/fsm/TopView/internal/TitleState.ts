@@ -1,6 +1,12 @@
 import { parse } from "query-string";
 
-import { Deliverable, dispatchEvent, t, play } from "@sokontokoro/mikan";
+import {
+  Deliverable,
+  dispatchEvent,
+  t,
+  play,
+  tracePage
+} from "@sokontokoro/mikan";
 
 import TopViewState from "./TopViewState";
 import { Events } from "../TopView";
@@ -8,7 +14,7 @@ import { Events } from "../TopView";
 import TitleLogo from "../../../texture/sprite/TitleLogo";
 import Text from "../../../texture/internal/Text";
 
-import { trackPageView, VirtualPageViews } from "../../../helper/tracker";
+import { VirtualPageViews } from "../../../helper/tracker";
 
 import Mode from "../../../models/Mode";
 
@@ -37,7 +43,7 @@ class TitleState extends TopViewState {
     super.onEnter(params);
 
     // Tracking
-    trackPageView(VirtualPageViews.TITLE);
+    tracePage(VirtualPageViews.TITLE);
 
     this._titleLogo = new TitleLogo();
     this._titleLogo.position.set(this.viewWidth * 0.5, this.viewHeight * 0.5);

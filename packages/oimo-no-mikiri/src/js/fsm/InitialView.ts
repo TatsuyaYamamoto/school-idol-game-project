@@ -6,7 +6,9 @@ import {
   Deliverable,
   AssetLoader,
   isIOS,
-  resumeContext
+  resumeContext,
+  tracePage,
+  trackTiming
 } from "@sokontokoro/mikan";
 
 import { Events as ApplicationEvents } from "./ApplicationState";
@@ -19,13 +21,7 @@ import { default as soundManifest } from "../resources/sound";
 
 import { SKIP_BRAND_LOGO_ANIMATION } from "../Constants";
 
-import {
-  Category,
-  TimingVariable,
-  trackPageView,
-  trackTiming,
-  VirtualPageViews
-} from "../helper/tracker";
+import { VirtualPageViews } from "../helper/tracker";
 
 export enum Events {
   COMPLETE_PRELOAD = "InitialViewState@COMPLETE_LOAD",
@@ -48,7 +44,7 @@ class InitialViewState extends ViewContainer {
     super.onEnter(params);
 
     // Tracking
-    trackPageView(VirtualPageViews.INITIAL);
+    tracePage(VirtualPageViews.INITIAL);
 
     addEvents({
       [Events.COMPLETE_PRELOAD]: this._handleLoadCompleteEvent,
@@ -142,12 +138,7 @@ class InitialViewState extends ViewContainer {
   };
 
   private _trackPreloadPerformance = (timeMillis: number) => {
-    trackTiming(
-      Category.PERFORMANCE,
-      TimingVariable.LOAD,
-      timeMillis,
-      "preload_resources"
-    );
+    trackTiming("preload_resources", timeMillis);
   };
 }
 

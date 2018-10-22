@@ -4,7 +4,8 @@ import {
   play,
   playOnLoop,
   stop,
-  dispatchEvent
+  dispatchEvent,
+  tracePage
 } from "@sokontokoro/mikan";
 
 import Player from "../../texture/sprite/character/Player";
@@ -21,7 +22,7 @@ import EnemyRuby from "../../texture/sprite/character/EnemyRuby";
 
 import Game, { isSingleMode } from "../../models/Game";
 
-import { trackPageView, VirtualPageViews } from "../../helper/tracker";
+import { VirtualPageViews } from "../../helper/tracker";
 
 import { Ids as SoundIds } from "../../resources/sound";
 import { Events as AppEvents } from "../ApplicationState";
@@ -92,7 +93,7 @@ abstract class GameView extends ViewContainer {
     playOnLoop(SoundIds.SOUND_WAVE_LOOP, 0.2);
 
     // Tracking
-    trackPageView(VirtualPageViews.GAME);
+    tracePage(VirtualPageViews.GAME);
 
     this._game = params.game;
 

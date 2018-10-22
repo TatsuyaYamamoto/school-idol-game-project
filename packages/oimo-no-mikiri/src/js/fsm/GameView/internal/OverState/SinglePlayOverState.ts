@@ -1,3 +1,5 @@
+import { trackEvent } from "@sokontokoro/mikan";
+
 import {
   default as OverState,
   EnterParams as AbstractEnterParams
@@ -7,7 +9,7 @@ import TweetButton from "../../../../texture/sprite/button/TweetButton";
 import StraightWins from "../../../../texture/containers/GameResultPaper/StraightWins";
 
 import { postPlayLog, tweetGameResult } from "../../../../helper/network";
-import { Action, Category, trackEvent } from "../../../../helper/tracker";
+import { Action, Category } from "../../../../helper/tracker";
 
 export interface EnterParams extends AbstractEnterParams {
   straightWins: number;
@@ -59,7 +61,10 @@ class SinglePlayOverState extends OverState {
   }
 
   private _onClickTweetButton = (bestTime: number, wins: number) => {
-    trackEvent(Category.BUTTON, Action.TAP, "result_tweet");
+    trackEvent(Action.TAP, {
+      category: Category.BUTTON,
+      label: "result_tweet"
+    });
 
     tweetGameResult(bestTime, wins);
   };

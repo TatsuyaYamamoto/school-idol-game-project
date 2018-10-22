@@ -1,4 +1,9 @@
-import { Deliverable, dispatchEvent, play } from "@sokontokoro/mikan";
+import {
+  Deliverable,
+  dispatchEvent,
+  play,
+  tracePage
+} from "@sokontokoro/mikan";
 
 import TopViewState from "./TopViewState";
 import { Events } from "../TopView";
@@ -12,7 +17,7 @@ import Hanamaru from "../../../texture/sprite/character/Hanamaru";
 import Uchicchi from "../../../texture/sprite/character/Uchicchi";
 import Oimo from "../../../texture/sprite/character/Oimo";
 
-import { trackPageView, VirtualPageViews } from "../../../helper/tracker";
+import { VirtualPageViews } from "../../../helper/tracker";
 
 import { Ids as SoundIds } from "../../../resources/sound";
 
@@ -40,7 +45,7 @@ class HowToPlayState extends TopViewState {
     super.onEnter(params);
 
     // Tracking
-    trackPageView(VirtualPageViews.HOW_TO_USE);
+    tracePage(VirtualPageViews.HOW_TO_USE);
 
     this._usageTextArea = new UsageTextArea();
     this._usageTextArea.position.set(

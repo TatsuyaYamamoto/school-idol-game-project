@@ -1,8 +1,8 @@
 import { Container } from "pixi.js";
-import { isSupportTouchEvent } from "@sokontokoro/mikan";
+import { isSupportTouchEvent, trackEvent } from "@sokontokoro/mikan";
 
 import Text from "../../internal/Text";
-import { Action, Category, trackEvent } from "../../../helper/tracker";
+import { Action, Category } from "../../../helper/tracker";
 
 class CreditItem extends Container {
   private _name: Text;
@@ -25,7 +25,10 @@ class CreditItem extends Container {
     this.buttonMode = true;
     this.interactive = true;
     this.on(isSupportTouchEvent() ? "touchstart" : "click", () => {
-      trackEvent(Category.BUTTON, Action.TAP, `credit: ${url}`);
+      trackEvent(Action.TAP, {
+        category: Category.BUTTON,
+        label: `credit: ${url}`
+      });
       window.location.href = url;
     });
   }

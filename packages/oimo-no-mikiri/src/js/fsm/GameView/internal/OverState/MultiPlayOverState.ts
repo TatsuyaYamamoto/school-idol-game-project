@@ -1,3 +1,5 @@
+import { trackEvent } from "@sokontokoro/mikan";
+
 import {
   default as OverState,
   EnterParams as AbstractEnterParams
@@ -8,7 +10,7 @@ import TweetButton from "../../../../texture/sprite/button/TweetButton";
 
 import Actor from "../../../../models/Actor";
 
-import { Action, Category, trackEvent } from "../../../../helper/tracker";
+import { Action, Category } from "../../../../helper/tracker";
 import { tweetMultiPlayResult } from "../../../../helper/network";
 
 export interface EnterParams extends AbstractEnterParams {
@@ -58,7 +60,10 @@ class MultiPlayOverState extends OverState {
   }
 
   private _onClickTweetButton = (winner: Actor, winnerWins, loserWins) => {
-    trackEvent(Category.BUTTON, Action.TAP, "result_tweet");
+    trackEvent(Action.TAP, {
+      category: Category.BUTTON,
+      label: "result_tweet"
+    });
 
     tweetMultiPlayResult(winner, winnerWins, loserWins);
   };
