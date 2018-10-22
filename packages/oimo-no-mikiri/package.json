@@ -5,14 +5,16 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --progress --colors --watch",
-    "clean": "rimraf dist",
+    "clean": "rm -rf dist",
     "minify:image": "imagemin dist/assets/image/*.png --out-dir=dist/assets/image",
-    "build": "npm run clean && webpack",
-    "build:pro": "npm run clean && NODE_ENV=production webpack && npm run minify:image",
-    "deploy:dev": "node scripts/deploy.js",
+    "build": "    yarn clean && webpack",
+    "build:pro": "yarn clean && NODE_ENV=production webpack && npm run minify:image",
+    "deploy": "                    yarn build     && gsutil -m rsync -d -r dist/ gs://games-dev.sokontokoro-factory.net/oimo/",
+    "deploy:pro": "yarn confirm && yarn build:pro && gsutil -m rsync -d -r dist/ gs://games.sokontokoro-factory.net/oimo/",
     "lint": "tslint --format stylish --project .",
     "format": "prettier --write 'src/**/*.{ts,tsx}'",
-    "precommit": "pretty-quick --staged"
+    "precommit": "pretty-quick --staged",
+    "confirm": "../../production-confirm.js"
   },
   "repository": {
     "type": "git",
@@ -48,7 +50,6 @@
     "pretty-quick": "^1.6.0",
     "pug": "^2.0.0-rc.3",
     "pug-loader": "^2.3.0",
-    "rimraf": "^2.6.1",
     "style-loader": "^0.20.2",
     "ts-loader": "^5.2.2",
     "tslint": "^5.10.0",
