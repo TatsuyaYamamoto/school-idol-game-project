@@ -50,6 +50,7 @@ export interface UserDocument /* extends firestore.DocumentData */ {
   createdAt: FieldValue | Date;
   updatedAt: FieldValue | Date;
   duplicatedRefsByLink: DocumentReference[];
+  debug?: boolean;
 }
 
 export class User {
@@ -74,16 +75,27 @@ export class User {
   public static async create(user: FirebaseUser): Promise<void> {
     const newDocRef = User.getColRef().doc(user.uid);
 
-    await newDocRef.set({
+    const doc: UserDocument = {
       uid: user.uid,
       isAnonymous: true,
       displayName: getRandomAnonymousName(),
+      photoURL: null,
       highscoreRefs: {},
       providers: {},
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),
       duplicatedRefsByLink: []
-    });
+    };
+
+    /**
+     * DEBUG用ユーザー
+     * {@link linkIdp}時に deleteされるフラグ
+     */
+    if (localStorage.getItem("sokontokoro-factory:auth:debug") === "true") {
+      doc.debug = true;
+    }
+
+    await newDocRef.set(doc);
   }
 
   /**
@@ -162,6 +174,10 @@ export class User {
 
       if (!userDoc.photoURL) {
         newUserDoc.photoURL = profile.profile_image_url_https;
+      }
+
+      if (userDoc.debug) {
+        userDoc.debug = firestore.FieldValue.delete() as any;
       }
 
       if (duplicatedUser) {
