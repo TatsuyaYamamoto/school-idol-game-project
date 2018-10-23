@@ -6,8 +6,11 @@
   "scripts": {
     "start": "webpack-dev-server --progress --colors --watch",
     "clean": "rm -rf dist",
-    "build": "npm run clean && webpack",
-    "build:pro": "npm run clean && NODE_ENV=production webpack"
+    "build": "    yarn clean && webpack",
+    "build:pro": "yarn clean && NODE_ENV=production webpack",
+    "deploy": "                    yarn build     && gsutil -m rsync -d -r dist/ gs://games-dev.sokontokoro-factory.net/yamidori/",
+    "deploy:pro": "yarn confirm && yarn build:pro && gsutil -m rsync -d -r dist/ gs://games.sokontokoro-factory.net/yamidori/",
+    "confirm": "../../production-confirm.js"
   },
   "repository": {
     "type": "git",
