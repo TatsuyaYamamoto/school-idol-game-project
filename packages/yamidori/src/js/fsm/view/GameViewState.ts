@@ -30,6 +30,8 @@ class GameViewState extends ViewContainer {
   private _gamePoint: number;
 
   update(elapsedTime: number): void {
+    super.update(elapsedTime);
+
     this._gameStateMachine.update(elapsedTime);
   }
 

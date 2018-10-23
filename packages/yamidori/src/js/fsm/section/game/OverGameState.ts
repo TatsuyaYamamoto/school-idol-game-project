@@ -42,8 +42,6 @@ class OverGameState extends ViewContainer {
   private _okSound: Sound;
   private _cancelSound: Sound;
 
-  update(elapsedTime: number): void {}
-
   onEnter(): void {
     super.onEnter();
     const point = getGamePoint();

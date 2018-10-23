@@ -23,6 +23,8 @@ class CountGameState extends ViewContainer {
   private _countHighSound: Sound;
 
   update(elapsedTimeMillis: number): void {
+    super.update(elapsedTimeMillis);
+
     if (1000 < this.elapsedTimeMillis && !this._isCountedTwo) {
       console.log("Count down, 2!");
       this._countInfo.count = 2;

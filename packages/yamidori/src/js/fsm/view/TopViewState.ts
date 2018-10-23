@@ -88,7 +88,7 @@ class TopViewState extends ViewContainer {
    * @inheritDoc
    */
   onExit(): void {
-    super.onEnter();
+    super.onExit();
 
     this._zenkaiSound.stop();
     removeEvents([

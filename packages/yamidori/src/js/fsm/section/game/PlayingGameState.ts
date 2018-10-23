@@ -41,6 +41,8 @@ class PlayingGameState extends ViewContainer implements State {
   private _tapKotoriSound: Sound;
 
   update(elapsedTime: number): void {
+    super.update(elapsedTime);
+
     if (this._nextAppearTimeMillis < this.elapsedTimeMillis) {
       console.log("Appear kotori!");
       this._nextAppearTimeMillis += this.getNextAppearTimeMillis();
