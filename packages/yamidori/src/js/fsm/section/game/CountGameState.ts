@@ -1,4 +1,5 @@
 import Sound from "pixi-sound/lib/Sound";
+import { tracePage } from "@sokontokoro/mikan";
 
 import ViewContainer from "../../../framework/ViewContainer";
 import CountDownText from "../../../container/components/CountDownText";
@@ -8,6 +9,7 @@ import { Events } from "../../view/GameViewState";
 
 import { Ids } from "../../../resources/sound";
 import { loadSound } from "../../../framework/AssetLoader";
+import { TRACK_PAGES } from "../../../resources/tracker";
 
 class CountGameState extends ViewContainer {
   public static TAG = "CountGameState";
@@ -50,6 +52,8 @@ class CountGameState extends ViewContainer {
 
   onEnter(): void {
     super.onEnter();
+
+    tracePage(TRACK_PAGES.GAME);
 
     this._countHighSound = loadSound(Ids.SOUND_COUNT_HIGH);
     this._countLowSound = loadSound(Ids.SOUND_COUNT_LOW);

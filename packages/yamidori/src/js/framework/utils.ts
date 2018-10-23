@@ -2,8 +2,10 @@
  * @fileOverview Convenience utilities.
  */
 import PixiSound from "pixi-sound/lib";
+import { trackEvent } from "@sokontokoro/mikan";
 
 import config from "./config";
+import { TRACK_ACTION } from "../resources/tracker";
 
 /**
  * Detecting iOS
@@ -75,8 +77,10 @@ export function getRandomInteger(min: number, max: number): number {
  */
 export function toggleMute(): boolean {
   if (PixiSound.context.muted) {
+    trackEvent(TRACK_ACTION.CLICK, { label: "sound_on" });
     PixiSound.unmuteAll();
   } else {
+    trackEvent(TRACK_ACTION.CLICK, { label: "sound_off" });
     PixiSound.muteAll();
   }
 

@@ -1,6 +1,7 @@
 import { interaction } from "pixi.js";
 import Sound from "pixi-sound/lib/Sound";
 const swal = require("sweetalert");
+import { tracePage, trackEvent } from "@sokontokoro/mikan";
 
 import { Events } from "../../view/TopViewState";
 import { dispatchEvent } from "../../../framework/EventUtils";
@@ -24,6 +25,7 @@ import { Ids as SoundIds } from "../../../resources/sound";
 import { Ids } from "../../../resources/string";
 
 import { SUPPORTED_LANGUAGES, URL } from "../../../Constants";
+import { TRACK_ACTION, TRACK_PAGES } from "../../../resources/tracker";
 
 class MenuTopState extends ViewContainer {
   public static TAG = "MenuTopState";
@@ -51,6 +53,8 @@ class MenuTopState extends ViewContainer {
    */
   onEnter(): void {
     super.onEnter();
+
+    tracePage(TRACK_PAGES.MENU);
 
     this._menuBackground = new MenuBackground();
 
@@ -136,7 +140,8 @@ class MenuTopState extends ViewContainer {
   private onTwitterHomeButtonClick = (
     event: interaction.InteractionEvent
   ): void => {
-    goTo(URL.TWITTER_HOME_T28);
+    trackEvent(TRACK_ACTION.CLICK, { label: "home" });
+    goTo(URL.SOKONTOKORO_HOME);
   };
 
   private onHowToUseButtonClick = (
@@ -158,6 +163,8 @@ class MenuTopState extends ViewContainer {
 
   private onChangeLanguageButtonClick = () => {
     this._okSound.play();
+    trackEvent(TRACK_ACTION.CLICK, { label: "change_language" });
+
     swal(t(Ids.CHANGE_LANGUAGE_INFO), { buttons: true }).then(willChange => {
       if (willChange) {
         swal(t(Ids.RELOAD_APP_INFO)).then(() => {

@@ -8,6 +8,8 @@
  *
  * @author Tatsuya Yamamoto
  */
+import { initAuth, initTracker, tracePage } from "@sokontokoro/mikan";
+
 import { initI18n } from "./framework/i18n";
 import config from "./framework/config";
 
@@ -19,6 +21,7 @@ import {
   BASIC_IMAGE_WIDTH,
   BASIC_IMAGE_HEIGHT
 } from "./Constants";
+import { TRACK_PAGES } from "./resources/tracker";
 
 // Network fetch module
 import "whatwg-fetch";
@@ -40,11 +43,17 @@ const mainElement: HTMLElement = document.getElementById("main");
  */
 const app = new ApplicationState();
 
+initAuth().then(user => {
+  initTracker(user.uid);
+});
+
 /**
  * Initialize the application.
  */
 function init() {
   console.info("Welcome Yamidori!");
+
+  tracePage(TRACK_PAGES.INDEX);
 
   // set framework configuration
   config.supportedLanguages = Object.keys(SUPPORTED_LANGUAGES).map(

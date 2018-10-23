@@ -1,4 +1,5 @@
 import Sound from "pixi-sound/lib/Sound";
+import { tracePage, trackEvent } from "@sokontokoro/mikan";
 
 import { Events as ApplicationEvents } from "../../ApplicationState";
 import { dispatchEvent } from "../../../framework/EventUtils";
@@ -18,6 +19,7 @@ import { t } from "../../../framework/i18n";
 
 import { Ids as SoundIds } from "../../../resources/sound";
 import { Ids } from "../../../resources/string";
+import { TRACK_ACTION, TRACK_PAGES } from "../../../resources/tracker";
 
 class OverGameState extends ViewContainer {
   public static TAG = "OverGameState";
@@ -37,6 +39,13 @@ class OverGameState extends ViewContainer {
 
   onEnter(): void {
     super.onEnter();
+
+    tracePage(TRACK_PAGES.GAMEOVER);
+
+    trackEvent(TRACK_ACTION.GAMEOVER, {
+      label: "single",
+      value: getGamePoint()
+    });
 
     this._gameOverLogo = new GameOverLogo();
     this._gameOverLogo.position.set(
@@ -97,11 +106,15 @@ class OverGameState extends ViewContainer {
 
   private handleTapGoBackHome = () => {
     this._cancelSound.play();
+
+    trackEvent(TRACK_ACTION.CLICK, { label: "back_from_gameover" });
     dispatchEvent(ApplicationEvents.BACK_TO_TOP_REQUEST);
   };
 
   private handleTapRestartGame = () => {
     this._okSound.play();
+
+    trackEvent(TRACK_ACTION.CLICK, { label: "restart" });
     dispatchEvent(ApplicationEvents.GAME_START_REQUEST);
   };
 
@@ -111,6 +124,8 @@ class OverGameState extends ViewContainer {
    * @private
    */
   private handleTapResultTweet = () => {
+    trackEvent(TRACK_ACTION.CLICK, { label: "tweet" });
+
     let tweetText = t(Ids.GAME_RESULT_TWEET_ZERO_POINT);
 
     if (getGamePoint() !== 0) {

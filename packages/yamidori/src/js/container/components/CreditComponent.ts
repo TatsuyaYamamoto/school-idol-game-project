@@ -1,6 +1,9 @@
 import { Container } from "pixi.js";
+import { trackEvent } from "@sokontokoro/mikan";
+
 import { isSupportTouchEvent } from "../../framework/utils";
 import Text from "../sprite/text/Text";
+import { TRACK_ACTION } from "../../resources/tracker";
 
 class CreditComponent extends Container {
   private _name: Text;
@@ -22,10 +25,10 @@ class CreditComponent extends Container {
 
     this.buttonMode = true;
     this.interactive = true;
-    this.on(
-      isSupportTouchEvent() ? "touchstart" : "click",
-      () => (window.location.href = url)
-    );
+    this.on(isSupportTouchEvent() ? "touchstart" : "click", () => {
+      trackEvent(TRACK_ACTION.CLICK, { label: "credit_link" });
+      window.location.href = url;
+    });
   }
 }
 

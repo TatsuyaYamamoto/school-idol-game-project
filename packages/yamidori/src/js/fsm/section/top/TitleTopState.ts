@@ -1,4 +1,5 @@
 import Sound from "pixi-sound/lib/Sound";
+import { tracePage } from "@sokontokoro/mikan";
 
 import { Events } from "../../view/TopViewState";
 import { dispatchEvent } from "../../../framework/EventUtils";
@@ -13,6 +14,7 @@ import { t } from "../../../framework/i18n";
 
 import { Ids } from "../../../resources/string";
 import { Ids as SoundIds } from "../../../resources/sound";
+import { TRACK_PAGES } from "../../../resources/tracker";
 
 const { version } = require("../../../../../package.json");
 
@@ -35,6 +37,8 @@ class TitleTopState extends ViewContainer {
    */
   onEnter(): void {
     super.onEnter();
+
+    tracePage(TRACK_PAGES.TOP);
 
     this._titleLog = new TitleLogo();
     this._titleLog.position.set(this.viewWidth * 0.5, this.viewHeight * 0.5);

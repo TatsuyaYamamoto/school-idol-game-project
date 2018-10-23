@@ -1,4 +1,5 @@
 import Sound from "pixi-sound/lib/Sound";
+import { tracePage } from "@sokontokoro/mikan";
 
 import { Events } from "../../view/TopViewState";
 import { dispatchEvent } from "../../../framework/EventUtils";
@@ -12,6 +13,7 @@ import BackToMenuButton from "../../../container/sprite/button/BackToMenuButton"
 
 import { loadSound } from "../../../framework/AssetLoader";
 import { Ids } from "../../../resources/sound";
+import { TRACK_PAGES } from "../../../resources/tracker";
 
 class UsageTopState extends ViewContainer implements State {
   public static TAG = "UsageTopState";
@@ -57,6 +59,8 @@ class UsageTopState extends ViewContainer implements State {
    */
   onEnter(): void {
     super.onEnter();
+
+    tracePage(TRACK_PAGES.HOW_TO_PLAY);
 
     this._usageTextArea = new UsageTextArea();
     this._usageTextArea.position.set(

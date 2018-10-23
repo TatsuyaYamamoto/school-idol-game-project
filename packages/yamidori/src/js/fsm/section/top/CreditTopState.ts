@@ -1,4 +1,5 @@
 import Sound from "pixi-sound/lib/Sound";
+import { tracePage } from "@sokontokoro/mikan";
 
 import { Events } from "../../view/TopViewState";
 import { dispatchEvent } from "../../../framework/EventUtils";
@@ -14,6 +15,7 @@ import { loadSound } from "../../../framework/AssetLoader";
 import { Ids as SoundIds } from "../../../resources/sound";
 import { Ids } from "../../../resources/string";
 import { URL } from "../../../Constants";
+import { TRACK_PAGES } from "../../../resources/tracker";
 
 class CreditTopState extends ViewContainer {
   public static TAG = "CreditTopState";
@@ -37,6 +39,8 @@ class CreditTopState extends ViewContainer {
    */
   onEnter(): void {
     super.onEnter();
+
+    tracePage(TRACK_PAGES.CREDIT);
 
     this._creditBackground = new CreditBackground();
 
