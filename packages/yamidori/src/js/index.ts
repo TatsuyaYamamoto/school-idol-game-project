@@ -34,7 +34,7 @@ require("../fonts/PixelMplus10-Regular.css");
  *
  * @type {HTMLElement}
  */
-const mainElement: HTMLElement = document.getElementById("main");
+const mainElement: HTMLElement = document.getElementById("app");
 
 /**
  * Application root instance.
