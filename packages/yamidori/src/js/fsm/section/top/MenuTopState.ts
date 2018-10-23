@@ -1,7 +1,7 @@
 import { interaction } from "pixi.js";
 import Sound from "pixi-sound/lib/Sound";
 const swal = require("sweetalert");
-import { tracePage, trackEvent } from "@sokontokoro/mikan";
+import { openExternalSite, tracePage, trackEvent } from "@sokontokoro/mikan";
 
 import { Events } from "../../view/TopViewState";
 import { dispatchEvent } from "../../../framework/EventUtils";
@@ -16,7 +16,6 @@ import GoTwitterHomeButton from "../../../container/sprite/button/GoTwitterHomeB
 import SoundButton from "../../../container/sprite/button/SoundButton";
 import ChangeLanguageButton from "../../../container/sprite/button/ChangeLanguageButton";
 
-import { goTo } from "../../../helper/network";
 import { toggleMute } from "../../../framework/utils";
 import { loadSound } from "../../../framework/AssetLoader";
 import { changeLanguage, getCurrentLanguage, t } from "../../../framework/i18n";
@@ -141,7 +140,7 @@ class MenuTopState extends ViewContainer {
     event: interaction.InteractionEvent
   ): void => {
     trackEvent(TRACK_ACTION.CLICK, { label: "home" });
-    goTo(URL.SOKONTOKORO_HOME);
+    openExternalSite(URL.SOKONTOKORO_HOME, false);
   };
 
   private onHowToUseButtonClick = (

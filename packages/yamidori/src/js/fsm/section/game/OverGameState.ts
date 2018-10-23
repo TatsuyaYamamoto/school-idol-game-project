@@ -1,5 +1,12 @@
 import Sound from "pixi-sound/lib/Sound";
-import { tracePage, trackEvent } from "@sokontokoro/mikan";
+import {
+  tracePage,
+  trackEvent,
+  Playlog,
+  tweetByWebIntent,
+  convertYyyyMmDd,
+  createUrchinTrackingModuleQuery
+} from "@sokontokoro/mikan";
 
 import { Events as ApplicationEvents } from "../../ApplicationState";
 import { dispatchEvent } from "../../../framework/EventUtils";
@@ -12,11 +19,11 @@ import ResultTweetButton from "../../../container/sprite/button/ResultTweetButto
 import GamePointCount from "../../../container/components/GamePointCount";
 
 import { getRandomInteger } from "../../../framework/utils";
-import { postPlayLog, tweetGameResult } from "../../../helper/network";
 import { loadSound } from "../../../framework/AssetLoader";
 import { getGamePoint } from "../../../helper/GlobalState";
 import { t } from "../../../framework/i18n";
 
+import { URL } from "../../../Constants";
 import { Ids as SoundIds } from "../../../resources/sound";
 import { Ids } from "../../../resources/string";
 import { TRACK_ACTION, TRACK_PAGES } from "../../../resources/tracker";
@@ -39,13 +46,16 @@ class OverGameState extends ViewContainer {
 
   onEnter(): void {
     super.onEnter();
+    const point = getGamePoint();
 
     tracePage(TRACK_PAGES.GAMEOVER);
 
     trackEvent(TRACK_ACTION.GAMEOVER, {
       label: "single",
-      value: getGamePoint()
+      value: point
     });
+
+    Playlog.save("yamidori", "kotori", point);
 
     this._gameOverLogo = new GameOverLogo();
     this._gameOverLogo.position.set(
@@ -95,8 +105,6 @@ class OverGameState extends ViewContainer {
     this._cancelSound = loadSound(SoundIds.SOUND_CANCEL);
 
     this._gameOverSound.play();
-
-    postPlayLog(getGamePoint());
   }
 
   onExit(): void {
@@ -126,25 +134,36 @@ class OverGameState extends ViewContainer {
   private handleTapResultTweet = () => {
     trackEvent(TRACK_ACTION.CLICK, { label: "tweet" });
 
-    let tweetText = t(Ids.GAME_RESULT_TWEET_ZERO_POINT);
+    let text = t(Ids.GAME_RESULT_TWEET_ZERO_POINT);
 
     if (getGamePoint() !== 0) {
       switch (getRandomInteger(0, 2)) {
         case 0:
-          tweetText = t(Ids.GAME_RESULT_TWEET1);
+          text = t(Ids.GAME_RESULT_TWEET1);
           break;
         case 1:
-          tweetText = t(Ids.GAME_RESULT_TWEET2);
+          text = t(Ids.GAME_RESULT_TWEET2);
           break;
         case 2:
-        default:
-          tweetText = t(Ids.GAME_RESULT_TWEET3);
+          text = t(Ids.GAME_RESULT_TWEET3);
           break;
       }
-      tweetText = tweetText.replace(/%s/, `${getGamePoint()}`);
+      text = text.replace(/%s/, `${getGamePoint()}`);
     }
 
-    tweetGameResult(tweetText);
+    const yyyymmdd = convertYyyyMmDd(new Date());
+    const utmQuery = createUrchinTrackingModuleQuery({
+      campaign: `result-share_${yyyymmdd}`,
+      source: "twitter",
+      medium: "social"
+    });
+    const url = `${URL.YAMIDORI}?${utmQuery.join("&")}`;
+
+    tweetByWebIntent({
+      text,
+      url,
+      hashtags: ["やみどり", "そこんところ工房"]
+    });
   };
 }
 
