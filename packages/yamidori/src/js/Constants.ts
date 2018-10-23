@@ -78,21 +78,22 @@ export const SUPPORTED_LANGUAGES = {
 
 export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES.EN;
 
-/**
- * Application server base URL
- * @type {string}
- */
-export const APP_SERVER_BASE_URL =
+const wwwOrigin =
   process.env.NODE_ENV === "production"
-    ? "http://api.sokontokoro-factory.net/lovelive/"
-    : "http://api.sokontokoro-factory.net/lovelive-test/";
+    ? "https://www.sokontokoro-factory.net"
+    : "https://www-dev.sokontokoro-factory.net";
+
+const gamesOrigin =
+  process.env.NODE_ENV === "production"
+    ? "https://games.sokontokoro-factory.net"
+    : "https://games-dev.sokontokoro-factory.net";
 
 /**
  * External URLs.
  */
 export const URL = {
-  YAMIDORI: "http://games.sokontokoro-factory.net/yamidori/",
-  SOKONTOKORO_HOME: "http://sokontokoro-factory.net",
+  YAMIDORI: `${gamesOrigin}/yamidori/`,
+  SOKONTOKORO_HOME: `${wwwOrigin}`,
   TWITTER_HOME_T28: "https://twitter.com/t28_tatsuya",
   TWITTER_HOME_SANZASHI: "https://twitter.com/xxsanzashixx",
   TWITTER_TWEET_PAGE: "https://twitter.com/intent/tweet",

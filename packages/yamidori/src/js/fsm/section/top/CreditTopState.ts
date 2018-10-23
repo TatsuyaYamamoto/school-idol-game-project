@@ -46,7 +46,7 @@ class CreditTopState extends ViewContainer {
 
     this._t28Credit = new CreditComponent(
       t(Ids.CREDIT_T28),
-      URL.SOKONTOKORO_HOME
+      URL.TWITTER_HOME_T28
     );
     this._t28Credit.position.set(this.viewWidth * 0.3, this.viewHeight * 0.5);
 

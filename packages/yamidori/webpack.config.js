@@ -12,9 +12,8 @@ const htmlParams = {
   trackingCode: config.trackingCode.dev,
   description:
     "ことりちゃんが、あの闇でケーキな鍋を完成させる、、、のを阻止するブラウザゲームです！そこんところ工房のファンゲームです。",
-  ogpUrl: "https://games.sokontokoro-factory.net/yamidori/",
-  ogpImageUrl:
-    "https://games.sokontokoro-factory.net/yamidori/assets/image/ogp.jpg"
+  ogUrl: "https://games.sokontokoro-factory.net/yamidori/",
+  ogImage: "https://games.sokontokoro-factory.net/yamidori/assets/image/ogp.jpg"
 };
 
 isProduction &&
