@@ -1,0 +1,23 @@
+os: osx
+
+language: node_js
+
+node_js:
+  - "8"
+
+before_install:
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - export PATH="$HOME/.yarn/bin:$PATH"
+  - yarn -v
+
+install:
+  - yarn
+
+script:
+  - yarn ws @sokontokoro/mikan build
+  - yarn ws functions          build
+  - yarn ws ranking            build
+  - yarn ws honocar            build
+  - yarn ws shakarin           build
+  - yarn ws yamidori           build
+  - yarn ws oimo-no-mikiri     build
