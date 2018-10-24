@@ -1,9 +1,9 @@
 {
-  "name": "functions",
+  "name": "firebase",
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "clean": "rm -rf lib",
+    "clean": "rm -rf dist",
     "build": "yarn clean && tsc",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase functions:shell",
@@ -12,9 +12,9 @@
     "deploy": "                         yarn build && firebase deploy                  --project school-idol-game-development",
     "deploy:pro": "     yarn confirm && yarn build && firebase deploy                  --project school-idol-game-production",
     "logs": "firebase functions:log",
-    "confirm": "../../../production-confirm.js"
+    "confirm": "../../production-confirm.js"
   },
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "dependencies": {
     "@slack/client": "^4.8.0",
     "firebase-admin": "~6.0.0",

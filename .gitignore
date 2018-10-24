@@ -1,5 +1,4 @@
 **/dist/
-**/functions/lib/
 packages/appengine/env-variables.yaml
 packages/appengine/env-variables-production.yaml
 

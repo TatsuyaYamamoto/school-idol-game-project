@@ -15,7 +15,7 @@ install:
 
 script:
   - yarn ws @sokontokoro/mikan build
-  - yarn ws functions          build
+  - yarn ws firebase           build
   - yarn ws ranking            build
   - yarn ws honocar            build
   - yarn ws shakarin           build
