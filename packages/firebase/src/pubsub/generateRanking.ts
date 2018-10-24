@@ -6,7 +6,8 @@ import {
   HighscoreDocument,
   RankingDocument,
   RankItemDocument,
-  UserDocument
+  UserDocument,
+  Game
 } from "@sokontokoro/mikan";
 import {
   addDocWithBatch,
@@ -21,7 +22,13 @@ export default pubsub
   .onPublish(async (_message, context) => {
     console.log(`published "generate-ranking" topic. ID: ${context.eventId}`);
 
-    const games = ["honocar", "shakarin", "maruten"];
+    const games: Game[] = [
+      "honocar",
+      "shakarin",
+      "maruten",
+      "yamidori",
+      "oimo-no-mikiri"
+    ];
 
     try {
       for (const game of games) {

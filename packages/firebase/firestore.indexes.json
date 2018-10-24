@@ -6,6 +6,13 @@
         { "fieldPath": "game", "mode": "ASCENDING" },
         { "fieldPath": "point", "mode": "DESCENDING" }
       ]
+    },
+    {
+      "collectionId": "highscores",
+      "fields": [
+        { "fieldPath": "game", "mode": "ASCENDING" },
+        { "fieldPath": "point", "mode": "ASCENDING" }
+      ]
     }
   ]
 }
