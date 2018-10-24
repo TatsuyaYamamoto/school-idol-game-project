@@ -84,6 +84,7 @@ export default functions.firestore.document("playlogs/{playlogId}").onCreate(
 
       if (shouldUpdate(prevScoreDoc.point, playlogDoc.point)) {
         doc.point = playlogDoc.point;
+        doc.label = playlogDoc.label;
         doc.brokenAt = firestore.FieldValue.serverTimestamp();
       }
 
