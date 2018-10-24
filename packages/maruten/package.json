@@ -29,7 +29,6 @@
   },
   "dependencies": {
     "alertify": "^0.3.0",
-    "createjs": "^1.0.1",
-    "superagent": "^2.2.0"
+    "createjs": "^1.0.1"
   }
 }

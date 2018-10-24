@@ -23,9 +23,6 @@ import {
 } from "./Constants";
 import { TRACK_PAGES } from "./resources/tracker";
 
-// Network fetch module
-import "whatwg-fetch";
-
 // Brand logo text font
 require("../fonts/PixelMplus10-Regular.css");
 

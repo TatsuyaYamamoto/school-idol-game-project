@@ -20,8 +20,6 @@ import {
   BASIC_IMAGE_HEIGHT
 } from "./Constants";
 
-// Network fetch module
-import "whatwg-fetch";
 import { VirtualPageViews } from "./helper/tracker";
 
 // Brand logo text font

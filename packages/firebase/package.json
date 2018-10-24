@@ -16,6 +16,7 @@
   },
   "main": "dist/index.js",
   "dependencies": {
+    "@firebase/app-types": "^0.3.2",
     "@slack/client": "^4.8.0",
     "firebase-admin": "~6.0.0",
     "firebase-functions": "^2.0.3"

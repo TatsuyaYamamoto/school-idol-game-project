@@ -45,7 +45,6 @@
     "i18next-browser-languagedetector": "^2.0.0",
     "pixi-sound": "^1.4.2",
     "pixi.js": "^4.5.4",
-    "sweetalert": "^2.0.3",
-    "whatwg-fetch": "^2.0.3"
+    "sweetalert": "^2.0.3"
   }
 }
