@@ -64,17 +64,21 @@ export default pubsub
          * step 3
          * update metadata about this ranking
          */
-        await firestore().runTransaction(async transaction => {
-          await transaction.set(newRankingRef, {
-            game,
-            totalCount: rankingList.length,
-            createdAt: firestore.FieldValue.serverTimestamp()
-          } as RankingDocument);
+        const metadataBatch = firestore().batch();
+        const newRanking: Partial<RankingDocument> = {
+          game,
+          totalCount: rankingList.length,
+          createdAt: firestore.FieldValue.serverTimestamp()
+        };
+        metadataBatch.set(newRankingRef, newRanking);
 
-          await transaction.update(metadataRef, {
-            rankingRef: newRankingRef as any
-          } as Partial<MetadataDocument>);
-        });
+        const newMetadata: Partial<MetadataDocument> = {
+          rankingRef: newRankingRef as any,
+          updatedAt: firestore.FieldValue.serverTimestamp()
+        };
+        metadataBatch.update(metadataRef, newMetadata);
+
+        await metadataBatch.commit();
 
         console.log(`success! game: ${game}`);
       }
