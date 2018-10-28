@@ -1,0 +1,27 @@
+{
+  "name": "firebase",
+  "private": true,
+  "version": "1.2.0",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "yarn clean && tsc",
+    "serve": "npm run build && firebase serve --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deployFuncOnly": "                 yarn build && firebase deploy --only functions --project school-idol-game-development",
+    "deploy": "                         yarn build && firebase deploy                  --project school-idol-game-development",
+    "deploy:pro": "     yarn confirm && yarn build && firebase deploy                  --project school-idol-game-production",
+    "logs": "firebase functions:log",
+    "confirm": "../../production-confirm.js"
+  },
+  "main": "dist/index.js",
+  "dependencies": {
+    "@firebase/app-types": "^0.3.2",
+    "@slack/client": "^4.8.0",
+    "firebase-admin": "~6.0.0",
+    "firebase-functions": "^2.0.3"
+  },
+  "devDependencies": {
+    "typescript": "~2.8.3"
+  }
+}

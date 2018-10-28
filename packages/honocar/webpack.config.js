@@ -43,11 +43,13 @@ const plugins = [
 const webpackConfig = {
   mode: isProduction ? "production" : "development",
 
-  entry: resolve(__dirname, "app/js/main.js"),
+  entry: {
+    app: resolve(__dirname, "app/js/main.js")
+  },
 
   output: {
     path: resolve(__dirname, "dist/"),
-    filename: "bundle.js"
+    filename: "[name].bundle.js"
   },
 
   devtool: isProduction ? "none" : "source-map",
@@ -83,6 +85,18 @@ const webpackConfig = {
         use: "imports-loader?this=>window"
       }
     ]
+  },
+
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendor",
+          chunks: "all"
+        }
+      }
+    }
   },
 
   plugins: plugins,

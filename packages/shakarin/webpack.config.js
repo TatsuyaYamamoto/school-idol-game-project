@@ -38,12 +38,16 @@ const plugins = [
 module.exports = {
   mode: isProduction ? "production" : "development",
 
-  entry: resolve(__dirname, "src/js/main.js"),
+  entry: {
+    app: resolve(__dirname, "src/js/main.js")
+  },
 
   output: {
     path: resolve(__dirname, "dist/"),
-    filename: "bundle.js"
+    filename: "[name].bundle.js"
   },
+
+  devtool: isProduction ? "none" : "source-map",
 
   resolve: {
     extensions: [".js", ".jsx", ".json"]
@@ -83,6 +87,18 @@ module.exports = {
         use: "imports-loader?this=>window"
       }
     ]
+  },
+
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendor",
+          chunks: "all"
+        }
+      }
+    }
   },
 
   plugins,

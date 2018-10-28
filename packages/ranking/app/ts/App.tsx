@@ -8,14 +8,16 @@ import {
 
 import "react-virtualized/styles.css";
 
-import { tracePage } from "@sokontokoro/mikan";
+import { tracePage, GAMES, Game } from "@sokontokoro/mikan";
 
 import Initialize from "./components/pages/Initialize";
-import { default as Index, list } from "./components/pages/Index";
+import Index from "./components/pages/Index";
 
 export interface IndexRouteParams {
-  game: string;
+  game: Game;
 }
+
+const gameIds = Object.keys(GAMES);
 
 const App = () => (
   <Initialize>
@@ -23,13 +25,13 @@ const App = () => (
       <Switch>
         <Route
           exact
-          path={`/ranking/:game(${list.map(i => i.gameId).join("|")})`}
+          path={`/ranking/:game(${gameIds.join("|")})`}
           render={props => {
             tracePage();
             return <Index {...props} />;
           }}
         />
-        <Route render={() => <Redirect to={`/ranking/${list[0].gameId}`} />} />
+        <Route render={() => <Redirect to={`/ranking/${gameIds[0]}`} />} />
       </Switch>
     </Router>
   </Initialize>

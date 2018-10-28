@@ -32,13 +32,16 @@ const plugins = [
 module.exports = {
   mode: isProduction ? "production" : "development",
 
-  devtool: isProduction ? "none" : "source-map",
-
-  entry: "./app/ts/index.tsx",
-  output: {
-    filename: "bundle.js",
-    path: __dirname + "/dist"
+  entry: {
+    app: "./app/ts/index.tsx"
   },
+
+  output: {
+    path: __dirname + "/dist",
+    filename: "[name].bundle.js"
+  },
+
+  devtool: isProduction ? "none" : "source-map",
 
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".json"]
@@ -52,6 +55,18 @@ module.exports = {
         use: [{ loader: "style-loader" }, { loader: "css-loader" }]
       }
     ]
+  },
+
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendor",
+          chunks: "all"
+        }
+      }
+    }
   },
 
   plugins,

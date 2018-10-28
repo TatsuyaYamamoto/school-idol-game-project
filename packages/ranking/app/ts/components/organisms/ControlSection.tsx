@@ -1,9 +1,9 @@
 import * as React from "react";
 import AutoBind from "autobind-decorator";
 import styled from "styled-components";
+import { Game } from "@sokontokoro/mikan";
 
 import GameSelector from "../molecules/GameSelector";
-import { list } from "../pages/Index";
 import JumpGameButton from "../atoms/JumpGameButton";
 
 const Root = styled.div`
@@ -11,7 +11,7 @@ const Root = styled.div`
 `;
 
 interface Props {
-  initialIndex: number;
+  game: Game;
   onGameSelected: (index: number) => void;
   onJumpGame: (e: any) => void;
 }
@@ -21,13 +21,12 @@ interface State {}
 @AutoBind
 export default class ControlSection extends React.Component<Props, State> {
   public render() {
-    const { initialIndex, onGameSelected, onJumpGame } = this.props;
+    const { game, onGameSelected, onJumpGame } = this.props;
 
     return (
       <Root>
         <GameSelector
-          list={list}
-          initialIndex={initialIndex}
+          game={game}
           slickSettings={{}}
           onSelected={onGameSelected}
         />

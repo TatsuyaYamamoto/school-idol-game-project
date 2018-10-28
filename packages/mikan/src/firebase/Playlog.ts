@@ -3,8 +3,9 @@ import DocumentReference = firestore.DocumentReference;
 import FieldValue = firestore.FieldValue;
 
 import { firebaseDb } from "./index";
-import { Game, Member } from "./scheme";
 import { User } from "./User";
+import { Member } from "../model/members";
+import { Game } from "../model/games";
 import { getLogger } from "../logger";
 
 const logger = getLogger("mikan/firebase/db");

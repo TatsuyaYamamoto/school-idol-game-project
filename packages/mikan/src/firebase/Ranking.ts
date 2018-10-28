@@ -3,11 +3,12 @@ import CollectionReference = firestore.CollectionReference;
 import FieldValue = firestore.FieldValue;
 
 import { firebaseDb } from "./index";
+import { Member } from "../model/members";
 
 export interface RankItemDocument /* extends firestore.DocumentData */ {
   uid: string;
   userName: string;
-  member: string;
+  member: Member;
   rank: number;
   point: number;
 }

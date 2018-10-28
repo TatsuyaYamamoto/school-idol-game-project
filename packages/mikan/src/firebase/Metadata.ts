@@ -4,4 +4,5 @@ import DocumentReference = firestore.DocumentReference;
 export interface MetadataDocument /* extends firestore.DocumentData */ {
   compareType: "desc" | "asc";
   rankingRef: DocumentReference;
+  updatedAt: firestore.FieldValue | firestore.Timestamp;
 }

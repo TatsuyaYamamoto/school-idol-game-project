@@ -12,22 +12,24 @@
 
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-
-## About
+[![Build Status](https://travis-ci.org/TatsuyaYamamoto/school-idol-game-project.svg?branch=develop)](https://travis-ci.org/TatsuyaYamamoto/school-idol-game-project)
 
 ## Packages
 
-### Game
+### Games
 
-- [`honocar`](./packages/honocar#README.md)
-- `shakarin` // TODO
-- `maruten` // TODO
-- `yamidori` // TODO
-- [`oimo-no-mikiri`](./packages/oimo-no-mikiri#README.md)
+- [honocar](./packages/honocar#README.md)
+- [shakarin](./packages/shakarin#README.md)
+- [maruten](./packages/maruten#README.md)
+- [yamidori](./packages/yamidori#README.md)
+- [oimo-no-mikiri](./packages/oimo-no-mikiri#README.md)
 
 ### Others
 
-- `game-ranking` // TODO
+- [mikan](./packages/mikan#README.md)
+- [ranking](./packages/ranking#README.md)
+- [firebase](./packages/firebase#README.md)
+- [appengine](./packages/appengine#README.md)
 
 ## Contributing
 

@@ -4,6 +4,7 @@
   "description": "game framework for sokontokoro",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "sideEffects": false,
   "license": "MIT",
   "scripts": {
     "start": "tsc -w",
@@ -15,6 +16,7 @@
     "README.md"
   ],
   "dependencies": {
+    "@firebase/app-types": "^0.3.2",
     "animejs": "^2.2.0",
     "autobind-decorator": "^2.1.0",
     "eventemitter3": "^3.1.0",

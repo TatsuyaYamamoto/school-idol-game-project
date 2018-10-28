@@ -11,6 +11,7 @@ import TwitterUser = Twitter.User;
 
 import { firebaseAuth, firebaseDb } from "./index";
 import { Credential, CredentialDocument } from "./Credential";
+import { getRandomAnonymousName } from "../model/anonymous";
 
 export interface ProviderData {
   /**
@@ -50,6 +51,7 @@ export interface UserDocument /* extends firestore.DocumentData */ {
   createdAt: FieldValue | Date;
   updatedAt: FieldValue | Date;
   duplicatedRefsByLink: DocumentReference[];
+  debug?: boolean;
 }
 
 export class User {
@@ -74,16 +76,27 @@ export class User {
   public static async create(user: FirebaseUser): Promise<void> {
     const newDocRef = User.getColRef().doc(user.uid);
 
-    await newDocRef.set({
+    const doc: UserDocument = {
       uid: user.uid,
       isAnonymous: true,
       displayName: getRandomAnonymousName(),
+      photoURL: null,
       highscoreRefs: {},
       providers: {},
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),
       duplicatedRefsByLink: []
-    });
+    };
+
+    /**
+     * DEBUG用ユーザー
+     * {@link linkIdp}時に deleteされるフラグ
+     */
+    if (localStorage.getItem("sokontokoro-factory:auth:debug") === "true") {
+      doc.debug = true;
+    }
+
+    await newDocRef.set(doc);
   }
 
   /**
@@ -164,6 +177,10 @@ export class User {
         newUserDoc.photoURL = profile.profile_image_url_https;
       }
 
+      if (userDoc.debug) {
+        userDoc.debug = firestore.FieldValue.delete() as any;
+      }
+
       if (duplicatedUser) {
         newUserDoc.duplicatedRefsByLink = userDoc.duplicatedRefsByLink.concat([
           User.getDocRef(duplicatedUser.uid)
@@ -202,35 +219,4 @@ export class User {
       credential
     };
   }
-}
-
-function getRandomAnonymousName() {
-  const candidates = [
-    "パン好きな", // honoka
-    "かしこかわいい", // eri
-    "枕を忘れた", // kotori
-    "アイドルは無しな", // umi
-    "ラーメン好きな", // rin
-    "ﾅﾆｿﾚｲﾐﾜｶﾝﾅｲ", // maki
-    "カードが告げる", // nozomi
-    "ご飯を炊いた", // hanayo
-    "バックダンサーな", // nico
-    "アホ毛の", // chika
-    "お断りする", // riko
-    "ハグをせまる", // kanan
-    "プリンを食べる", // dia
-    "制服を着た", // you
-    "悪いのは", // yoshiko
-    "未来の", // hanamaru
-    "2年振りに輝く", // mari
-    "お芋好きな" // ruby
-  ];
-
-  const min = 0;
-  const max = candidates.length - 1;
-  const index = Math.floor(Math.random() * (max + 1 - min)) + min;
-
-  const prefix = candidates[index];
-
-  return `${prefix}学園生`;
 }
