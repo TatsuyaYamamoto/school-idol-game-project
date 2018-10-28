@@ -1,6 +1,8 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Member, getMemberIcon } from "@sokontokoro/mikan";
+import { MEMBERS, Member, getMemberIcon } from "@sokontokoro/mikan";
+// @ts-ignore
+import Tippy from "@tippy.js/react";
 
 interface Props {
   rank: number;
@@ -57,13 +59,19 @@ const Member = styled.div`
   border-radius: ${memberBudgeSize}px;
 `;
 
+/**
+ * TODO: i18n
+ * @param props
+ * @constructor
+ */
 const RankItem: React.SFC<Props> = props => {
   const { rank, point, userName, member } = props;
+
+  const tooltip = `${MEMBERS[member].name.ja}とプレイしました！`;
 
   return (
     <Root>
       <Rank>
-        {/* TODO i18n */}
         <RankValue>{rank}</RankValue>
         <RankUnit>位</RankUnit>
       </Rank>
@@ -74,9 +82,9 @@ const RankItem: React.SFC<Props> = props => {
           <ScoreValue>{point}</ScoreValue>
         </Score>
       </UserDetail>
-      <div>
+      <Tippy content={tooltip} arrow={true} duration={500} delay={[100, 50]}>
         <Member>{`${getMemberIcon(member)}`}</Member>
-      </div>
+      </Tippy>
     </Root>
   );
 };
