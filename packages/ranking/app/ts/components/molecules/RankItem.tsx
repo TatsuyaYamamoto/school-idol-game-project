@@ -1,11 +1,12 @@
 import * as React from "react";
 import styled from "styled-components";
+import { Member, getMemberIcon } from "@sokontokoro/mikan";
 
 interface Props {
   rank: number;
   point: number;
   userName: string;
-  member: string;
+  member: Member;
 }
 
 const margin = 10;
@@ -74,7 +75,7 @@ const RankItem: React.SFC<Props> = props => {
         </Score>
       </UserDetail>
       <div>
-        <Member>{"🍊"}</Member>
+        <Member>{`${getMemberIcon(member)}`}</Member>
       </div>
     </Root>
   );
