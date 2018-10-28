@@ -220,6 +220,9 @@ export class User {
   }
 }
 
+/**
+ * @deprecated
+ */
 function getRandomAnonymousName() {
   const candidates = [
     "パン好きな", // honoka
