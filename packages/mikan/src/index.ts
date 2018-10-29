@@ -76,7 +76,7 @@ export {
   createUrchinTrackingModuleQuery
 } from "./Tracker";
 
-export { firebaseDb, firebaseAuth } from "./firebase";
+export { firebaseDb, firebaseAuth, httpsCallable } from "./firebase";
 
 export {
   init as initAuth,
