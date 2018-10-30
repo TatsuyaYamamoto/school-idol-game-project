@@ -77,6 +77,31 @@ export function getTweetText(passCarCount, playCharacter) {
 }
 
 // P2P --------------------------------------------
+
+import { SkyWayClient } from "@sokontokoro/mikan";
+
+const apiKeyConfig = require("../../../../package.json").config.sokontokoro
+  .skyWayApiKey;
+
+const skyWayApiKey =
+  process.env.NODE_ENV === "production" ? apiKeyConfig.pro : apiKeyConfig.dev;
+
+let CLIENT;
+
+export function initClient() {
+  return SkyWayClient.createClient(skyWayApiKey).then(client => {
+    CLIENT = client;
+  });
+}
+
+export function getClient() {
+  if (!CLIENT) {
+    throw new Error("not initialized");
+  }
+
+  return CLIENT;
+}
+
 export function trySyncGameStart(sernder) {
   const offset = 2 * 1000; //[ms]
   const p2p = P2PClient.get();

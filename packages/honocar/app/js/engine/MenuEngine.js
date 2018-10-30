@@ -5,11 +5,15 @@ import {
   signInAsTwitterUser,
   signOut,
   tracePage,
-  trackEvent
+  trackEvent,
+  getCurrentUrl,
+  copyTextToClipboard
 } from "@sokontokoro/mikan";
 
 import globals from "../globals";
 import Engine from "./Engine";
+import { getClient, initClient } from "../common";
+
 import { soundTurnOff, soundTurnOn } from "../contentsLoader";
 import CreditEngine from "./CreditEngine";
 import HowToPlayEngine from "./HowToPlayEngine";
@@ -144,31 +148,31 @@ function onClick2SinglePlay() {
 function onClick2MultiPlay() {
   globals.soundObj.SOUND_OK.play();
 
-  openModal({
-    title: "オンライン対戦モード近日公開！",
-    text: "鋭意開発ちゅん!",
-    actions: [{ text: "OK" }]
-  });
+  // TODO Show progress indicator
+  initClient().then(() => {
+    const client = getClient();
+    client.createRoom("honocar").then(roomDoc => {
+      const roomName = roomDoc.name;
 
-  // openModal({
-  //   title: t(Ids.ONLINE_DIALOG_PREPARE_TITLE),
-  //   text: t(Ids.ONLINE_DIALOG_PREPARE_TEXT),
-  //   actions: [
-  //     {
-  //       text: t(Ids.ONLINE_DIALOG_PREPARE_CLIPBOARD),
-  //       autoClose: false,
-  //       tooltipText: t(Ids.ONLINE_DIALOG_PREPARE_COPY_SUCCESS),
-  //       onClick: () => {
-  //         const url = getCurrentUrl();
-  //         const peerId = P2PClient.get().peerId;
-  //
-  //         copyTextToClipboard(`${url}?peerId=${peerId}`);
-  //       }
-  //     },
-  //     { text: "Twitter" },
-  //     { text: "cancel", type: "cancel" }
-  //   ]
-  // });
+      openModal({
+        title: t(Ids.ONLINE_DIALOG_PREPARE_TITLE),
+        text: t(Ids.ONLINE_DIALOG_PREPARE_TEXT),
+        actions: [
+          {
+            text: t(Ids.ONLINE_DIALOG_PREPARE_CLIPBOARD),
+            autoClose: false,
+            tooltipText: t(Ids.ONLINE_DIALOG_PREPARE_COPY_SUCCESS),
+            onClick: () => {
+              const url = getCurrentUrl();
+              copyTextToClipboard(`${url}?roomName=${roomName}`);
+            }
+          },
+          { text: "Twitter" },
+          { text: "cancel", type: "cancel" }
+        ]
+      });
+    });
+  });
 }
 
 function onClick2HowToPlay() {
