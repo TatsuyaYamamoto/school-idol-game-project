@@ -8,7 +8,7 @@ import { Member } from "../model/members";
 import { Game } from "../model/games";
 import { getLogger } from "../logger";
 
-const logger = getLogger("mikan/firebase/db");
+const logger = getLogger("mikan/firebase/playlog");
 
 export interface PlaylogDocument /* extends firestore.DocumentData */ {
   userRef: DocumentReference;

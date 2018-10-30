@@ -187,6 +187,19 @@ export function getIdToken(forceRefresh: boolean = true): Promise<string> {
 }
 
 /**
+ * Return UID
+ */
+export function getUid(): string {
+  const user = firebaseAuth.currentUser;
+
+  if (!user) {
+    throw new Error("No firebase authed user.");
+  }
+
+  return user.uid;
+}
+
+/**
  * Sign in to firebase auth as anonymous user.
  *
  * @return Promise<auth.UserCredential>
