@@ -380,10 +380,15 @@ class SkyWayClient extends EventEmitter {
   /**
    * DataConnectionが切断された
    *
+   * Note: 相手の切断(reloadとか)から、15秒以上かかる
+   *
    * @see https://webrtc.ecl.ntt.com/skyway-js-sdk-doc/ja/dataconnection/#close_1
    * @param peerId
    */
   protected onDataConnectionClosed(peerId: string) {
+    logger.debug("data connection closed", peerId);
+
+    this.emit(SkyWayEvents.MEMBER_LEFT, peerId);
     this.emit(SkyWayEvents.CONNECTION_CLOSED, peerId);
   }
 
@@ -417,6 +422,22 @@ class SkyWayClient extends EventEmitter {
 
     if (prev && !prev.lock && next.lock) {
       this.emit(SkyWayEvents.MEMBER_LOCK);
+    }
+
+    if (prev) {
+      const prevMemberCount = Object.keys(prev.userIds).length;
+      const nextMemberCount = Object.keys(next.userIds).length;
+
+      if (nextMemberCount < prevMemberCount) {
+        const prevIds = Object.keys(prev.userIds);
+        const nextIds = Object.keys(next.userIds);
+
+        const leftUserId = prevIds.find(prevId => {
+          return !nextIds.find(nextId => nextId === prevId);
+        });
+
+        this.emit(SkyWayEvents.MEMBER_LEFT, leftUserId);
+      }
     }
 
     this._currentRoomDoc = next;

@@ -12,7 +12,8 @@ enum SkyWayEvents {
 
   // mikan original event
   MEMBER_LOCK = "member_lock",
-  MEMBER_FULFILLED = "member_fulfilled"
+  MEMBER_FULFILLED = "member_fulfilled",
+  MEMBER_LEFT = "member_left"
 }
 
 export default SkyWayEvents;

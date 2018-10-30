@@ -14,7 +14,12 @@ import {
 
 import globals from "../globals";
 import Engine from "./Engine";
-import { getClient, initClient, trySyncGameStart } from "../common";
+import {
+  closeOnlineMode,
+  getClient,
+  initClient,
+  trySyncGameStart
+} from "../common";
 
 import { soundTurnOff, soundTurnOn } from "../contentsLoader";
 import CreditEngine from "./CreditEngine";
@@ -159,6 +164,12 @@ function onClick2MultiPlay() {
     client.on("member_fulfilled", function() {
       console.log("fulfilled!");
       tryP2pConnect();
+    });
+
+    client.on("member_left", id => {
+      console.log("member left", id);
+
+      closeOnlineMode();
     });
 
     client.createRoom("honocar").then(roomDoc => {

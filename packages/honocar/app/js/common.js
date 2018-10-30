@@ -75,7 +75,10 @@ export function getTweetText(passCarCount, playCharacter) {
 
 // P2P --------------------------------------------
 
-import { SkyWayClient } from "@sokontokoro/mikan";
+import { closeModal, openModal, SkyWayClient, t } from "@sokontokoro/mikan";
+import { Ids } from "./resources/string";
+import { to } from "./stateMachine";
+import instance from "./engine/TopEngine";
 
 const apiKeyConfig = require("../../../../package.json").config.sokontokoro
   .skyWayApiKey;
@@ -86,6 +89,10 @@ const skyWayApiKey =
 let CLIENT;
 
 export function initClient() {
+  if (CLIENT && CLIENT.isPeerOpen) {
+    return Promise.resolve();
+  }
+
   return SkyWayClient.createClient(skyWayApiKey).then(client => {
     CLIENT = client;
   });
@@ -139,4 +146,19 @@ export function trySyncGameStart(sernder = false) {
       }
     }
   });
+}
+
+export function closeOnlineMode() {
+  CLIENT.leaveRoom();
+
+  openModal({
+    title: t(Ids.ONLINE_DIALOG_DISCONNECTED_TITLE),
+    text: t(Ids.ONLINE_DIALOG_DISCONNECTED_TEXT),
+    actions: []
+  });
+
+  setTimeout(() => {
+    closeModal();
+    to(instance);
+  }, 3000);
 }

@@ -17,7 +17,8 @@ import OnlineGameEngine from "./OnlineGameEngine";
 
 import {
   initClient as initSkyWayClient,
-  getClient as getSkyWayClient
+  getClient as getSkyWayClient,
+  closeOnlineMode
 } from "../common";
 
 import { trySyncGameStart } from "../common";
@@ -105,6 +106,11 @@ class TopEngine extends Engine {
           this.tryP2pConnect();
         });
 
+        client.on("member_left", id => {
+          console.log("member left", id);
+          closeOnlineMode();
+        });
+
         client.joinRoom(roomName);
       });
     } else {
@@ -137,23 +143,6 @@ class TopEngine extends Engine {
 
       to(OnlineGameEngine);
     });
-  }
-
-  onP2pClosed(params) {
-    logger.info("close connection to peer.", params);
-
-    if (!params.isByMyself) {
-      openModal({
-        title: t(Ids.ONLINE_DIALOG_DISCONNECTED_TITLE),
-        text: t(Ids.ONLINE_DIALOG_DISCONNECTED_TEXT),
-        actions: []
-      });
-
-      setTimeout(() => {
-        closeModal();
-        to(instance);
-      }, 3000);
-    }
   }
 }
 
