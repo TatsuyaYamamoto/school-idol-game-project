@@ -330,7 +330,7 @@ class SkyWayClient extends EventEmitter {
    * @param peerId
    * @param data
    */
-  protected onDataReceived(peerId: string, data: Data) {
+  protected onDataReceived(data: Data, peerId: string) {
     if (logger.getLevel() === logger.levels.DEBUG) {
       setTimeout(() => {
         const ping = Date.now() - data.timestamp;
@@ -354,7 +354,7 @@ class SkyWayClient extends EventEmitter {
       });
     }
 
-    this.emit(SkyWayEvents.DATA, peerId, data);
+    this.emit(SkyWayEvents.DATA, data, peerId);
   }
 
   /**
@@ -406,7 +406,7 @@ class SkyWayClient extends EventEmitter {
     const peerId = dataConnection.remoteId;
 
     dataConnection.on("data", (data: any) => {
-      this.onDataReceived(peerId, data);
+      this.onDataReceived(data, peerId);
     });
     dataConnection.on("close", () => {
       this.onDataConnectionClosed(peerId);
@@ -417,6 +417,8 @@ class SkyWayClient extends EventEmitter {
       averagePing: 0,
       pingHistory: []
     });
+
+    logger.debug("set new data connection.", dataConnection);
   }
 }
 

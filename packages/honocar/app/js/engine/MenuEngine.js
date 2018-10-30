@@ -7,12 +7,14 @@ import {
   tracePage,
   trackEvent,
   getCurrentUrl,
-  copyTextToClipboard
+  copyTextToClipboard,
+  closeModal,
+  getLogger
 } from "@sokontokoro/mikan";
 
 import globals from "../globals";
 import Engine from "./Engine";
-import { getClient, initClient } from "../common";
+import { getClient, initClient, trySyncGameStart } from "../common";
 
 import { soundTurnOff, soundTurnOn } from "../contentsLoader";
 import CreditEngine from "./CreditEngine";
@@ -27,6 +29,9 @@ import {
   TRACK_ACTION,
   TRACK_PAGES
 } from "../resources/config";
+import OnlineGameEngine from "./OnlineGameEngine";
+
+const logger = getLogger("menu-engine");
 
 class MenuEngine extends Engine {
   constructor(props) {
@@ -151,6 +156,11 @@ function onClick2MultiPlay() {
   // TODO Show progress indicator
   initClient().then(() => {
     const client = getClient();
+    client.on("member_fulfilled", function() {
+      console.log("fulfilled!");
+      tryP2pConnect();
+    });
+
     client.createRoom("honocar").then(roomDoc => {
       const roomName = roomDoc.name;
 
@@ -172,6 +182,22 @@ function onClick2MultiPlay() {
         ]
       });
     });
+  });
+}
+
+function tryP2pConnect() {
+  logger.info("success to connect to peer.");
+  openModal({
+    title: t(Ids.ONLINE_DIALOG_READY_TITLE),
+    text: t(Ids.ONLINE_DIALOG_READY_TEXT),
+    actions: []
+  });
+
+  trySyncGameStart().then(() => {
+    globals.soundObj.SOUND_ZENKAI.stop();
+    closeModal();
+
+    to(OnlineGameEngine);
   });
 }
 

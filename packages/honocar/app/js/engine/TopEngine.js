@@ -5,7 +5,6 @@ import {
   getLogger,
   pointerdown,
   openModal,
-  P2PClient,
   t,
   tracePage
 } from "@sokontokoro/mikan";
@@ -15,6 +14,11 @@ import { to } from "../stateMachine";
 import Engine from "./Engine";
 import MenuEngine from "./MenuEngine";
 import OnlineGameEngine from "./OnlineGameEngine";
+
+import {
+  initClient as initSkyWayClient,
+  getClient as getSkyWayClient
+} from "../common";
 
 import { trySyncGameStart } from "../common";
 import { Ids } from "../resources/string";
@@ -28,10 +32,6 @@ class TopEngine extends Engine {
     super(props);
 
     this.onClickTop = this.onClickTop.bind(this);
-    this.onP2pClosed = this.onP2pClosed.bind(this);
-    this.onP2pConnect = this.onP2pConnect.bind(this);
-
-    this.isConnectionRequester = false;
     this.titleLogo = null;
   }
 
@@ -91,18 +91,22 @@ class TopEngine extends Engine {
       SOUND_ZENKAI.play({ loop: -1, volume: 0.4 });
     }
 
-    const p2p = P2PClient.get(process.env.SKYWAY_KEY);
+    const roomName = parse(window.location.search).roomName;
 
-    p2p.once(P2PClient.EVENTS.CONNECT, this.onP2pConnect);
-    p2p.once(P2PClient.EVENTS.CLOSE, this.onP2pClosed);
-
-    const remotePeerId = parse(window.location.search).peerId;
-    this.isConnectionRequester = !remotePeerId;
-    if (remotePeerId) {
+    if (roomName) {
       history.replaceState(null, null, getCurrentUrl());
+      logger.debug(`try to connect to ${roomName}`);
 
-      logger.debug(`try to connect to ${remotePeerId}`);
-      p2p.connect(remotePeerId);
+      initSkyWayClient().then(() => {
+        const client = getSkyWayClient();
+        client.on("member_fulfilled", () => {
+          console.log("fulfilled!");
+
+          this.tryP2pConnect();
+        });
+
+        client.joinRoom(roomName);
+      });
     } else {
       window.addEventListener(pointerdown, this.onClickTop);
     }
@@ -119,7 +123,7 @@ class TopEngine extends Engine {
     to(MenuEngine);
   }
 
-  onP2pConnect() {
+  tryP2pConnect() {
     logger.info("success to connect to peer.");
     openModal({
       title: t(Ids.ONLINE_DIALOG_READY_TITLE),
@@ -127,7 +131,7 @@ class TopEngine extends Engine {
       actions: []
     });
 
-    trySyncGameStart(this.isConnectionRequester).then(() => {
+    trySyncGameStart(true).then(() => {
       globals.soundObj.SOUND_ZENKAI.stop();
       closeModal();
 

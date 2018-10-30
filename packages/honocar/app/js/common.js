@@ -1,8 +1,5 @@
-import { P2PClient } from "@sokontokoro/mikan";
-
 import config from "./resources/config";
 import globals from "./globals";
-import { P2PEvents } from "./constants";
 
 //ゲームスクリーンサイズ初期化用-----------------------
 export function initGameScreenScale() {
@@ -102,34 +99,34 @@ export function getClient() {
   return CLIENT;
 }
 
-export function trySyncGameStart(sernder) {
+export function trySyncGameStart(sernder = false) {
   const offset = 2 * 1000; //[ms]
-  const p2p = P2PClient.get();
+  const eventType = "start";
 
   return new Promise(resolve => {
     if (sernder) {
       sendSyncStartMessage(offset);
     } else {
-      P2PClient.get().on(P2PClient.EVENTS.DATA, onDataReceived);
+      CLIENT.on("data", onDataReceived);
     }
 
     function sendSyncStartMessage(offset) {
       const now = Date.now();
       const message = {
-        type: P2PEvents.START,
+        type: eventType,
         detail: {
           startTime: now + offset
         }
       };
 
-      p2p.send(message);
+      CLIENT.send(message);
 
       setTimeout(resolve, offset);
     }
 
     function onDataReceived(data) {
-      if (data.message.type === P2PEvents.START) {
-        p2p.off(P2PClient.EVENTS.DATA, onDataReceived);
+      if (data.message.type === eventType) {
+        CLIENT.off("data", onDataReceived);
 
         const now = Date.now();
         const offset = data.message.detail.startTime - now;
