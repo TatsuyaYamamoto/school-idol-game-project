@@ -125,5 +125,39 @@ export class Room {
     }
   }
 
-  // public static async leave(roomName: RoomName, leaveUserId: string) {}
+  public static async leave(roomName: RoomName, leaveUserId: string) {
+    const snapshot = await Room.getColRef()
+      .where("name", "==", roomName)
+      .get();
+
+    if (snapshot.empty) {
+      throw new Error("");
+    }
+
+    const roomRef = snapshot.docs[0].ref;
+
+    await firestore().runTransaction(async transaction => {
+      const roomSnapshot = await transaction.get(roomRef);
+
+      if (!roomSnapshot.exists) {
+        return;
+      }
+
+      const roomDoc = roomSnapshot.data() as RoomDocument;
+
+      const leftMembers = {
+        ...roomDoc.userIds
+      };
+
+      delete leftMembers[leaveUserId];
+
+      const newRoomDoc: Partial<RoomDocument> = {
+        userIds: leftMembers
+      };
+
+      transaction.update(roomRef, newRoomDoc);
+
+      return roomDoc;
+    });
+  }
 }

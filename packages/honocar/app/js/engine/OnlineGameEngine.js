@@ -1,13 +1,16 @@
-import { P2PClient, getLogger, tracePage } from "@sokontokoro/mikan";
+import { getLogger, tracePage } from "@sokontokoro/mikan";
 
 import Player from "../character/Player";
-import globals from "../globals";
-import { P2PEvents } from "../constants";
+import Car from "../character/Car";
+
 import Engine from "./Engine";
 import { checkButton, checkDistance, passCountText } from "./GameEngine";
 import OnlineGameOverEngine from "./OnlineGameOverEngine";
 import { to } from "../stateMachine";
-import Car from "../character/Car";
+
+import globals from "../globals";
+import { P2PEvents } from "../constants";
+import { getClient as getSkyWayClient } from "../common";
 
 import { TRACK_PAGES } from "../resources/config";
 
@@ -52,7 +55,7 @@ class OnlineGameEngine extends Engine {
     createjs.Ticker.addEventListener("tick", gameReady);
     window.addEventListener("keydown", keyDownEvent);
 
-    P2PClient.get().on(P2PClient.EVENTS.DATA, onDataReceived);
+    getSkyWayClient().on("data", onDataReceived);
   }
 
   tearDown() {
@@ -72,7 +75,7 @@ class OnlineGameEngine extends Engine {
     createjs.Ticker.removeEventListener("tick", processGame);
     window.removeEventListener("keydown", keyDownEvent);
 
-    P2PClient.get().off(P2PClient.EVENTS.DATA, onDataReceived);
+    getSkyWayClient().off("data", onDataReceived);
   }
 }
 
@@ -82,7 +85,7 @@ function gameStatusReset() {
   cars = [];
   playerCrashedTime = null;
   opponentCrashTime = null;
-  shouldPushCar = P2PClient.get().peerId < P2PClient.get().remotePeerId;
+  shouldPushCar = getSkyWayClient().peerId < getSkyWayClient().remotePeerIds[0];
   isMatched = false;
 }
 
@@ -345,7 +348,7 @@ function onOpponentChangedLane(message) {
 
 function onOpponentPushedCar(message) {
   const nextPusher = message.detail.nextPusher;
-  if (nextPusher === P2PClient.get().peerId) {
+  if (nextPusher === getSkyWayClient().peerId) {
     shouldPushCar = true;
     gameFrame = gameFrame - (gameFrame % 20) + 20;
   }
@@ -377,7 +380,7 @@ function sendChangeLaneEvent() {
     }
   };
 
-  P2PClient.get().send(message);
+  getSkyWayClient().send(message);
 }
 
 function sendPushCarEvent(enemyNumber) {
@@ -385,11 +388,11 @@ function sendPushCarEvent(enemyNumber) {
     type: P2PEvents.PUSH_CAR,
     detail: {
       nextEnemyNumber: enemyNumber,
-      nextPusher: P2PClient.get().remotePeerId
+      nextPusher: getSkyWayClient().remotePeerIds[0]
     }
   };
 
-  P2PClient.get().send(message);
+  getSkyWayClient().send(message);
 }
 
 function sendCrashEvent(crashedTime, judgeTime, fps) {
@@ -402,11 +405,11 @@ function sendCrashEvent(crashedTime, judgeTime, fps) {
     }
   };
 
-  P2PClient.get().send(message);
+  getSkyWayClient().send(message);
 }
 
 function getWaitInterval() {
-  const ping = P2PClient.get().averagePing;
+  const ping = getSkyWayClient().averagePings[0];
   const secondPerFrame = 1000 / createjs.Ticker.framerate;
 
   const waitInterval = secondPerFrame + ping * 4;

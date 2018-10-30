@@ -99,6 +99,26 @@ class SkyWayClient extends EventEmitter {
     return this._peer.id;
   }
 
+  public get remotePeerIds(): string[] {
+    const ids: string[] = [];
+
+    this._destinations.forEach(d => {
+      ids.push(d.dataConnection.remoteId);
+    });
+
+    return ids;
+  }
+
+  public get averagePings(): number[] {
+    const pings: number[] = [];
+
+    this._destinations.forEach(d => {
+      pings.push(d.averagePing);
+    });
+
+    return pings;
+  }
+
   /**
    * Whether the socket is connecting to the signalling server or not.
    */
@@ -199,8 +219,8 @@ class SkyWayClient extends EventEmitter {
       return;
     }
 
-    // const userId = User.getOwnRef().id;
-    // await Room.leave(this._currentRoomDoc.name, userId);
+    const userId = User.getOwnRef().id;
+    await Room.leave(this._currentRoomDoc.name, userId);
 
     this._currentRoomDoc = null;
 

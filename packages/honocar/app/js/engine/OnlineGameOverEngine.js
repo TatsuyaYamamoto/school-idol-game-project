@@ -1,19 +1,19 @@
 import {
   closeModal,
   openModal,
-  P2PClient,
   t,
   tracePage,
   trackEvent
 } from "@sokontokoro/mikan";
 
-import Engine from "./Engine";
-import globals from "../globals";
-import { P2PEvents } from "../constants";
-import { trySyncGameStart } from "../common";
 import TopEngine from "./TopEngine";
 import OnlineGameEngine from "./OnlineGameEngine";
 import { to } from "../stateMachine";
+
+import Engine from "./Engine";
+import globals from "../globals";
+import { P2PEvents } from "../constants";
+import { trySyncGameStart, getClient as getSkyWayClient } from "../common";
 
 import { Ids } from "../resources/string";
 import { TRACK_ACTION, TRACK_PAGES } from "../resources/config";
@@ -78,7 +78,7 @@ class OnlineGameOverEngine extends Engine {
       gameStage.addChild(imageObj.GAMEOVER_DRAW);
     }
 
-    P2PClient.get().on(P2PClient.EVENTS.DATA, this.onDataReceived);
+    getSkyWayClient().on("data", this.onDataReceived);
     imageObj.BUTTON_BACK_TOP_ONLINE.addEventListener(
       "mousedown",
       this.onClickBack
@@ -94,7 +94,7 @@ class OnlineGameOverEngine extends Engine {
     super.tearDown();
     const { imageObj } = globals;
 
-    P2PClient.get().off(P2PClient.EVENTS.DATA, this.onDataReceived);
+    getSkyWayClient().off("data", this.onDataReceived);
     imageObj.BUTTON_BACK_TOP_ONLINE.removeEventListener(
       "mousedown",
       this.onClickBack
@@ -111,7 +111,7 @@ class OnlineGameOverEngine extends Engine {
   }
 
   onClickBack() {
-    P2PClient.get().disconnect();
+    getSkyWayClient().leaveRoom();
 
     globals.soundObj.SOUND_BACK.play();
     to(TopEngine);
@@ -129,7 +129,7 @@ class OnlineGameOverEngine extends Engine {
     const message = {
       type: P2PEvents.RESTART
     };
-    P2PClient.get().send(message);
+    getSkyWayClient().send(message);
   }
 
   onDataReceived({ message }) {
@@ -145,7 +145,7 @@ class OnlineGameOverEngine extends Engine {
               const message = {
                 type: P2PEvents.RESTART_ACCEPT
               };
-              P2PClient.get().send(message);
+              getSkyWayClient().send(message);
 
               openModal({
                 title: t(Ids.ONLINE_DIALOG_READY_TITLE),
@@ -162,7 +162,7 @@ class OnlineGameOverEngine extends Engine {
           {
             text: "NO",
             onClick: () => {
-              P2PClient.get().disconnect();
+              getSkyWayClient().leaveRoom();
 
               globals.soundObj.SOUND_BACK.play();
               to(TopEngine);
