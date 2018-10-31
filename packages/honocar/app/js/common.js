@@ -147,18 +147,3 @@ export function trySyncGameStart(sernder = false) {
     }
   });
 }
-
-export function closeOnlineMode() {
-  CLIENT.leaveRoom();
-
-  openModal({
-    title: t(Ids.ONLINE_DIALOG_DISCONNECTED_TITLE),
-    text: t(Ids.ONLINE_DIALOG_DISCONNECTED_TEXT),
-    actions: []
-  });
-
-  setTimeout(() => {
-    closeModal();
-    to(instance);
-  }, 3000);
-}

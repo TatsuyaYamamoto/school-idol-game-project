@@ -4,6 +4,7 @@ import FieldValue = firestore.FieldValue;
 
 import { firebaseDb } from "./index";
 import { Game } from "../model/games";
+import MikanError, { ErrorCode } from "../MikanError";
 
 const ROOM_LIFETIEM = 1; // 1day
 
@@ -83,7 +84,10 @@ export class Room {
       .get();
 
     if (snapshot.empty) {
-      throw new Error("");
+      throw new MikanError(
+        ErrorCode.FIREBASE_NO_ROOM,
+        `provided room; ${roomName}, doesn't exist`
+      );
     }
 
     const roomRef = snapshot.docs[0].ref;
@@ -131,7 +135,10 @@ export class Room {
       .get();
 
     if (snapshot.empty) {
-      throw new Error("");
+      throw new MikanError(
+        ErrorCode.FIREBASE_NO_ROOM,
+        `provided room; ${roomName}, doesn't exist`
+      );
     }
 
     const roomRef = snapshot.docs[0].ref;

@@ -33,6 +33,9 @@ export const Ids = {
   ONLINE_DIALOG_TRY_CONNECT_TITLE: "online_dialog_try_connect_title",
   ONLINE_DIALOG_TRY_CONNECT_TEXT: "online_dialog_try_connect_text",
 
+  ONLINE_DIALOG_ERROR_TITLE: "online_dialog_error_title",
+  ONLINE_DIALOG_ERROR_NO_ROOM_TEXT: "online_dialog_error_no_room_text",
+
   OPEN_EXTERNAL_SITE_INFO: "open_external_site_info",
   OPEN_RANKING_INFO: "open_ranking_info",
   OPEN_HOMEPAGE_INFO: "open_homepage_info"
@@ -113,6 +116,10 @@ LEFT, RIGHTボタン(キーボードの←→でも可！)
       [Ids.ONLINE_DIALOG_TRY_CONNECT_TITLE]: "接続中",
       [Ids.ONLINE_DIALOG_TRY_CONNECT_TEXT]:
         "オンライン対戦用のサーバーに接続しています！",
+
+      [Ids.ONLINE_DIALOG_ERROR_TITLE]: "えらー",
+      [Ids.ONLINE_DIALOG_ERROR_NO_ROOM_TEXT]:
+        "ルームが見つかりませんでした。メンバーがいなくなったため削除された、または作成者がルームを閉じてしまった可能性があります。ルーム名: {{ roomName }}",
 
       [Ids.OPEN_EXTERNAL_SITE_INFO]: "外部サイト({{ domain }})を開きます！",
       [Ids.OPEN_RANKING_INFO]: "ランキングページを開きます！",

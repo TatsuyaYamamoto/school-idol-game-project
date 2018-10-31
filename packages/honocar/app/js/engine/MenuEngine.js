@@ -14,12 +14,7 @@ import {
 
 import globals from "../globals";
 import Engine from "./Engine";
-import {
-  closeOnlineMode,
-  getClient,
-  initClient,
-  trySyncGameStart
-} from "../common";
+import { getClient, initClient, trySyncGameStart } from "../common";
 
 import { soundTurnOff, soundTurnOn } from "../contentsLoader";
 import CreditEngine from "./CreditEngine";
@@ -35,6 +30,7 @@ import {
   TRACK_PAGES
 } from "../resources/config";
 import OnlineGameEngine from "./OnlineGameEngine";
+import instance from "./TopEngine";
 
 const logger = getLogger("menu-engine");
 
@@ -167,14 +163,14 @@ function onClick2MultiPlay() {
   initClient().then(() => {
     const client = getClient();
     client.on("member_fulfilled", function() {
-      console.log("fulfilled!");
+      logger.debug("room member is fulfilled. start online game.");
+
       tryP2pConnect();
     });
 
     client.on("member_left", id => {
-      console.log("member left", id);
-
-      closeOnlineMode();
+      logger.debug("room member left. close online mode.");
+      leaveOnlineGame();
     });
 
     client.createRoom("honocar").then(roomDoc => {
@@ -215,6 +211,21 @@ function tryP2pConnect() {
 
     to(OnlineGameEngine);
   });
+}
+
+function leaveOnlineGame() {
+  getClient().leaveRoom();
+
+  openModal({
+    title: t(Ids.ONLINE_DIALOG_DISCONNECTED_TITLE),
+    text: t(Ids.ONLINE_DIALOG_DISCONNECTED_TEXT),
+    actions: []
+  });
+
+  setTimeout(() => {
+    closeModal();
+    to(instance);
+  }, 3000);
 }
 
 function onClick2HowToPlay() {

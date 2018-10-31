@@ -1,3 +1,5 @@
+export { default as MikanError, ErrorCode } from "./MikanError";
+
 /**
  * Model
  */

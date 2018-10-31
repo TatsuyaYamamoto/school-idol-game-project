@@ -6,7 +6,8 @@ import {
   pointerdown,
   openModal,
   t,
-  tracePage
+  tracePage,
+  ErrorCode
 } from "@sokontokoro/mikan";
 import { parse } from "query-string";
 
@@ -17,9 +18,7 @@ import OnlineGameEngine from "./OnlineGameEngine";
 
 import {
   initClient as initSkyWayClient,
-  getClient as getSkyWayClient,
-  closeOnlineMode,
-  showTryConnectOnlineMode
+  getClient as getSkyWayClient
 } from "../common";
 
 import { trySyncGameStart } from "../common";
@@ -104,22 +103,40 @@ class TopEngine extends Engine {
 
       history.replaceState(null, null, getCurrentUrl());
       logger.debug(`try to connect to ${roomName}`);
+      let client;
 
-      initSkyWayClient().then(() => {
-        const client = getSkyWayClient();
-        client.on("member_fulfilled", () => {
-          console.log("fulfilled!");
+      Promise.resolve()
+        .then(() => initSkyWayClient())
+        .then(() => {
+          logger.debug(`success to init skyway client`);
+          client = getSkyWayClient();
 
-          this.tryP2pConnect();
+          client.on("member_fulfilled", () => {
+            logger.debug("room member is fulfilled. start online game.");
+            this.tryP2pConnect();
+          });
+
+          client.on("member_left", id => {
+            logger.debug("room member left. close online mode.");
+            this.leaveOnlineMode();
+          });
+        })
+        .then(() => client.joinRoom(roomName))
+        .catch(e => {
+          logger.error(e.message);
+
+          if (e.code === ErrorCode.FIREBASE_NO_ROOM) {
+            openModal({
+              title: t(Ids.ONLINE_DIALOG_ERROR_TITLE),
+              text: t(Ids.ONLINE_DIALOG_ERROR_NO_ROOM_TEXT, { roomName }),
+              actions: [{ text: "OK" }]
+            });
+
+            return;
+          }
+
+          throw e;
         });
-
-        client.on("member_left", id => {
-          console.log("member left", id);
-          closeOnlineMode();
-        });
-
-        client.joinRoom(roomName);
-      });
     } else {
       window.addEventListener(pointerdown, this.onClickTop);
     }
@@ -136,8 +153,22 @@ class TopEngine extends Engine {
     to(MenuEngine);
   }
 
+  leaveOnlineMode() {
+    getSkyWayClient().leaveRoom();
+
+    openModal({
+      title: t(Ids.ONLINE_DIALOG_DISCONNECTED_TITLE),
+      text: t(Ids.ONLINE_DIALOG_DISCONNECTED_TEXT),
+      actions: []
+    });
+
+    setTimeout(() => {
+      closeModal();
+      to(instance);
+    }, 3000);
+  }
+
   tryP2pConnect() {
-    logger.info("success to connect to peer.");
     openModal({
       title: t(Ids.ONLINE_DIALOG_READY_TITLE),
       text: t(Ids.ONLINE_DIALOG_READY_TEXT),
