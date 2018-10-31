@@ -37,7 +37,8 @@ async function onChangeOnline(
   presenceId: string,
   createdSnapshot: database.DataSnapshot
 ) {
-  const createdPresenceJson_rd = createdSnapshot.val() as PresenceDbJson;
+  const createdPresence_rd = createdSnapshot.val() as PresenceDbJson;
+  const uid = createdPresence_rd.uid;
 
   const createPresenceRef_cf = firestore()
     .collection("presences")
@@ -45,13 +46,17 @@ async function onChangeOnline(
 
   const userRef_cf = firestore()
     .collection("users")
-    .doc(createdPresenceJson_rd.uid);
+    .doc(uid);
+
+  const roomDocsRef_cf = firestore()
+    .collection("rooms")
+    .where(`userIds.${uid}`, "==", true);
 
   const newPresenceDoc_cf: PresenceDocument = {
     userRef: userRef_cf as any,
-    userAgent: createdPresenceJson_rd.userAgent,
+    userAgent: createdPresence_rd.userAgent,
     createdAt: firestore.Timestamp.fromMillis(
-      createdPresenceJson_rd.createdAt as number
+      createdPresence_rd.createdAt as number
     )
   };
 
@@ -59,6 +64,11 @@ async function onChangeOnline(
   batch.set(createPresenceRef_cf, newPresenceDoc_cf);
   batch.update(userRef_cf, {
     [`presenceRefs.${presenceId}`]: createPresenceRef_cf
+  });
+  (await roomDocsRef_cf.get()).forEach(result => {
+    batch.update(result.ref, {
+      [`userIds.${uid}`]: firestore.FieldValue.delete()
+    });
   });
 
   await batch.commit();
