@@ -7,6 +7,7 @@ import onCreatePlaylog from "./trigger/onCreatePlaylog";
 import onCreateRanking from "./trigger/onCreateRanking";
 import onWriteUser from "./trigger/onWriteUser";
 import onUpdatePresence from "./trigger/onUpdatePresence";
+import onUpdateRoom from "./trigger/onUpdateRoom";
 
 import generateRanking from "./pubsub/generateRanking";
 import cloudFunctionsWarnLog from "./pubsub/cloudFunctionsWarnLog";
@@ -24,7 +25,13 @@ export const helloWorld = functions.https.onRequest((_request, response) => {
 export { p2pCredential };
 
 // Trigger
-export { onCreatePlaylog, onCreateRanking, onWriteUser, onUpdatePresence };
+export {
+  onCreatePlaylog,
+  onCreateRanking,
+  onWriteUser,
+  onUpdatePresence,
+  onUpdateRoom
+};
 
 // pubsub
 export { cloudFunctionsWarnLog, generateRanking };
