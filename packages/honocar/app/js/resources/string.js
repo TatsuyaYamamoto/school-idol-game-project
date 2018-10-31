@@ -30,6 +30,8 @@ export const Ids = {
   ONLINE_DIALOG_REPLAY_WAITING_TEXT: "online_dialog_replay_waiting_text",
   ONLINE_DIALOG_DISCONNECTED_TITLE: "online_dialog_disconnected_title",
   ONLINE_DIALOG_DISCONNECTED_TEXT: "online_dialog_disconnected_text",
+  ONLINE_DIALOG_TRY_CONNECT_TITLE: "online_dialog_try_connect_title",
+  ONLINE_DIALOG_TRY_CONNECT_TEXT: "online_dialog_try_connect_text",
 
   OPEN_EXTERNAL_SITE_INFO: "open_external_site_info",
   OPEN_RANKING_INFO: "open_ranking_info",
@@ -107,6 +109,10 @@ LEFT, RIGHTボタン(キーボードの←→でも可！)
       [Ids.ONLINE_DIALOG_DISCONNECTED_TITLE]: "ゲーム終了",
       [Ids.ONLINE_DIALOG_DISCONNECTED_TEXT]:
         "通信相手の接続が切れてしまいました。Topに戻ります。",
+
+      [Ids.ONLINE_DIALOG_TRY_CONNECT_TITLE]: "接続中",
+      [Ids.ONLINE_DIALOG_TRY_CONNECT_TEXT]:
+        "オンライン対戦用のサーバーに接続しています！",
 
       [Ids.OPEN_EXTERNAL_SITE_INFO]: "外部サイト({{ domain }})を開きます！",
       [Ids.OPEN_RANKING_INFO]: "ランキングページを開きます！",

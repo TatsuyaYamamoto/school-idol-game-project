@@ -158,7 +158,12 @@ function onClick2SinglePlay() {
 function onClick2MultiPlay() {
   globals.soundObj.SOUND_OK.play();
 
-  // TODO Show progress indicator
+  openModal({
+    title: t(Ids.ONLINE_DIALOG_TRY_CONNECT_TITLE),
+    text: t(Ids.ONLINE_DIALOG_TRY_CONNECT_TEXT),
+    actions: []
+  });
+
   initClient().then(() => {
     const client = getClient();
     client.on("member_fulfilled", function() {

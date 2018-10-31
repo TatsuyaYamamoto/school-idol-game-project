@@ -18,7 +18,8 @@ import OnlineGameEngine from "./OnlineGameEngine";
 import {
   initClient as initSkyWayClient,
   getClient as getSkyWayClient,
-  closeOnlineMode
+  closeOnlineMode,
+  showTryConnectOnlineMode
 } from "../common";
 
 import { trySyncGameStart } from "../common";
@@ -95,6 +96,12 @@ class TopEngine extends Engine {
     const roomName = parse(window.location.search).roomName;
 
     if (roomName) {
+      openModal({
+        title: t(Ids.ONLINE_DIALOG_TRY_CONNECT_TITLE),
+        text: t(Ids.ONLINE_DIALOG_TRY_CONNECT_TEXT),
+        actions: []
+      });
+
       history.replaceState(null, null, getCurrentUrl());
       logger.debug(`try to connect to ${roomName}`);
 
