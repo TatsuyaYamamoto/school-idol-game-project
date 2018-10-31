@@ -1,4 +1,4 @@
-import { firestore } from "firebase/app";
+import { firestore, Unsubscribe } from "firebase/app";
 import DocumentSnapshot = firestore.DocumentSnapshot;
 
 const Peer = require("skyway-js");
@@ -62,6 +62,7 @@ class SkyWayClient extends EventEmitter {
   private _peer: Peer;
   private _destinations: Map<PeerID, Destination> = new Map();
   private _currentRoomDoc: RoomDocument | null = null;
+  private _unsubscribeRoomSnapshot: Unsubscribe | null = null;
 
   /**
    * Constructor
@@ -178,7 +179,8 @@ class SkyWayClient extends EventEmitter {
       maxMemberCount
     );
 
-    ref.onSnapshot(this.onRoomSnapshotUpdated);
+    this._unsubscribeRoomSnapshot = ref.onSnapshot(this.onRoomSnapshotUpdated);
+    this._currentRoomDoc = doc;
 
     return doc;
   }
@@ -206,8 +208,7 @@ class SkyWayClient extends EventEmitter {
         this.setDataConnectionEvents(dataConnection);
       });
 
-    ref.onSnapshot(this.onRoomSnapshotUpdated);
-
+    this._unsubscribeRoomSnapshot = ref.onSnapshot(this.onRoomSnapshotUpdated);
     this._currentRoomDoc = doc;
   }
 
@@ -218,11 +219,15 @@ class SkyWayClient extends EventEmitter {
     if (!this._currentRoomDoc) {
       return;
     }
+    if (this._unsubscribeRoomSnapshot) {
+      this._unsubscribeRoomSnapshot();
+    }
 
     const userId = User.getOwnRef().id;
     await Room.leave(this._currentRoomDoc.name, userId);
 
     this._currentRoomDoc = null;
+    this._unsubscribeRoomSnapshot = null;
 
     this._destinations.forEach(({ dataConnection }) => {
       dataConnection.removeAllListeners();
@@ -380,7 +385,7 @@ class SkyWayClient extends EventEmitter {
   /**
    * DataConnectionが切断された
    *
-   * Note: 相手の切断(reloadとか)から、15秒以上かかる
+   * Note: 相手の切断(reloadとか)から発火まで、15秒以上かかる => Clientへの通知には使えない
    *
    * @see https://webrtc.ecl.ntt.com/skyway-js-sdk-doc/ja/dataconnection/#close_1
    * @param peerId
@@ -388,7 +393,6 @@ class SkyWayClient extends EventEmitter {
   protected onDataConnectionClosed(peerId: string) {
     logger.debug("data connection closed", peerId);
 
-    this.emit(SkyWayEvents.MEMBER_LEFT, peerId);
     this.emit(SkyWayEvents.CONNECTION_CLOSED, peerId);
   }
 
@@ -402,7 +406,6 @@ class SkyWayClient extends EventEmitter {
 
     if (!snapshot.exists) {
       logger.debug("room doc is deleted.");
-      this._currentRoomDoc = null;
       return;
     }
     const prev = this._currentRoomDoc;
