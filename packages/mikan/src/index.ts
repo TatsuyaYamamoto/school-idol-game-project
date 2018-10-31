@@ -87,7 +87,12 @@ export {
   createUrchinTrackingModuleQuery
 } from "./Tracker";
 
-export { firebaseDb, firebaseAuth, callHttpsCallable } from "./firebase";
+export {
+  firebaseDb,
+  firebaseAuth,
+  callHttpsCallable,
+  initWatchPresence
+} from "./firebase";
 
 export {
   init as initAuth,
@@ -98,6 +103,11 @@ export {
 } from "./firebase/auth";
 
 export { User, UserDocument } from "./firebase/User";
+export {
+  Presence,
+  PresenceDocument,
+  PresenceDbJson
+} from "./firebase/Presence";
 export { Playlog, PlaylogDocument } from "./firebase/Playlog";
 export { Highscore, HighscoreDocument } from "./firebase/Highscore";
 export {

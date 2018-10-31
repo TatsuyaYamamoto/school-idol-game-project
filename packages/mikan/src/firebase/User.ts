@@ -51,6 +51,9 @@ export interface UserDocument /* extends firestore.DocumentData */ {
   createdAt: FieldValue | Date;
   updatedAt: FieldValue | Date;
   duplicatedRefsByLink: DocumentReference[];
+  presenceRefs: {
+    [presenceId: string]: DocumentReference;
+  };
   debug?: boolean;
 }
 
@@ -85,7 +88,8 @@ export class User {
       providers: {},
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),
-      duplicatedRefsByLink: []
+      duplicatedRefsByLink: [],
+      presenceRefs: {}
     };
 
     /**

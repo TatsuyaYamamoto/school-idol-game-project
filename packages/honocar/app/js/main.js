@@ -14,7 +14,8 @@ import {
   t,
   initAuth,
   tracePage,
-  initTracker
+  initTracker,
+  initWatchPresence
 } from "@sokontokoro/mikan";
 
 import { to } from "./stateMachine";
@@ -42,6 +43,8 @@ function init() {
 
     initTracker(user.uid);
     tracePage(TRACK_PAGES.INDEX);
+
+    initWatchPresence();
   });
 
   //ゲーム画面の初期
