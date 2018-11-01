@@ -87,12 +87,16 @@ const skyWayApiKey =
 let CLIENT;
 
 export function initClient() {
+  let isNew = false;
   if (CLIENT && CLIENT.isPeerOpen) {
-    return Promise.resolve();
+    return Promise.resolve().then(() => isNew);
   }
+
+  isNew = true;
 
   return SkyWayClient.createClient(skyWayApiKey).then(client => {
     CLIENT = client;
+    return isNew;
   });
 }
 

@@ -156,6 +156,10 @@ class SkyWayClient extends EventEmitter {
     game: Game,
     maxMemberCount: number = 2
   ): Promise<RoomDocument> {
+    if (this._currentRoom) {
+      return this._currentRoom;
+    }
+
     let roomName;
     let suffix = 0;
     do {

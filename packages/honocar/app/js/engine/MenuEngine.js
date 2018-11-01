@@ -9,7 +9,10 @@ import {
   getCurrentUrl,
   copyTextToClipboard,
   closeModal,
-  getLogger
+  getLogger,
+  tweetByWebIntent,
+  convertYyyyMmDd,
+  createUrchinTrackingModuleQuery
 } from "@sokontokoro/mikan";
 
 import globals from "../globals";
@@ -151,7 +154,7 @@ function onClick2SinglePlay() {
   to(GameEngine);
 }
 
-function onClick2MultiPlay() {
+async function onClick2MultiPlay() {
   globals.soundObj.SOUND_OK.play();
 
   openModal({
@@ -160,8 +163,12 @@ function onClick2MultiPlay() {
     actions: []
   });
 
-  initClient().then(() => {
-    const client = getClient();
+  const isNew = await initClient();
+  const client = getClient();
+
+  if (isNew) {
+    logger.debug("got skyway client is newly created. set event listener");
+
     client.on("ready", function() {
       logger.debug(
         "all room members' connection are ready. start online game."
@@ -174,28 +181,48 @@ function onClick2MultiPlay() {
       logger.debug("room member left. close online mode.", id);
       leaveOnlineGame();
     });
+  }
 
-    client.createRoom("honocar").then(roomDoc => {
-      const roomName = roomDoc.name;
+  const roomDoc = await client.createRoom("honocar");
+  const roomName = roomDoc.name;
+  logger.debug(`success to create or load room. name: ${roomName}`);
 
-      openModal({
-        title: t(Ids.ONLINE_DIALOG_PREPARE_TITLE),
-        text: t(Ids.ONLINE_DIALOG_PREPARE_TEXT),
-        actions: [
-          {
-            text: t(Ids.ONLINE_DIALOG_PREPARE_CLIPBOARD),
-            autoClose: false,
-            tooltipText: t(Ids.ONLINE_DIALOG_PREPARE_COPY_SUCCESS),
-            onClick: () => {
-              const url = getCurrentUrl();
-              copyTextToClipboard(`${url}?roomName=${roomName}`);
-            }
-          },
-          { text: "Twitter" },
-          { text: "cancel", type: "cancel" }
-        ]
-      });
-    });
+  openModal({
+    title: t(Ids.ONLINE_DIALOG_PREPARE_TITLE),
+    html: t(Ids.ONLINE_DIALOG_PREPARE_TEXT),
+    actions: [
+      {
+        text: t(Ids.ONLINE_DIALOG_PREPARE_CLIPBOARD),
+        autoClose: false,
+        tooltipText: t(Ids.ONLINE_DIALOG_PREPARE_COPY_SUCCESS),
+        onClick: () => {
+          const url = getCurrentUrl();
+          copyTextToClipboard(`${url}?roomName=${roomName}`);
+        }
+      },
+      {
+        text: "Twitter",
+        autoClose: false,
+        onClick: () => {
+          const yyyymmdd = convertYyyyMmDd(new Date());
+          const utmQuery = createUrchinTrackingModuleQuery({
+            campaign: `online-game-invite_${yyyymmdd}`,
+            source: "twitter",
+            medium: "social"
+          });
+          const url = `${config.link.game}?roomName=${roomName}&${utmQuery.join(
+            "&"
+          )}`;
+
+          tweetByWebIntent({
+            text: t(Ids.ONLINE_INVITATION_TWEET_TEXT),
+            url,
+            hashtags: ["ほのCar", "そこんところ工房"]
+          });
+        }
+      },
+      { text: "Close", type: "cancel" }
+    ]
   });
 }
 
