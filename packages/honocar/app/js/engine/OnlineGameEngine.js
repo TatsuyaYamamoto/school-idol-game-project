@@ -4,7 +4,7 @@ import Player from "../character/Player";
 import Car from "../character/Car";
 
 import Engine from "./Engine";
-import { checkButton, checkDistance, passCountText } from "./GameEngine";
+import { checkDistance, passCountText } from "./GameEngine";
 import OnlineGameOverEngine from "./OnlineGameOverEngine";
 import { to } from "../stateMachine";
 
@@ -213,10 +213,10 @@ function pushCar(enemyNumber) {
 // イベント処理-------------------------------------
 function keyDownEvent(event) {
   const { imageObj } = globals;
-  if (event.which === 37 && imageObj.BUTTON_LEFT.mouseEnabled) {
+  if (event.which === 37 && imageObj.BUTTON_LEFT_ONLINE.mouseEnabled) {
     clickButtonLeft();
   }
-  if (event.keyCode === 39 && imageObj.BUTTON_RIGHT.mouseEnabled) {
+  if (event.keyCode === 39 && imageObj.BUTTON_RIGHT_ONLINE.mouseEnabled) {
     clickButtonRight();
   }
 }
@@ -245,6 +245,44 @@ function clickButtonLeft() {
   sendChangeLaneEvent();
 
   checkButton();
+}
+
+// ボタン状態の確認
+function checkButton() {
+  const { player } = globals;
+
+  if (player.lane === 0) {
+    leftButtonDisable();
+    rightButtonEnable();
+  }
+  if (player.lane === 1 || player.lane === 2) {
+    leftButtonEnable();
+    rightButtonEnable();
+  }
+  if (player.lane === 3) {
+    leftButtonEnable();
+    rightButtonDisable();
+  }
+}
+
+// 有効化
+function rightButtonEnable() {
+  globals.imageObj.BUTTON_RIGHT_ONLINE.mouseEnabled = true;
+  globals.imageObj.BUTTON_RIGHT_ONLINE.alpha = 0.5;
+}
+function leftButtonEnable() {
+  globals.imageObj.BUTTON_LEFT_ONLINE.mouseEnabled = true;
+  globals.imageObj.BUTTON_LEFT_ONLINE.alpha = 0.5;
+}
+
+// 無効化
+function rightButtonDisable() {
+  globals.imageObj.BUTTON_RIGHT_ONLINE.mouseEnabled = false;
+  globals.imageObj.BUTTON_RIGHT_ONLINE.alpha = 0.2;
+}
+function leftButtonDisable() {
+  globals.imageObj.BUTTON_LEFT_ONLINE.mouseEnabled = false;
+  globals.imageObj.BUTTON_LEFT_ONLINE.alpha = 0.2;
 }
 
 // クラッシュ関数-------------------------------------

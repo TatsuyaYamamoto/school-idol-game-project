@@ -173,8 +173,10 @@ function pushCar(enemyNumber) {
 }
 
 // ボタン状態の確認
-export function checkButton() {
+function checkButton() {
   const { player } = globals;
+
+  console.log(player.lane);
 
   if (player.lane === 0) {
     leftButtonDisable();
@@ -191,21 +193,21 @@ export function checkButton() {
 }
 
 // 有効化
-export function rightButtonEnable() {
+function rightButtonEnable() {
   globals.imageObj.BUTTON_RIGHT.mouseEnabled = true;
   globals.imageObj.BUTTON_RIGHT.alpha = 0.5;
 }
-export function leftButtonEnable() {
+function leftButtonEnable() {
   globals.imageObj.BUTTON_LEFT.mouseEnabled = true;
   globals.imageObj.BUTTON_LEFT.alpha = 0.5;
 }
 
 // 無効化
-export function rightButtonDisable() {
+function rightButtonDisable() {
   globals.imageObj.BUTTON_RIGHT.mouseEnabled = false;
   globals.imageObj.BUTTON_RIGHT.alpha = 0.2;
 }
-export function leftButtonDisable() {
+function leftButtonDisable() {
   globals.imageObj.BUTTON_LEFT.mouseEnabled = false;
   globals.imageObj.BUTTON_LEFT.alpha = 0.2;
 }
