@@ -3,7 +3,8 @@ import {
   openModal,
   t,
   tracePage,
-  trackEvent
+  trackEvent,
+  getLogger
 } from "@sokontokoro/mikan";
 
 import TopEngine from "./TopEngine";
@@ -13,10 +14,12 @@ import { to } from "../stateMachine";
 import Engine from "./Engine";
 import globals from "../globals";
 import { P2PEvents } from "../constants";
-import { trySyncGameStart, getClient as getSkyWayClient } from "../common";
+import { getClient as getSkyWayClient } from "../common";
 
 import { Ids } from "../resources/string";
 import { TRACK_ACTION, TRACK_PAGES } from "../resources/config";
+
+const logger = getLogger("online-game-over");
 
 class OnlineGameOverEngine extends Engine {
   init(params) {
@@ -134,6 +137,8 @@ class OnlineGameOverEngine extends Engine {
 
   onDataReceived({ message }) {
     if (message.type === P2PEvents.RESTART) {
+      logger.debug("receive restart request.");
+
       openModal({
         title: t(Ids.ONLINE_DIALOG_REPLAY_CONFIRM_TITLE),
         text: t(Ids.ONLINE_DIALOG_REPLAY_CONFIRM_TEXT),
@@ -153,10 +158,17 @@ class OnlineGameOverEngine extends Engine {
                 actions: []
               });
 
-              trySyncGameStart(false).then(() => {
-                closeModal();
-                to(OnlineGameEngine);
-              });
+              getSkyWayClient()
+                .trySyncStartTime(2)
+                .then(startTime => {
+                  const now = Date.now();
+
+                  setTimeout(() => {
+                    globals.soundObj.SOUND_ZENKAI.stop();
+                    closeModal();
+                    to(OnlineGameEngine);
+                  }, now < startTime ? startTime - now : 0);
+                });
             }
           },
           {
@@ -173,16 +185,25 @@ class OnlineGameOverEngine extends Engine {
     }
 
     if (message.type === P2PEvents.RESTART_ACCEPT) {
+      logger.debug("receive restart accept message.");
+
       openModal({
         title: t(Ids.ONLINE_DIALOG_READY_TITLE),
         text: t(Ids.ONLINE_DIALOG_READY_TEXT),
         actions: []
       });
 
-      trySyncGameStart(true).then(() => {
-        closeModal();
-        to(OnlineGameEngine);
-      });
+      getSkyWayClient()
+        .trySyncStartTime(2, true)
+        .then(startTime => {
+          const now = Date.now();
+
+          setTimeout(() => {
+            globals.soundObj.SOUND_ZENKAI.stop();
+            closeModal();
+            to(OnlineGameEngine);
+          }, now < startTime ? startTime - now : 0);
+        });
     }
   }
 }

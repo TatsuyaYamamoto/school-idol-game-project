@@ -257,6 +257,186 @@ class SkyWayClient extends EventEmitter {
     destination.dataConnection.send(data);
   }
 
+  /**
+   *
+   * @param memberCount
+   * @param firstSignalSender
+   *
+   * @example
+   * {@code
+   *  const startTime = await client.trySyncStartTime();
+   *  const now = Date.now();
+   *  const offset = startTime - now;
+   *  if (0 < offset) {
+   *    setTimeout(startGame, offset);
+   *  } else {
+   *    startGame();
+   *  }
+   * }
+   *
+   */
+  public trySyncStartTime(
+    memberCount: number,
+    firstSignalSender = false
+  ): Promise<number> {
+    logger.debug(
+      `try sync game start. this client is ${
+        firstSignalSender ? "sender" : "receiver"
+      }`
+    );
+
+    const OFFSET = 5 * 1000; //[ms]
+    const PROPOSAL_LIFETIME = 2 * 1000; // [ms]
+    enum MessageType {
+      PROPOSAL = "sync-start/proposal",
+      ACCEPTANCE = "sync-start/acceptance",
+      DECISION = "sync-start/decision"
+    }
+
+    const acceptanceMap = new Map<string /*peerId*/, boolean>();
+    let isResolved = false;
+    let currentProposalId = "__dummy__";
+    let currentProposalStartTime = Number.MAX_SAFE_INTEGER;
+    let currentProposalExpirationTime = Number.MAX_SAFE_INTEGER;
+
+    return new Promise<number>(resolve => {
+      const resolveSync = () => {
+        isResolved = true;
+        logger.debug(
+          `sync start time is resolved.`,
+          new Date(currentProposalStartTime)
+        );
+
+        resolve(currentProposalStartTime);
+      };
+
+      const sendProposal = () => {
+        acceptanceMap.clear();
+        const now = Date.now();
+
+        currentProposalId = `${now}`;
+        currentProposalStartTime = now + OFFSET;
+        currentProposalExpirationTime = now + PROPOSAL_LIFETIME;
+
+        const message = {
+          type: MessageType.PROPOSAL,
+          detail: {
+            proposalId: currentProposalId,
+            startTime: currentProposalStartTime,
+            expiredAt: currentProposalExpirationTime
+          }
+        };
+
+        this.send(message);
+
+        setTimeout(onExpireProposal, PROPOSAL_LIFETIME);
+
+        logger.debug(`send sync proposal. proposalId: ${currentProposalId}`);
+      };
+
+      const onReceiveProposal = (proposalId: string, startTime: number) => {
+        logger.debug(
+          `received start time proposal for sync start. proposalId: ${currentProposalId}`
+        );
+
+        currentProposalStartTime = startTime;
+        sendAcceptance(proposalId);
+      };
+
+      const onExpireProposal = () => {
+        if (!isResolved) {
+          logger.debug(
+            `proposal expired. try to propose again. proposalId: ${currentProposalId}`
+          );
+          sendProposal();
+        }
+      };
+
+      const sendAcceptance = (proposalId: string) => {
+        const message = {
+          type: MessageType.ACCEPTANCE,
+          detail: {
+            proposalId
+          }
+        };
+
+        this.send(message);
+
+        logger.debug(`accept sync proposal. proposalId: ${currentProposalId}`);
+      };
+
+      const onReceiveAcceptance = (
+        proposalId: string,
+        remotePeerId: string
+      ) => {
+        logger.debug(
+          `received start time acceptance from ${remotePeerId}. proposalId: ${proposalId}`
+        );
+
+        if (proposalId !== currentProposalId) {
+          return;
+        }
+
+        // aggregate
+        acceptanceMap.set(remotePeerId, true);
+
+        // check all members accepted?
+        if (acceptanceMap.size === memberCount - 1 /* without sender */) {
+          const now = Date.now();
+          if (now < currentProposalExpirationTime) {
+            // decide start time!
+            sendDecision();
+            resolveSync();
+          }
+        }
+      };
+
+      const sendDecision = () => {
+        const message = {
+          type: MessageType.DECISION,
+          detail: {}
+        };
+
+        this.send(message);
+
+        logger.debug(
+          `send decision of start time of sync proposal. proposalId: ${currentProposalId}`
+        );
+      };
+
+      const onReceiveDecision = () => {
+        logger.debug(`received start time decision.`);
+        resolveSync();
+      };
+
+      if (firstSignalSender) {
+        // watch events and
+        this.on("data", (data, remotePeerId) => {
+          if (data.message.type === MessageType.ACCEPTANCE) {
+            const { proposalId } = data.message.detail;
+
+            onReceiveAcceptance(proposalId, remotePeerId);
+          }
+        });
+
+        // send first message.
+        sendProposal();
+      } else {
+        // watch event only on init.
+        this.on("data", data => {
+          if (data.message.type === MessageType.PROPOSAL) {
+            const { proposalId, startTime } = data.message.detail;
+
+            onReceiveProposal(proposalId, startTime);
+          }
+          if (data.message.type === MessageType.DECISION) {
+            onReceiveDecision();
+          }
+        });
+      }
+    });
+  }
+
   /*****************************************************************************
    * Events
    */

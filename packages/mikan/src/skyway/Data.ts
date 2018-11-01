@@ -1,4 +1,4 @@
-export type Message = string;
+export type Message = string | number | object;
 
 interface Data {
   message: Message;

@@ -21,7 +21,6 @@ import {
   getClient as getSkyWayClient
 } from "../common";
 
-import { trySyncGameStart } from "../common";
 import { Ids } from "../resources/string";
 import objectProps from "../resources/object-props";
 import { TRACK_PAGES } from "../resources/config";
@@ -119,7 +118,7 @@ class TopEngine extends Engine {
           });
 
           client.on("member_left", id => {
-            logger.debug("room member left. close online mode.");
+            logger.debug("room member left. close online mode.", id);
             this.leaveOnlineMode();
           });
         })
@@ -177,12 +176,18 @@ class TopEngine extends Engine {
       actions: []
     });
 
-    trySyncGameStart().then(() => {
-      globals.soundObj.SOUND_ZENKAI.stop();
-      closeModal();
+    getSkyWayClient()
+      .trySyncStartTime(2)
+      .then(startTime => {
+        const now = Date.now();
 
-      to(OnlineGameEngine);
-    });
+        setTimeout(() => {
+          globals.soundObj.SOUND_ZENKAI.stop();
+          closeModal();
+
+          to(OnlineGameEngine);
+        }, now < startTime ? startTime - now : 0);
+      });
   }
 }
 

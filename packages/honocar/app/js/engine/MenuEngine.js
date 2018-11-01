@@ -14,7 +14,7 @@ import {
 
 import globals from "../globals";
 import Engine from "./Engine";
-import { getClient, initClient, trySyncGameStart } from "../common";
+import { getClient, initClient } from "../common";
 
 import { soundTurnOff, soundTurnOn } from "../contentsLoader";
 import CreditEngine from "./CreditEngine";
@@ -171,7 +171,7 @@ function onClick2MultiPlay() {
     });
 
     client.on("member_left", id => {
-      logger.debug("room member left. close online mode.");
+      logger.debug("room member left. close online mode.", id);
       leaveOnlineGame();
     });
 
@@ -207,12 +207,18 @@ function tryP2pConnect() {
     actions: []
   });
 
-  trySyncGameStart(true).then(() => {
-    globals.soundObj.SOUND_ZENKAI.stop();
-    closeModal();
+  getClient()
+    .trySyncStartTime(2, true)
+    .then(startTime => {
+      const now = Date.now();
 
-    to(OnlineGameEngine);
-  });
+      setTimeout(() => {
+        globals.soundObj.SOUND_ZENKAI.stop();
+        closeModal();
+
+        to(OnlineGameEngine);
+      }, now < startTime ? startTime - now : 0);
+    });
 }
 
 function leaveOnlineGame() {
