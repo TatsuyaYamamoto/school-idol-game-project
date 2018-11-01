@@ -1,7 +1,6 @@
 import { firestore, Unsubscribe } from "firebase/app";
 import DocumentSnapshot = firestore.DocumentSnapshot;
 
-const Peer = require("skyway-js");
 import AutoBind from "autobind-decorator";
 import { EventEmitter } from "eventemitter3";
 
@@ -10,16 +9,18 @@ import Credential from "./Credential";
 import Data, { Message } from "./Data";
 
 import {
-  User,
+  callHttpsCallable,
   Room,
   RoomDocument,
   RoomName,
-  Game,
-  callHttpsCallable
+  User,
+  Game
 } from "..";
 import { mean } from "../Calculation";
 import { getLogger } from "../logger";
 import { getRandomRoomName } from "../model/roomNames";
+
+const Peer = require("skyway-js");
 
 const logger = getLogger("skyway:client");
 
@@ -61,7 +62,7 @@ const PING_COUNT_FOR_AVERAGE = 5;
 class SkyWayClient extends EventEmitter {
   private _peer: Peer;
   private _destinations: Map<PeerID, Destination> = new Map();
-  private _currentRoomDoc: RoomDocument | null = null;
+  private _currentRoom: Room | null = null;
   private _unsubscribeRoomSnapshot: Unsubscribe | null = null;
 
   /**
@@ -83,7 +84,7 @@ class SkyWayClient extends EventEmitter {
     this._peer.on("open", this.onPeerOpened);
     this._peer.on("call", this.onPeerCalled);
     this._peer.on("close", this.onPeerClosed);
-    this._peer.on("connection", this.onPeerConnectionReceived);
+    this._peer.on("connection", this.onDataConnectionReceived);
     this._peer.on("disconnected", this.onPeerDisconnected);
     this._peer.on("expiresin", this.onCredentialExpiresIn);
     this._peer.on("error", this.onPeerError);
@@ -101,23 +102,13 @@ class SkyWayClient extends EventEmitter {
   }
 
   public get remotePeerIds(): string[] {
-    const ids: string[] = [];
-
-    this._destinations.forEach(d => {
-      ids.push(d.dataConnection.remoteId);
-    });
-
-    return ids;
+    return Array.from(this._destinations.values()).map(
+      d => d.dataConnection.remoteId
+    );
   }
 
   public get averagePings(): number[] {
-    const pings: number[] = [];
-
-    this._destinations.forEach(d => {
-      pings.push(d.averagePing);
-    });
-
-    return pings;
+    return Array.from(this._destinations.values()).map(d => d.averagePing);
   }
 
   /**
@@ -131,7 +122,7 @@ class SkyWayClient extends EventEmitter {
    * return joining room name. if not joining return null.
    */
   public get roomName(): string | null {
-    return this._currentRoomDoc ? this._currentRoomDoc.name : null;
+    return this._currentRoom ? this._currentRoom.name : null;
   }
 
   /*****************************************************************************
@@ -180,7 +171,7 @@ class SkyWayClient extends EventEmitter {
     );
 
     this._unsubscribeRoomSnapshot = ref.onSnapshot(this.onRoomSnapshotUpdated);
-    this._currentRoomDoc = doc;
+    this._currentRoom = Room.fromData(doc);
 
     return doc;
   }
@@ -200,23 +191,24 @@ class SkyWayClient extends EventEmitter {
 
     const { doc, ref } = result;
 
-    Object.keys(doc.userIds)
-      .filter(id => id !== ownUserId)
-      .forEach(id => {
-        const dataConnection = this._peer.connect(id);
-
-        this.setDataConnectionEvents(dataConnection);
-      });
-
     this._unsubscribeRoomSnapshot = ref.onSnapshot(this.onRoomSnapshotUpdated);
-    this._currentRoomDoc = doc;
+    this._currentRoom = Room.fromData(doc);
+
+    for (const remoteId of this._currentRoom.memberIds.filter(
+      id => id !== ownUserId
+    )) {
+      const dataConnection = this._peer.connect(remoteId);
+      dataConnection.on("open", () => {
+        this.onDataConnectionOpened(dataConnection);
+      });
+    }
   }
 
   /**
    *
    */
   public async leaveRoom() {
-    if (!this._currentRoomDoc) {
+    if (!this._currentRoom) {
       return;
     }
     if (this._unsubscribeRoomSnapshot) {
@@ -224,9 +216,9 @@ class SkyWayClient extends EventEmitter {
     }
 
     const userId = User.getOwnRef().id;
-    await Room.leave(this._currentRoomDoc.name, userId);
+    await this._currentRoom.leave(userId);
 
-    this._currentRoomDoc = null;
+    this._currentRoom = null;
     this._unsubscribeRoomSnapshot = null;
 
     this._destinations.forEach(({ dataConnection }) => {
@@ -275,6 +267,8 @@ class SkyWayClient extends EventEmitter {
    * @param peerId
    */
   protected onPeerOpened(peerId: PeerID) {
+    logger.debug("peer opened. ID: " + peerId);
+
     this.emit(SkyWayEvents.PEER_OPEN, peerId);
   }
 
@@ -298,13 +292,24 @@ class SkyWayClient extends EventEmitter {
   }
 
   /**
-   * DataChannelの接続を受信した
+   * DataChannelのインスタンスを受信した。
+   *
+   * この時点では接続が確立されていないことに注意。
+   * {@code DataConnection}のopenイベントをlistenし、確立後に{@code onDataConnectionOpened}を実行する。
    *
    * @see https://webrtc.ecl.ntt.com/skyway-js-sdk-doc/ja/peer/#connection
+   * @see SkyWayClient#onDataConnectionOpened
    * @param dataConnection
    */
-  protected onPeerConnectionReceived(dataConnection: DataConnection) {
-    this.setDataConnectionEvents(dataConnection);
+  protected onDataConnectionReceived(dataConnection: DataConnection) {
+    logger.debug(
+      "received new data connection instance.",
+      dataConnection.remoteId
+    );
+
+    dataConnection.on("open", () => {
+      this.onDataConnectionOpened(dataConnection);
+    });
 
     this.emit(SkyWayEvents.PEER_CONNECTION, dataConnection);
   }
@@ -349,7 +354,32 @@ class SkyWayClient extends EventEmitter {
   }
 
   /**
-   * データチャネルのデータを受信した
+   * DataChannelの接続が確立された。({@link DataConnection#open} === trueになった)
+   *
+   * @param dataConnection
+   */
+  protected onDataConnectionOpened(dataConnection: DataConnection) {
+    const peerId = dataConnection.remoteId;
+    logger.debug("data connection is opened.", peerId);
+
+    dataConnection.on("data", (data: any) => {
+      this.onDataReceived(data, peerId);
+    });
+    dataConnection.on("close", () => {
+      this.onDataConnectionClosed(peerId);
+    });
+
+    this._destinations.set(peerId, {
+      dataConnection,
+      averagePing: 0,
+      pingHistory: []
+    });
+
+    this.emit(SkyWayEvents.CONNECTION_OPENED, peerId);
+  }
+
+  /**
+   * データチャネルからデータを受信した
    *
    * @see https://webrtc.ecl.ntt.com/skyway-js-sdk-doc/ja/dataconnection/#data
    * @param peerId
@@ -408,18 +438,17 @@ class SkyWayClient extends EventEmitter {
       logger.debug("room doc is deleted.");
       return;
     }
-    const prev = this._currentRoomDoc;
-    const next = snapshot.data() as RoomDocument;
+    const prev = this._currentRoom;
+    const next = Room.fromData(snapshot.data() as any);
 
     if (prev) {
-      const prevMemberCount = Object.keys(prev.userIds).length;
-      const nextMemberCount = Object.keys(next.userIds).length;
+      const prevMemberCount = prev.memberCount;
+      const nextMemberCount = next.memberCount;
 
-      if (
-        prevMemberCount !== nextMemberCount &&
-        nextMemberCount === next.maxUserCount
-      ) {
+      if (prevMemberCount !== nextMemberCount && next.isMemberFulfilled) {
         this.emit(SkyWayEvents.MEMBER_FULFILLED);
+
+        this.startLoopConnectionCheck(next.memberCount - 1);
       }
     }
 
@@ -428,41 +457,39 @@ class SkyWayClient extends EventEmitter {
     }
 
     if (prev) {
-      const prevMemberCount = Object.keys(prev.userIds).length;
-      const nextMemberCount = Object.keys(next.userIds).length;
+      const prevMemberCount = prev.memberCount;
+      const nextMemberCount = next.memberCount;
 
       if (nextMemberCount < prevMemberCount) {
-        const prevIds = Object.keys(prev.userIds);
-        const nextIds = Object.keys(next.userIds);
-
-        const leftUserId = prevIds.find(prevId => {
-          return !nextIds.find(nextId => nextId === prevId);
+        const leftUserId = prev.memberIds.find(prevId => {
+          return !next.memberIds.find(nextId => nextId === prevId);
         });
 
         this.emit(SkyWayEvents.MEMBER_LEFT, leftUserId);
       }
     }
 
-    this._currentRoomDoc = next;
+    this._currentRoom = next;
   }
 
-  private setDataConnectionEvents(dataConnection: DataConnection) {
-    const peerId = dataConnection.remoteId;
+  private startLoopConnectionCheck(shouldReadyMemberCount: number) {
+    logger.debug("check all members are ready.");
 
-    dataConnection.on("data", (data: any) => {
-      this.onDataReceived(data, peerId);
-    });
-    dataConnection.on("close", () => {
-      this.onDataConnectionClosed(peerId);
-    });
+    const readyCount = Array.from(this._destinations.values()).filter(dest => {
+      return dest.dataConnection.open === true;
+    }).length;
 
-    this._destinations.set(peerId, {
-      dataConnection,
-      averagePing: 0,
-      pingHistory: []
-    });
+    if (readyCount === shouldReadyMemberCount) {
+      logger.debug("all ready.");
 
-    logger.debug("set new data connection.", dataConnection);
+      this.emit(SkyWayEvents.READY);
+    } else {
+      logger.debug("not ready. try again 500ms after.");
+      setTimeout(
+        () => this.startLoopConnectionCheck(shouldReadyMemberCount),
+        3000
+      );
+    }
   }
 }
 

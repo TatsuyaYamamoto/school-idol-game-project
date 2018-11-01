@@ -26,7 +26,51 @@ export interface RoomDocument /* extends firestore.DocumentData */ {
   expiredAt: FieldValue | Date;
 }
 
-export class Room {
+export class Room implements RoomDocument {
+  public constructor(
+    readonly name: RoomName,
+    readonly userIds: {
+      [userId: string]: boolean;
+    },
+    readonly game: Game,
+    readonly maxUserCount: number,
+    readonly lock: boolean,
+    readonly createdBy: DocumentReference,
+    readonly createdAt: FieldValue | Date,
+    readonly expiredAt: FieldValue | Date
+  ) {}
+
+  /****************************************************************
+   * members
+   */
+  public get memberIds(): string[] {
+    return Object.keys(this.userIds);
+  }
+
+  public get memberCount(): number {
+    return this.memberIds.length;
+  }
+
+  public get isMemberFulfilled(): boolean {
+    return this.memberCount === this.maxUserCount;
+  }
+
+  /****************************************************************
+   * methods
+   */
+  public static fromData(snapshotData: RoomDocument): Room {
+    return new Room(
+      snapshotData.name,
+      snapshotData.userIds,
+      snapshotData.game,
+      snapshotData.maxUserCount,
+      snapshotData.lock,
+      snapshotData.createdBy,
+      snapshotData.createdAt,
+      snapshotData.expiredAt
+    );
+  }
+
   public static getColRef() {
     return firebaseDb.collection("rooms");
   }
@@ -129,15 +173,15 @@ export class Room {
     }
   }
 
-  public static async leave(roomName: RoomName, leaveUserId: string) {
+  public async leave(leaveUserId: string) {
     const snapshot = await Room.getColRef()
-      .where("name", "==", roomName)
+      .where("name", "==", this.name)
       .get();
 
     if (snapshot.empty) {
       throw new MikanError(
         ErrorCode.FIREBASE_NO_ROOM,
-        `provided room; ${roomName}, doesn't exist`
+        `provided room; ${this.name}, doesn't exist`
       );
     }
 

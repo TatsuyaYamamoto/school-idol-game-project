@@ -111,8 +111,10 @@ class TopEngine extends Engine {
           logger.debug(`success to init skyway client`);
           client = getSkyWayClient();
 
-          client.on("member_fulfilled", () => {
-            logger.debug("room member is fulfilled. start online game.");
+          client.on("ready", () => {
+            logger.debug(
+              "all room members' connection are ready. start online game."
+            );
             this.tryP2pConnect();
           });
 
@@ -175,7 +177,7 @@ class TopEngine extends Engine {
       actions: []
     });
 
-    trySyncGameStart(true).then(() => {
+    trySyncGameStart().then(() => {
       globals.soundObj.SOUND_ZENKAI.stop();
       closeModal();
 

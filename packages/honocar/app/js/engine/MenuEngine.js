@@ -162,8 +162,10 @@ function onClick2MultiPlay() {
 
   initClient().then(() => {
     const client = getClient();
-    client.on("member_fulfilled", function() {
-      logger.debug("room member is fulfilled. start online game.");
+    client.on("ready", function() {
+      logger.debug(
+        "all room members' connection are ready. start online game."
+      );
 
       tryP2pConnect();
     });
@@ -205,7 +207,7 @@ function tryP2pConnect() {
     actions: []
   });
 
-  trySyncGameStart().then(() => {
+  trySyncGameStart(true).then(() => {
     globals.soundObj.SOUND_ZENKAI.stop();
     closeModal();
 

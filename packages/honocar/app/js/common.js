@@ -75,11 +75,9 @@ export function getTweetText(passCarCount, playCharacter) {
 
 // P2P --------------------------------------------
 
-import { closeModal, openModal, SkyWayClient, t } from "@sokontokoro/mikan";
-import { Ids } from "./resources/string";
-import { to } from "./stateMachine";
-import instance from "./engine/TopEngine";
+import { SkyWayClient, getLogger } from "@sokontokoro/mikan";
 
+const logger = getLogger("common");
 const apiKeyConfig = require("../../../../package.json").config.sokontokoro
   .skyWayApiKey;
 
@@ -107,6 +105,10 @@ export function getClient() {
 }
 
 export function trySyncGameStart(sernder = false) {
+  logger.debug(
+    `try sync game start. this client is ${sernder ? "sender" : "receiver"}`
+  );
+
   const offset = 2 * 1000; //[ms]
   const eventType = "start";
 
@@ -128,22 +130,30 @@ export function trySyncGameStart(sernder = false) {
 
       CLIENT.send(message);
 
-      setTimeout(resolve, offset);
+      setTimeout(resolveSync, offset);
     }
 
     function onDataReceived(data) {
       if (data.message.type === eventType) {
+        logger.debug(`received sync signal.`);
+
         CLIENT.off("data", onDataReceived);
 
         const now = Date.now();
         const offset = data.message.detail.startTime - now;
 
         if (0 < offset) {
-          setTimeout(resolve, offset);
+          setTimeout(resolveSync, offset);
         } else {
-          resolve();
+          resolveSync();
         }
       }
+    }
+
+    function resolveSync() {
+      logger.debug(`resolved sync logic. and start game.`);
+
+      resolve();
     }
   });
 }

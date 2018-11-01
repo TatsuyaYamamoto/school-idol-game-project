@@ -35,6 +35,8 @@ export const Ids = {
 
   ONLINE_DIALOG_ERROR_TITLE: "online_dialog_error_title",
   ONLINE_DIALOG_ERROR_NO_ROOM_TEXT: "online_dialog_error_no_room_text",
+  ONLINE_DIALOG_ERROR_FAIL_CONNECT_P2P_TEXT:
+    "online_dialog_error_fail_connect_p2p_text",
 
   OPEN_EXTERNAL_SITE_INFO: "open_external_site_info",
   OPEN_RANKING_INFO: "open_ranking_info",
