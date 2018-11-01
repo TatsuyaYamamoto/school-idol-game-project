@@ -13,5 +13,8 @@ export default class MikanError extends Error {
 }
 
 export enum ErrorCode {
-  FIREBASE_NO_ROOM = "firebase/no-room"
+  FIREBASE_NO_ROOM = "firebase/no-room",
+  FIREBASE_ROOM_CAPACITY_OVER = "firebase/room-capacity-over",
+
+  SKYWAY_FAIL_DATA_CONNECT = "skyway/fail-data-connect"
 }

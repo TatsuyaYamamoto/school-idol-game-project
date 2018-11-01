@@ -38,6 +38,8 @@ export const Ids = {
 
   ONLINE_DIALOG_ERROR_TITLE: "online_dialog_error_title",
   ONLINE_DIALOG_ERROR_NO_ROOM_TEXT: "online_dialog_error_no_room_text",
+  ONLINE_DIALOG_ERROR_CAPACITY_OVER_TEXT:
+    "online_dialog_error_capacity_over_text",
   ONLINE_DIALOG_ERROR_FAIL_CONNECT_P2P_TEXT:
     "online_dialog_error_fail_connect_p2p_text",
 
@@ -129,6 +131,7 @@ LEFT, RIGHTボタン(キーボードの←→でも可！)
       [Ids.ONLINE_DIALOG_ERROR_TITLE]: "えらー",
       [Ids.ONLINE_DIALOG_ERROR_NO_ROOM_TEXT]:
         "ルームが見つかりませんでした。メンバーがいなくなったため削除された、または作成者がルームを閉じてしまった可能性があります。ルーム名: {{ roomName }}",
+      [Ids.ONLINE_DIALOG_ERROR_CAPACITY_OVER_TEXT]: `ルームは定員のため、入ることが出来ませんでした。ルーム名: {{ roomName }}`,
 
       [Ids.OPEN_EXTERNAL_SITE_INFO]: "外部サイト({{ domain }})を開きます！",
       [Ids.OPEN_RANKING_INFO]: "ランキングページを開きます！",

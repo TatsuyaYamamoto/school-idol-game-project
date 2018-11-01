@@ -1,10 +1,10 @@
 import { firestore } from "firebase/app";
-import DocumentReference = firestore.DocumentReference;
-import FieldValue = firestore.FieldValue;
 
 import { firebaseDb } from "./index";
 import { Game } from "../model/games";
 import MikanError, { ErrorCode } from "../MikanError";
+import DocumentReference = firestore.DocumentReference;
+import FieldValue = firestore.FieldValue;
 
 const ROOM_LIFETIEM = 1; // 1day
 
@@ -147,7 +147,10 @@ export class Room implements RoomDocument {
         const roomDoc = roomSnapshot.data() as RoomDocument;
 
         if (roomDoc.maxUserCount <= Object.keys(roomDoc.userIds).length) {
-          throw new Error("capacity over");
+          throw new MikanError(
+            ErrorCode.FIREBASE_ROOM_CAPACITY_OVER,
+            "provided room is already fulfilled."
+          );
         }
 
         const newRoomDoc: Partial<RoomDocument> = {

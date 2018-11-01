@@ -137,6 +137,16 @@ class TopEngine extends Engine {
             return;
           }
 
+          if (e.code === ErrorCode.FIREBASE_ROOM_CAPACITY_OVER) {
+            openModal({
+              title: t(Ids.ONLINE_DIALOG_ERROR_TITLE),
+              text: t(Ids.ONLINE_DIALOG_ERROR_CAPACITY_OVER_TEXT, { roomName }),
+              actions: [{ text: "OK" }]
+            });
+
+            return;
+          }
+
           throw e;
         });
     } else {
