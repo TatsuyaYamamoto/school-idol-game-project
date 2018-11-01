@@ -64,6 +64,7 @@ class SkyWayClient extends EventEmitter {
   private _destinations: Map<PeerID, Destination> = new Map();
   private _currentRoom: Room | null = null;
   private _unsubscribeRoomSnapshot: Unsubscribe | null = null;
+  private _idOwner: boolean = false;
 
   /**
    * Constructor
@@ -125,6 +126,10 @@ class SkyWayClient extends EventEmitter {
     return this._currentRoom ? this._currentRoom.name : null;
   }
 
+  public get idOwner(): boolean {
+    return this._idOwner;
+  }
+
   /*****************************************************************************
    * Methods
    */
@@ -174,6 +179,7 @@ class SkyWayClient extends EventEmitter {
       maxMemberCount
     );
 
+    this._idOwner = true;
     this._unsubscribeRoomSnapshot = ref.onSnapshot(this.onRoomSnapshotUpdated);
     this._currentRoom = Room.fromData(doc);
 

@@ -85,7 +85,7 @@ function gameStatusReset() {
   cars = [];
   playerCrashedTime = null;
   opponentCrashTime = null;
-  shouldPushCar = getSkyWayClient().peerId < getSkyWayClient().remotePeerIds[0];
+  shouldPushCar = getSkyWayClient().idOwner;
   isMatched = false;
 }
 
