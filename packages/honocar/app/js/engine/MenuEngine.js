@@ -12,7 +12,9 @@ import {
   getLogger,
   tweetByWebIntent,
   convertYyyyMmDd,
-  createUrchinTrackingModuleQuery
+  createUrchinTrackingModuleQuery,
+  showIndicator,
+  hideIndicator
 } from "@sokontokoro/mikan";
 
 import globals from "../globals";
@@ -174,6 +176,7 @@ async function onClick2MultiPlay() {
         "all room members' connection are ready. start online game."
       );
 
+      hideIndicator();
       tryP2pConnect();
     });
 
@@ -182,6 +185,8 @@ async function onClick2MultiPlay() {
       leaveOnlineGame();
     });
   }
+
+  showIndicator({ text: t(Ids.ONLINE_WAIT_JOIN_MEMBER_INFO_TEXT) });
 
   const roomDoc = await client.createRoom("honocar");
   const roomName = roomDoc.name;

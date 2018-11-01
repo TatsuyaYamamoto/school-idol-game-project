@@ -21,6 +21,8 @@ export {
 
 export { default as config } from "./config";
 
+export { showIndicator, hideIndicator } from "./ui/Indicator";
+
 export { show, hide } from "./ConnectingIndicator";
 
 export { default as Deliverable } from "./Deliverable";

@@ -44,6 +44,7 @@ export const Ids = {
     "online_dialog_error_fail_connect_p2p_text",
 
   ONLINE_INVITATION_TWEET_TEXT: "online_invitation_tweet_text",
+  ONLINE_WAIT_JOIN_MEMBER_INFO_TEXT: "online_wait_join_member_info_text",
 
   OPEN_EXTERNAL_SITE_INFO: "open_external_site_info",
   OPEN_RANKING_INFO: "open_ranking_info",
@@ -138,6 +139,7 @@ LEFT, RIGHTボタン(キーボードの←→でも可！)
 ルーム名: {{ roomName }}`,
 
       [Ids.ONLINE_INVITATION_TWEET_TEXT]: `ほのCar！で対戦しませんか？URLをタップすると、オンライン対戦が始まります！`,
+      [Ids.ONLINE_WAIT_JOIN_MEMBER_INFO_TEXT]: `対戦相手 受付中（・８・）`,
 
       [Ids.OPEN_EXTERNAL_SITE_INFO]: "外部サイト({{ domain }})を開きます！",
       [Ids.OPEN_RANKING_INFO]: "ランキングページを開きます！",

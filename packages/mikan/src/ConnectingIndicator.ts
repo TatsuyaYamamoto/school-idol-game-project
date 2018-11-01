@@ -60,10 +60,15 @@ document.body.appendChild(indicator);
 
 hide();
 
+/**
+ * @deprecated
+ */
 export function show() {
   indicator.hidden = false;
 }
-
+/**
+ * @deprecated
+ */
 export function hide() {
   indicator.hidden = true;
 }
