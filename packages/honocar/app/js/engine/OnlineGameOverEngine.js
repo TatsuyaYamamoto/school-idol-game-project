@@ -14,7 +14,10 @@ import { to } from "../stateMachine";
 import Engine from "./Engine";
 import globals from "../globals";
 import { P2PEvents } from "../constants";
-import { getClient as getSkyWayClient } from "../common";
+import {
+  getClient as getSkyWayClient,
+  unixtimeToRoundSeconds
+} from "../common";
 
 import { Ids } from "../resources/string";
 import { TRACK_ACTION, TRACK_PAGES } from "../resources/config";
@@ -124,7 +127,7 @@ class OnlineGameOverEngine extends Engine {
     globals.soundObj.SOUND_BACK.play();
 
     openModal({
-      title: t(Ids.ONLINE_DIALOG_REPLAY_WAITING_TEXT),
+      text: t(Ids.ONLINE_DIALOG_REPLAY_WAITING_TEXT),
       actions: []
     });
 
@@ -153,8 +156,8 @@ class OnlineGameOverEngine extends Engine {
               getSkyWayClient().send(message);
 
               openModal({
-                title: t(Ids.ONLINE_DIALOG_READY_TITLE),
-                text: t(Ids.ONLINE_DIALOG_READY_TEXT),
+                title: t(Ids.ONLINE_DIALOG_READY_ROOM_TITLE),
+                text: t(Ids.ONLINE_DIALOG_READY_ROOM_TEXT),
                 actions: []
               });
 
@@ -162,12 +165,20 @@ class OnlineGameOverEngine extends Engine {
                 .trySyncStartTime(2)
                 .then(startTime => {
                   const now = Date.now();
+                  const timeLeft = now < startTime ? startTime - now : 0;
+
+                  openModal({
+                    title: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TITLE),
+                    text: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TEXT, {
+                      timeLeft: unixtimeToRoundSeconds(timeLeft)
+                    }),
+                    actions: []
+                  });
 
                   setTimeout(() => {
-                    globals.soundObj.SOUND_ZENKAI.stop();
                     closeModal();
                     to(OnlineGameEngine);
-                  }, now < startTime ? startTime - now : 0);
+                  }, timeLeft);
                 });
             }
           },
@@ -188,8 +199,8 @@ class OnlineGameOverEngine extends Engine {
       logger.debug("receive restart accept message.");
 
       openModal({
-        title: t(Ids.ONLINE_DIALOG_READY_TITLE),
-        text: t(Ids.ONLINE_DIALOG_READY_TEXT),
+        title: t(Ids.ONLINE_DIALOG_READY_ROOM_TITLE),
+        text: t(Ids.ONLINE_DIALOG_READY_ROOM_TEXT),
         actions: []
       });
 
@@ -197,12 +208,20 @@ class OnlineGameOverEngine extends Engine {
         .trySyncStartTime(2, true)
         .then(startTime => {
           const now = Date.now();
+          const timeLeft = now < startTime ? startTime - now : 0;
+
+          openModal({
+            title: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TITLE),
+            text: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TEXT, {
+              timeLeft: unixtimeToRoundSeconds(timeLeft)
+            }),
+            actions: []
+          });
 
           setTimeout(() => {
-            globals.soundObj.SOUND_ZENKAI.stop();
             closeModal();
             to(OnlineGameEngine);
-          }, now < startTime ? startTime - now : 0);
+          }, timeLeft);
         });
     }
   }

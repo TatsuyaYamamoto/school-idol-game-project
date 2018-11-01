@@ -103,3 +103,7 @@ export function getClient() {
 
   return CLIENT;
 }
+
+export function unixtimeToRoundSeconds(unixtime) {
+  return Math.floor(unixtime / 1000);
+}

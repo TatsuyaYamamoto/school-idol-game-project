@@ -18,7 +18,8 @@ import OnlineGameEngine from "./OnlineGameEngine";
 
 import {
   initClient as initSkyWayClient,
-  getClient as getSkyWayClient
+  getClient as getSkyWayClient,
+  unixtimeToRoundSeconds
 } from "../common";
 
 import { Ids } from "../resources/string";
@@ -171,8 +172,8 @@ class TopEngine extends Engine {
 
   tryP2pConnect() {
     openModal({
-      title: t(Ids.ONLINE_DIALOG_READY_TITLE),
-      text: t(Ids.ONLINE_DIALOG_READY_TEXT),
+      title: t(Ids.ONLINE_DIALOG_READY_ROOM_TITLE),
+      text: t(Ids.ONLINE_DIALOG_READY_ROOM_TEXT),
       actions: []
     });
 
@@ -180,13 +181,22 @@ class TopEngine extends Engine {
       .trySyncStartTime(2)
       .then(startTime => {
         const now = Date.now();
+        const timeLeft = now < startTime ? startTime - now : 0;
+
+        openModal({
+          title: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TITLE),
+          text: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TEXT, {
+            timeLeft: unixtimeToRoundSeconds(timeLeft)
+          }),
+          actions: []
+        });
 
         setTimeout(() => {
           globals.soundObj.SOUND_ZENKAI.stop();
           closeModal();
 
           to(OnlineGameEngine);
-        }, now < startTime ? startTime - now : 0);
+        }, timeLeft);
       });
   }
 }

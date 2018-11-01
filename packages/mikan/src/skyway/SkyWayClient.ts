@@ -285,7 +285,7 @@ class SkyWayClient extends EventEmitter {
       }`
     );
 
-    const OFFSET = 5 * 1000; //[ms]
+    const OFFSET = 4 * 1000; //[ms]
     const PROPOSAL_LIFETIME = 2 * 1000; // [ms]
     enum MessageType {
       PROPOSAL = "sync-start/proposal",

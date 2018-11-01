@@ -14,7 +14,7 @@ import {
 
 import globals from "../globals";
 import Engine from "./Engine";
-import { getClient, initClient } from "../common";
+import { getClient, initClient, unixtimeToRoundSeconds } from "../common";
 
 import { soundTurnOff, soundTurnOn } from "../contentsLoader";
 import CreditEngine from "./CreditEngine";
@@ -202,8 +202,8 @@ function onClick2MultiPlay() {
 function tryP2pConnect() {
   logger.info("success to connect to peer.");
   openModal({
-    title: t(Ids.ONLINE_DIALOG_READY_TITLE),
-    text: t(Ids.ONLINE_DIALOG_READY_TEXT),
+    title: t(Ids.ONLINE_DIALOG_READY_ROOM_TITLE),
+    text: t(Ids.ONLINE_DIALOG_READY_ROOM_TEXT),
     actions: []
   });
 
@@ -211,13 +211,22 @@ function tryP2pConnect() {
     .trySyncStartTime(2, true)
     .then(startTime => {
       const now = Date.now();
+      const timeLeft = now < startTime ? startTime - now : 0;
+
+      openModal({
+        title: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TITLE),
+        text: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TEXT, {
+          timeLeft: unixtimeToRoundSeconds(timeLeft)
+        }),
+        actions: []
+      });
 
       setTimeout(() => {
         globals.soundObj.SOUND_ZENKAI.stop();
         closeModal();
 
         to(OnlineGameEngine);
-      }, now < startTime ? startTime - now : 0);
+      }, timeLeft);
     });
 }
 
