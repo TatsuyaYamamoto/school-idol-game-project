@@ -32,6 +32,7 @@ const plugins = [
     hash: true
   }),
   new CopyWebpackPlugin([
+    { from: "app/main.css", to: "main.css" },
     { context: "app/img", from: "**/*", to: "img" },
     { context: "app/sound", from: "**/*", to: "sound" }
   ]),
