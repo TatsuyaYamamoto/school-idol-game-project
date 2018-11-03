@@ -41,6 +41,7 @@ class Index extends React.Component<
         <AppBar
           currentPath={this.props.location.pathname}
           onTabChanged={this.onTabChanged}
+          onTranslate={this.onTranslate}
         />
 
         <ControlSection
@@ -57,7 +58,27 @@ class Index extends React.Component<
   }
 
   private onTabChanged(page: "ranking" | "help") {
-    this.props.history.push(`/${page}`);
+    const { search } = this.props.location;
+    this.props.history.push(`/${page}`, {
+      search
+    });
+  }
+
+  private onTranslate() {
+    const currentLanguage = new URLSearchParams(this.props.location.search).get(
+      "language"
+    );
+
+    const newLanguage =
+      !currentLanguage || (currentLanguage !== "ja" && currentLanguage !== "en")
+        ? "ja"
+        : currentLanguage !== "ja"
+          ? "en"
+          : "ja";
+
+    this.props.history.replace({
+      search: `?language=${newLanguage}`
+    });
   }
 
   private onGameSelected(index: number) {

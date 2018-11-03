@@ -2,42 +2,31 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import AutoBind from "autobind-decorator";
 
-import Typography from "@material-ui/core/Typography";
-import ExpansionPanel from "@material-ui/core/ExpansionPanel";
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import ExpansionPanelActions from "@material-ui/core/ExpansionPanelActions";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import Button from "@material-ui/core/Button";
-import Divider from "@material-ui/core/Divider";
-
 import { HelpRouteParams } from "../../App";
+
+import HelpPanel from "../molecules/HelpPanel";
+
 import AppBar from "../organisms/AppBar";
 import FooterSection from "../organisms/FooterSection";
+
+interface HelpDoc {
+  id: string;
+  title: string;
+  tags: string[];
+  body: string;
+}
+
+const helpsJson: {
+  ja: HelpDoc[];
+  en: HelpDoc[];
+} = require("../../../assets/helps.json");
 
 interface Props {}
 
 interface State {
   language: "ja" | "en";
+  expandedPanelId?: string;
 }
-
-const helps = [
-  {
-    title: "title",
-    body:
-      "hogehgoehogehogehogeohogehgoehogehogehogeohogehgoehogehogehogeohogehgoehogehogehogeohogehgoehogehogehogeo"
-  },
-  {
-    title: "title2",
-    body:
-      "hogehgoehogehogehogeohogehgoehogehogehogeohogehgoehogehogehogeohogehgoehogehogehogeo"
-  },
-  {
-    title: "title3",
-    body:
-      "hogehgoehogehogehogeohogehgoehogeh\nogehogeohogehgoehogehogehogeohogehgoehogehogehogeohogehgoehogehogehogeohogehgoehogehogehogeo"
-  }
-];
 
 @AutoBind
 class Help extends React.Component<
@@ -49,37 +38,37 @@ class Help extends React.Component<
   constructor(props: any) {
     super(props);
 
-    const { language } = this.props.match.params;
+    const query = new URLSearchParams(this.props.location.search);
+    let language = query.get("language");
 
     this.state = {
-      language
+      language:
+        !language || (language !== "ja" && language !== "en") ? "ja" : language
     };
   }
 
   public render() {
+    const { language, expandedPanelId } = this.state;
+    const helps = helpsJson[language];
+
     return (
       <React.Fragment>
         <AppBar
           currentPath={this.props.location.pathname}
           onTabChanged={this.onTabChanged}
+          onTranslate={this.onTranslate}
         />
 
-        {helps.map(help => (
-          <ExpansionPanel key={help.title}>
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>{help.title}</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <Typography>{help.body}</Typography>
-            </ExpansionPanelDetails>
-            <Divider />
-            <ExpansionPanelActions>
-              <Button size="small">わかんない</Button>
-              <Button size="small" color="primary">
-                わかった！
-              </Button>
-            </ExpansionPanelActions>
-          </ExpansionPanel>
+        {helps.map(({ id, title, body }) => (
+          <HelpPanel
+            key={id}
+            title={title}
+            body={body}
+            expanded={id === expandedPanelId}
+            onChange={(event, expanded) =>
+              this.onPanelExpansionChanged(id, expanded)
+            }
+          />
         ))}
 
         <FooterSection />
@@ -87,8 +76,32 @@ class Help extends React.Component<
     );
   }
 
+  private onPanelExpansionChanged(helpPanelId: string, expanded: boolean) {
+    this.setState({ expandedPanelId: expanded ? helpPanelId : undefined });
+  }
+
   private onTabChanged(page: "ranking" | "help") {
-    this.props.history.push(`/${page}`);
+    const { search } = this.props.location;
+    this.props.history.push(`/${page}`, {
+      search
+    });
+  }
+
+  private onTranslate() {
+    const currentLanguage = new URLSearchParams(this.props.location.search).get(
+      "language"
+    );
+
+    const newLanguage =
+      !currentLanguage || (currentLanguage !== "ja" && currentLanguage !== "en")
+        ? "ja"
+        : currentLanguage !== "ja"
+          ? "en"
+          : "ja";
+
+    this.props.history.replace({
+      search: `?language=${newLanguage}`
+    });
   }
 }
 

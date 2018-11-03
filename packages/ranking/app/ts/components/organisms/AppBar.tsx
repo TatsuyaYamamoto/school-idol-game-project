@@ -18,6 +18,7 @@ const Root = styled.div``;
 interface Props {
   currentPath: string;
   onTabChanged: (page: "ranking" | "help") => void;
+  onTranslate: () => void;
 }
 
 interface State {
@@ -65,11 +66,11 @@ class AppBar extends React.Component<Props & WithStyles, State> {
             {/*ログイン*/}
             {/*</Button>*/}
 
-            {/*<IconButton>*/}
-            {/*<TranslateIcon />*/}
-            {/*</IconButton>*/}
+            <IconButton onClick={this.handleTranslate}>
+              <TranslateIcon />
+            </IconButton>
           </Toolbar>
-          <Tabs value={tabIndex} onChange={this.handleChange} centered={true}>
+          <Tabs value={tabIndex} onChange={this.handleTab} centered={true}>
             <Tab label="ランキング" />
             <Tab label="ヘルプ" />
           </Tabs>
@@ -78,9 +79,13 @@ class AppBar extends React.Component<Props & WithStyles, State> {
     );
   }
 
-  private handleChange(_event: any, tabIndex: any) {
+  private handleTab(_event: any, tabIndex: any) {
     this.setState({ tabIndex });
     this.props.onTabChanged(tabIndex === 0 ? "ranking" : "help");
+  }
+
+  private handleTranslate(_event: any) {
+    this.props.onTranslate();
   }
 }
 

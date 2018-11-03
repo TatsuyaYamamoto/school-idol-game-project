@@ -41,14 +41,12 @@ const App = () => (
             }}
           />
           <Route
-            exact
-            path={`/help/:language(ja|en)`}
+            path={`/help/`}
             render={props => {
               tracePage();
               return <Help {...props} />;
             }}
           />
-          <Route path={`/help`} render={() => <Redirect to={`/help/ja`} />} />
           <Route render={() => <Redirect to={`/ranking/${gameIds[0]}`} />} />
         </Switch>
       </Router>
