@@ -8,6 +8,7 @@ import HeaderSection from "../organisms/HeaderSection";
 import ControlSection from "../organisms/ControlSection";
 import RankingSection from "../organisms/RankingSection";
 import FooterSection from "../organisms/FooterSection";
+import AppBar from "../organisms/AppBar";
 
 interface Props {}
 
@@ -37,16 +38,26 @@ class Index extends React.Component<
 
     return (
       <React.Fragment>
-        <HeaderSection />
+        <AppBar
+          currentPath={this.props.location.pathname}
+          onTabChanged={this.onTabChanged}
+        />
+
         <ControlSection
           game={game}
           onGameSelected={this.onGameSelected}
           onJumpGame={this.onJumpGame}
         />
+
         <RankingSection game={game} />
+
         <FooterSection />
       </React.Fragment>
     );
+  }
+
+  private onTabChanged(page: "ranking" | "help") {
+    this.props.history.push(`/${page}`);
   }
 
   private onGameSelected(index: number) {
