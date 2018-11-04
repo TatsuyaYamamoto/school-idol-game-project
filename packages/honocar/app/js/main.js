@@ -38,7 +38,7 @@ function init() {
   setTimeout(() => {
     appElement.style.display = "block";
     launchBeforeGuideElement.style.display = "none";
-  }, 500);
+  }, 150);
 
   /*---------- ログインチェック ----------*/
   globals.loginPromise = initAuth().then(user => {
