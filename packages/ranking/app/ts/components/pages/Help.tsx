@@ -2,7 +2,7 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import AutoBind from "autobind-decorator";
 
-import { HelpRouteParams } from "../../App";
+import { getLanguage, HelpRouteParams } from "../../App";
 
 import HelpPanel from "../molecules/HelpPanel";
 
@@ -21,10 +21,11 @@ const helpsJson: {
   en: HelpDoc[];
 } = require("../../../assets/helps.json");
 
-interface Props {}
+interface Props {
+  language: "ja" | "en";
+}
 
 interface State {
-  language: "ja" | "en";
   expandedPanelId?: string;
 }
 
@@ -33,22 +34,15 @@ class Help extends React.Component<
   Props & RouteComponentProps<HelpRouteParams>,
   State
 > {
-  state: State;
-
-  constructor(props: any) {
+  public constructor(props: any) {
     super(props);
 
-    const query = new URLSearchParams(this.props.location.search);
-    let language = query.get("language");
-
-    this.state = {
-      language:
-        !language || (language !== "ja" && language !== "en") ? "ja" : language
-    };
+    this.state = {};
   }
 
   public render() {
-    const { language, expandedPanelId } = this.state;
+    const { language } = this.props;
+    const { expandedPanelId } = this.state;
     const helps = helpsJson[language];
 
     return (
@@ -88,19 +82,18 @@ class Help extends React.Component<
   }
 
   private onTranslate() {
-    const currentLanguage = new URLSearchParams(this.props.location.search).get(
-      "language"
-    );
-
-    const newLanguage =
-      !currentLanguage || (currentLanguage !== "ja" && currentLanguage !== "en")
-        ? "ja"
-        : currentLanguage !== "ja"
-          ? "en"
-          : "ja";
+    const language = getLanguage(this.props.location.search);
+    const nextLanguage = language === "ja" ? "en" : "ja";
+    const params = new URLSearchParams(this.props.location.search);
+    params.set("language", nextLanguage);
+    let search = "";
+    params.forEach((value, key) => {
+      search += `${key}=${value}`;
+    });
 
     this.props.history.replace({
-      search: `?language=${newLanguage}`
+      pathname: this.props.location.pathname,
+      search
     });
   }
 }

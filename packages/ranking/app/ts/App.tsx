@@ -16,6 +16,7 @@ import muiTheme from "./muiTheme";
 import Initialize from "./components/pages/Initialize";
 import Index from "./components/pages/Index";
 import Help from "./components/pages/Help";
+import { Search } from "history";
 
 export interface IndexRouteParams {
   game: Game;
@@ -23,6 +24,17 @@ export interface IndexRouteParams {
 
 export interface HelpRouteParams {
   language: "ja" | "en";
+}
+
+export function getLanguage(search: Search): "ja" | "en" {
+  const language = new URLSearchParams(search).get("language");
+  switch (language) {
+    case "en":
+      return "en";
+    case "ja":
+    default:
+      return "ja";
+  }
 }
 
 const gameIds = Object.keys(GAMES);
@@ -37,14 +49,16 @@ const App = () => (
             path={`/ranking/:game(${gameIds.join("|")})`}
             render={props => {
               tracePage();
-              return <Index {...props} />;
+              const language = getLanguage(props.location.search);
+              return <Index language={language} {...props} />;
             }}
           />
           <Route
             path={`/help/`}
             render={props => {
               tracePage();
-              return <Help {...props} />;
+              const language = getLanguage(props.location.search);
+              return <Help language={language} {...props} />;
             }}
           />
           <Route render={() => <Redirect to={`/ranking/${gameIds[0]}`} />} />
