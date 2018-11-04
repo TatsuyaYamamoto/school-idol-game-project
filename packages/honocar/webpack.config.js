@@ -15,14 +15,18 @@ const htmlParams = {
   ogpUrl: "https://games.sokontokoro-factory.net/honocar/",
   // ogpImageUrl: "https://games.sokontokoro-factory.net/honocar/img/ogp.png"
   ogpImageUrl:
-    "https://games.sokontokoro-factory.net/honocar/img/TITLE_LOGO_HONOKA.png"
+    "https://games.sokontokoro-factory.net/honocar/img/TITLE_LOGO_HONOKA.png",
+  helpUrlJa: "http://games-dev.sokontokoro-factory.net/#/help?language=ja",
+  helpUrlEn: "http://games-dev.sokontokoro-factory.net/#/help?language=en"
 };
 
 isProduction &&
   Object.assign(htmlParams, {
     title: "ほのCar!ver1.1 -そこんところ工房-",
     trackingCode: config.trackingCode.pro,
-    noIndex: false
+    noIndex: false,
+    helpUrlJa: "http://games.sokontokoro-factory.net/#/help?language=ja",
+    helpUrlEn: "http://games.sokontokoro-factory.net/#/help?language=en"
   });
 
 const plugins = [
