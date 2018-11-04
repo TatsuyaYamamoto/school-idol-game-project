@@ -5,35 +5,7 @@ import globals from "./globals";
 import manifest from "./resources/manifest";
 import properties from "./resources/object-props";
 import { Ids } from "./resources/string";
-
-function loadAnimation() {
-  const q = new createjs.LoadQueue();
-  q.setMaxConnections(6);
-
-  q.loadManifest([
-    {
-      id: "LOAD_KOTORI",
-      src: "img/LOAD_KOTORI.png"
-    }
-  ]);
-
-  q.addEventListener("complete", function() {
-    var bitmap = new createjs.Bitmap(q.getResult("LOAD_KOTORI"));
-    bitmap.scaleY = bitmap.scaleX = globals.gameScreenScale;
-
-    bitmap.x = globals.gameScrean.width * 0.5;
-    bitmap.y = globals.gameScrean.height * 0.5;
-    bitmap.regX = bitmap.image.width / 2;
-    bitmap.regY = bitmap.image.height / 2;
-
-    createjs.Tween.get(bitmap, { loop: true }).to({ rotation: 360 }, 1000);
-
-    globals.gameStage.removeAllChildren();
-    globals.gameStage.addChild(bitmap);
-
-    createjs.Ticker.addEventListener("tick", update);
-  });
-}
+import loadImageBase64 from "shakarin/src/js/imageBase64/loadImageBase64";
 
 function update() {
   globals.gameStage.update();
@@ -41,16 +13,19 @@ function update() {
 
 export function loadContent() {
   const start = Date.now();
+  const loadImage = getLoadImage();
+  const loadText = getLoadText();
 
   return new Promise(resolve => {
-    //ロードアニメーション
-    loadAnimation();
+    globals.gameStage.removeAllChildren();
+    globals.gameStage.addChild(loadText);
+    globals.gameStage.addChild(loadImage);
 
     globals.queue = new createjs.LoadQueue(false);
     globals.queue.installPlugin(createjs.Sound);
     globals.queue.setMaxConnections(6);
     globals.queue.addEventListener("complete", function() {
-      globals.loginPromise.then(function() {
+      globals.loginPromise.then(() => {
         setImageContent();
         setSpriteSheetContents();
         setSoundContent();
@@ -62,6 +37,14 @@ export function loadContent() {
         resolve();
       });
     });
+    globals.queue.addEventListener("progress", event => {
+      // ロード情報
+      loadText.text = `loading...${Math.floor(event.loaded * 100)}%`;
+
+      // 回転ことりちゃんプログレス
+      loadImage.rotation = event.loaded * 360 * 4;
+    });
+    createjs.Ticker.addEventListener("tick", update);
 
     //マニフェストファイルを読み込む----------
     globals.queue.loadManifest(manifest.image);
@@ -187,4 +170,27 @@ function setTextContent() {
 
   globals.textObj.TEXT_APP_VERSION.text =
     "v" + require("../../package.json").version;
+}
+
+function getLoadImage() {
+  const loadImage = new createjs.Bitmap(loadImageBase64);
+  loadImage.scaleY = loadImage.scaleX = globals.gameScreenScale * 0.5;
+  loadImage.x = globals.gameScrean.width * 0.5;
+  loadImage.y = globals.gameScrean.height * 0.5;
+
+  // 画像サイズ(固定値)の半分
+  loadImage.regX = 147.5;
+  loadImage.regY = 147.5;
+
+  return loadImage;
+}
+
+function getLoadText() {
+  const loadText = new createjs.Text();
+  loadText.x = globals.gameScrean.width * 0.5;
+  loadText.y = globals.gameScrean.height * 0.6;
+  loadText.font = (globals.gameScrean.width * 1) / 20 + "px " + "Courier";
+  loadText.textAlign = "center";
+
+  return loadText;
 }
