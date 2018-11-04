@@ -25,10 +25,11 @@ const helpsJson: {
 
 interface Props {
   language: "ja" | "en";
+  showHelpDocId?: string;
+  onChangeOpenedHelpDoc: (id: string | undefined) => void;
 }
 
 interface State {
-  expandedPanelId?: string;
   gotItSnackBarOpen: boolean;
   notGotItDialogOpen: boolean;
 }
@@ -45,12 +46,8 @@ export default class HelpList extends React.Component<Props, State> {
   }
 
   public render() {
-    const { language } = this.props;
-    const {
-      expandedPanelId,
-      gotItSnackBarOpen,
-      notGotItDialogOpen
-    } = this.state;
+    const { language, showHelpDocId } = this.props;
+    const { gotItSnackBarOpen, notGotItDialogOpen } = this.state;
     const helps = helpsJson[language];
 
     return (
@@ -61,7 +58,7 @@ export default class HelpList extends React.Component<Props, State> {
             title={title}
             body={body}
             language={language}
-            expanded={id === expandedPanelId}
+            expanded={id === showHelpDocId}
             onChange={(event, expanded) =>
               this.onPanelExpansionChanged(id, expanded)
             }
@@ -82,7 +79,7 @@ export default class HelpList extends React.Component<Props, State> {
   }
 
   private onPanelExpansionChanged(helpPanelId: string, expanded: boolean) {
-    this.setState({ expandedPanelId: expanded ? helpPanelId : undefined });
+    this.props.onChangeOpenedHelpDoc(expanded ? helpPanelId : undefined);
   }
 
   private handleNotGotItDialog() {

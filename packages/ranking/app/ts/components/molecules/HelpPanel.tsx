@@ -39,7 +39,7 @@ const HelpPanel: React.SFC<Props> = props => {
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
         <Typography>{title}</Typography>
       </ExpansionPanelSummary>
-      <ExpansionPanelDetails>
+      <ExpansionPanelDetails style={{ display: "block" }}>
         <ReactMarkDown source={body} />
       </ExpansionPanelDetails>
       <Divider />

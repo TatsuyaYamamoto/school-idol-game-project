@@ -76,7 +76,7 @@ class Index extends React.Component<
     });
 
     this.props.history.replace({
-      pathname: this.props.location.pathname,
+      ...this.props.location,
       search
     });
   }

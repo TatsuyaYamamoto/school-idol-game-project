@@ -21,6 +21,7 @@ class Help extends React.Component<
 > {
   public render() {
     const { language } = this.props;
+    const showHelpDocId = this.props.location.hash.replace("#", "");
 
     return (
       <React.Fragment>
@@ -30,7 +31,11 @@ class Help extends React.Component<
           onTranslate={this.onTranslate}
         />
 
-        <HelpList language={language} />
+        <HelpList
+          language={language}
+          showHelpDocId={showHelpDocId}
+          onChangeOpenedHelpDoc={this.onChangeOpenedHelpDoc}
+        />
 
         <FooterSection />
       </React.Fragment>
@@ -55,8 +60,15 @@ class Help extends React.Component<
     });
 
     this.props.history.replace({
-      pathname: this.props.location.pathname,
+      ...this.props.location,
       search
+    });
+  }
+
+  private onChangeOpenedHelpDoc(id: string | undefined) {
+    this.props.history.replace({
+      ...this.props.location,
+      hash: id ? id : undefined
     });
   }
 }
