@@ -4,46 +4,23 @@ import AutoBind from "autobind-decorator";
 
 import { getLanguage, HelpRouteParams } from "../../App";
 
-import HelpPanel from "../molecules/HelpPanel";
-
 import AppBar from "../organisms/AppBar";
 import FooterSection from "../organisms/FooterSection";
-
-interface HelpDoc {
-  id: string;
-  title: string;
-  tags: string[];
-  body: string;
-}
-
-const helpsJson: {
-  ja: HelpDoc[];
-  en: HelpDoc[];
-} = require("../../../assets/helps.json");
+import HelpList from "../organisms/HelpList";
 
 interface Props {
   language: "ja" | "en";
 }
 
-interface State {
-  expandedPanelId?: string;
-}
+interface State {}
 
 @AutoBind
 class Help extends React.Component<
   Props & RouteComponentProps<HelpRouteParams>,
   State
 > {
-  public constructor(props: any) {
-    super(props);
-
-    this.state = {};
-  }
-
   public render() {
     const { language } = this.props;
-    const { expandedPanelId } = this.state;
-    const helps = helpsJson[language];
 
     return (
       <React.Fragment>
@@ -53,25 +30,11 @@ class Help extends React.Component<
           onTranslate={this.onTranslate}
         />
 
-        {helps.map(({ id, title, body }) => (
-          <HelpPanel
-            key={id}
-            title={title}
-            body={body}
-            expanded={id === expandedPanelId}
-            onChange={(event, expanded) =>
-              this.onPanelExpansionChanged(id, expanded)
-            }
-          />
-        ))}
+        <HelpList language={language} />
 
         <FooterSection />
       </React.Fragment>
     );
-  }
-
-  private onPanelExpansionChanged(helpPanelId: string, expanded: boolean) {
-    this.setState({ expandedPanelId: expanded ? helpPanelId : undefined });
   }
 
   private onTabChanged(page: "ranking" | "help") {
