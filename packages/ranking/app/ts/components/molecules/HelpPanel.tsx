@@ -1,5 +1,4 @@
 import * as React from "react";
-import styled from "styled-components";
 
 import Typography from "@material-ui/core/Typography";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
@@ -10,17 +9,30 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 
-const Root = styled.div``;
+import * as ReactMarkDown from "react-markdown";
 
 interface Props {
   title: string;
   body: string;
   expanded: boolean;
+  language: "ja" | "en";
   onChange: (event: React.ChangeEvent<{}>, expanded: boolean) => void;
+  onGotIt: () => void;
+  onNotGotIt: () => void;
 }
 
 const HelpPanel: React.SFC<Props> = props => {
-  const { title, body, expanded, onChange } = props;
+  const {
+    title,
+    body,
+    expanded,
+    language,
+    onChange,
+    onGotIt,
+    onNotGotIt
+  } = props;
+  const gotIt = language === "ja" ? "分かった！" : "Got it!";
+  const notGotIt = language === "ja" ? "解決しない..." : "Not solved...";
 
   return (
     <ExpansionPanel expanded={expanded} onChange={onChange}>
@@ -28,13 +40,15 @@ const HelpPanel: React.SFC<Props> = props => {
         <Typography>{title}</Typography>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>
-        <Typography>{body}</Typography>
+        <ReactMarkDown source={body} />
       </ExpansionPanelDetails>
       <Divider />
       <ExpansionPanelActions>
-        <Button size="small">わかんない</Button>
-        <Button size="small" color="primary">
-          わかった！
+        <Button size="small" onClick={onNotGotIt}>
+          {notGotIt}
+        </Button>
+        <Button size="small" color="primary" onClick={onGotIt}>
+          {gotIt}
         </Button>
       </ExpansionPanelActions>
     </ExpansionPanel>

@@ -3,6 +3,8 @@ import AutoBind from "autobind-decorator";
 import styled from "styled-components";
 
 import HelpPanel from "../molecules/HelpPanel";
+import GotItSnackBar from "../molecules/GotItSnackBar";
+import NotGotItDialog from "../molecules/NotGotItDialog";
 
 const Root = styled.div`
   margin: 50px auto;
@@ -27,6 +29,8 @@ interface Props {
 
 interface State {
   expandedPanelId?: string;
+  gotItSnackBarOpen: boolean;
+  notGotItDialogOpen: boolean;
 }
 
 @AutoBind
@@ -34,12 +38,19 @@ export default class HelpList extends React.Component<Props, State> {
   public constructor(props: any) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      gotItSnackBarOpen: false,
+      notGotItDialogOpen: false
+    };
   }
 
   public render() {
     const { language } = this.props;
-    const { expandedPanelId } = this.state;
+    const {
+      expandedPanelId,
+      gotItSnackBarOpen,
+      notGotItDialogOpen
+    } = this.state;
     const helps = helpsJson[language];
 
     return (
@@ -49,17 +60,46 @@ export default class HelpList extends React.Component<Props, State> {
             key={id}
             title={title}
             body={body}
+            language={language}
             expanded={id === expandedPanelId}
             onChange={(event, expanded) =>
               this.onPanelExpansionChanged(id, expanded)
             }
+            onGotIt={() => this.onGotIt(id)}
+            onNotGotIt={() => this.onNotGotIt(id)}
           />
         ))}
+
+        <GotItSnackBar open={gotItSnackBarOpen} language={language} />
+
+        <NotGotItDialog
+          open={notGotItDialogOpen}
+          handleClose={this.handleNotGotItDialog}
+          language={language}
+        />
       </Root>
     );
   }
 
   private onPanelExpansionChanged(helpPanelId: string, expanded: boolean) {
     this.setState({ expandedPanelId: expanded ? helpPanelId : undefined });
+  }
+
+  private handleNotGotItDialog() {
+    this.setState(state => ({
+      notGotItDialogOpen: !state.notGotItDialogOpen
+    }));
+  }
+
+  private onGotIt(id: string) {
+    this.setState({ gotItSnackBarOpen: true });
+
+    setTimeout(() => {
+      this.setState({ gotItSnackBarOpen: false });
+    }, 3000);
+  }
+
+  private onNotGotIt(id: string) {
+    this.handleNotGotItDialog();
   }
 }
