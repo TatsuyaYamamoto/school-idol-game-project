@@ -48,10 +48,6 @@ async function onChangeOnline(
     .collection("users")
     .doc(uid);
 
-  const roomDocsRef_cf = firestore()
-    .collection("rooms")
-    .where(`userIds.${uid}`, "==", true);
-
   const newPresenceDoc_cf: PresenceDocument = {
     userRef: userRef_cf as any,
     userAgent: createdPresence_rd.userAgent,
@@ -65,11 +61,6 @@ async function onChangeOnline(
   batch.update(userRef_cf, {
     [`presenceRefs.${presenceId}`]: createPresenceRef_cf
   });
-  (await roomDocsRef_cf.get()).forEach(result => {
-    batch.update(result.ref, {
-      [`userIds.${uid}`]: firestore.FieldValue.delete()
-    });
-  });
 
   await batch.commit();
 }
@@ -79,6 +70,7 @@ async function onChangeOffline(
   offlineSnapshot: database.DataSnapshot
 ) {
   const offlinePresence_rd = offlineSnapshot.val() as PresenceDbJson;
+  const uid = offlinePresence_rd.uid;
 
   const deletePresenceRef_cf = firestore()
     .collection("presences")
@@ -86,12 +78,21 @@ async function onChangeOffline(
 
   const userRef_cf = firestore()
     .collection("users")
-    .doc(offlinePresence_rd.uid);
+    .doc(uid);
+
+  const roomDocsRef_cf = firestore()
+    .collection("rooms")
+    .where(`userIds.${uid}`, "==", true);
 
   const batch = firestore().batch();
   batch.delete(deletePresenceRef_cf);
   batch.update(userRef_cf, {
     [`presenceRefs.${presenceId}`]: firestore.FieldValue.delete()
+  });
+  (await roomDocsRef_cf.get()).forEach(result => {
+    batch.update(result.ref, {
+      [`userIds.${uid}`]: firestore.FieldValue.delete()
+    });
   });
 
   await Promise.all([batch.commit(), offlineSnapshot.ref.remove()]);
