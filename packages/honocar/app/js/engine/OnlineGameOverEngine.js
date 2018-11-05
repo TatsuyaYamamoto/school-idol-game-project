@@ -4,7 +4,8 @@ import {
   t,
   tracePage,
   trackEvent,
-  getLogger
+  getLogger,
+  SkyWayEvents
 } from "@sokontokoro/mikan";
 
 import TopEngine from "./TopEngine";
@@ -84,7 +85,7 @@ class OnlineGameOverEngine extends Engine {
       gameStage.addChild(imageObj.GAMEOVER_DRAW);
     }
 
-    getSkyWayClient().on("data", this.onDataReceived);
+    getSkyWayClient().on(SkyWayEvents.DATA, this.onDataReceived);
     imageObj.BUTTON_BACK_TOP_ONLINE.addEventListener(
       "mousedown",
       this.onClickBack
@@ -100,7 +101,7 @@ class OnlineGameOverEngine extends Engine {
     super.tearDown();
     const { imageObj } = globals;
 
-    getSkyWayClient().off("data", this.onDataReceived);
+    getSkyWayClient().off(SkyWayEvents.DATA, this.onDataReceived);
     imageObj.BUTTON_BACK_TOP_ONLINE.removeEventListener(
       "mousedown",
       this.onClickBack
@@ -162,7 +163,7 @@ class OnlineGameOverEngine extends Engine {
               });
 
               getSkyWayClient()
-                .trySyncStartTime(2)
+                .trySyncStartTime()
                 .then(startTime => {
                   const now = Date.now();
                   const timeLeft = now < startTime ? startTime - now : 0;
@@ -205,7 +206,7 @@ class OnlineGameOverEngine extends Engine {
       });
 
       getSkyWayClient()
-        .trySyncStartTime(2, true)
+        .trySyncStartTime()
         .then(startTime => {
           const now = Date.now();
           const timeLeft = now < startTime ? startTime - now : 0;

@@ -7,7 +7,8 @@ import {
   openModal,
   t,
   tracePage,
-  ErrorCode
+  ErrorCode,
+  RoomEvents
 } from "@sokontokoro/mikan";
 import { parse } from "query-string";
 
@@ -111,14 +112,14 @@ class TopEngine extends Engine {
           logger.debug(`success to init skyway client`);
           client = getSkyWayClient();
 
-          client.on("ready", () => {
+          client.on(RoomEvents.ALL_CONNECTIONS_READY, () => {
             logger.debug(
               "all room members' connection are ready. start online game."
             );
             this.tryP2pConnect();
           });
 
-          client.on("member_left", id => {
+          client.on(RoomEvents.MEMBER_LEFT, id => {
             logger.debug("room member left. close online mode.", id);
             this.leaveOnlineMode();
           });
@@ -188,7 +189,7 @@ class TopEngine extends Engine {
     });
 
     getSkyWayClient()
-      .trySyncStartTime(2)
+      .trySyncStartTime()
       .then(startTime => {
         const now = Date.now();
         const timeLeft = now < startTime ? startTime - now : 0;

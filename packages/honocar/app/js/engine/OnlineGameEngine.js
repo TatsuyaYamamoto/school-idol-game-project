@@ -1,4 +1,4 @@
-import { getLogger, tracePage } from "@sokontokoro/mikan";
+import { getLogger, tracePage, SkyWayEvents } from "@sokontokoro/mikan";
 
 import Player from "../character/Player";
 import Car from "../character/Car";
@@ -55,7 +55,7 @@ class OnlineGameEngine extends Engine {
     createjs.Ticker.addEventListener("tick", gameReady);
     window.addEventListener("keydown", keyDownEvent);
 
-    getSkyWayClient().on("data", onDataReceived);
+    getSkyWayClient().on(SkyWayEvents.DATA, onDataReceived);
   }
 
   tearDown() {
@@ -75,7 +75,7 @@ class OnlineGameEngine extends Engine {
     createjs.Ticker.removeEventListener("tick", processGame);
     window.removeEventListener("keydown", keyDownEvent);
 
-    getSkyWayClient().off("data", onDataReceived);
+    getSkyWayClient().off(SkyWayEvents.DATA, onDataReceived);
   }
 }
 

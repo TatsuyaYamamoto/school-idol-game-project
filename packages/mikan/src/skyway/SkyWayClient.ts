@@ -1,24 +1,26 @@
 import { firestore, Unsubscribe } from "firebase/app";
-import DocumentSnapshot = firestore.DocumentSnapshot;
 
 import AutoBind from "autobind-decorator";
 import { EventEmitter } from "eventemitter3";
 
-import SkyWayEvents from "./SkyWayEvents";
+import { RoomEvents, SkyWayEvents } from "./SkyWayEvents";
 import Credential from "./Credential";
 import Data, { Message } from "./Data";
 
 import {
   callHttpsCallable,
+  ErrorCode,
+  Game,
+  MikanError,
   Room,
   RoomDocument,
   RoomName,
-  User,
-  Game
+  User
 } from "..";
 import { mean } from "../Calculation";
 import { getLogger } from "../logger";
 import { getRandomRoomName } from "../model/roomNames";
+import DocumentSnapshot = firestore.DocumentSnapshot;
 
 const Peer = require("skyway-js");
 
@@ -64,7 +66,7 @@ class SkyWayClient extends EventEmitter {
   private _destinations: Map<PeerID, Destination> = new Map();
   private _currentRoom: Room | null = null;
   private _unsubscribeRoomSnapshot: Unsubscribe | null = null;
-  private _idOwner: boolean = false;
+  private _isRoomOwner: boolean = false;
 
   /**
    * Constructor
@@ -126,13 +128,23 @@ class SkyWayClient extends EventEmitter {
     return this._currentRoom ? this._currentRoom.name : null;
   }
 
-  public get idOwner(): boolean {
-    return this._idOwner;
+  public get isRoomOwner(): boolean {
+    return this._isRoomOwner;
+  }
+
+  /**
+   * return joining room
+   */
+  public get room(): Room | null {
+    return this._currentRoom;
   }
 
   /*****************************************************************************
    * Methods
    */
+  public isListeningTo(eventName: string | SkyWayEvents | RoomEvents) {
+    return 0 < this.listeners(eventName).length;
+  }
 
   public static async createClient(apiKey: string): Promise<SkyWayClient> {
     const ownUserId = User.getOwnRef().id;
@@ -161,8 +173,11 @@ class SkyWayClient extends EventEmitter {
     game: Game,
     maxMemberCount: number = 2
   ): Promise<RoomDocument> {
-    if (this._currentRoom) {
-      return this._currentRoom;
+    if (this.room) {
+      throw new MikanError(
+        ErrorCode.SKYWAY_ALREADY_ROOM_MEMBER,
+        `this client is already ${this.roomName}`
+      );
     }
 
     let roomName;
@@ -179,7 +194,7 @@ class SkyWayClient extends EventEmitter {
       maxMemberCount
     );
 
-    this._idOwner = true;
+    this._isRoomOwner = true;
     this._unsubscribeRoomSnapshot = ref.onSnapshot(this.onRoomSnapshotUpdated);
     this._currentRoom = Room.fromData(doc);
 
@@ -218,19 +233,30 @@ class SkyWayClient extends EventEmitter {
    *
    */
   public async leaveRoom() {
+    const userId = User.getOwnRef().id;
+
+    // remove current room.
     if (!this._currentRoom) {
       return;
     }
+    await this._currentRoom.leave(userId);
+    this._currentRoom = null;
+
+    // unsubscrive room event in firestore
     if (this._unsubscribeRoomSnapshot) {
       this._unsubscribeRoomSnapshot();
     }
-
-    const userId = User.getOwnRef().id;
-    await this._currentRoom.leave(userId);
-
-    this._currentRoom = null;
     this._unsubscribeRoomSnapshot = null;
 
+    // off all room events.
+    this.eventNames().forEach(eventName => {
+      /** @see SkyWayEvents */
+      if (eventName.toString().startsWith("room")) {
+        this.removeAllListeners(eventName);
+      }
+    });
+
+    // Clear remote peers.
     this._destinations.forEach(({ dataConnection }) => {
       dataConnection.removeAllListeners();
       dataConnection.close();
@@ -269,8 +295,6 @@ class SkyWayClient extends EventEmitter {
 
   /**
    *
-   * @param memberCount
-   * @param firstSignalSender
    *
    * @example
    * {@code
@@ -285,16 +309,7 @@ class SkyWayClient extends EventEmitter {
    * }
    *
    */
-  public trySyncStartTime(
-    memberCount: number,
-    firstSignalSender = false
-  ): Promise<number> {
-    logger.debug(
-      `try sync game start. this client is ${
-        firstSignalSender ? "sender" : "receiver"
-      }`
-    );
-
+  public trySyncStartTime(): Promise<number> {
     const OFFSET = 4 * 1000; //[ms]
     const PROPOSAL_LIFETIME = 2 * 1000; // [ms]
     enum MessageType {
@@ -302,8 +317,9 @@ class SkyWayClient extends EventEmitter {
       ACCEPTANCE = "sync-start/acceptance",
       DECISION = "sync-start/decision"
     }
-
+    const isFirstSignalSender = !!this.isRoomOwner;
     const acceptanceMap = new Map<string /*peerId*/, boolean>();
+    const remotePeerCount = this._destinations.size;
     let isResolved = false;
     let currentProposalId = "__dummy__";
     let currentProposalStartTime = Number.MAX_SAFE_INTEGER;
@@ -391,7 +407,7 @@ class SkyWayClient extends EventEmitter {
         acceptanceMap.set(remotePeerId, true);
 
         // check all members accepted?
-        if (acceptanceMap.size === memberCount - 1 /* without sender */) {
+        if (acceptanceMap.size === remotePeerCount) {
           const now = Date.now();
           if (now < currentProposalExpirationTime) {
             // decide start time!
@@ -419,7 +435,11 @@ class SkyWayClient extends EventEmitter {
         resolveSync();
       };
 
-      if (firstSignalSender) {
+      if (isFirstSignalSender) {
+        logger.debug(
+          "try sync game start. this client's role is first signal sender."
+        );
+
         // watch events and
         this.on("data", (data, remotePeerId) => {
           if (data.message.type === MessageType.ACCEPTANCE) {
@@ -434,6 +454,10 @@ class SkyWayClient extends EventEmitter {
       } else {
         // watch event only on init.
         this.on("data", data => {
+          logger.debug(
+            "try sync game start. this client's role is receiver. wait for first signal."
+          );
+
           if (data.message.type === MessageType.PROPOSAL) {
             const { proposalId, startTime } = data.message.detail;
 
@@ -636,14 +660,14 @@ class SkyWayClient extends EventEmitter {
       const nextMemberCount = next.memberCount;
 
       if (prevMemberCount !== nextMemberCount && next.isMemberFulfilled) {
-        this.emit(SkyWayEvents.MEMBER_FULFILLED);
+        this.emit(RoomEvents.MEMBER_FULFILLED);
 
         this.startLoopConnectionCheck(next.memberCount - 1);
       }
     }
 
     if (prev && !prev.lock && next.lock) {
-      this.emit(SkyWayEvents.MEMBER_LOCK);
+      this.emit(RoomEvents.MEMBER_LOCK);
     }
 
     if (prev) {
@@ -655,7 +679,7 @@ class SkyWayClient extends EventEmitter {
           return !next.memberIds.find(nextId => nextId === prevId);
         });
 
-        this.emit(SkyWayEvents.MEMBER_LEFT, leftUserId);
+        this.emit(RoomEvents.MEMBER_LEFT, leftUserId);
       }
     }
 
@@ -672,7 +696,7 @@ class SkyWayClient extends EventEmitter {
     if (readyCount === shouldReadyMemberCount) {
       logger.debug("all ready.");
 
-      this.emit(SkyWayEvents.READY);
+      this.emit(RoomEvents.ALL_CONNECTIONS_READY);
     } else {
       logger.debug("not ready. try again 500ms after.");
       setTimeout(

@@ -77,7 +77,7 @@ export {
   MediaConnection,
   Destination
 } from "./skyway/SkyWayClient";
-export { default as SkyWayEvents } from "./skyway/SkyWayEvents";
+export { SkyWayEvents, RoomEvents } from "./skyway/SkyWayEvents";
 
 export { openModal, closeModal } from "./Modal";
 

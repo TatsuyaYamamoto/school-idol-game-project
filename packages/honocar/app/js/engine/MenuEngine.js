@@ -14,7 +14,8 @@ import {
   convertYyyyMmDd,
   createUrchinTrackingModuleQuery,
   showIndicator,
-  hideIndicator
+  hideIndicator,
+  RoomEvents
 } from "@sokontokoro/mikan";
 
 import globals from "../globals";
@@ -165,13 +166,17 @@ async function onClick2MultiPlay() {
     actions: []
   });
 
-  const isNew = await initClient();
+  await initClient();
   const client = getClient();
 
-  if (isNew) {
-    logger.debug("got skyway client is newly created. set event listener");
+  showIndicator({ text: t(Ids.ONLINE_WAIT_JOIN_MEMBER_INFO_TEXT) });
 
-    client.on("ready", function() {
+  let room = client.room;
+
+  if (!room) {
+    room = await client.createRoom("honocar");
+
+    client.on(RoomEvents.ALL_CONNECTIONS_READY, function() {
       logger.debug(
         "all room members' connection are ready. start online game."
       );
@@ -180,17 +185,13 @@ async function onClick2MultiPlay() {
       tryP2pConnect();
     });
 
-    client.on("member_left", id => {
+    client.on(RoomEvents.MEMBER_LEFT, id => {
       logger.debug("room member left. close online mode.", id);
       leaveOnlineGame();
     });
   }
 
-  showIndicator({ text: t(Ids.ONLINE_WAIT_JOIN_MEMBER_INFO_TEXT) });
-
-  const roomDoc = await client.createRoom("honocar");
-  const roomName = roomDoc.name;
-  logger.debug(`success to create or load room. name: ${roomName}`);
+  logger.debug(`success to create or load room. name: ${room.name}`);
 
   openModal({
     title: t(Ids.ONLINE_DIALOG_PREPARE_TITLE),
@@ -202,7 +203,7 @@ async function onClick2MultiPlay() {
         tooltipText: t(Ids.ONLINE_DIALOG_PREPARE_COPY_SUCCESS),
         onClick: () => {
           const url = getCurrentUrl();
-          copyTextToClipboard(`${url}?roomName=${roomName}`);
+          copyTextToClipboard(`${url}?roomName=${room.name}`);
         }
       },
       {
@@ -215,9 +216,9 @@ async function onClick2MultiPlay() {
             source: "twitter",
             medium: "social"
           });
-          const url = `${config.link.game}?roomName=${roomName}&${utmQuery.join(
-            "&"
-          )}`;
+          const url = `${config.link.game}?roomName=${
+            room.name
+          }&${utmQuery.join("&")}`;
 
           tweetByWebIntent({
             text: t(Ids.ONLINE_INVITATION_TWEET_TEXT),
@@ -240,7 +241,7 @@ function tryP2pConnect() {
   });
 
   getClient()
-    .trySyncStartTime(2, true)
+    .trySyncStartTime()
     .then(startTime => {
       const now = Date.now();
       const timeLeft = now < startTime ? startTime - now : 0;
