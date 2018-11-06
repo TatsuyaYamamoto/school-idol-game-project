@@ -1,10 +1,10 @@
-import { getLogger, tracePage, SkyWayEvents } from "@sokontokoro/mikan";
+import { getLogger, tracePage, SkyWayEvents, t } from "@sokontokoro/mikan";
 
 import Player from "../character/Player";
 import Car from "../character/Car";
 
 import Engine from "./Engine";
-import { checkDistance, passCountText } from "./GameEngine";
+import { checkDistance } from "./GameEngine";
 import OnlineGameOverEngine from "./OnlineGameOverEngine";
 import { to } from "../stateMachine";
 
@@ -13,6 +13,7 @@ import { P2PEvents } from "../constants";
 import { getClient as getSkyWayClient } from "../common";
 
 import { TRACK_PAGES } from "../resources/config";
+import { Ids } from "../resources/string";
 
 const MAX_WAIT_TIME = 150;
 const logger = getLogger("online-game-engine");
@@ -472,6 +473,10 @@ function goGameOverState(result) {
 
   //stateマシン内、ゲームオーバー状態に遷移
   to(OnlineGameOverEngine, { result: result, passCarCount });
+}
+
+function passCountText() {
+  return t(Ids.PASS_COUNT, { count: passCarCount });
 }
 
 export default new OnlineGameEngine();

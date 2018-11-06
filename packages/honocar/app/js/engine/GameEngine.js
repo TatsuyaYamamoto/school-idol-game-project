@@ -272,7 +272,7 @@ function crash() {
   });
 }
 
-export function passCountText() {
+function passCountText() {
   return t(Ids.PASS_COUNT, { count: passCarCount });
 }
 
