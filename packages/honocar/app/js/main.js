@@ -89,3 +89,7 @@ function init() {
 }
 
 gameLaunchButtonElement.addEventListener("click", init);
+gameLaunchButtonElement.classList.remove(
+  "launch-before-guide__button--initializing"
+);
+gameLaunchButtonElement.classList.add("launch-before-guide__button--ready");

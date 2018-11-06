@@ -57,25 +57,46 @@ body {
   font-size: 15px;
 }
 
+.launch-before-guide__button--initializing:before {
+  content: "初期化中/Initializing";
+  color: rgba(255, 132, 0, 0.98);
+}
+
+.launch-before-guide__button--initializing {
+  cursor: wait;
+
+  background: #fff;
+  border: solid 1px #fd9535;
+}
+
+.launch-before-guide__button--ready:before {
+  content: "起動する/Launch";
+  color: #fff;
+}
+
+.launch-before-guide__button--ready {
+  cursor: pointer;
+
+  background: #fd9535;
+  border-bottom: solid 2px #d27d00;
+}
+
 .launch-before-guide__button {
   margin-top: 30px;
-
-  cursor: pointer;
 
   position: relative;
   display: inline-block;
   padding: 0.25em 0.5em;
-  text-decoration: none;
-  color: #fff;
-  background: #fd9535;
-  border-bottom: solid 2px #d27d00;
+
   border-radius: 4px;
   box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.2),
     0 2px 2px rgba(0, 0, 0, 0.19);
+
   font-weight: bold;
+  text-decoration: none;
 }
 
-.launch-before-guide__button:active {
+.launch-before-guide__button--ready:active {
   border-bottom: solid 2px #fd9535;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
 }
