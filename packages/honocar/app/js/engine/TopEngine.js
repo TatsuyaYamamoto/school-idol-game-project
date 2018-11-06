@@ -126,6 +126,9 @@ class TopEngine extends Engine {
         })
         .then(() => client.joinRoom(roomName))
         .catch(e => {
+          // fail to join room, then top page tap action is acceptable.
+          window.addEventListener(pointerdown, this.onClickTop);
+
           logger.error(e.message);
 
           if (e.code === ErrorCode.FIREBASE_NO_ROOM) {
