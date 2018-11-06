@@ -114,7 +114,7 @@ class TopEngine extends Engine {
 
           client.on(RoomEvents.ALL_CONNECTIONS_READY, () => {
             logger.debug(
-              "all room members' connection are ready. start online game."
+              "all room members' connection are ready. start to try sync for game."
             );
             this.tryP2pConnect();
           });

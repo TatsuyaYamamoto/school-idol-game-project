@@ -441,7 +441,7 @@ class SkyWayClient extends EventEmitter {
         );
 
         // watch events and
-        this.on("data", (data, remotePeerId) => {
+        this.on(SkyWayEvents.DATA, (data, remotePeerId) => {
           if (data.message.type === MessageType.ACCEPTANCE) {
             const { proposalId } = data.message.detail;
 
@@ -452,12 +452,12 @@ class SkyWayClient extends EventEmitter {
         // send first message.
         sendProposal();
       } else {
-        // watch event only on init.
-        this.on("data", data => {
-          logger.debug(
-            "try sync game start. this client's role is receiver. wait for first signal."
-          );
+        logger.debug(
+          "try sync game start. this client's role is receiver. wait for first signal."
+        );
 
+        // watch event only on init.
+        this.on(SkyWayEvents.DATA, data => {
           if (data.message.type === MessageType.PROPOSAL) {
             const { proposalId, startTime } = data.message.detail;
 
@@ -576,7 +576,7 @@ class SkyWayClient extends EventEmitter {
     const peerId = dataConnection.remoteId;
     logger.debug("data connection is opened.", peerId);
 
-    dataConnection.on("data", (data: any) => {
+    dataConnection.on(SkyWayEvents.DATA, (data: any) => {
       this.onDataReceived(data, peerId);
     });
     dataConnection.on("close", () => {
