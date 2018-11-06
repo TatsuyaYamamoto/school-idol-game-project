@@ -37,7 +37,13 @@ class GameOverEngine extends Engine {
   init(params) {
     super.init();
 
+    this.passCarCount = params.passCarCount;
+
     tracePage(TRACK_PAGES.GAMEOVER);
+    trackEvent(TRACK_ACTION.GAMEOVER, {
+      label: "single",
+      value: this.passCarCount
+    });
 
     const {
       BUTTON_BACK_TOP,
@@ -47,14 +53,6 @@ class GameOverEngine extends Engine {
     } = globals.imageObj;
     const { BUTTON_TWITTER_GAMEOVER_SS } = globals.ssObj;
     const { TEXT_GAME_COUNT } = globals.textObj;
-
-    this.passCarCount = params.passCarCount;
-
-    trackEvent(TRACK_ACTION.GAMEOVER, {
-      label: "single",
-      value: this.passCarCount
-    });
-
     const { gameStage, player, playCharacter } = globals;
 
     Playlog.save("honocar", playCharacter, this.passCarCount).then(() => {
