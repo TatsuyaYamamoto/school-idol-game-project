@@ -1,4 +1,10 @@
-import { getLogger, tracePage, SkyWayEvents, t } from "@sokontokoro/mikan";
+import {
+  getLogger,
+  tracePage,
+  SkyWayEvents,
+  t,
+  getRandomInteger
+} from "@sokontokoro/mikan";
 
 import Player from "../character/Player";
 import Car from "../character/Car";
@@ -178,10 +184,19 @@ function drawGameScrean() {
   gameStage.addChild(player.img);
 }
 
-// 敵出現---------------------------------------
+/**
+ * Carを出現させる。
+ *
+ * 0-5の整数の乱数を取得して、次の出現するCarのlaneを決定する
+ * 　0-3: 0-3のlaneにcarを出現させる
+ * 　4　: playerのlaneと同じ
+ * 　5　: なにも起きない
+ */
 function enemyAppeare() {
   shouldPushCar = false;
-  const enemyNumber = Math.floor(Math.random() * 5);
+
+  const nextCarIndex = getRandomInteger(0, 5);
+  const enemyNumber = nextCarIndex === 4 ? globals.player.lane : nextCarIndex;
 
   sendPushCarEvent(enemyNumber);
 
@@ -192,21 +207,12 @@ function enemyAppeare() {
 function pushCar(enemyNumber) {
   switch (enemyNumber) {
     case 0:
-      cars.push(new Car(0));
-      break;
     case 1:
-      cars.push(new Car(1));
-      break;
     case 2:
-      cars.push(new Car(2));
-      break;
     case 3:
-      cars.push(new Car(3));
+      cars.push(new Car(enemyNumber));
       break;
-    case 4:
-      cars.push(new Car(globals.player.lane));
-      break;
-    case 5:
+    default:
       // なにもおきない
       break;
   }
