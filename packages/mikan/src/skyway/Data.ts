@@ -1,7 +1,7 @@
 export type Message = string | number | object;
 
-interface Data {
-  message: Message;
+interface Data<T = Message> {
+  message: T;
   timestamp: number;
 }
 

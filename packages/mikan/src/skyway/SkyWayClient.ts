@@ -325,7 +325,15 @@ class SkyWayClient extends EventEmitter {
     let currentProposalStartTime = Number.MAX_SAFE_INTEGER;
     let currentProposalExpirationTime = Number.MAX_SAFE_INTEGER;
 
+    interface TrySyncData {
+      type: MessageType;
+      detail: any;
+    }
+
     return new Promise<number>(resolve => {
+      /**
+       *
+       */
       const resolveSync = () => {
         isResolved = true;
         logger.debug(
@@ -333,9 +341,18 @@ class SkyWayClient extends EventEmitter {
           new Date(currentProposalStartTime)
         );
 
+        if (isFirstSignalSender) {
+          this.off(SkyWayEvents.DATA, onFirstSignalSenderDataReceived);
+        } else {
+          this.off(SkyWayEvents.DATA, onReceiverDataReceived);
+        }
+
         resolve(currentProposalStartTime);
       };
 
+      /**
+       * Proposalを送信する
+       */
       const sendProposal = () => {
         acceptanceMap.clear();
         const now = Date.now();
@@ -360,6 +377,12 @@ class SkyWayClient extends EventEmitter {
         logger.debug(`send sync proposal. proposalId: ${currentProposalId}`);
       };
 
+      /**
+       * Proposalを受信した
+       *
+       * @param proposalId
+       * @param startTime
+       */
       const onReceiveProposal = (proposalId: string, startTime: number) => {
         logger.debug(
           `received start time proposal for sync start. proposalId: ${currentProposalId}`
@@ -369,6 +392,9 @@ class SkyWayClient extends EventEmitter {
         sendAcceptance(proposalId);
       };
 
+      /**
+       * Proposalがexpireした
+       */
       const onExpireProposal = () => {
         if (!isResolved) {
           logger.debug(
@@ -378,6 +404,11 @@ class SkyWayClient extends EventEmitter {
         }
       };
 
+      /**
+       * Acceptanceを送信する
+       *
+       * @param proposalId
+       */
       const sendAcceptance = (proposalId: string) => {
         const message = {
           type: MessageType.ACCEPTANCE,
@@ -391,6 +422,12 @@ class SkyWayClient extends EventEmitter {
         logger.debug(`accept sync proposal. proposalId: ${currentProposalId}`);
       };
 
+      /**
+       * Acceptanceを受信した
+       *
+       * @param proposalId
+       * @param remotePeerId
+       */
       const onReceiveAcceptance = (
         proposalId: string,
         remotePeerId: string
@@ -417,6 +454,9 @@ class SkyWayClient extends EventEmitter {
         }
       };
 
+      /**
+       * Decisionを送信する
+       */
       const sendDecision = () => {
         const message = {
           type: MessageType.DECISION,
@@ -430,24 +470,61 @@ class SkyWayClient extends EventEmitter {
         );
       };
 
+      /**
+       * Decisionを受信した
+       */
       const onReceiveDecision = () => {
         logger.debug(`received start time decision.`);
         resolveSync();
       };
 
+      /**
+       * FirstSignalSenderが{@code Data<TrySyncData>}を受信した。{@code MessageType}に従ってコールバックを振り分ける
+       *
+       * @param data
+       * @param remotePeerId
+       */
+      const onFirstSignalSenderDataReceived = (
+        data: Data<TrySyncData>,
+        remotePeerId: PeerID
+      ) => {
+        if (data.message.type === MessageType.ACCEPTANCE) {
+          const { proposalId } = data.message.detail;
+
+          onReceiveAcceptance(proposalId, remotePeerId);
+        }
+      };
+
+      /**
+       * Receiverが{@code Data<TrySyncData>}を受信した。{@code MessageType}に従ってコールバックを振り分ける
+       *
+       * @param data
+       */
+      const onReceiverDataReceived = (data: Data<TrySyncData>) => {
+        if (data.message.type === MessageType.PROPOSAL) {
+          const { proposalId, startTime } = data.message.detail;
+
+          onReceiveProposal(proposalId, startTime);
+        }
+        if (data.message.type === MessageType.DECISION) {
+          onReceiveDecision();
+        }
+      };
+
+      /**
+       * Syncを開始する
+       *
+       * - FirstSignalSender
+       *     - {@code onFirstSignalSenderDataReceived}をlisten開始
+       *     - Proposalの送信
+       * - Receiver
+       *     - {@code onReceiverDataReceived}をlisten開始
+       */
       if (isFirstSignalSender) {
         logger.debug(
           "try sync game start. this client's role is first signal sender."
         );
-
-        // watch events and
-        this.on(SkyWayEvents.DATA, (data, remotePeerId) => {
-          if (data.message.type === MessageType.ACCEPTANCE) {
-            const { proposalId } = data.message.detail;
-
-            onReceiveAcceptance(proposalId, remotePeerId);
-          }
-        });
+        this.on(SkyWayEvents.DATA, onFirstSignalSenderDataReceived);
 
         // send first message.
         sendProposal();
@@ -455,18 +532,7 @@ class SkyWayClient extends EventEmitter {
         logger.debug(
           "try sync game start. this client's role is receiver. wait for first signal."
         );
-
-        // watch event only on init.
-        this.on(SkyWayEvents.DATA, data => {
-          if (data.message.type === MessageType.PROPOSAL) {
-            const { proposalId, startTime } = data.message.detail;
-
-            onReceiveProposal(proposalId, startTime);
-          }
-          if (data.message.type === MessageType.DECISION) {
-            onReceiveDecision();
-          }
-        });
+        this.on(SkyWayEvents.DATA, onReceiverDataReceived);
       }
     });
   }
