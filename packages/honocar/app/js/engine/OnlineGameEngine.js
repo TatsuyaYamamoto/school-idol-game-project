@@ -86,7 +86,7 @@ function gameStatusReset() {
   cars = [];
   playerCrashedTime = null;
   opponentCrashTime = null;
-  shouldPushCar = getSkyWayClient().idOwner;
+  shouldPushCar = getSkyWayClient().isRoomOwner;
   isMatched = false;
 }
 

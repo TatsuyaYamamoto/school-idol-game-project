@@ -642,7 +642,7 @@ class SkyWayClient extends EventEmitter {
     const peerId = dataConnection.remoteId;
     logger.debug("data connection is opened.", peerId);
 
-    dataConnection.on(SkyWayEvents.DATA, (data: any) => {
+    dataConnection.on("data", (data: any) => {
       this.onDataReceived(data, peerId);
     });
     dataConnection.on("close", () => {
