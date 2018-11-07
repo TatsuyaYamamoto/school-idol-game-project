@@ -18,5 +18,7 @@ export enum ErrorCode {
 
   SKYWAY_TIMEOUT = "skyway/time-out",
   SKYWAY_FAIL_DATA_CONNECT = "skyway/fail-data-connect",
-  SKYWAY_ALREADY_ROOM_MEMBER = "skyway/already-room-member"
+  SKYWAY_ALREADY_ROOM_MEMBER = "skyway/already-room-member",
+
+  NTP_NOT_SYNCHRONIZED = "ntp/not-synchronized"
 }

@@ -8,7 +8,8 @@ import {
   t,
   tracePage,
   ErrorCode,
-  RoomEvents
+  RoomEvents,
+  NtpDate
 } from "@sokontokoro/mikan";
 import { parse } from "query-string";
 
@@ -194,7 +195,7 @@ class TopEngine extends Engine {
     getSkyWayClient()
       .trySyncStartTime()
       .then(startTime => {
-        const now = Date.now();
+        const now = NtpDate.now();
         const timeLeft = now < startTime ? startTime - now : 0;
 
         openModal({

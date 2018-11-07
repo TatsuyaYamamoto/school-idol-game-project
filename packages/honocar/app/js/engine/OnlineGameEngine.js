@@ -3,7 +3,8 @@ import {
   tracePage,
   SkyWayEvents,
   t,
-  getRandomInteger
+  getRandomInteger,
+  NtpDate
 } from "@sokontokoro/mikan";
 
 import Player from "../character/Player";
@@ -200,11 +201,12 @@ function enemyAppeare() {
 
   sendPushCarEvent(enemyNumber);
 
-  logger.debug(`push car. car index: ${enemyNumber}, now: ${Date.now()}`);
   pushCar(enemyNumber);
 }
 
 function pushCar(enemyNumber) {
+  logger.debug(`push car. car index: ${enemyNumber}, now: ${NtpDate.now()}`);
+
   switch (enemyNumber) {
     case 0:
     case 1:
@@ -303,7 +305,7 @@ function isOpponentCrashed() {
 }
 
 function crash() {
-  const now = Date.now();
+  const now = NtpDate.now();
   playerCrashedTime = now;
 
   const waitInterval = getWaitInterval();
@@ -464,7 +466,7 @@ function getWaitInterval() {
 }
 
 function getWaitIntervalBy(judgeTime) {
-  const now = Date.now();
+  const now = NtpDate.now();
   return now < judgeTime ? judgeTime - now : 0;
 }
 

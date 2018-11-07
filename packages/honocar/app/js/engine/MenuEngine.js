@@ -15,7 +15,8 @@ import {
   createUrchinTrackingModuleQuery,
   showIndicator,
   hideIndicator,
-  RoomEvents
+  RoomEvents,
+  NtpDate
 } from "@sokontokoro/mikan";
 
 import globals from "../globals";
@@ -243,7 +244,7 @@ function tryP2pConnect() {
   getClient()
     .trySyncStartTime()
     .then(startTime => {
-      const now = Date.now();
+      const now = NtpDate.now();
       const timeLeft = now < startTime ? startTime - now : 0;
 
       openModal({

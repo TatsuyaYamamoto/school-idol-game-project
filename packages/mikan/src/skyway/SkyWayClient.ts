@@ -1,4 +1,5 @@
 import { firestore, Unsubscribe } from "firebase/app";
+import DocumentSnapshot = firestore.DocumentSnapshot;
 
 import AutoBind from "autobind-decorator";
 import { EventEmitter } from "eventemitter3";
@@ -20,7 +21,7 @@ import {
 import { mean } from "../Calculation";
 import { getLogger } from "../logger";
 import { getRandomRoomName } from "../model/roomNames";
-import DocumentSnapshot = firestore.DocumentSnapshot;
+import NtpDate from "../NtpDate";
 
 const Peer = require("skyway-js");
 
@@ -147,6 +148,8 @@ class SkyWayClient extends EventEmitter {
   }
 
   public static async createClient(apiKey: string): Promise<SkyWayClient> {
+    await NtpDate.sync();
+
     const ownUserId = User.getOwnRef().id;
     const result = await callHttpsCallable("p2pCredential", {
       peerId: ownUserId
@@ -274,7 +277,7 @@ class SkyWayClient extends EventEmitter {
    */
   public send(message: Message, peerId?: PeerID) {
     if (!peerId) {
-      const data: Data = { message, timestamp: Date.now() };
+      const data: Data = { message, timestamp: NtpDate.now() };
 
       this._destinations.forEach(({ dataConnection }) => {
         dataConnection.send(data);
@@ -288,7 +291,7 @@ class SkyWayClient extends EventEmitter {
       return;
     }
 
-    const data: Data = { message, timestamp: Date.now() };
+    const data: Data = { message, timestamp: NtpDate.now() };
 
     destination.dataConnection.send(data);
   }
@@ -299,7 +302,7 @@ class SkyWayClient extends EventEmitter {
    * @example
    * {@code
    *  const startTime = await client.trySyncStartTime();
-   *  const now = Date.now();
+   *  const now = NtpDate.now();
    *  const offset = startTime - now;
    *  if (0 < offset) {
    *    setTimeout(startGame, offset);
@@ -338,7 +341,7 @@ class SkyWayClient extends EventEmitter {
         isResolved = true;
         logger.debug(
           `sync start time is resolved.`,
-          new Date(currentProposalStartTime)
+          new NtpDate(currentProposalStartTime)
         );
 
         if (isFirstSignalSender) {
@@ -355,7 +358,7 @@ class SkyWayClient extends EventEmitter {
        */
       const sendProposal = () => {
         acceptanceMap.clear();
-        const now = Date.now();
+        const now = NtpDate.now();
 
         currentProposalId = `${now}`;
         currentProposalStartTime = now + OFFSET;
@@ -384,11 +387,13 @@ class SkyWayClient extends EventEmitter {
        * @param startTime
        */
       const onReceiveProposal = (proposalId: string, startTime: number) => {
+        currentProposalId = proposalId;
+        currentProposalStartTime = startTime;
+
         logger.debug(
           `received start time proposal for sync start. proposalId: ${currentProposalId}`
         );
 
-        currentProposalStartTime = startTime;
         sendAcceptance(proposalId);
       };
 
@@ -437,6 +442,9 @@ class SkyWayClient extends EventEmitter {
         );
 
         if (proposalId !== currentProposalId) {
+          logger.debug(
+            `received acceptance is unmanaged. ignore it. proposalId: ${proposalId}`
+          );
           return;
         }
 
@@ -445,7 +453,7 @@ class SkyWayClient extends EventEmitter {
 
         // check all members accepted?
         if (acceptanceMap.size === remotePeerCount) {
-          const now = Date.now();
+          const now = NtpDate.now();
           if (now < currentProposalExpirationTime) {
             // decide start time!
             sendDecision();
@@ -667,26 +675,22 @@ class SkyWayClient extends EventEmitter {
    */
   protected onDataReceived(data: Data, peerId: string) {
     if (logger.getLevel() === logger.levels.DEBUG) {
-      setTimeout(() => {
-        const ping = Date.now() - data.timestamp;
+      const ping = NtpDate.now() - data.timestamp;
 
-        logger.debug(
-          `received message, peerId: ${peerId}, ping: ${ping}ms`,
-          data
-        );
+      logger.debug(
+        `received message, peerId: ${peerId}, ping: ${ping}ms`,
+        data
+      );
 
-        const destination = this._destinations.get(peerId);
+      const destination = this._destinations.get(peerId);
 
-        if (!destination) {
-          return;
-        }
-
+      if (destination) {
         destination.pingHistory.push(ping);
         if (PING_COUNT_FOR_AVERAGE < destination.pingHistory.length) {
           destination.pingHistory.shift();
         }
         destination.averagePing = mean(destination.pingHistory);
-      });
+      }
     }
 
     this.emit(SkyWayEvents.DATA, data, peerId);

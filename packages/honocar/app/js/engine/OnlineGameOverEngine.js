@@ -8,7 +8,8 @@ import {
   SkyWayEvents,
   convertYyyyMmDd,
   createUrchinTrackingModuleQuery,
-  tweetByWebIntent
+  tweetByWebIntent,
+  NtpDate
 } from "@sokontokoro/mikan";
 
 import TopEngine from "./TopEngine";
@@ -156,6 +157,34 @@ class OnlineGameOverEngine extends Engine {
   }
 
   onDataReceived({ message }) {
+    const startGameAfterSync = () => {
+      openModal({
+        title: t(Ids.ONLINE_DIALOG_READY_ROOM_TITLE),
+        text: t(Ids.ONLINE_DIALOG_READY_ROOM_TEXT),
+        actions: []
+      });
+
+      getSkyWayClient()
+        .trySyncStartTime()
+        .then(startTime => {
+          const now = NtpDate.now();
+          const timeLeft = now < startTime ? startTime - now : 0;
+
+          openModal({
+            title: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TITLE),
+            text: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TEXT, {
+              timeLeft: unixtimeToRoundSeconds(timeLeft)
+            }),
+            actions: []
+          });
+
+          setTimeout(() => {
+            closeModal();
+            to(OnlineGameEngine);
+          }, timeLeft);
+        });
+    };
+
     if (message.type === P2PEvents.RESTART) {
       logger.debug("receive restart request.");
 
@@ -171,32 +200,7 @@ class OnlineGameOverEngine extends Engine {
                 type: P2PEvents.RESTART_ACCEPT
               };
               getSkyWayClient().send(message);
-
-              openModal({
-                title: t(Ids.ONLINE_DIALOG_READY_ROOM_TITLE),
-                text: t(Ids.ONLINE_DIALOG_READY_ROOM_TEXT),
-                actions: []
-              });
-
-              getSkyWayClient()
-                .trySyncStartTime()
-                .then(startTime => {
-                  const now = Date.now();
-                  const timeLeft = now < startTime ? startTime - now : 0;
-
-                  openModal({
-                    title: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TITLE),
-                    text: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TEXT, {
-                      timeLeft: unixtimeToRoundSeconds(timeLeft)
-                    }),
-                    actions: []
-                  });
-
-                  setTimeout(() => {
-                    closeModal();
-                    to(OnlineGameEngine);
-                  }, timeLeft);
-                });
+              startGameAfterSync();
             }
           },
           {
@@ -214,32 +218,7 @@ class OnlineGameOverEngine extends Engine {
 
     if (message.type === P2PEvents.RESTART_ACCEPT) {
       logger.debug("receive restart accept message.");
-
-      openModal({
-        title: t(Ids.ONLINE_DIALOG_READY_ROOM_TITLE),
-        text: t(Ids.ONLINE_DIALOG_READY_ROOM_TEXT),
-        actions: []
-      });
-
-      getSkyWayClient()
-        .trySyncStartTime()
-        .then(startTime => {
-          const now = Date.now();
-          const timeLeft = now < startTime ? startTime - now : 0;
-
-          openModal({
-            title: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TITLE),
-            text: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TEXT, {
-              timeLeft: unixtimeToRoundSeconds(timeLeft)
-            }),
-            actions: []
-          });
-
-          setTimeout(() => {
-            closeModal();
-            to(OnlineGameEngine);
-          }, timeLeft);
-        });
+      startGameAfterSync();
     }
   }
 

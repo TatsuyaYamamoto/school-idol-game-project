@@ -78,6 +78,7 @@ export {
   Destination
 } from "./skyway/SkyWayClient";
 export { SkyWayEvents, RoomEvents } from "./skyway/SkyWayEvents";
+export { default as NtpDate } from "./NtpDate";
 
 export { openModal, closeModal } from "./Modal";
 
