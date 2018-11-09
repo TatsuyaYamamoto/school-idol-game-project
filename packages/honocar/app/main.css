@@ -101,17 +101,28 @@ body {
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
 }
 
-.launch-before-guide__info {
+.launch-before-guide__note {
   margin-top: 30px;
 }
-.launch-before-guide__info .info__label {
+.launch-before-guide__note .note__label {
   font-size: 14px;
-
   margin-top: 10px;
 }
 
-.launch-before-guide__info .info__body {
+.launch-before-guide__note .note__body {
   font-size: 12px;
   margin-top: 5px;
-  margin-bottom: 30px;
+}
+
+.launch-before-guide__environment {
+  margin-top: 30px;
+}
+
+.environment-item {
+}
+
+.environment-item__label {
+}
+
+.environment-item__value {
 }

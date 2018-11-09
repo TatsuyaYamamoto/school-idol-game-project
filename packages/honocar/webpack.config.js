@@ -2,13 +2,17 @@ const { resolve } = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const rootPackageJson = require("../../package.json");
+const appPackageJson = require("./package.json");
 
-const config = require("../../package.json").config.sokontokoro;
+const appVersion = appPackageJson.version;
+const config = rootPackageJson.config.sokontokoro;
 const isProduction = process.env.NODE_ENV === "production";
 
 const htmlParams = {
   title: "DEV ほのCar!",
   noIndex: true,
+  appVersion,
   trackingCode: config.trackingCode.dev,
   description:
     "ひたすら穂乃果ちゃんが車を避けるゲームです。(?)2015そこんところ工房",
