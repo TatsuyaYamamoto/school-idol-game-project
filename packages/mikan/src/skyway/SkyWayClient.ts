@@ -18,10 +18,11 @@ import {
   RoomName,
   User
 } from "..";
-import { mean } from "../Calculation";
+import { mean } from "../util/Calculation";
 import { getLogger } from "../logger";
 import { getRandomRoomName } from "../model/roomNames";
 import NtpDate from "../NtpDate";
+import LimitedArray from "../util/LimitedArray";
 
 const Peer = require("skyway-js");
 
@@ -56,7 +57,7 @@ export interface DataConnection {
 export interface Destination {
   dataConnection: DataConnection;
   averagePing: number;
-  pingHistory: number[];
+  pingHistory: LimitedArray<number>;
 }
 
 const PING_COUNT_FOR_AVERAGE = 5;
@@ -339,10 +340,8 @@ class SkyWayClient extends EventEmitter {
        */
       const resolveSync = () => {
         isResolved = true;
-        logger.debug(
-          `sync start time is resolved.`,
-          new NtpDate(currentProposalStartTime)
-        );
+        const time = new NtpDate(currentProposalStartTime).toString();
+        logger.debug(`sync start time is resolved.`, time);
 
         if (isFirstSignalSender) {
           this.off(SkyWayEvents.DATA, onFirstSignalSenderDataReceived);
@@ -660,7 +659,7 @@ class SkyWayClient extends EventEmitter {
     this._destinations.set(peerId, {
       dataConnection,
       averagePing: 0,
-      pingHistory: []
+      pingHistory: new LimitedArray(PING_COUNT_FOR_AVERAGE)
     });
 
     this.emit(SkyWayEvents.CONNECTION_OPENED, peerId);
@@ -686,10 +685,7 @@ class SkyWayClient extends EventEmitter {
 
       if (destination) {
         destination.pingHistory.push(ping);
-        if (PING_COUNT_FOR_AVERAGE < destination.pingHistory.length) {
-          destination.pingHistory.shift();
-        }
-        destination.averagePing = mean(destination.pingHistory);
+        destination.averagePing = mean(destination.pingHistory.getAll());
       }
     }
 

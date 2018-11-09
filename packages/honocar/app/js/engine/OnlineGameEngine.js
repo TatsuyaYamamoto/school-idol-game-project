@@ -4,7 +4,9 @@ import {
   SkyWayEvents,
   t,
   getRandomInteger,
-  NtpDate
+  NtpDate,
+  LimitedArray,
+  mean
 } from "@sokontokoro/mikan";
 
 import Player from "../character/Player";
@@ -17,7 +19,7 @@ import { to } from "../stateMachine";
 
 import globals from "../globals";
 import { P2PEvents } from "../constants";
-import { getClient as getSkyWayClient } from "../common";
+import { getClient as getSkyWayClient, wait } from "../common";
 
 import { TRACK_PAGES } from "../resources/config";
 import { Ids } from "../resources/string";
@@ -32,13 +34,18 @@ let isMatched = false;
 let gameFrame = 0;
 let passCarCount = 0;
 
+const deltaTimes = new LimitedArray(5);
+window.__debug__ = {
+  fps: 0
+};
+
 class OnlineGameEngine extends Engine {
   init() {
     super.init();
 
     tracePage(TRACK_PAGES.GAME_ONLINE);
 
-    const { imageObj } = globals;
+    const { imageObj, soundObj } = globals;
 
     //honoka or eriを作成
     //初期値はplayCharacter=honoka
@@ -61,10 +68,20 @@ class OnlineGameEngine extends Engine {
     );
     imageObj.BUTTON_LEFT_ONLINE.addEventListener("mousedown", clickButtonLeft);
 
-    createjs.Ticker.addEventListener("tick", gameReady);
+    createjs.Ticker.addEventListener("tick", processStage);
     window.addEventListener("keydown", keyDownEvent);
 
     getSkyWayClient().on(SkyWayEvents.DATA, onDataReceived);
+
+    gameReady().then(() => {
+      createjs.Ticker.addEventListener("tick", processGame);
+
+      soundObj.SOUND_SUSUME_LOOP.play({
+        interrupt: "late",
+        loop: -1,
+        volume: 0.6
+      });
+    });
   }
 
   tearDown() {
@@ -80,7 +97,7 @@ class OnlineGameEngine extends Engine {
       clickButtonLeft
     );
 
-    createjs.Ticker.removeEventListener("tick", gameReady);
+    createjs.Ticker.removeEventListener("tick", processStage);
     createjs.Ticker.removeEventListener("tick", processGame);
     window.removeEventListener("keydown", keyDownEvent);
 
@@ -98,62 +115,53 @@ function gameStatusReset() {
   isMatched = false;
 }
 
+function processStage() {
+  globals.gameStage.update();
+}
+
 // ゲームスタートカウント-----------------------------------------
-function gameReady() {
+
+async function gameReady() {
   const { gameStage, soundObj, imageObj, textObj, player, opponent } = globals;
-  gameFrame++;
 
-  switch (gameFrame) {
-    case 1:
-      gameStage.addChild(imageObj.GAME_BACKGROUND);
-      gameStage.addChild(opponent.img);
-      gameStage.addChild(player.img);
-      break;
-    case 10:
-      soundObj.SOUND_PI1.play();
-      textObj.TETX_GAMESTART_COUNT.text = "-2-";
-      gameStage.addChild(imageObj.GAME_BACKGROUND);
-      gameStage.addChild(textObj.TETX_GAMESTART_COUNT);
-      gameStage.addChild(opponent.img);
-      gameStage.addChild(player.img);
-      break;
-    case 30:
-      soundObj.SOUND_PI1.play();
-      textObj.TETX_GAMESTART_COUNT.text = "-1-";
-      gameStage.addChild(imageObj.GAME_BACKGROUND);
-      gameStage.addChild(textObj.TETX_GAMESTART_COUNT);
-      gameStage.addChild(opponent.img);
-      gameStage.addChild(player.img);
-      break;
-    case 50:
-      soundObj.SOUND_PI2.play();
-      gameStage.removeAllChildren();
-      gameStatusReset();
-      drawGameScrean();
+  gameStage.addChild(imageObj.GAME_BACKGROUND);
+  gameStage.addChild(opponent.img);
+  gameStage.addChild(player.img);
 
-      //ゲーム処理開始
-      createjs.Ticker.removeEventListener("tick", gameReady);
-      createjs.Ticker.addEventListener("tick", processGame);
+  await wait(500);
+  soundObj.SOUND_PI1.play();
+  textObj.TETX_GAMESTART_COUNT.text = "-2-";
+  gameStage.addChild(imageObj.GAME_BACKGROUND);
+  gameStage.addChild(textObj.TETX_GAMESTART_COUNT);
+  gameStage.addChild(opponent.img);
+  gameStage.addChild(player.img);
 
-      soundObj.SOUND_SUSUME_LOOP.play({
-        interrupt: "late",
-        loop: -1,
-        volume: 0.6
-      });
-      break;
-  }
+  await wait(1000);
+  soundObj.SOUND_PI1.play();
+  textObj.TETX_GAMESTART_COUNT.text = "-1-";
+  gameStage.addChild(imageObj.GAME_BACKGROUND);
+  gameStage.addChild(textObj.TETX_GAMESTART_COUNT);
+  gameStage.addChild(opponent.img);
+  gameStage.addChild(player.img);
 
-  gameStage.update();
+  await wait(1000);
+
+  soundObj.SOUND_PI2.play();
+  gameStage.removeAllChildren();
+  gameStatusReset();
+  drawGameScrean();
 }
 
 // ゲーム処理-----------------------------------------
-function processGame() {
-  const { textObj, gameStage, player } = globals;
+function processGame({ delta }) {
+  deltaTimes.push(delta);
+  window.__debug__.fps = mean(deltaTimes.getAll());
+
+  const { player } = globals;
 
   gameFrame++;
 
   globals.textObj.TEXT_GAME_COUNT.text = passCountText();
-  gameStage.update();
 
   if (shouldPushCar && gameFrame % 20 === 0) {
     enemyAppeare();

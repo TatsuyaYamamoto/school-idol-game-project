@@ -1,6 +1,10 @@
 import config from "./resources/config";
 import globals from "./globals";
 
+export function wait(time) {
+  return new Promise(resolve => setTimeout(resolve, time));
+}
+
 //ゲームスクリーンサイズ初期化用-----------------------
 export function initGameScreenScale() {
   if (

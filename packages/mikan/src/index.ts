@@ -125,3 +125,7 @@ export { MetadataDocument } from "./firebase/Metadata";
 export { Room, RoomName, RoomDocument } from "./firebase/Room";
 
 export { devConfig as devFirebaseConfig } from "./firebase/config";
+
+// util -----------------------------------------------------------------------
+export { default as LimitedArray } from "./util/LimitedArray";
+export { sum, mean } from "./util/Calculation";
