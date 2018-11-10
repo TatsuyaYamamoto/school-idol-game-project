@@ -1,10 +1,11 @@
 import { firestore } from "firebase/app";
-
-import { firebaseDb } from "./index";
-import { Game } from "../model/games";
-import MikanError, { ErrorCode } from "../MikanError";
 import DocumentReference = firestore.DocumentReference;
 import FieldValue = firestore.FieldValue;
+
+import { firebaseDb } from "./index";
+import { Presence } from "./Presence";
+import { Game } from "../model/games";
+import MikanError, { ErrorCode } from "../MikanError";
 
 const ROOM_LIFETIEM = 1; // 1day
 
@@ -15,8 +16,8 @@ export interface RoomDocument /* extends firestore.DocumentData */ {
   /**
    * @see https://firebase.google.com/docs/firestore/solutions/arrays?hl=ja#solution_a_map_of_values
    */
-  userIds: {
-    [userId: string]: boolean;
+  userPresenceRefs: {
+    [userId: string]: DocumentReference;
   };
   game: Game;
   maxUserCount: number;
@@ -29,8 +30,8 @@ export interface RoomDocument /* extends firestore.DocumentData */ {
 export class Room implements RoomDocument {
   public constructor(
     readonly name: RoomName,
-    readonly userIds: {
-      [userId: string]: boolean;
+    readonly userPresenceRefs: {
+      [userId: string]: DocumentReference;
     },
     readonly game: Game,
     readonly maxUserCount: number,
@@ -44,7 +45,7 @@ export class Room implements RoomDocument {
    * members
    */
   public get memberIds(): string[] {
-    return Object.keys(this.userIds);
+    return Object.keys(this.userPresenceRefs);
   }
 
   public get memberCount(): number {
@@ -61,7 +62,7 @@ export class Room implements RoomDocument {
   public static fromData(snapshotData: RoomDocument): Room {
     return new Room(
       snapshotData.name,
-      snapshotData.userIds,
+      snapshotData.userPresenceRefs,
       snapshotData.game,
       snapshotData.maxUserCount,
       snapshotData.lock,
@@ -95,11 +96,12 @@ export class Room implements RoomDocument {
   ): Promise<{ doc: RoomDocument; ref: DocumentReference }> {
     const expiredDate = new Date();
     expiredDate.setDate(expiredDate.getDate() + ROOM_LIFETIEM);
+    const presenceRef = Presence.getDocRef(Presence.id);
 
     const newRoomDoc: RoomDocument = {
       name,
-      userIds: {
-        [createUserRef.id]: true
+      userPresenceRefs: {
+        [createUserRef.id]: presenceRef
       },
       game,
       maxUserCount,
@@ -123,6 +125,7 @@ export class Room implements RoomDocument {
     roomName: RoomName,
     joinUserId: string
   ): Promise<{ doc: RoomDocument; ref: DocumentReference } | null> {
+    const presenceRef = Presence.getDocRef(Presence.id);
     const snapshot = await Room.getColRef()
       .where("name", "==", roomName)
       .get();
@@ -146,7 +149,9 @@ export class Room implements RoomDocument {
 
         const roomDoc = roomSnapshot.data() as RoomDocument;
 
-        if (roomDoc.maxUserCount <= Object.keys(roomDoc.userIds).length) {
+        if (
+          roomDoc.maxUserCount <= Object.keys(roomDoc.userPresenceRefs).length
+        ) {
           throw new MikanError(
             ErrorCode.FIREBASE_ROOM_CAPACITY_OVER,
             "provided room is already fulfilled."
@@ -154,9 +159,9 @@ export class Room implements RoomDocument {
         }
 
         const newRoomDoc: Partial<RoomDocument> = {
-          userIds: {
-            ...roomDoc.userIds,
-            [joinUserId]: true
+          userPresenceRefs: {
+            ...roomDoc.userPresenceRefs,
+            [joinUserId]: presenceRef
           }
         };
 
@@ -199,14 +204,14 @@ export class Room implements RoomDocument {
 
       const roomDoc = roomSnapshot.data() as RoomDocument;
 
-      const leftMembers = {
-        ...roomDoc.userIds
+      const leftMemberPresenceRefs = {
+        ...roomDoc.userPresenceRefs
       };
 
-      delete leftMembers[leaveUserId];
+      delete leftMemberPresenceRefs[leaveUserId];
 
       const newRoomDoc: Partial<RoomDocument> = {
-        userIds: leftMembers
+        userPresenceRefs: leftMemberPresenceRefs
       };
 
       transaction.update(roomRef, newRoomDoc);

@@ -16,7 +16,7 @@ export default functions.firestore.document("rooms/{roomId}").onUpdate(
 
     const afterDoc = change.after.data() as RoomDocument;
 
-    if (Object.keys(afterDoc.userIds).length === 0) {
+    if (Object.keys(afterDoc.userPresenceRefs).length === 0) {
       await onLeftAllMember(change.after.ref);
       return;
     }

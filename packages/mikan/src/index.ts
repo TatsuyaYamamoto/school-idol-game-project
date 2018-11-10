@@ -92,12 +92,8 @@ export {
   createUrchinTrackingModuleQuery
 } from "./Tracker";
 
-export {
-  firebaseDb,
-  firebaseAuth,
-  callHttpsCallable,
-  initWatchPresence
-} from "./firebase";
+// firebase -----------------------------------------------------------------------
+export { firebaseDb, firebaseAuth, callHttpsCallable } from "./firebase";
 
 export {
   init as initAuth,

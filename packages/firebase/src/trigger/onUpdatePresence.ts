@@ -82,7 +82,7 @@ async function onChangeOffline(
 
   const roomDocsRef_cf = firestore()
     .collection("rooms")
-    .where(`userIds.${uid}`, "==", true);
+    .where(`userPresenceRefs.${uid}`, "==", deletePresenceRef_cf);
 
   const batch = firestore().batch();
   batch.delete(deletePresenceRef_cf);
@@ -91,7 +91,7 @@ async function onChangeOffline(
   });
   (await roomDocsRef_cf.get()).forEach(result => {
     batch.update(result.ref, {
-      [`userIds.${uid}`]: firestore.FieldValue.delete()
+      [`userPresenceRefs.${uid}`]: firestore.FieldValue.delete()
     });
   });
 
