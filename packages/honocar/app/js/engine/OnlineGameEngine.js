@@ -56,7 +56,7 @@ class OnlineGameEngine extends Engine {
     const opponentCharacter =
       globals.playCharacter === "honoka" ? "eri" : "honoka";
     globals.opponent = new Player(opponentCharacter);
-    globals.opponent.img.alpha = 0.5;
+    globals.opponent.transparent(true);
 
     //フレーム数リセット
     gameStatusReset();

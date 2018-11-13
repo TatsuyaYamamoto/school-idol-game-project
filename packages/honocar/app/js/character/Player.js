@@ -4,24 +4,58 @@ import props from "../resources/object-props";
 function Player(playCharacter) {
   const { ssObj } = globals;
 
+  let img = null;
   switch (playCharacter) {
-    case "honoka":
-      this.img = ssObj.PLAYER_HONOKA_SS;
-      break;
     case "kotori":
-      this.img = ssObj.PLAYER_KOTORI_SS;
+      img = ssObj.PLAYER_KOTORI_SS;
       break;
     case "eri":
-      this.img = ssObj.PLAYER_ERICHI_SS;
+      img = ssObj.PLAYER_ERICHI_SS;
+      break;
+    case "honoka":
+    default:
+      img = ssObj.PLAYER_HONOKA_SS;
       break;
   }
 
-  //レーンナンバー
+  /**
+   * CreateJSのBitmapインスタンス
+   */
+  this.img = img;
+
+  /**
+   * このキャラクターが位置するレーンのindex(0-3)
+   * @type {number}
+   */
   this.lane = 1;
+
+  /**
+   * オンライン対戦用の半透明処理を実施しない
+   */
+  this.transparent(false);
+
+  /**
+   * kihonアニメーションを実行する
+   */
+  this.img.gotoAndPlay("kihon");
+
+  /**
+   * 初期位置
+   */
   this.img.x = this.checkLane();
   this.img.y = globals.gameScrean.height * props.ss.PLAYER_HONOKA_SS.ratioY;
-  this.img.gotoAndPlay("kihon");
 }
+
+/**
+ * オンライン対戦用
+ * 半透明にする(isTransparent === true) or しない( isTransparent === false )
+ *
+ * @param isTransparent
+ */
+Player.prototype.transparent = function(isTransparent) {
+  this.img.alpha = isTransparent ? 0.5 : 1;
+};
+
 Player.prototype.checkLane = function() {
   const { gameScrean } = globals;
 
