@@ -25,9 +25,10 @@ import { TRACK_PAGES } from "../resources/config";
 import { Ids } from "../resources/string";
 
 const MAX_WAIT_TIME = 150;
+const PUSH_CAR_FRAME_UNIT = 19; // single modeでは20frame毎に車が出現するが、通信時間を考慮してframe数を小さくする
 const logger = getLogger("online-game-engine");
 let cars = [];
-let shouldPushCar = false;
+let shouldPushCarFrame = null;
 let playerCrashedTime = null;
 let opponentCrashTime = null;
 let isMatched = false;
@@ -36,7 +37,8 @@ let passCarCount = 0;
 
 const deltaTimes = new LimitedArray(5);
 window.__debug__ = {
-  fps: 0
+  fps: 0,
+  ignoreCrash: false
 };
 
 class OnlineGameEngine extends Engine {
@@ -111,8 +113,10 @@ function gameStatusReset() {
   cars = [];
   playerCrashedTime = null;
   opponentCrashTime = null;
-  shouldPushCar = getSkyWayClient().isRoomOwner;
   isMatched = false;
+
+  const isFirstPushUser = getSkyWayClient().isRoomOwner;
+  shouldPushCarFrame = isFirstPushUser ? PUSH_CAR_FRAME_UNIT : null;
 }
 
 function processStage() {
@@ -163,7 +167,7 @@ function processGame({ delta }) {
 
   globals.textObj.TEXT_GAME_COUNT.text = passCountText();
 
-  if (shouldPushCar && gameFrame % 20 === 0) {
+  if (gameFrame === shouldPushCarFrame) {
     enemyAppeare();
   }
 
@@ -175,7 +179,9 @@ function processGame({ delta }) {
       }
 
       if (player.lane === target.lane && checkDistance(target) < 0) {
-        crash();
+        if (!window.__debug__.ignoreCrash) {
+          crash();
+        }
       }
     });
   }
@@ -202,30 +208,46 @@ function drawGameScrean() {
  * 　5　: なにも起きない
  */
 function enemyAppeare() {
-  shouldPushCar = false;
+  logger.debug(`start push car logic. frame: ${gameFrame}`);
+
+  shouldPushCarFrame = null;
 
   const nextCarIndex = getRandomInteger(0, 5);
   const enemyNumber = nextCarIndex === 4 ? globals.player.lane : nextCarIndex;
+  const pushTime = NtpDate.now() + 100;
 
-  sendPushCarEvent(enemyNumber);
-
-  pushCar(enemyNumber);
+  sendPushCarEvent(enemyNumber, pushTime);
+  pushCar(enemyNumber, pushTime);
 }
 
-function pushCar(enemyNumber) {
-  logger.debug(`push car. car index: ${enemyNumber}, now: ${NtpDate.now()}`);
+function pushCar(laneIndex, pushTime) {
+  const now = NtpDate.now();
+  const pushTimeOffset = now < pushTime ? pushTime - now : 0;
 
-  switch (enemyNumber) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-      cars.push(new Car(enemyNumber));
-      break;
-    default:
-      // なにもおきない
-      break;
-  }
+  logger.debug(
+    `push car. lane index: ${laneIndex}, pushTimeOffset: ${pushTimeOffset}`
+  );
+
+  setTimeout(() => {
+    if (isMatched) {
+      logger.debug(
+        "this game is already matched. ignore delayed push car event."
+      );
+      return;
+    }
+
+    switch (laneIndex) {
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+        cars.push(new Car(laneIndex));
+        break;
+      default:
+        // なにもおきない
+        break;
+    }
+  }, pushTimeOffset);
 }
 
 // イベント処理-------------------------------------
@@ -403,14 +425,12 @@ function onOpponentChangedLane(message) {
 }
 
 function onOpponentPushedCar(message) {
-  const nextPusher = message.detail.nextPusher;
+  const { nextPusher, pushTime, nextEnemyNumber } = message.detail;
   if (nextPusher === getSkyWayClient().peerId) {
-    shouldPushCar = true;
-    gameFrame = gameFrame - (gameFrame % 20) + 20;
-  }
+    shouldPushCarFrame = gameFrame + PUSH_CAR_FRAME_UNIT;
 
-  const nextEnemyNumber = message.detail.nextEnemyNumber;
-  pushCar(nextEnemyNumber);
+    pushCar(nextEnemyNumber, pushTime);
+  }
 }
 
 function onOpponentCrashed(message) {
@@ -439,12 +459,13 @@ function sendChangeLaneEvent() {
   getSkyWayClient().send(message);
 }
 
-function sendPushCarEvent(enemyNumber) {
+function sendPushCarEvent(enemyNumber, pushTime) {
   const message = {
     type: P2PEvents.PUSH_CAR,
     detail: {
       nextEnemyNumber: enemyNumber,
-      nextPusher: getSkyWayClient().remotePeerIds[0]
+      nextPusher: getSkyWayClient().remotePeerIds[0],
+      pushTime
     }
   };
 
