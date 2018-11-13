@@ -113,6 +113,14 @@ class TopEngine extends Engine {
           logger.debug(`success to init skyway client`);
           client = getSkyWayClient();
 
+          client.on(RoomEvents.MEMBER_FULFILLED, () => {
+            openModal({
+              title: t(Ids.ONLINE_DIALOG_READY_ROOM_TITLE),
+              text: t(Ids.ONLINE_DIALOG_READY_ROOM_TEXT),
+              actions: []
+            });
+          });
+
           client.on(RoomEvents.ALL_CONNECTIONS_READY, () => {
             logger.debug(
               "all room members' connection are ready. start to try sync for game."
@@ -186,12 +194,6 @@ class TopEngine extends Engine {
   }
 
   tryP2pConnect() {
-    openModal({
-      title: t(Ids.ONLINE_DIALOG_READY_ROOM_TITLE),
-      text: t(Ids.ONLINE_DIALOG_READY_ROOM_TEXT),
-      actions: []
-    });
-
     getSkyWayClient()
       .trySyncStartTime()
       .then(startTime => {

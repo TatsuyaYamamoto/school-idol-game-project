@@ -177,6 +177,14 @@ async function onClick2MultiPlay() {
   if (!room) {
     room = await client.createRoom("honocar");
 
+    client.on(RoomEvents.MEMBER_FULFILLED, function() {
+      openModal({
+        title: t(Ids.ONLINE_DIALOG_READY_ROOM_TITLE),
+        text: t(Ids.ONLINE_DIALOG_READY_ROOM_TEXT),
+        actions: []
+      });
+    });
+
     client.on(RoomEvents.ALL_CONNECTIONS_READY, function() {
       logger.debug(
         "all room members' connection are ready. start online game."
@@ -235,11 +243,6 @@ async function onClick2MultiPlay() {
 
 function tryP2pConnect() {
   logger.info("success to connect to peer.");
-  openModal({
-    title: t(Ids.ONLINE_DIALOG_READY_ROOM_TITLE),
-    text: t(Ids.ONLINE_DIALOG_READY_ROOM_TEXT),
-    actions: []
-  });
 
   getClient()
     .trySyncStartTime()
