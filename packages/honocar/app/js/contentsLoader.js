@@ -1,4 +1,4 @@
-import { t, trackTiming } from "@sokontokoro/mikan";
+import { t, trackTiming, getLogger } from "@sokontokoro/mikan";
 
 import globals from "./globals";
 
@@ -7,10 +7,21 @@ import properties from "./resources/object-props";
 import { Ids } from "./resources/string";
 import loadImageBase64 from "shakarin/src/js/imageBase64/loadImageBase64";
 
+const logger = getLogger("contents-loader");
+const MAX_RETRY_COUNT = 3;
+let currentRetryCount = 0;
+
 function update() {
   globals.gameStage.update();
 }
 
+/**
+ * PreloadJSを使って、assetをロードする
+ * 通信環境が悪い(未検証)とloadedItemが一部欠落するため、
+ * completeイベント後に読み込み結果の検証、再読み込みを実施した上でCreateJSの書くクラスにリソースをあてる
+ *
+ * @return {Promise<any>}
+ */
 export function loadContent() {
   const start = Date.now();
   const loadImage = getLoadImage();
@@ -25,7 +36,45 @@ export function loadContent() {
     globals.queue.installPlugin(createjs.Sound);
     globals.queue.setMaxConnections(6);
     globals.queue.addEventListener("complete", function() {
+      logger.debug(`loading progress is completed.`);
+
       globals.loginPromise.then(() => {
+        const failItemIds = validateLoadedResult();
+        if (failItemIds.length !== 0) {
+          logger.debug(`fail loading assets. try again. IDs: ${failItemIds}`);
+
+          currentRetryCount++;
+          if (MAX_RETRY_COUNT < currentRetryCount) {
+            alert(
+              "コンテンツのロードに失敗しました。リロードしてください。// Fail to load assets. Please reload."
+            );
+          }
+
+          const retryTarget = [];
+          for (const id of failItemIds) {
+            for (const sound of manifest.sound) {
+              if (sound.id === id) {
+                retryTarget.push(sound);
+              }
+            }
+            for (const image of manifest.image) {
+              if (image.id === id) {
+                retryTarget.push(image);
+              }
+            }
+            for (const spriteImage of manifest.spriteImage) {
+              if (spriteImage.id === id) {
+                retryTarget.push(spriteImage);
+              }
+            }
+          }
+
+          globals.queue.loadManifest(retryTarget);
+          return;
+        } else {
+          logger.debug(`success to load all assets.`);
+        }
+
         setImageContent();
         setSpriteSheetContents();
         setSoundContent();
@@ -47,27 +96,42 @@ export function loadContent() {
     createjs.Ticker.addEventListener("tick", update);
 
     //マニフェストファイルを読み込む----------
+    globals.queue.loadManifest(manifest.sound);
     globals.queue.loadManifest(manifest.image);
     globals.queue.loadManifest(manifest.spriteImage);
-    globals.queue.loadManifest(manifest.sound);
+  });
+}
+
+function validateLoadedResult() {
+  const targetItemIds = Object.keys(globals.queue._loadItemsById);
+  const loadedResultIds = Object.keys(globals.queue._loadedResults);
+
+  return /* failItemIds */ targetItemIds.filter(item => {
+    for (const result of loadedResultIds) {
+      if (item === result) {
+        return false;
+      }
+    }
+    return true;
   });
 }
 
 //ロードしたコンテンツをセット------------------------------------------
 function setImageContent() {
-  for (var key in properties.image) {
-    globals.imageObj[key] = new createjs.Bitmap(
-      globals.queue.getResult(properties.image[key].id)
-    );
-    globals.imageObj[key].x =
-      globals.gameScrean.width * properties.image[key].ratioX;
-    globals.imageObj[key].y =
-      globals.gameScrean.height * properties.image[key].ratioY;
-    globals.imageObj[key].regX = globals.imageObj[key].image.width / 2;
-    globals.imageObj[key].regY = globals.imageObj[key].image.height / 2;
-    globals.imageObj[key].scaleY = globals.imageObj[key].scaleX =
-      globals.gameScreenScale * properties.image[key].scale;
-    globals.imageObj[key].alpha = properties.image[key].alpha;
+  for (const key of Object.keys(properties.image)) {
+    const { ratioX, ratioY, scale, alpha } = properties.image[key];
+    const loadedImage = globals.queue.getResult(properties.image[key].id);
+
+    const bitmap = new createjs.Bitmap(loadedImage);
+
+    bitmap.x = globals.gameScrean.width * ratioX;
+    bitmap.y = globals.gameScrean.height * ratioY;
+    bitmap.regX = bitmap.image.width / 2;
+    bitmap.regY = bitmap.image.height / 2;
+    bitmap.scaleY = bitmap.scaleX = globals.gameScreenScale * scale;
+    bitmap.alpha = alpha;
+
+    globals.imageObj[key] = bitmap;
   }
 
   if (globals.isLogin) {
@@ -84,8 +148,8 @@ function setImageContent() {
 }
 
 function setSpriteSheetContents() {
-  for (var key in properties.ss) {
-    var spriteSheet = new createjs.SpriteSheet({
+  for (const key of Object.keys(properties.ss)) {
+    const spriteSheet = new createjs.SpriteSheet({
       images: [globals.queue.getResult(properties.ss[key].id)],
       frames: properties.ss[key].frames,
       animations: properties.ss[key].animations
