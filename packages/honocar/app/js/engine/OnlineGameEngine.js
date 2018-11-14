@@ -36,10 +36,6 @@ let gameFrame = 0;
 let passCarCount = 0;
 
 const deltaTimes = new LimitedArray(5);
-window.__debug__ = {
-  fps: 0,
-  ignoreCrash: false
-};
 
 class OnlineGameEngine extends Engine {
   init() {

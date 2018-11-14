@@ -30,6 +30,12 @@ const appElement = document.getElementById("app");
 const launchBeforeGuideElement = document.getElementById("launch-before-guide");
 const gameLaunchButtonElement = document.getElementById("game-launch-button");
 
+window.__debug__ = {
+  fps: 0,
+  ignoreCrash: false,
+  preventSoundToggle: false
+};
+
 function init() {
   gameLaunchButtonElement.removeEventListener("click", init);
 
@@ -67,12 +73,14 @@ function init() {
   initGameScreenScale();
 
   // toggle sound with blur or focus
-  window.addEventListener("blur", function() {
-    soundTurnOff();
-  });
-  window.addEventListener("focus", function() {
-    soundTurnOn();
-  });
+  if (!window.__debug__.preventSoundToggle) {
+    window.addEventListener("blur", function() {
+      soundTurnOff();
+    });
+    window.addEventListener("focus", function() {
+      soundTurnOn();
+    });
+  }
 
   //ゲーム用タイマーの設定
   createjs.Ticker.framerate = config.system.framerate;
