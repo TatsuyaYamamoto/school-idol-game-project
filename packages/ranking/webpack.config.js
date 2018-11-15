@@ -4,10 +4,10 @@ const config = require("../../package.json").config.sokontokoro;
 const isProduction = process.env.NODE_ENV === "production";
 
 const htmlParams = {
-  title: "DEV ランキング",
+  title: "DEV そこんところ工房ゲームス ポータル",
   noIndex: true,
   trackingCode: config.trackingCode.dev,
-  description: "そこんところ工房のゲームランキング",
+  description: "そこんところ工房ゲームス ポータル",
   keyword:
     "ラブライブ！,LoveLive！,ラブライブ！サンシャイン!!,スクールアイドル,μ’s,ミューズ,Aqours,アクア,ゲーム,ミニゲーム,ランキング",
   ogUrl: "https://games.sokontokoro-factory.net/ranking/",

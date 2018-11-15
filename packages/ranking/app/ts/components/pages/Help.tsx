@@ -1,41 +1,27 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import AutoBind from "autobind-decorator";
-import { GAMES, Game, gameIds } from "@sokontokoro/mikan";
 
-import { getLanguage, IndexRouteParams } from "../../App";
-import ControlSection from "../organisms/ControlSection";
-import RankingSection from "../organisms/RankingSection";
-import FooterSection from "../organisms/FooterSection";
+import { getLanguage, HelpRouteParams } from "../../App";
+
 import AppBar from "../organisms/AppBar";
+import FooterSection from "../organisms/FooterSection";
+import HelpList from "../organisms/HelpList";
 
 interface Props {
   language: "ja" | "en";
 }
 
-interface State {
-  game: Game;
-}
+interface State {}
 
 @AutoBind
-class Index extends React.Component<
-  Props & RouteComponentProps<IndexRouteParams>,
+class Help extends React.Component<
+  Props & RouteComponentProps<HelpRouteParams>,
   State
 > {
-  state: State;
-
-  constructor(props: any) {
-    super(props);
-
-    const { game } = this.props.match.params;
-
-    this.state = {
-      game
-    };
-  }
-
   public render() {
-    const { game } = this.state;
+    const { language } = this.props;
+    const showHelpDocId = this.props.location.hash.replace("#", "");
 
     return (
       <React.Fragment>
@@ -45,13 +31,11 @@ class Index extends React.Component<
           onTranslate={this.onTranslate}
         />
 
-        <ControlSection
-          game={game}
-          onGameSelected={this.onGameSelected}
-          onJumpGame={this.onJumpGame}
+        <HelpList
+          language={language}
+          showHelpDocId={showHelpDocId}
+          onChangeOpenedHelpDoc={this.onChangeOpenedHelpDoc}
         />
-
-        <RankingSection game={game} />
 
         <FooterSection />
       </React.Fragment>
@@ -81,18 +65,12 @@ class Index extends React.Component<
     });
   }
 
-  private onGameSelected(index: number) {
-    this.props.history.replace(`/ranking/${gameIds[index]}`);
-
-    this.setState({
-      game: gameIds[index]
+  private onChangeOpenedHelpDoc(id: string | undefined) {
+    this.props.history.replace({
+      ...this.props.location,
+      hash: id ? id : undefined
     });
-  }
-
-  private onJumpGame() {
-    const { game } = this.props.match.params;
-    location.href = GAMES[game].url;
   }
 }
 
-export default Index;
+export default Help;
