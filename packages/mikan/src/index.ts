@@ -1,3 +1,5 @@
+export { default as MikanError, ErrorCode } from "./MikanError";
+
 /**
  * Model
  */
@@ -18,6 +20,8 @@ export {
 } from "./AssetLoader";
 
 export { default as config } from "./config";
+
+export { showIndicator, hideIndicator } from "./ui/Indicator";
 
 export { show, hide } from "./ConnectingIndicator";
 
@@ -62,7 +66,19 @@ export { default as ViewContainer } from "./ViewContainer";
 
 export { default as BrandLogoAnimation } from "./BrandLogoAnimation";
 
-export { default as P2PClient } from "./P2PClient";
+export { default as SkyWayCredential } from "./skyway/Credential";
+export { default as SKyWayData, Message as SkyWayMessage } from "./skyway/Data";
+export {
+  default as SkyWayClient,
+  SkyWayClientConstructorParams,
+  Peer,
+  PeerID,
+  DataConnection,
+  MediaConnection,
+  Destination
+} from "./skyway/SkyWayClient";
+export { SkyWayEvents, RoomEvents } from "./skyway/SkyWayEvents";
+export { default as NtpDate } from "./NtpDate";
 
 export { openModal, closeModal } from "./Modal";
 
@@ -76,7 +92,8 @@ export {
   createUrchinTrackingModuleQuery
 } from "./Tracker";
 
-export { firebaseDb, firebaseAuth } from "./firebase";
+// firebase -----------------------------------------------------------------------
+export { firebaseDb, firebaseAuth, callHttpsCallable } from "./firebase";
 
 export {
   init as initAuth,
@@ -87,6 +104,11 @@ export {
 } from "./firebase/auth";
 
 export { User, UserDocument } from "./firebase/User";
+export {
+  Presence,
+  PresenceDocument,
+  PresenceDbJson
+} from "./firebase/Presence";
 export { Playlog, PlaylogDocument } from "./firebase/Playlog";
 export { Highscore, HighscoreDocument } from "./firebase/Highscore";
 export {
@@ -96,5 +118,10 @@ export {
 } from "./firebase/Credential";
 export { Ranking, RankingDocument, RankItemDocument } from "./firebase/Ranking";
 export { MetadataDocument } from "./firebase/Metadata";
+export { Room, RoomName, RoomDocument } from "./firebase/Room";
 
 export { devConfig as devFirebaseConfig } from "./firebase/config";
+
+// util -----------------------------------------------------------------------
+export { default as LimitedArray } from "./util/LimitedArray";
+export { sum, mean } from "./util/Calculation";

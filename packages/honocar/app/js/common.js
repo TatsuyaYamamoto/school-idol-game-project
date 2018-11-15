@@ -1,8 +1,9 @@
-import { P2PClient } from "@sokontokoro/mikan";
-
 import config from "./resources/config";
 import globals from "./globals";
-import { P2PEvents } from "./constants";
+
+export function wait(time) {
+  return new Promise(resolve => setTimeout(resolve, time));
+}
 
 //ゲームスクリーンサイズ初期化用-----------------------
 export function initGameScreenScale() {
@@ -77,44 +78,40 @@ export function getTweetText(passCarCount, playCharacter) {
 }
 
 // P2P --------------------------------------------
-export function trySyncGameStart(sernder) {
-  const offset = 2 * 1000; //[ms]
-  const p2p = P2PClient.get();
 
-  return new Promise(resolve => {
-    if (sernder) {
-      sendSyncStartMessage(offset);
-    } else {
-      P2PClient.get().on(P2PClient.EVENTS.DATA, onDataReceived);
-    }
+import { SkyWayClient, getLogger } from "@sokontokoro/mikan";
 
-    function sendSyncStartMessage(offset) {
-      const now = Date.now();
-      const message = {
-        type: P2PEvents.START,
-        detail: {
-          startTime: now + offset
-        }
-      };
+const logger = getLogger("common");
+const apiKeyConfig = require("../../../../package.json").config.sokontokoro
+  .skyWayApiKey;
 
-      p2p.send(message);
+const skyWayApiKey =
+  process.env.NODE_ENV === "production" ? apiKeyConfig.pro : apiKeyConfig.dev;
 
-      setTimeout(resolve, offset);
-    }
+let CLIENT;
 
-    function onDataReceived(data) {
-      if (data.message.type === P2PEvents.START) {
-        p2p.off(P2PClient.EVENTS.DATA, onDataReceived);
+export function initClient() {
+  let isNew = false;
+  if (CLIENT && CLIENT.isPeerOpen) {
+    return Promise.resolve().then(() => isNew);
+  }
 
-        const now = Date.now();
-        const offset = data.message.detail.startTime - now;
+  isNew = true;
 
-        if (0 < offset) {
-          setTimeout(resolve, offset);
-        } else {
-          resolve();
-        }
-      }
-    }
+  return SkyWayClient.createClient(skyWayApiKey).then(client => {
+    CLIENT = client;
+    return isNew;
   });
+}
+
+export function getClient() {
+  if (!CLIENT) {
+    throw new Error("not initialized");
+  }
+
+  return CLIENT;
+}
+
+export function unixtimeToRoundSeconds(unixtime) {
+  return Math.floor(unixtime / 1000);
 }

@@ -1,25 +1,41 @@
-import { P2PClient, getLogger, tracePage } from "@sokontokoro/mikan";
+import {
+  getLogger,
+  tracePage,
+  SkyWayEvents,
+  t,
+  getRandomInteger,
+  NtpDate,
+  LimitedArray,
+  mean
+} from "@sokontokoro/mikan";
 
 import Player from "../character/Player";
-import globals from "../globals";
-import { P2PEvents } from "../constants";
-import Engine from "./Engine";
-import { checkButton, checkDistance, passCountText } from "./GameEngine";
-import OnlineGameOverEngine from "./OnlineGameOverEngine";
-import { to } from "../stateMachine";
 import Car from "../character/Car";
 
+import Engine from "./Engine";
+import { checkDistance } from "./GameEngine";
+import OnlineGameOverEngine from "./OnlineGameOverEngine";
+import { to } from "../stateMachine";
+
+import globals from "../globals";
+import { P2PEvents } from "../constants";
+import { getClient as getSkyWayClient, wait } from "../common";
+
 import { TRACK_PAGES } from "../resources/config";
+import { Ids } from "../resources/string";
 
 const MAX_WAIT_TIME = 150;
+const PUSH_CAR_FRAME_UNIT = 19; // single modeでは20frame毎に車が出現するが、通信時間を考慮してframe数を小さくする
 const logger = getLogger("online-game-engine");
 let cars = [];
-let shouldPushCar = false;
+let shouldPushCarFrame = null;
 let playerCrashedTime = null;
 let opponentCrashTime = null;
 let isMatched = false;
 let gameFrame = 0;
 let passCarCount = 0;
+
+const deltaTimes = new LimitedArray(5);
 
 class OnlineGameEngine extends Engine {
   init() {
@@ -27,7 +43,7 @@ class OnlineGameEngine extends Engine {
 
     tracePage(TRACK_PAGES.GAME_ONLINE);
 
-    const { imageObj } = globals;
+    const { imageObj, soundObj } = globals;
 
     //honoka or eriを作成
     //初期値はplayCharacter=honoka
@@ -36,6 +52,7 @@ class OnlineGameEngine extends Engine {
     const opponentCharacter =
       globals.playCharacter === "honoka" ? "eri" : "honoka";
     globals.opponent = new Player(opponentCharacter);
+    globals.opponent.transparent(true);
 
     //フレーム数リセット
     gameStatusReset();
@@ -49,10 +66,20 @@ class OnlineGameEngine extends Engine {
     );
     imageObj.BUTTON_LEFT_ONLINE.addEventListener("mousedown", clickButtonLeft);
 
-    createjs.Ticker.addEventListener("tick", gameReady);
+    createjs.Ticker.addEventListener("tick", processStage);
     window.addEventListener("keydown", keyDownEvent);
 
-    P2PClient.get().on(P2PClient.EVENTS.DATA, onDataReceived);
+    getSkyWayClient().on(SkyWayEvents.DATA, onDataReceived);
+
+    gameReady().then(() => {
+      createjs.Ticker.addEventListener("tick", processGame);
+
+      soundObj.SOUND_SUSUME_LOOP.play({
+        interrupt: "late",
+        loop: -1,
+        volume: 0.6
+      });
+    });
   }
 
   tearDown() {
@@ -68,11 +95,11 @@ class OnlineGameEngine extends Engine {
       clickButtonLeft
     );
 
-    createjs.Ticker.removeEventListener("tick", gameReady);
+    createjs.Ticker.removeEventListener("tick", processStage);
     createjs.Ticker.removeEventListener("tick", processGame);
     window.removeEventListener("keydown", keyDownEvent);
 
-    P2PClient.get().off(P2PClient.EVENTS.DATA, onDataReceived);
+    getSkyWayClient().off(SkyWayEvents.DATA, onDataReceived);
   }
 }
 
@@ -82,68 +109,61 @@ function gameStatusReset() {
   cars = [];
   playerCrashedTime = null;
   opponentCrashTime = null;
-  shouldPushCar = P2PClient.get().peerId < P2PClient.get().remotePeerId;
   isMatched = false;
+
+  const isFirstPushUser = getSkyWayClient().isRoomOwner;
+  shouldPushCarFrame = isFirstPushUser ? PUSH_CAR_FRAME_UNIT : null;
+}
+
+function processStage() {
+  globals.gameStage.update();
 }
 
 // ゲームスタートカウント-----------------------------------------
-function gameReady() {
+
+async function gameReady() {
   const { gameStage, soundObj, imageObj, textObj, player, opponent } = globals;
-  gameFrame++;
 
-  switch (gameFrame) {
-    case 1:
-      gameStage.addChild(imageObj.GAME_BACKGROUND);
-      gameStage.addChild(opponent.img);
-      gameStage.addChild(player.img);
-      break;
-    case 10:
-      soundObj.SOUND_PI1.play();
-      textObj.TETX_GAMESTART_COUNT.text = "-2-";
-      gameStage.addChild(imageObj.GAME_BACKGROUND);
-      gameStage.addChild(textObj.TETX_GAMESTART_COUNT);
-      gameStage.addChild(opponent.img);
-      gameStage.addChild(player.img);
-      break;
-    case 30:
-      soundObj.SOUND_PI1.play();
-      textObj.TETX_GAMESTART_COUNT.text = "-1-";
-      gameStage.addChild(imageObj.GAME_BACKGROUND);
-      gameStage.addChild(textObj.TETX_GAMESTART_COUNT);
-      gameStage.addChild(opponent.img);
-      gameStage.addChild(player.img);
-      break;
-    case 50:
-      soundObj.SOUND_PI2.play();
-      gameStage.removeAllChildren();
-      gameStatusReset();
-      drawGameScrean();
+  gameStage.addChild(imageObj.GAME_BACKGROUND);
+  gameStage.addChild(opponent.img);
+  gameStage.addChild(player.img);
 
-      //ゲーム処理開始
-      createjs.Ticker.removeEventListener("tick", gameReady);
-      createjs.Ticker.addEventListener("tick", processGame);
+  await wait(500);
+  soundObj.SOUND_PI1.play();
+  textObj.TETX_GAMESTART_COUNT.text = "-2-";
+  gameStage.addChild(imageObj.GAME_BACKGROUND);
+  gameStage.addChild(textObj.TETX_GAMESTART_COUNT);
+  gameStage.addChild(opponent.img);
+  gameStage.addChild(player.img);
 
-      soundObj.SOUND_SUSUME_LOOP.play({
-        interrupt: "late",
-        loop: -1,
-        volume: 0.6
-      });
-      break;
-  }
+  await wait(1000);
+  soundObj.SOUND_PI1.play();
+  textObj.TETX_GAMESTART_COUNT.text = "-1-";
+  gameStage.addChild(imageObj.GAME_BACKGROUND);
+  gameStage.addChild(textObj.TETX_GAMESTART_COUNT);
+  gameStage.addChild(opponent.img);
+  gameStage.addChild(player.img);
 
-  gameStage.update();
+  await wait(1000);
+
+  soundObj.SOUND_PI2.play();
+  gameStage.removeAllChildren();
+  gameStatusReset();
+  drawGameScrean();
 }
 
 // ゲーム処理-----------------------------------------
-function processGame() {
-  const { textObj, gameStage, player } = globals;
+function processGame({ delta }) {
+  deltaTimes.push(delta);
+  window.__debug__.fps = mean(deltaTimes.getAll());
+
+  const { player } = globals;
 
   gameFrame++;
 
   globals.textObj.TEXT_GAME_COUNT.text = passCountText();
-  gameStage.update();
 
-  if (shouldPushCar && gameFrame % 20 === 0) {
+  if (gameFrame === shouldPushCarFrame) {
     enemyAppeare();
   }
 
@@ -155,7 +175,9 @@ function processGame() {
       }
 
       if (player.lane === target.lane && checkDistance(target) < 0) {
-        crash();
+        if (!window.__debug__.ignoreCrash) {
+          crash();
+        }
       }
     });
   }
@@ -173,47 +195,64 @@ function drawGameScrean() {
   gameStage.addChild(player.img);
 }
 
-// 敵出現---------------------------------------
+/**
+ * Carを出現させる。
+ *
+ * 0-5の整数の乱数を取得して、次の出現するCarのlaneを決定する
+ * 　0-3: 0-3のlaneにcarを出現させる
+ * 　4　: playerのlaneと同じ
+ * 　5　: なにも起きない
+ */
 function enemyAppeare() {
-  shouldPushCar = false;
-  const enemyNumber = Math.floor(Math.random() * 5);
+  logger.debug(`start push car logic. frame: ${gameFrame}`);
 
-  sendPushCarEvent(enemyNumber);
+  shouldPushCarFrame = null;
 
-  logger.debug(`push car. car index: ${enemyNumber}, now: ${Date.now()}`);
-  pushCar(enemyNumber);
+  const nextCarIndex = getRandomInteger(0, 5);
+  const enemyNumber = nextCarIndex === 4 ? globals.player.lane : nextCarIndex;
+  const pushTime = NtpDate.now() + 100;
+
+  sendPushCarEvent(enemyNumber, pushTime);
+  pushCar(enemyNumber, pushTime);
 }
 
-function pushCar(enemyNumber) {
-  switch (enemyNumber) {
-    case 0:
-      cars.push(new Car(0));
-      break;
-    case 1:
-      cars.push(new Car(1));
-      break;
-    case 2:
-      cars.push(new Car(2));
-      break;
-    case 3:
-      cars.push(new Car(3));
-      break;
-    case 4:
-      cars.push(new Car(globals.player.lane));
-      break;
-    case 5:
-      // なにもおきない
-      break;
-  }
+function pushCar(laneIndex, pushTime) {
+  const now = NtpDate.now();
+  const pushTimeOffset = now < pushTime ? pushTime - now : 0;
+
+  logger.debug(
+    `push car. lane index: ${laneIndex}, pushTimeOffset: ${pushTimeOffset}`
+  );
+
+  setTimeout(() => {
+    if (isMatched) {
+      logger.debug(
+        "this game is already matched. ignore delayed push car event."
+      );
+      return;
+    }
+
+    switch (laneIndex) {
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+        cars.push(new Car(laneIndex));
+        break;
+      default:
+        // なにもおきない
+        break;
+    }
+  }, pushTimeOffset);
 }
 
 // イベント処理-------------------------------------
 function keyDownEvent(event) {
   const { imageObj } = globals;
-  if (event.which === 37 && imageObj.BUTTON_LEFT.mouseEnabled) {
+  if (event.which === 37 && imageObj.BUTTON_LEFT_ONLINE.mouseEnabled) {
     clickButtonLeft();
   }
-  if (event.keyCode === 39 && imageObj.BUTTON_RIGHT.mouseEnabled) {
+  if (event.keyCode === 39 && imageObj.BUTTON_RIGHT_ONLINE.mouseEnabled) {
     clickButtonRight();
   }
 }
@@ -244,6 +283,44 @@ function clickButtonLeft() {
   checkButton();
 }
 
+// ボタン状態の確認
+function checkButton() {
+  const { player } = globals;
+
+  if (player.lane === 0) {
+    leftButtonDisable();
+    rightButtonEnable();
+  }
+  if (player.lane === 1 || player.lane === 2) {
+    leftButtonEnable();
+    rightButtonEnable();
+  }
+  if (player.lane === 3) {
+    leftButtonEnable();
+    rightButtonDisable();
+  }
+}
+
+// 有効化
+function rightButtonEnable() {
+  globals.imageObj.BUTTON_RIGHT_ONLINE.mouseEnabled = true;
+  globals.imageObj.BUTTON_RIGHT_ONLINE.alpha = 0.5;
+}
+function leftButtonEnable() {
+  globals.imageObj.BUTTON_LEFT_ONLINE.mouseEnabled = true;
+  globals.imageObj.BUTTON_LEFT_ONLINE.alpha = 0.5;
+}
+
+// 無効化
+function rightButtonDisable() {
+  globals.imageObj.BUTTON_RIGHT_ONLINE.mouseEnabled = false;
+  globals.imageObj.BUTTON_RIGHT_ONLINE.alpha = 0.2;
+}
+function leftButtonDisable() {
+  globals.imageObj.BUTTON_LEFT_ONLINE.mouseEnabled = false;
+  globals.imageObj.BUTTON_LEFT_ONLINE.alpha = 0.2;
+}
+
 // クラッシュ関数-------------------------------------
 function isPlayerCrashed() {
   return !!playerCrashedTime;
@@ -254,7 +331,7 @@ function isOpponentCrashed() {
 }
 
 function crash() {
-  const now = Date.now();
+  const now = NtpDate.now();
   playerCrashedTime = now;
 
   const waitInterval = getWaitInterval();
@@ -344,14 +421,12 @@ function onOpponentChangedLane(message) {
 }
 
 function onOpponentPushedCar(message) {
-  const nextPusher = message.detail.nextPusher;
-  if (nextPusher === P2PClient.get().peerId) {
-    shouldPushCar = true;
-    gameFrame = gameFrame - (gameFrame % 20) + 20;
-  }
+  const { nextPusher, pushTime, nextEnemyNumber } = message.detail;
+  if (nextPusher === getSkyWayClient().peerId) {
+    shouldPushCarFrame = gameFrame + PUSH_CAR_FRAME_UNIT;
 
-  const nextEnemyNumber = message.detail.nextEnemyNumber;
-  pushCar(nextEnemyNumber);
+    pushCar(nextEnemyNumber, pushTime);
+  }
 }
 
 function onOpponentCrashed(message) {
@@ -377,19 +452,20 @@ function sendChangeLaneEvent() {
     }
   };
 
-  P2PClient.get().send(message);
+  getSkyWayClient().send(message);
 }
 
-function sendPushCarEvent(enemyNumber) {
+function sendPushCarEvent(enemyNumber, pushTime) {
   const message = {
     type: P2PEvents.PUSH_CAR,
     detail: {
       nextEnemyNumber: enemyNumber,
-      nextPusher: P2PClient.get().remotePeerId
+      nextPusher: getSkyWayClient().remotePeerIds[0],
+      pushTime
     }
   };
 
-  P2PClient.get().send(message);
+  getSkyWayClient().send(message);
 }
 
 function sendCrashEvent(crashedTime, judgeTime, fps) {
@@ -402,11 +478,11 @@ function sendCrashEvent(crashedTime, judgeTime, fps) {
     }
   };
 
-  P2PClient.get().send(message);
+  getSkyWayClient().send(message);
 }
 
 function getWaitInterval() {
-  const ping = P2PClient.get().averagePing;
+  const ping = getSkyWayClient().averagePings[0];
   const secondPerFrame = 1000 / createjs.Ticker.framerate;
 
   const waitInterval = secondPerFrame + ping * 4;
@@ -415,7 +491,7 @@ function getWaitInterval() {
 }
 
 function getWaitIntervalBy(judgeTime) {
-  const now = Date.now();
+  const now = NtpDate.now();
   return now < judgeTime ? judgeTime - now : 0;
 }
 
@@ -430,6 +506,10 @@ function goGameOverState(result) {
 
   //stateマシン内、ゲームオーバー状態に遷移
   to(OnlineGameOverEngine, { result: result, passCarCount });
+}
+
+function passCountText() {
+  return t(Ids.PASS_COUNT, { count: passCarCount });
 }
 
 export default new OnlineGameEngine();
