@@ -7,10 +7,10 @@
   "scripts": {
     "clean": "rm -rf dist",
     "start": "    yarn clean && webpack-dev-server",
-    "build": "    yarn clean && yarn create-helps-json &&                     webpack",
+    "build:dev": "yarn clean && yarn create-helps-json &&                     webpack",
     "build:pro": "yarn clean && yarn create-helps-json && NODE_ENV=production webpack",
-    "deploy": "                    yarn build     && gsutil -m rsync dist/ gs://games-dev.sokontokoro-factory.net/",
-    "deploy:pro": "yarn confirm && yarn build:pro && gsutil -m rsync dist/ gs://games.sokontokoro-factory.net/",
+    "deploy:dev": "                gsutil -m rsync dist/ gs://games-dev.sokontokoro-factory.net/",
+    "deploy:pro": "yarn confirm && gsutil -m rsync dist/ gs://games.sokontokoro-factory.net/",
     "confirm": "../../production-confirm.js",
     "create-helps-json": "../../create-helps-json.js"
   },
