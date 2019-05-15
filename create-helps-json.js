@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 
 const fs = require("fs");
+const path = require("path");
 const fm = require("front-matter");
 
-const HELP_MARKDOWNS_DIR_PATH = "./docs/help/";
-const OUTPUT_JSON_PATH = "./packages/ranking/app/assets/helps.json";
+const HELP_MARKDOWNS_DIR_PATH = path.resolve(__dirname, "docs/help/");
+const OUTPUT_JSON_PATH = path.resolve(
+  __dirname,
+  "./packages/ranking/app/assets/helps.json"
+);
 const JAPANESE_KEY = "ja";
 const ENGLISH_KEY = "en";
 
@@ -43,7 +47,9 @@ async function main() {
       );
     }
 
-    const content = await readFile(`${HELP_MARKDOWNS_DIR_PATH}${fileName}`);
+    const content = await readFile(
+      path.resolve(HELP_MARKDOWNS_DIR_PATH, fileName)
+    );
     const { attributes, body } = fm(content);
     const { title, tags } = attributes;
     if (!title || !tags || !body) {
@@ -70,7 +76,7 @@ async function main() {
 
   await writeFile(OUTPUT_JSON_PATH, JSON.stringify(helpMap));
 
-  console.log("🍊Success🍊");
+  console.log("🍊 create help.json successfully 🍊");
 }
 
 function readDir(path) {
