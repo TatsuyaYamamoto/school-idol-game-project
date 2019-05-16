@@ -10,9 +10,9 @@
     Fun games of <a href="http://www.lovelive-anime.jp/worldwide/">LoveLive!</a>
 </p>
 
+[![CircleCI](https://circleci.com/gh/TatsuyaYamamoto/school-idol-game-project/tree/develop.svg?style=svg)](https://circleci.com/gh/TatsuyaYamamoto/school-idol-game-project/tree/develop)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-[![Build Status](https://travis-ci.org/TatsuyaYamamoto/school-idol-game-project.svg?branch=develop)](https://travis-ci.org/TatsuyaYamamoto/school-idol-game-project)
 
 ## Packages
 
