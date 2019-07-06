@@ -1,6 +1,6 @@
-import * as functions from "firebase-functions";
 import { initializeApp, firestore } from "firebase-admin";
 
+import version from "./https/version";
 import p2pCredential from "./https/p2pCredential";
 
 import onCreatePlaylog from "./trigger/onCreatePlaylog";
@@ -17,12 +17,8 @@ firestore().settings({
   timestampsInSnapshots: true
 });
 
-export const helloWorld = functions.https.onRequest((_request, response) => {
-  response.send("Hello from Firebase!");
-});
-
 // https
-export { p2pCredential };
+export { version, p2pCredential };
 
 // Trigger
 export {
