@@ -17,21 +17,22 @@ import {
   loadedMetadata
 } from "../utils";
 
-export default pubsub
-  .topic("generate-ranking")
-  .onPublish(async (_message, context) => {
-    console.log(`published "generate-ranking" topic. ID: ${context.eventId}`);
+const TARGET_GAMES: Game[] = [
+  "honocar",
+  "shakarin",
+  "maruten",
+  "yamidori",
+  "oimo-no-mikiri"
+];
 
-    const games: Game[] = [
-      "honocar",
-      "shakarin",
-      "maruten",
-      "yamidori",
-      "oimo-no-mikiri"
-    ];
+export default pubsub
+  .schedule("00 09 * * *")
+  .timeZone("Asia/Tokyo")
+  .onRun(async context => {
+    console.log(`run scheduled "generate-ranking" job. ID: ${context.eventId}`);
 
     try {
-      for (const game of games) {
+      for (const game of TARGET_GAMES) {
         console.log(`start creation. game: ${game}`);
 
         const metadataRef = getMetadataRef(game);
@@ -83,7 +84,9 @@ export default pubsub
         console.log(`success! game: ${game}`);
       }
 
-      console.log(`It's completed to create ranking; ${games.join(", ")}.`);
+      console.log(
+        `It's completed to create ranking; ${TARGET_GAMES.join(", ")}.`
+      );
     } catch (e) {
       console.error({
         message: "FATAL ERROR! catch unhandled error.",
