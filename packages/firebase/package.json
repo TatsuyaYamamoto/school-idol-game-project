@@ -1,7 +1,7 @@
 {
   "name": "firebase",
   "private": true,
-  "version": "1.4.0",
+  "version": "1.5.0",
   "engines": {
     "node": "8"
   },
@@ -26,8 +26,8 @@
     "firebase-tools": "^7.0.2"
   },
   "devDependencies": {
-    "@types/crypto-js": "^3.1.43",
     "@firebase/app-types": "^0.4.0",
+    "@types/crypto-js": "^3.1.43",
     "typescript": "^3.5.2"
   }
 }
