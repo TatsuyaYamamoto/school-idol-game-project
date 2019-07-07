@@ -148,6 +148,29 @@ workflows:
                 - develop
                 - develop-ranking
 
+      # Firebase
+      - test_package:
+          name: test_firebase
+          package: firebase
+          env: dev
+          requires:
+            - dependencies
+          filters:
+            branches:
+              only:
+                - develop
+
+      - deploy_package:
+          name: deploy_firebase_dev
+          package: firebase
+          env: dev
+          requires:
+            - test_firebase
+          filters:
+            branches:
+              only:
+                - develop
+
 executors:
   default:
     docker:
@@ -172,6 +195,7 @@ jobs:
         type: enum
         enum:
           [
+            "firebase",
             "ranking",
             "honocar",
             "shakarin",
@@ -197,6 +221,7 @@ jobs:
         type: enum
         enum:
           [
+            "firebase",
             "ranking",
             "honocar",
             "shakarin",
