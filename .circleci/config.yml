@@ -5,9 +5,9 @@ workflows:
     jobs:
       - dependencies
 
-      # Honocar
+      # Honocar ----------------------------
       - test_package:
-          name: test_honocar
+          name: test_honocar_dev
           package: honocar
           env: dev
           requires:
@@ -22,16 +22,36 @@ workflows:
           package: honocar
           env: dev
           requires:
-            - test_honocar
+            - test_honocar_dev
           filters:
             branches:
               only:
                 - develop
                 - develop-honocar
-
-      # Shakarin
       - test_package:
-          name: test_shakarin
+          name: test_honocar_pro
+          package: honocar
+          env: pro
+          requires:
+            - dependencies
+          filters:
+            branches:
+              only:
+                - master
+      - deploy_package:
+          name: deploy_honocar_pro
+          package: honocar
+          env: pro
+          requires:
+            - test_honocar_pro
+          filters:
+            branches:
+              only:
+                - master
+
+      # Shakarin ----------------------------
+      - test_package:
+          name: test_shakarin_dev
           package: shakarin
           env: dev
           requires:
@@ -46,15 +66,36 @@ workflows:
           package: shakarin
           env: dev
           requires:
-            - test_shakarin
+            - test_shakarin_dev
           filters:
             branches:
               only:
                 - develop
                 - develop-shakarin
-      # Maruten
       - test_package:
-          name: test_maruten
+          name: test_shakarin_pro
+          package: shakarin
+          env: pro
+          requires:
+            - dependencies
+          filters:
+            branches:
+              only:
+                - master
+      - deploy_package:
+          name: deploy_shakarin_pro
+          package: shakarin
+          env: pro
+          requires:
+            - test_shakarin_pro
+          filters:
+            branches:
+              only:
+                - master
+
+      # Maruten ----------------------------
+      - test_package:
+          name: test_maruten_dev
           package: maruten
           env: dev
           requires:
@@ -69,16 +110,36 @@ workflows:
           package: maruten
           env: dev
           requires:
-            - test_maruten
+            - test_maruten_dev
           filters:
             branches:
               only:
                 - develop
                 - develop-maruten
-
-      # Yamidori
       - test_package:
-          name: test_yamidori
+          name: test_maruten_pro
+          package: maruten
+          env: pro
+          requires:
+            - dependencies
+          filters:
+            branches:
+              only:
+                - master
+      - deploy_package:
+          name: deploy_maruten_pro
+          package: maruten
+          env: pro
+          requires:
+            - test_maruten_pro
+          filters:
+            branches:
+              only:
+                - master
+
+      # Yamidori ----------------------------
+      - test_package:
+          name: test_yamidori_dev
           package: yamidori
           env: dev
           requires:
@@ -93,16 +154,36 @@ workflows:
           package: yamidori
           env: dev
           requires:
-            - test_yamidori
+            - test_yamidori_dev
           filters:
             branches:
               only:
                 - develop
                 - develop-yamidori
-
-      # Oimo-no-mikiri
       - test_package:
-          name: test_oimo
+          name: test_yamidori_pro
+          package: yamidori
+          env: pro
+          requires:
+            - dependencies
+          filters:
+            branches:
+              only:
+                - master
+      - deploy_package:
+          name: deploy_yamidori_pro
+          package: yamidori
+          env: pro
+          requires:
+            - test_yamidori_pro
+          filters:
+            branches:
+              only:
+                - master
+
+      # Oimo-no-mikiri ----------------------------
+      - test_package:
+          name: test_oimo_dev
           package: oimo-no-mikiri
           env: dev
           requires:
@@ -117,16 +198,36 @@ workflows:
           package: oimo-no-mikiri
           env: dev
           requires:
-            - test_oimo
+            - test_oimo_dev
           filters:
             branches:
               only:
                 - develop
                 - develop-oimo
-
-      # Ranking
       - test_package:
-          name: test_ranking
+          name: test_oimo_pro
+          package: oimo-no-mikiri
+          env: pro
+          requires:
+            - dependencies
+          filters:
+            branches:
+              only:
+                - master
+      - deploy_package:
+          name: deploy_oimo_pro
+          package: oimo-no-mikiri
+          env: pro
+          requires:
+            - test_oimo_pro
+          filters:
+            branches:
+              only:
+                - master
+
+      # Ranking ----------------------------
+      - test_package:
+          name: test_ranking_dev
           package: ranking
           env: dev
           requires:
@@ -141,16 +242,36 @@ workflows:
           package: ranking
           env: dev
           requires:
-            - test_ranking
+            - test_ranking_dev
           filters:
             branches:
               only:
                 - develop
                 - develop-ranking
-
-      # Firebase
       - test_package:
-          name: test_firebase
+          name: test_ranking_pro
+          package: ranking
+          env: pro
+          requires:
+            - dependencies
+          filters:
+            branches:
+              only:
+                - master
+      - deploy_package:
+          name: deploy_ranking_pro
+          package: ranking
+          env: pro
+          requires:
+            - test_ranking_pro
+          filters:
+            branches:
+              only:
+                - master
+
+      # Firebase ----------------------------
+      - test_package:
+          name: test_firebase_dev
           package: firebase
           env: dev
           requires:
@@ -159,17 +280,36 @@ workflows:
             branches:
               only:
                 - develop
-
       - deploy_package:
           name: deploy_firebase_dev
           package: firebase
           env: dev
           requires:
-            - test_firebase
+            - test_firebase_dev
           filters:
             branches:
               only:
                 - develop
+      - test_package:
+          name: test_firebase_pro
+          package: firebase
+          env: pro
+          requires:
+            - dependencies
+          filters:
+            branches:
+              only:
+                - master
+      - deploy_package:
+          name: deploy_firebase_pro
+          package: firebase
+          env: pro
+          requires:
+            - test_firebase_pro
+          filters:
+            branches:
+              only:
+                - master
 
 executors:
   default:
@@ -279,8 +419,10 @@ commands:
       - run:
           name: setup gcloud
           command: |
-            echo $GCP_SERVICE_ACCOUNT_KEY_DEV | base64 --decode > /tmp/gcloud-service-key.json
-            gcloud auth activate-service-account --key-file /tmp/gcloud-service-key.json
+            echo $GCP_SERVICE_ACCOUNT_KEY_DEV | base64 --decode > /tmp/gcloud-service-key.dev.json
+            gcloud auth activate-service-account --key-file /tmp/gcloud-service-key.dev.json
+            echo $GCP_SERVICE_ACCOUNT_KEY_PRO | base64 --decode > /tmp/gcloud-service-key.pro.json
+            gcloud auth activate-service-account --key-file /tmp/gcloud-service-key.pro.json
 
   prepare_build:
     steps:
