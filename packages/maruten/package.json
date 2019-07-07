@@ -1,6 +1,6 @@
 {
   "name": "maruten",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "homepage": "https://github.com/TatsuyaYamamoto/maruten",
   "author": "TatsuyaYamamoto <yamamoto.tatsuya@fujixerox.co.jp>",
   "description": "js simple game, thanks lovelive",
@@ -8,10 +8,10 @@
   "scripts": {
     "clean": "rm -rf dist",
     "start": "yarn clean && webpack-serve",
-    "build": "    yarn clean &&                     webpack",
+    "build:dev": "yarn clean &&                     webpack",
     "build:pro": "yarn clean && NODE_ENV=production webpack",
-    "deploy": "                    yarn build     && gsutil -m rsync -d -r dist/ gs://games-dev.sokontokoro-factory.net/maruten/",
-    "deploy:pro": "yarn confirm && yarn build:pro && gsutil -m rsync -d -r dist/ gs://games.sokontokoro-factory.net/maruten/",
+    "deploy:dev": "                gsutil -m rsync -d -r dist/ gs://games-dev.sokontokoro-factory.net/maruten/",
+    "deploy:pro": "yarn confirm && gsutil -m rsync -d -r dist/ gs://games.sokontokoro-factory.net/maruten/",
     "confirm": "../../production-confirm.js"
   },
   "devDependencies": {
@@ -29,7 +29,6 @@
   },
   "dependencies": {
     "alertify": "^0.3.0",
-    "createjs": "^1.0.1",
-    "superagent": "^2.2.0"
+    "createjs": "^1.0.1"
   }
 }

@@ -36,18 +36,20 @@ const plugins = [
 module.exports = {
   mode: isProduction ? "production" : "development",
 
-  entry: path.resolve(__dirname, "src/js/index.ts"),
+  entry: {
+    app: path.resolve(__dirname, "src/js/index.ts")
+  },
 
   output: {
     path: path.resolve(__dirname, "dist/"),
-    filename: "bundle.js"
+    filename: "[name].bundle.js"
   },
+
+  devtool: isProduction ? "none" : "source-map",
 
   resolve: {
     extensions: [".js", ".ts"]
   },
-
-  devtool: isProduction ? "none" : "source-map",
 
   module: {
     rules: [
@@ -59,6 +61,19 @@ module.exports = {
       { test: /\.(woff|ttf)$/, loader: "url-loader" }
     ]
   },
+
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendor",
+          chunks: "all"
+        }
+      }
+    }
+  },
+
   // https://github.com/pixijs/pixi-sound/issues/28
   // Resolve node fs module for pixi-sound.
   node: { fs: "empty" },

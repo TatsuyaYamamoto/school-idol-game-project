@@ -2,27 +2,35 @@ const { resolve } = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const rootPackageJson = require("../../package.json");
+const appPackageJson = require("./package.json");
 
-const config = require("../../package.json").config.sokontokoro;
+const appVersion = appPackageJson.version;
+const config = rootPackageJson.config.sokontokoro;
 const isProduction = process.env.NODE_ENV === "production";
 
 const htmlParams = {
   title: "DEV ほのCar!",
   noIndex: true,
+  appVersion,
   trackingCode: config.trackingCode.dev,
   description:
     "ひたすら穂乃果ちゃんが車を避けるゲームです。(?)2015そこんところ工房",
   ogpUrl: "https://games.sokontokoro-factory.net/honocar/",
   // ogpImageUrl: "https://games.sokontokoro-factory.net/honocar/img/ogp.png"
   ogpImageUrl:
-    "https://games.sokontokoro-factory.net/honocar/img/TITLE_LOGO_HONOKA.png"
+    "https://games.sokontokoro-factory.net/honocar/img/TITLE_LOGO_HONOKA.png",
+  helpUrlJa: "http://games-dev.sokontokoro-factory.net/#/help?language=ja",
+  helpUrlEn: "http://games-dev.sokontokoro-factory.net/#/help?language=en"
 };
 
 isProduction &&
   Object.assign(htmlParams, {
     title: "ほのCar!ver1.1 -そこんところ工房-",
     trackingCode: config.trackingCode.pro,
-    noIndex: false
+    noIndex: false,
+    helpUrlJa: "http://games.sokontokoro-factory.net/#/help?language=ja",
+    helpUrlEn: "http://games.sokontokoro-factory.net/#/help?language=en"
   });
 
 const plugins = [
@@ -32,6 +40,7 @@ const plugins = [
     hash: true
   }),
   new CopyWebpackPlugin([
+    { from: "app/main.css", to: "main.css" },
     { context: "app/img", from: "**/*", to: "img" },
     { context: "app/sound", from: "**/*", to: "sound" }
   ]),
@@ -43,11 +52,13 @@ const plugins = [
 const webpackConfig = {
   mode: isProduction ? "production" : "development",
 
-  entry: resolve(__dirname, "app/js/main.js"),
+  entry: {
+    app: resolve(__dirname, "app/js/main.js")
+  },
 
   output: {
     path: resolve(__dirname, "dist/"),
-    filename: "bundle.js"
+    filename: "[name].bundle.js"
   },
 
   devtool: isProduction ? "none" : "source-map",
@@ -64,7 +75,16 @@ const webpackConfig = {
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["@babel/preset-env"]
+            presets: [
+              [
+                "@babel/preset-env",
+                {
+                  targets: {
+                    node: "current"
+                  }
+                }
+              ]
+            ]
           }
         }
       },
@@ -83,6 +103,18 @@ const webpackConfig = {
         use: "imports-loader?this=>window"
       }
     ]
+  },
+
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendor",
+          chunks: "all"
+        }
+      }
+    }
   },
 
   plugins: plugins,

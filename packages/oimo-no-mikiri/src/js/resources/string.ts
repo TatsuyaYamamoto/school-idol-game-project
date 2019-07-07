@@ -186,7 +186,7 @@ In multi play mode,
       [Ids[Ids.LABEL_FALSE_START]]: "仕切り直し",
       [Ids[Ids.LABEL_DRAW]]: "仕切り直し",
       [Ids[Ids.LABEL_STRAIGHT_WINS]]: "人ぬき",
-      [Ids[Ids.LABEL_TOP_TIME]]: "最速タイム",
+      [Ids[Ids.LABEL_TOP_TIME]]: "ベストタイム",
       [Ids[Ids.LABEL_WINS]]: "勝",
       [Ids[Ids.LABEL_BATTLE_LEFT]]: "残",
 

@@ -12,6 +12,7 @@ import globals from "../globals";
 import properties from "../resources/object-props";
 import { Ids } from "../resources/string";
 import { default as config, TRACK_PAGES } from "../resources/config";
+import { wait } from "../common";
 
 let cars = [];
 let gameFrame = 0;
@@ -23,7 +24,7 @@ class GameEngine extends Engine {
 
     tracePage(TRACK_PAGES.GAME);
 
-    const { imageObj } = globals;
+    const { imageObj, soundObj } = globals;
 
     //honoka or eriを作成
     //初期値はplayCharacter=honoka
@@ -36,18 +37,28 @@ class GameEngine extends Engine {
     checkButton();
 
     //タイマーに関数セット
-    createjs.Ticker.addEventListener("tick", gameReady);
+    createjs.Ticker.addEventListener("tick", processStage);
     window.addEventListener("keydown", keyDownEvent);
 
     imageObj.BUTTON_RIGHT.addEventListener("mousedown", clickButtonRight);
     imageObj.BUTTON_LEFT.addEventListener("mousedown", clickButtonLeft);
+
+    gameReady().then(() => {
+      createjs.Ticker.addEventListener("tick", processGame);
+
+      soundObj.SOUND_SUSUME_LOOP.play({
+        interrupt: "late",
+        loop: -1,
+        volume: 0.6
+      });
+    });
   }
 
   tearDown() {
     super.tearDown();
     const { imageObj } = globals;
 
-    createjs.Ticker.removeEventListener("tick", gameReady);
+    createjs.Ticker.removeEventListener("tick", processStage);
     createjs.Ticker.removeEventListener("tick", processGame);
     window.removeEventListener("keydown", keyDownEvent);
 
@@ -62,69 +73,66 @@ function gameStatusReset() {
   cars = [];
 }
 
+function processStage() {
+  globals.gameStage.update();
+}
+
 // ゲームスタートカウント-----------------------------------------
-function gameReady() {
+async function gameReady() {
   const { gameStage, soundObj, imageObj, textObj, player } = globals;
   gameFrame++;
 
-  switch (gameFrame) {
-    case 1:
-      gameStage.removeAllChildren();
-      gameStage.addChild(imageObj.GAME_BACKGROUND);
-      gameStage.addChild(player.img);
+  gameStage.removeAllChildren();
+  gameStage.addChild(imageObj.GAME_BACKGROUND);
+  gameStage.addChild(player.img);
 
-      break;
-    case 10:
-      soundObj.SOUND_PI1.play();
-      textObj.TETX_GAMESTART_COUNT.text = "-2-";
+  await wait(500);
+  soundObj.SOUND_PI1.play();
+  textObj.TETX_GAMESTART_COUNT.text = "-2-";
 
-      gameStage.removeAllChildren();
-      gameStage.addChild(imageObj.GAME_BACKGROUND);
-      gameStage.addChild(textObj.TETX_GAMESTART_COUNT);
-      gameStage.addChild(player.img);
-      break;
-    case 30:
-      soundObj.SOUND_PI1.play();
-      textObj.TETX_GAMESTART_COUNT.text = "-1-";
+  gameStage.removeAllChildren();
+  gameStage.addChild(imageObj.GAME_BACKGROUND);
+  gameStage.addChild(textObj.TETX_GAMESTART_COUNT);
+  gameStage.addChild(player.img);
 
-      gameStage.removeAllChildren();
-      gameStage.addChild(imageObj.GAME_BACKGROUND);
-      gameStage.addChild(textObj.TETX_GAMESTART_COUNT);
-      gameStage.addChild(player.img);
-      break;
-    case 50:
-      soundObj.SOUND_PI2.play();
+  await wait(1000);
+  soundObj.SOUND_PI1.play();
+  textObj.TETX_GAMESTART_COUNT.text = "-1-";
 
-      gameStage.removeAllChildren();
-      gameStage.addChild(imageObj.GAME_BACKGROUND);
-      gameStage.addChild(imageObj.BUTTON_LEFT);
-      gameStage.addChild(imageObj.BUTTON_RIGHT);
-      gameStage.addChild(textObj.TEXT_GAME_COUNT);
-      gameStage.addChild(player.img);
+  gameStage.removeAllChildren();
+  gameStage.addChild(imageObj.GAME_BACKGROUND);
+  gameStage.addChild(textObj.TETX_GAMESTART_COUNT);
+  gameStage.addChild(player.img);
 
-      gameStatusReset();
+  await wait(1000);
+  soundObj.SOUND_PI2.play();
 
-      createjs.Ticker.removeEventListener("tick", gameReady);
-      createjs.Ticker.addEventListener("tick", processGame);
+  gameStage.removeAllChildren();
+  gameStage.addChild(imageObj.GAME_BACKGROUND);
+  gameStage.addChild(imageObj.BUTTON_LEFT);
+  gameStage.addChild(imageObj.BUTTON_RIGHT);
+  gameStage.addChild(textObj.TEXT_GAME_COUNT);
+  gameStage.addChild(player.img);
 
-      soundObj.SOUND_SUSUME_LOOP.play({
-        interrupt: "late",
-        loop: -1,
-        volume: 0.6
-      });
-      break;
-  }
-  gameStage.update();
+  gameStatusReset();
+
+  createjs.Ticker.removeEventListener("tick", gameReady);
+  createjs.Ticker.addEventListener("tick", processGame);
+
+  soundObj.SOUND_SUSUME_LOOP.play({
+    interrupt: "late",
+    loop: -1,
+    volume: 0.6
+  });
 }
 
 // ゲーム処理-----------------------------------------
 function processGame() {
-  const { textObj, gameStage, player } = globals;
+  const { player } = globals;
 
   gameFrame++;
 
   globals.textObj.TEXT_GAME_COUNT.text = passCountText();
-  gameStage.update();
 
   if (gameFrame % 20 === 0) {
     enemyAppeare();
@@ -173,7 +181,7 @@ function pushCar(enemyNumber) {
 }
 
 // ボタン状態の確認
-export function checkButton() {
+function checkButton() {
   const { player } = globals;
 
   if (player.lane === 0) {
@@ -191,21 +199,21 @@ export function checkButton() {
 }
 
 // 有効化
-export function rightButtonEnable() {
+function rightButtonEnable() {
   globals.imageObj.BUTTON_RIGHT.mouseEnabled = true;
   globals.imageObj.BUTTON_RIGHT.alpha = 0.5;
 }
-export function leftButtonEnable() {
+function leftButtonEnable() {
   globals.imageObj.BUTTON_LEFT.mouseEnabled = true;
   globals.imageObj.BUTTON_LEFT.alpha = 0.5;
 }
 
 // 無効化
-export function rightButtonDisable() {
+function rightButtonDisable() {
   globals.imageObj.BUTTON_RIGHT.mouseEnabled = false;
   globals.imageObj.BUTTON_RIGHT.alpha = 0.2;
 }
-export function leftButtonDisable() {
+function leftButtonDisable() {
   globals.imageObj.BUTTON_LEFT.mouseEnabled = false;
   globals.imageObj.BUTTON_LEFT.alpha = 0.2;
 }
@@ -270,7 +278,7 @@ function crash() {
   });
 }
 
-export function passCountText() {
+function passCountText() {
   return t(Ids.PASS_COUNT, { count: passCarCount });
 }
 

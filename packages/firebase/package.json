@@ -1,0 +1,33 @@
+{
+  "name": "firebase",
+  "private": true,
+  "version": "1.5.0",
+  "engines": {
+    "node": "8"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build:dev": "yarn clean && tsc",
+    "build:pro": "yarn clean && tsc",
+    "serve": "npm run build && firebase serve --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy:dev": "                     firebase deploy --force --project school-idol-game-development",
+    "deploy:pro": "     yarn confirm && firebase deploy --force --project school-idol-game-production",
+    "logs": "firebase functions:log",
+    "confirm": "../../production-confirm.js"
+  },
+  "dependencies": {
+    "@slack/client": "^4.8.0",
+    "crypto-js": "^3.1.9-1",
+    "firebase-admin": "^8.2.0",
+    "firebase-functions": "^3.0.2",
+    "firebase-tools": "^7.0.2"
+  },
+  "devDependencies": {
+    "@firebase/app-types": "^0.4.0",
+    "@types/crypto-js": "^3.1.43",
+    "typescript": "^3.5.2"
+  }
+}

@@ -1,0 +1,301 @@
+version: 2.1
+workflows:
+  version: 2
+  git-push:
+    jobs:
+      - dependencies
+
+      # Honocar
+      - test_package:
+          name: test_honocar
+          package: honocar
+          env: dev
+          requires:
+            - dependencies
+          filters:
+            branches:
+              only:
+                - develop
+                - develop-honocar
+      - deploy_package:
+          name: deploy_honocar_dev
+          package: honocar
+          env: dev
+          requires:
+            - test_honocar
+          filters:
+            branches:
+              only:
+                - develop
+                - develop-honocar
+
+      # Shakarin
+      - test_package:
+          name: test_shakarin
+          package: shakarin
+          env: dev
+          requires:
+            - dependencies
+          filters:
+            branches:
+              only:
+                - develop
+                - develop-shakarin
+      - deploy_package:
+          name: deploy_shakarin_dev
+          package: shakarin
+          env: dev
+          requires:
+            - test_shakarin
+          filters:
+            branches:
+              only:
+                - develop
+                - develop-shakarin
+      # Maruten
+      - test_package:
+          name: test_maruten
+          package: maruten
+          env: dev
+          requires:
+            - dependencies
+          filters:
+            branches:
+              only:
+                - develop
+                - develop-maruten
+      - deploy_package:
+          name: deploy_maruten_dev
+          package: maruten
+          env: dev
+          requires:
+            - test_maruten
+          filters:
+            branches:
+              only:
+                - develop
+                - develop-maruten
+
+      # Yamidori
+      - test_package:
+          name: test_yamidori
+          package: yamidori
+          env: dev
+          requires:
+            - dependencies
+          filters:
+            branches:
+              only:
+                - develop
+                - develop-yamidori
+      - deploy_package:
+          name: deploy_yamidori_dev
+          package: yamidori
+          env: dev
+          requires:
+            - test_yamidori
+          filters:
+            branches:
+              only:
+                - develop
+                - develop-yamidori
+
+      # Oimo-no-mikiri
+      - test_package:
+          name: test_oimo
+          package: oimo-no-mikiri
+          env: dev
+          requires:
+            - dependencies
+          filters:
+            branches:
+              only:
+                - develop
+                - develop-oimo
+      - deploy_package:
+          name: deploy_oimo_dev
+          package: oimo-no-mikiri
+          env: dev
+          requires:
+            - test_oimo
+          filters:
+            branches:
+              only:
+                - develop
+                - develop-oimo
+
+      # Ranking
+      - test_package:
+          name: test_ranking
+          package: ranking
+          env: dev
+          requires:
+            - dependencies
+          filters:
+            branches:
+              only:
+                - develop
+                - develop-ranking
+      - deploy_package:
+          name: deploy_ranking_dev
+          package: ranking
+          env: dev
+          requires:
+            - test_ranking
+          filters:
+            branches:
+              only:
+                - develop
+                - develop-ranking
+
+      # Firebase
+      - test_package:
+          name: test_firebase
+          package: firebase
+          env: dev
+          requires:
+            - dependencies
+          filters:
+            branches:
+              only:
+                - develop
+
+      - deploy_package:
+          name: deploy_firebase_dev
+          package: firebase
+          env: dev
+          requires:
+            - test_firebase
+          filters:
+            branches:
+              only:
+                - develop
+
+executors:
+  default:
+    docker:
+      - image: circleci/node:8.15.0-browsers
+
+jobs:
+  dependencies:
+    executor:
+      name: default
+    steps:
+      - checkout
+      - restore_node_cache
+      - check_build_environment
+      - run: yarn install
+      - save_node_cache
+
+  test_package:
+    executor:
+      name: default
+    parameters:
+      package:
+        type: enum
+        enum:
+          [
+            "firebase",
+            "ranking",
+            "honocar",
+            "shakarin",
+            "maruten",
+            "yamidori",
+            "oimo-no-mikiri",
+          ]
+      env:
+        type: enum
+        enum: ["dev", "pro"]
+    steps:
+      - prepare_build
+      - check_build_environment
+      - run: yarn ws @sokontokoro/mikan build
+      - run: yarn ws << parameters.package >> build:<< parameters.env >>
+      - save_workspace
+
+  deploy_package:
+    executor:
+      name: default
+    parameters:
+      package:
+        type: enum
+        enum:
+          [
+            "firebase",
+            "ranking",
+            "honocar",
+            "shakarin",
+            "maruten",
+            "yamidori",
+            "oimo-no-mikiri",
+          ]
+      env:
+        type: enum
+        enum: ["dev", "pro"]
+    steps:
+      - prepare_gcloud
+      - restore_workspace
+      - check_build_environment
+      - run: yarn ws << parameters.package >> deploy:<< parameters.env >>
+
+commands:
+  check_build_environment:
+    steps:
+      - run:
+          name: check build environment
+          command: |
+            node -v
+            npm -v
+            yarn -v
+            pwd
+            find . -maxdepth 1 -type d | xargs ls -la
+
+  # https://circleci.com/docs/ja/2.0/caching/#yarn-node
+  restore_node_cache:
+    steps:
+      - restore_cache:
+          keys:
+            - yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarn-packages-v1-{{ .Branch }}-
+            - yarn-packages-v1-
+
+  save_node_cache:
+    steps:
+      - save_cache:
+          paths:
+            - ~/.cache/yarn
+          key: yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
+
+  prepare_gcloud:
+    steps:
+      - run:
+          # gcloud install output is too large to display.
+          name: install gcloud
+          command: |
+            # install gcloud
+            export CLOUDSDK_CORE_DISABLE_PROMPTS=1
+            curl https://sdk.cloud.google.com | bash  > /dev/null
+            echo 'source ~/google-cloud-sdk/path.bash.inc' >> $BASH_ENV
+      - run:
+          name: setup gcloud
+          command: |
+            echo $GCP_SERVICE_ACCOUNT_KEY_DEV | base64 --decode > /tmp/gcloud-service-key.json
+            gcloud auth activate-service-account --key-file /tmp/gcloud-service-key.json
+
+  prepare_build:
+    steps:
+      - checkout
+      - restore_node_cache
+      - run: yarn install
+
+  save_workspace:
+    steps:
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  restore_workspace:
+    steps:
+      - attach_workspace:
+          at: .

@@ -35,12 +35,16 @@ const plugins = [
 module.exports = {
   mode: isProduction ? "production" : "development",
 
-  entry: path.resolve(__dirname, "src/js/index.ts"),
+  entry: {
+    app: path.resolve(__dirname, "src/js/index.ts")
+  },
 
   output: {
     path: path.resolve(__dirname, "dist/"),
-    filename: "bundle.js"
+    filename: "[name].bundle.js"
   },
+
+  devtool: isProduction ? "none" : "source-map",
 
   resolve: {
     extensions: [".js", ".ts"]
@@ -56,6 +60,18 @@ module.exports = {
       { test: /\.css$/, loader: "style-loader!css-loader" },
       { test: /\.woff$/, loader: "url-loader" }
     ]
+  },
+
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendor",
+          chunks: "all"
+        }
+      }
+    }
   },
 
   // https://github.com/pixijs/pixi-sound/issues/28

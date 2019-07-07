@@ -1,6 +1,8 @@
-import { auth, initializeApp, firestore } from "firebase/app";
+import { auth, initializeApp, firestore, functions } from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/functions";
+import "firebase/database";
 
 import { devConfig, proConfig } from "./config";
 
@@ -13,3 +15,7 @@ export const firebaseDb = firestore();
 firebaseDb.settings({
   timestampsInSnapshots: true
 });
+
+export function callHttpsCallable(name: string, data: any): Promise<any> {
+  return functions().httpsCallable(name)(data);
+}

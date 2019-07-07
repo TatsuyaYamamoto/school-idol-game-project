@@ -1,7 +1,7 @@
 **/dist/
-**/functions/lib/
-**/appengine/env-variables.yaml
-**/appengine/env-variables-production.yaml
+packages/ranking/app/assets/helps.json
+packages/appengine/env-variables.yaml
+packages/appengine/env-variables-production.yaml
 
 
 # Created by https://www.gitignore.io/api/node,macos,windows,intellij+all,firebase

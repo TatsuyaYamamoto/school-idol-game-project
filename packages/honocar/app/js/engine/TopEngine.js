@@ -5,9 +5,11 @@ import {
   getLogger,
   pointerdown,
   openModal,
-  P2PClient,
   t,
-  tracePage
+  tracePage,
+  ErrorCode,
+  RoomEvents,
+  NtpDate
 } from "@sokontokoro/mikan";
 import { parse } from "query-string";
 
@@ -16,7 +18,12 @@ import Engine from "./Engine";
 import MenuEngine from "./MenuEngine";
 import OnlineGameEngine from "./OnlineGameEngine";
 
-import { trySyncGameStart } from "../common";
+import {
+  initClient as initSkyWayClient,
+  getClient as getSkyWayClient,
+  unixtimeToRoundSeconds
+} from "../common";
+
 import { Ids } from "../resources/string";
 import objectProps from "../resources/object-props";
 import { TRACK_PAGES } from "../resources/config";
@@ -28,10 +35,6 @@ class TopEngine extends Engine {
     super(props);
 
     this.onClickTop = this.onClickTop.bind(this);
-    this.onP2pClosed = this.onP2pClosed.bind(this);
-    this.onP2pConnect = this.onP2pConnect.bind(this);
-
-    this.isConnectionRequester = false;
     this.titleLogo = null;
   }
 
@@ -91,18 +94,74 @@ class TopEngine extends Engine {
       SOUND_ZENKAI.play({ loop: -1, volume: 0.4 });
     }
 
-    const p2p = P2PClient.get(process.env.SKYWAY_KEY);
+    const roomName = parse(window.location.search).roomName;
 
-    p2p.once(P2PClient.EVENTS.CONNECT, this.onP2pConnect);
-    p2p.once(P2PClient.EVENTS.CLOSE, this.onP2pClosed);
+    if (roomName) {
+      openModal({
+        title: t(Ids.ONLINE_DIALOG_TRY_CONNECT_TITLE),
+        text: t(Ids.ONLINE_DIALOG_TRY_CONNECT_TEXT),
+        actions: []
+      });
 
-    const remotePeerId = parse(window.location.search).peerId;
-    this.isConnectionRequester = !remotePeerId;
-    if (remotePeerId) {
       history.replaceState(null, null, getCurrentUrl());
+      logger.debug(`try to connect to ${roomName}`);
+      let client;
 
-      logger.debug(`try to connect to ${remotePeerId}`);
-      p2p.connect(remotePeerId);
+      Promise.resolve()
+        .then(() => initSkyWayClient())
+        .then(() => {
+          logger.debug(`success to init skyway client`);
+          client = getSkyWayClient();
+
+          client.on(RoomEvents.MEMBER_FULFILLED, () => {
+            openModal({
+              title: t(Ids.ONLINE_DIALOG_READY_ROOM_TITLE),
+              text: t(Ids.ONLINE_DIALOG_READY_ROOM_TEXT),
+              actions: []
+            });
+          });
+
+          client.on(RoomEvents.ALL_CONNECTIONS_READY, () => {
+            logger.debug(
+              "all room members' connection are ready. start to try sync for game."
+            );
+            this.tryP2pConnect();
+          });
+
+          client.on(RoomEvents.MEMBER_LEFT, id => {
+            logger.debug("room member left. close online mode.", id);
+            this.leaveOnlineMode();
+          });
+        })
+        .then(() => client.joinRoom(roomName))
+        .catch(e => {
+          // fail to join room, then top page tap action is acceptable.
+          window.addEventListener(pointerdown, this.onClickTop);
+
+          logger.error(e.message);
+
+          if (e.code === ErrorCode.FIREBASE_NO_ROOM) {
+            openModal({
+              title: t(Ids.ONLINE_DIALOG_ERROR_TITLE),
+              text: t(Ids.ONLINE_DIALOG_ERROR_NO_ROOM_TEXT, { roomName }),
+              actions: [{ text: "OK" }]
+            });
+
+            return;
+          }
+
+          if (e.code === ErrorCode.FIREBASE_ROOM_CAPACITY_OVER) {
+            openModal({
+              title: t(Ids.ONLINE_DIALOG_ERROR_TITLE),
+              text: t(Ids.ONLINE_DIALOG_ERROR_CAPACITY_OVER_TEXT, { roomName }),
+              actions: [{ text: "OK" }]
+            });
+
+            return;
+          }
+
+          throw e;
+        });
     } else {
       window.addEventListener(pointerdown, this.onClickTop);
     }
@@ -119,37 +178,43 @@ class TopEngine extends Engine {
     to(MenuEngine);
   }
 
-  onP2pConnect() {
-    logger.info("success to connect to peer.");
+  leaveOnlineMode() {
+    getSkyWayClient().leaveRoom();
+
     openModal({
-      title: t(Ids.ONLINE_DIALOG_READY_TITLE),
-      text: t(Ids.ONLINE_DIALOG_READY_TEXT),
+      title: t(Ids.ONLINE_DIALOG_DISCONNECTED_TITLE),
+      text: t(Ids.ONLINE_DIALOG_DISCONNECTED_TEXT),
       actions: []
     });
 
-    trySyncGameStart(this.isConnectionRequester).then(() => {
-      globals.soundObj.SOUND_ZENKAI.stop();
+    setTimeout(() => {
       closeModal();
-
-      to(OnlineGameEngine);
-    });
+      to(instance);
+    }, 3000);
   }
 
-  onP2pClosed(params) {
-    logger.info("close connection to peer.", params);
+  tryP2pConnect() {
+    getSkyWayClient()
+      .trySyncStartTime()
+      .then(startTime => {
+        const now = NtpDate.now();
+        const timeLeft = now < startTime ? startTime - now : 0;
 
-    if (!params.isByMyself) {
-      openModal({
-        title: t(Ids.ONLINE_DIALOG_DISCONNECTED_TITLE),
-        text: t(Ids.ONLINE_DIALOG_DISCONNECTED_TEXT),
-        actions: []
+        openModal({
+          title: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TITLE),
+          text: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TEXT, {
+            timeLeft: unixtimeToRoundSeconds(timeLeft)
+          }),
+          actions: []
+        });
+
+        setTimeout(() => {
+          globals.soundObj.SOUND_ZENKAI.stop();
+          closeModal();
+
+          to(OnlineGameEngine);
+        }, timeLeft);
       });
-
-      setTimeout(() => {
-        closeModal();
-        to(instance);
-      }, 3000);
-    }
   }
 }
 

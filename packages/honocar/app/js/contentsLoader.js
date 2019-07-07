@@ -1,56 +1,80 @@
-import { t, trackTiming } from "@sokontokoro/mikan";
+import { t, trackTiming, getLogger } from "@sokontokoro/mikan";
 
 import globals from "./globals";
 
 import manifest from "./resources/manifest";
 import properties from "./resources/object-props";
 import { Ids } from "./resources/string";
+import loadImageBase64 from "shakarin/src/js/imageBase64/loadImageBase64";
 
-function loadAnimation() {
-  const q = new createjs.LoadQueue();
-  q.setMaxConnections(6);
-
-  q.loadManifest([
-    {
-      id: "LOAD_KOTORI",
-      src: "img/LOAD_KOTORI.png"
-    }
-  ]);
-
-  q.addEventListener("complete", function() {
-    var bitmap = new createjs.Bitmap(q.getResult("LOAD_KOTORI"));
-    bitmap.scaleY = bitmap.scaleX = globals.gameScreenScale;
-
-    bitmap.x = globals.gameScrean.width * 0.5;
-    bitmap.y = globals.gameScrean.height * 0.5;
-    bitmap.regX = bitmap.image.width / 2;
-    bitmap.regY = bitmap.image.height / 2;
-
-    createjs.Tween.get(bitmap, { loop: true }).to({ rotation: 360 }, 1000);
-
-    globals.gameStage.removeAllChildren();
-    globals.gameStage.addChild(bitmap);
-
-    createjs.Ticker.addEventListener("tick", update);
-  });
-}
+const logger = getLogger("contents-loader");
+const MAX_RETRY_COUNT = 3;
+let currentRetryCount = 0;
 
 function update() {
   globals.gameStage.update();
 }
 
+/**
+ * PreloadJSを使って、assetをロードする
+ * 通信環境が悪い(未検証)とloadedItemが一部欠落するため、
+ * completeイベント後に読み込み結果の検証、再読み込みを実施した上でCreateJSの書くクラスにリソースをあてる
+ *
+ * @return {Promise<any>}
+ */
 export function loadContent() {
   const start = Date.now();
+  const loadImage = getLoadImage();
+  const loadText = getLoadText();
 
   return new Promise(resolve => {
-    //ロードアニメーション
-    loadAnimation();
+    globals.gameStage.removeAllChildren();
+    globals.gameStage.addChild(loadText);
+    globals.gameStage.addChild(loadImage);
 
     globals.queue = new createjs.LoadQueue(false);
     globals.queue.installPlugin(createjs.Sound);
     globals.queue.setMaxConnections(6);
     globals.queue.addEventListener("complete", function() {
-      globals.loginPromise.then(function() {
+      logger.debug(`loading progress is completed.`);
+
+      globals.loginPromise.then(() => {
+        const failItemIds = validateLoadedResult();
+        if (failItemIds.length !== 0) {
+          logger.debug(`fail loading assets. try again. IDs: ${failItemIds}`);
+
+          currentRetryCount++;
+          if (MAX_RETRY_COUNT < currentRetryCount) {
+            alert(
+              "コンテンツのロードに失敗しました。リロードしてください。// Fail to load assets. Please reload."
+            );
+          }
+
+          const retryTarget = [];
+          for (const id of failItemIds) {
+            for (const sound of manifest.sound) {
+              if (sound.id === id) {
+                retryTarget.push(sound);
+              }
+            }
+            for (const image of manifest.image) {
+              if (image.id === id) {
+                retryTarget.push(image);
+              }
+            }
+            for (const spriteImage of manifest.spriteImage) {
+              if (spriteImage.id === id) {
+                retryTarget.push(spriteImage);
+              }
+            }
+          }
+
+          globals.queue.loadManifest(retryTarget);
+          return;
+        } else {
+          logger.debug(`success to load all assets.`);
+        }
+
         setImageContent();
         setSpriteSheetContents();
         setSoundContent();
@@ -62,29 +86,52 @@ export function loadContent() {
         resolve();
       });
     });
+    globals.queue.addEventListener("progress", event => {
+      // ロード情報
+      loadText.text = `loading...${Math.floor(event.loaded * 100)}%`;
+
+      // 回転ことりちゃんプログレス
+      loadImage.rotation = event.loaded * 360 * 4;
+    });
+    createjs.Ticker.addEventListener("tick", update);
 
     //マニフェストファイルを読み込む----------
+    globals.queue.loadManifest(manifest.sound);
     globals.queue.loadManifest(manifest.image);
     globals.queue.loadManifest(manifest.spriteImage);
-    globals.queue.loadManifest(manifest.sound);
+  });
+}
+
+function validateLoadedResult() {
+  const targetItemIds = Object.keys(globals.queue._loadItemsById);
+  const loadedResultIds = Object.keys(globals.queue._loadedResults);
+
+  return /* failItemIds */ targetItemIds.filter(item => {
+    for (const result of loadedResultIds) {
+      if (item === result) {
+        return false;
+      }
+    }
+    return true;
   });
 }
 
 //ロードしたコンテンツをセット------------------------------------------
 function setImageContent() {
-  for (var key in properties.image) {
-    globals.imageObj[key] = new createjs.Bitmap(
-      globals.queue.getResult(properties.image[key].id)
-    );
-    globals.imageObj[key].x =
-      globals.gameScrean.width * properties.image[key].ratioX;
-    globals.imageObj[key].y =
-      globals.gameScrean.height * properties.image[key].ratioY;
-    globals.imageObj[key].regX = globals.imageObj[key].image.width / 2;
-    globals.imageObj[key].regY = globals.imageObj[key].image.height / 2;
-    globals.imageObj[key].scaleY = globals.imageObj[key].scaleX =
-      globals.gameScreenScale * properties.image[key].scale;
-    globals.imageObj[key].alpha = properties.image[key].alpha;
+  for (const key of Object.keys(properties.image)) {
+    const { ratioX, ratioY, scale, alpha } = properties.image[key];
+    const loadedImage = globals.queue.getResult(properties.image[key].id);
+
+    const bitmap = new createjs.Bitmap(loadedImage);
+
+    bitmap.x = globals.gameScrean.width * ratioX;
+    bitmap.y = globals.gameScrean.height * ratioY;
+    bitmap.regX = bitmap.image.width / 2;
+    bitmap.regY = bitmap.image.height / 2;
+    bitmap.scaleY = bitmap.scaleX = globals.gameScreenScale * scale;
+    bitmap.alpha = alpha;
+
+    globals.imageObj[key] = bitmap;
   }
 
   if (globals.isLogin) {
@@ -101,8 +148,8 @@ function setImageContent() {
 }
 
 function setSpriteSheetContents() {
-  for (var key in properties.ss) {
-    var spriteSheet = new createjs.SpriteSheet({
+  for (const key of Object.keys(properties.ss)) {
+    const spriteSheet = new createjs.SpriteSheet({
       images: [globals.queue.getResult(properties.ss[key].id)],
       frames: properties.ss[key].frames,
       animations: properties.ss[key].animations
@@ -187,4 +234,27 @@ function setTextContent() {
 
   globals.textObj.TEXT_APP_VERSION.text =
     "v" + require("../../package.json").version;
+}
+
+function getLoadImage() {
+  const loadImage = new createjs.Bitmap(loadImageBase64);
+  loadImage.scaleY = loadImage.scaleX = globals.gameScreenScale * 0.5;
+  loadImage.x = globals.gameScrean.width * 0.5;
+  loadImage.y = globals.gameScrean.height * 0.5;
+
+  // 画像サイズ(固定値)の半分
+  loadImage.regX = 147.5;
+  loadImage.regY = 147.5;
+
+  return loadImage;
+}
+
+function getLoadText() {
+  const loadText = new createjs.Text();
+  loadText.x = globals.gameScrean.width * 0.5;
+  loadText.y = globals.gameScrean.height * 0.6;
+  loadText.font = (globals.gameScrean.width * 1) / 20 + "px " + "Courier";
+  loadText.textAlign = "center";
+
+  return loadText;
 }

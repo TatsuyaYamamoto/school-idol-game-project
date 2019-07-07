@@ -11,7 +11,8 @@ import {
 
 import RankingList from "../molecules/RankingList";
 import RankItem from "../molecules/RankItem";
-import { QuerySnapshot } from "@google-cloud/firestore";
+
+import LastUpdateTime from "../molecules/LastUpdateTime";
 
 const logger = getLogger("RankingSection");
 
@@ -24,6 +25,7 @@ interface State {
   game: string;
   rankingList: JSX.Element[];
   lastVisibleSnapshot: any;
+  lastUpdatedAt: Date;
 }
 
 @AutoBind
@@ -35,7 +37,8 @@ export default class RankingSection extends React.Component<Props, State> {
       game: this.props.game,
       hasMoreItem: true,
       rankingList: [],
-      lastVisibleSnapshot: null
+      lastVisibleSnapshot: null,
+      lastUpdatedAt: new Date()
     };
   }
 
@@ -55,10 +58,11 @@ export default class RankingSection extends React.Component<Props, State> {
   }
 
   public render() {
-    const { hasMoreItem, rankingList } = this.state;
+    const { hasMoreItem, rankingList, lastUpdatedAt } = this.state;
 
     return (
       <React.Fragment>
+        <LastUpdateTime time={lastUpdatedAt} />
         <RankingList
           hasMoreItem={hasMoreItem}
           list={rankingList}
@@ -118,10 +122,16 @@ export default class RankingSection extends React.Component<Props, State> {
         );
       });
 
-      return {
+      const newState = {
+        ...state,
         rankingList: pushedItems,
         lastVisibleSnapshot: scores.docs[scores.size - 1]
       };
+      if (metadata.updatedAt) {
+        newState.lastUpdatedAt = (metadata.updatedAt as firebase.firestore.Timestamp).toDate();
+      }
+
+      return newState;
     });
   }
 }

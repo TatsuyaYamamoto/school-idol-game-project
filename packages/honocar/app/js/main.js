@@ -3,28 +3,21 @@ import "alertify/themes/alertify.default.css";
 
 import "createjs/builds/1.0.0/createjs.js";
 
-import "../main.css";
-
 import * as alertify from "alertify/lib/alertify";
 import {
   config as mikanConfig,
   initI18n,
   isSupportTouchEvents,
-  pointerdown,
   t,
   initAuth,
   tracePage,
-  initTracker
+  initTracker,
+  Presence
 } from "@sokontokoro/mikan";
 
 import { to } from "./stateMachine";
 import { initGameScreenScale } from "./common";
-import {
-  loadContent,
-  setTextProperties,
-  soundTurnOff,
-  soundTurnOn
-} from "./contentsLoader";
+import { loadContent, soundTurnOff, soundTurnOn } from "./contentsLoader";
 import TopEngine from "./engine/TopEngine";
 
 import globals from "./globals";
@@ -32,7 +25,27 @@ import globals from "./globals";
 import { default as config, TRACK_PAGES } from "./resources/config";
 import { default as stringResources, Ids } from "./resources/string";
 
+const rendererCanvas = document.createElement("canvas");
+const appElement = document.getElementById("app");
+const launchBeforeGuideElement = document.getElementById("launch-before-guide");
+const gameLaunchButtonElement = document.getElementById("game-launch-button");
+
+window.__debug__ = {
+  fps: 0,
+  ignoreCrash: false,
+  preventSoundToggle: false
+};
+
 function init() {
+  gameLaunchButtonElement.removeEventListener("click", init);
+
+  // replace visible element
+  // set 500ms timeout to show tap button animation
+  setTimeout(() => {
+    appElement.style.display = "block";
+    launchBeforeGuideElement.style.display = "none";
+  }, 150);
+
   /*---------- ログインチェック ----------*/
   globals.loginPromise = initAuth().then(user => {
     if (!user.isAnonymous) {
@@ -42,12 +55,15 @@ function init() {
 
     initTracker(user.uid);
     tracePage(TRACK_PAGES.INDEX);
+
+    Presence.initWatch();
   });
 
   //ゲーム画面の初期
-  globals.gameStage = new createjs.Stage("gameScrean");
+  appElement.appendChild(rendererCanvas);
 
-  globals.gameScrean = document.getElementById("gameScrean");
+  globals.gameStage = new createjs.Stage(rendererCanvas);
+  globals.gameScrean = rendererCanvas;
 
   if (isSupportTouchEvents()) {
     createjs.Touch.enable(globals.gameStage, true, true);
@@ -56,27 +72,15 @@ function init() {
   //拡大縮小率の計算
   initGameScreenScale();
 
-  const loading = new createjs.Text();
-  setTextProperties(
-    loading,
-    globals.gameScrean.width * 0.5,
-    globals.gameScrean.height * 0.5,
-    globals.gameScrean.width * 0.04,
-    "Courier",
-    "center",
-    globals.gameScrean.width * 0.04
-  );
-  loading.text = "loading...";
-  globals.gameStage.addChild(loading);
-  globals.gameStage.update();
-
   // toggle sound with blur or focus
-  window.addEventListener("blur", function() {
-    soundTurnOff();
-  });
-  window.addEventListener("focus", function() {
-    soundTurnOn();
-  });
+  if (!window.__debug__.preventSoundToggle) {
+    window.addEventListener("blur", function() {
+      soundTurnOff();
+    });
+    window.addEventListener("focus", function() {
+      soundTurnOn();
+    });
+  }
 
   //ゲーム用タイマーの設定
   createjs.Ticker.framerate = config.system.framerate;
@@ -89,36 +93,11 @@ function init() {
   mikanConfig.defaultLanguage = "ja";
   initI18n({ resources: stringResources });
 
-  //コンテンツのロードステートに移行
-  const ua = navigator.userAgent;
-
-  globals.gameStage.removeAllChildren();
-  const text = new createjs.Text();
-  setTextProperties(
-    text,
-    globals.gameScrean.width * 0.5,
-    globals.gameScrean.height * 0.5,
-    globals.gameScrean.width * 0.05,
-    "Courier",
-    "center",
-    globals.gameScrean.width * 0.04
-  );
-  text.text = t(Ids.TAP_DISPLAY_INFO);
-
-  globals.gameStage.addChild(text);
-  globals.gameStage.update();
-
-  window.addEventListener(pointerdown, start);
+  loadContent().then(() => to(TopEngine));
 }
 
-function start() {
-  window.removeEventListener(pointerdown, start);
-
-  loadContent().then(() => {
-    to(TopEngine);
-  });
-}
-
-window.addEventListener("load", init, {
-  once: true
-});
+gameLaunchButtonElement.addEventListener("click", init);
+gameLaunchButtonElement.classList.remove(
+  "launch-before-guide__button--initializing"
+);
+gameLaunchButtonElement.classList.add("launch-before-guide__button--ready");

@@ -34,7 +34,7 @@ const RankingList: React.SFC<Props> = props => {
           ...style
         }}
       >
-        {item || <RankItem point={0} rank={0} userName={""} member={""} />}
+        {item || <div>Loading...</div>}
       </div>
     );
   };

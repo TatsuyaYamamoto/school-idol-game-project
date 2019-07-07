@@ -20,13 +20,19 @@
       "trackingCode": {
         "dev": "UA-127664761-2",
         "pro": "UA-127664761-1"
+      },
+      "skyWayApiKey": {
+        "dev": "d6fa606f-3683-48fb-b45f-8e84f6f925cc",
+        "pro": "2c06ac09-231f-4800-bf36-92ba7704ac9d"
       }
     }
   },
   "workspaces": [
     "packages/**/*"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "front-matter": "^3.0.1"
+  },
   "devDependencies": {
     "commitizen": "^2.10.1",
     "cz-conventional-changelog": "^2.1.0",

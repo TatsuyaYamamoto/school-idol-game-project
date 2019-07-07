@@ -5,11 +5,24 @@ import {
   signInAsTwitterUser,
   signOut,
   tracePage,
-  trackEvent
+  trackEvent,
+  getCurrentUrl,
+  copyTextToClipboard,
+  closeModal,
+  getLogger,
+  tweetByWebIntent,
+  convertYyyyMmDd,
+  createUrchinTrackingModuleQuery,
+  showIndicator,
+  hideIndicator,
+  RoomEvents,
+  NtpDate
 } from "@sokontokoro/mikan";
 
 import globals from "../globals";
 import Engine from "./Engine";
+import { getClient, initClient, unixtimeToRoundSeconds } from "../common";
+
 import { soundTurnOff, soundTurnOn } from "../contentsLoader";
 import CreditEngine from "./CreditEngine";
 import HowToPlayEngine from "./HowToPlayEngine";
@@ -23,6 +36,10 @@ import {
   TRACK_ACTION,
   TRACK_PAGES
 } from "../resources/config";
+import OnlineGameEngine from "./OnlineGameEngine";
+import instance from "./TopEngine";
+
+const logger = getLogger("menu-engine");
 
 class MenuEngine extends Engine {
   constructor(props) {
@@ -141,34 +158,128 @@ function onClick2SinglePlay() {
   to(GameEngine);
 }
 
-function onClick2MultiPlay() {
+async function onClick2MultiPlay() {
   globals.soundObj.SOUND_OK.play();
 
   openModal({
-    title: "オンライン対戦モード近日公開！",
-    text: "鋭意開発ちゅん!",
-    actions: [{ text: "OK" }]
+    title: t(Ids.ONLINE_DIALOG_TRY_CONNECT_TITLE),
+    text: t(Ids.ONLINE_DIALOG_TRY_CONNECT_TEXT),
+    actions: []
   });
 
-  // openModal({
-  //   title: t(Ids.ONLINE_DIALOG_PREPARE_TITLE),
-  //   text: t(Ids.ONLINE_DIALOG_PREPARE_TEXT),
-  //   actions: [
-  //     {
-  //       text: t(Ids.ONLINE_DIALOG_PREPARE_CLIPBOARD),
-  //       autoClose: false,
-  //       tooltipText: t(Ids.ONLINE_DIALOG_PREPARE_COPY_SUCCESS),
-  //       onClick: () => {
-  //         const url = getCurrentUrl();
-  //         const peerId = P2PClient.get().peerId;
-  //
-  //         copyTextToClipboard(`${url}?peerId=${peerId}`);
-  //       }
-  //     },
-  //     { text: "Twitter" },
-  //     { text: "cancel", type: "cancel" }
-  //   ]
-  // });
+  await initClient();
+  const client = getClient();
+
+  showIndicator({ text: t(Ids.ONLINE_WAIT_JOIN_MEMBER_INFO_TEXT) });
+
+  let room = client.room;
+
+  if (!room) {
+    room = await client.createRoom("honocar");
+
+    client.on(RoomEvents.MEMBER_FULFILLED, function() {
+      openModal({
+        title: t(Ids.ONLINE_DIALOG_READY_ROOM_TITLE),
+        text: t(Ids.ONLINE_DIALOG_READY_ROOM_TEXT),
+        actions: []
+      });
+    });
+
+    client.on(RoomEvents.ALL_CONNECTIONS_READY, function() {
+      logger.debug(
+        "all room members' connection are ready. start online game."
+      );
+
+      hideIndicator();
+      tryP2pConnect();
+    });
+
+    client.on(RoomEvents.MEMBER_LEFT, id => {
+      logger.debug("room member left. close online mode.", id);
+      leaveOnlineGame();
+    });
+  }
+
+  logger.debug(`success to create or load room. name: ${room.name}`);
+
+  openModal({
+    title: t(Ids.ONLINE_DIALOG_PREPARE_TITLE),
+    html: t(Ids.ONLINE_DIALOG_PREPARE_TEXT),
+    actions: [
+      {
+        text: t(Ids.ONLINE_DIALOG_PREPARE_CLIPBOARD),
+        autoClose: false,
+        tooltipText: t(Ids.ONLINE_DIALOG_PREPARE_COPY_SUCCESS),
+        onClick: () => {
+          const url = getCurrentUrl();
+          copyTextToClipboard(`${url}?roomName=${room.name}`);
+        }
+      },
+      {
+        text: "Twitter",
+        autoClose: false,
+        onClick: () => {
+          const yyyymmdd = convertYyyyMmDd(new Date());
+          const utmQuery = createUrchinTrackingModuleQuery({
+            campaign: `online-game-invite_${yyyymmdd}`,
+            source: "twitter",
+            medium: "social"
+          });
+          const url = `${config.link.game}?roomName=${
+            room.name
+          }&${utmQuery.join("&")}`;
+
+          tweetByWebIntent({
+            text: t(Ids.ONLINE_INVITATION_TWEET_TEXT),
+            url,
+            hashtags: ["ほのCar", "そこんところ工房"]
+          });
+        }
+      },
+      { text: "Close", type: "cancel" }
+    ]
+  });
+}
+
+function tryP2pConnect() {
+  logger.info("success to connect to peer.");
+
+  getClient()
+    .trySyncStartTime()
+    .then(startTime => {
+      const now = NtpDate.now();
+      const timeLeft = now < startTime ? startTime - now : 0;
+
+      openModal({
+        title: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TITLE),
+        text: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TEXT, {
+          timeLeft: unixtimeToRoundSeconds(timeLeft)
+        }),
+        actions: []
+      });
+
+      setTimeout(() => {
+        globals.soundObj.SOUND_ZENKAI.stop();
+        closeModal();
+
+        to(OnlineGameEngine);
+      }, timeLeft);
+    });
+}
+
+function leaveOnlineGame() {
+  getClient().leaveRoom();
+
+  openModal({
+    title: t(Ids.ONLINE_DIALOG_DISCONNECTED_TITLE),
+    text: t(Ids.ONLINE_DIALOG_DISCONNECTED_TEXT),
+    actions: []
+  });
+
+  setTimeout(() => {
+    closeModal();
+    to(instance);
+  }, 3000);
 }
 
 function onClick2HowToPlay() {

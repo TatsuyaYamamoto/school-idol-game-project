@@ -42,15 +42,19 @@ module.exports = {
   mode: isProduction ? "production" : "development",
 
   entry: {
-    bundle: path.resolve(__dirname, "src/js/main.js")
+    app: path.resolve(__dirname, "src/js/main.js")
   },
 
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "[name].js"
+    filename: "[name].bundle.js"
   },
 
   devtool: isProduction ? "none" : "source-map",
+
+  resolve: {
+    extensions: [".js", ".jsx", ".json"]
+  },
 
   module: {
     rules: [
@@ -83,8 +87,16 @@ module.exports = {
     ]
   },
 
-  resolve: {
-    extensions: [".js", ".jsx", ".json"]
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendor",
+          chunks: "all"
+        }
+      }
+    }
   },
 
   plugins,
