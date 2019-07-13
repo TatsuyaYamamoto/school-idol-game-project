@@ -132,12 +132,18 @@ export default class GameoverEngine {
               });
               const url = `${LINK.GAME}?${utmQuery.join("&")}`;
 
-              const mediaData = sendMediaData
-                ? document
+              let mediaData;
+
+              try {
+                if (sendMediaData) {
+                  mediaData = document
                     .getElementById("gameScrean")
                     .toDataURL("image/jpeg")
-                    .replace("data:image/jpeg;base64,", "")
-                : undefined;
+                    .replace("data:image/jpeg;base64,", "");
+                }
+              } catch (e) {
+                console.error(e);
+              }
 
               tweetByWebIntent({
                 text: GameoverEngine.getTweetText(),
