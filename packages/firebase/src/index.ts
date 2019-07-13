@@ -2,6 +2,7 @@ import { initializeApp, firestore } from "firebase-admin";
 
 import version from "./https/version";
 import p2pCredential from "./https/p2pCredential";
+import uploadImageToTwitter from "./https/uploadImageToTwitter";
 
 import onCreatePlaylog from "./trigger/onCreatePlaylog";
 import onCreateRanking from "./trigger/onCreateRanking";
@@ -18,7 +19,7 @@ firestore().settings({
 });
 
 // https
-export { version, p2pCredential };
+export { version, p2pCredential, uploadImageToTwitter };
 
 // Trigger
 export {

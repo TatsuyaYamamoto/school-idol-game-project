@@ -110,12 +110,19 @@ export default class GameoverEngine {
 
       openModal({
         text: "外部サイト(twitter.com)にアクセスします！",
+        input: "checkbox",
+        inputValue: 1,
+        inputPlaceholder: "ツイートにスクリーンショットを含める",
         actions: [
           {
             text: "OK",
             onClick: () => {
               State.object.sound.OK.stop();
               State.object.sound.OK.play();
+
+              // TODO: SweetAlertの機能の範囲でInputValueを受け取る
+              const sendMediaData = document.getElementById("swal2-checkbox")
+                .checked;
 
               const yyyymmdd = convertYyyyMmDd(new Date());
               const utmQuery = createUrchinTrackingModuleQuery({
@@ -125,10 +132,24 @@ export default class GameoverEngine {
               });
               const url = `${LINK.GAME}?${utmQuery.join("&")}`;
 
+              let mediaData;
+
+              try {
+                if (sendMediaData) {
+                  mediaData = document
+                    .getElementById("gameScrean")
+                    .toDataURL("image/jpeg")
+                    .replace("data:image/jpeg;base64,", "");
+                }
+              } catch (e) {
+                console.error(e);
+              }
+
               tweetByWebIntent({
                 text: GameoverEngine.getTweetText(),
                 url,
-                hashtags: ["まるてん", "そこんところ工房"]
+                hashtags: ["まるてん", "そこんところ工房"],
+                mediaData
               });
             }
           },
