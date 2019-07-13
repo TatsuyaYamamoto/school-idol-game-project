@@ -322,6 +322,7 @@ jobs:
       name: default
     steps:
       - checkout
+      - install_git_lfs
       - restore_node_cache
       - check_build_environment
       - run: yarn install
@@ -423,6 +424,17 @@ commands:
             gcloud auth activate-service-account --key-file /tmp/gcloud-service-key.dev.json
             echo $GCP_SERVICE_ACCOUNT_KEY_PRO | base64 --decode > /tmp/gcloud-service-key.pro.json
             gcloud auth activate-service-account --key-file /tmp/gcloud-service-key.pro.json
+
+  install_git_lfs:
+    # https://github.com/git-lfs/git-lfs/wiki/Installation#ubuntu
+    steps:
+      - run:
+          name: Install Git LFS and Pull files
+          command: |
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt-get install git-lfs
+            git lfs install
+            git lfs pull
 
   prepare_build:
     steps:
