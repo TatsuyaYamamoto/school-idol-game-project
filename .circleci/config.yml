@@ -373,7 +373,17 @@ jobs:
         type: enum
         enum: ["dev", "pro"]
     steps:
-      - prepare_gcloud
+      - install_gcloud
+      - run:
+          name: activate gcloud service account
+          command: |
+            if [ "<< parameters.env >>" == "pro" ]; then
+                echo $GCP_SERVICE_ACCOUNT_KEY_PRO | base64 --decode > /tmp/gcloud-service-key.json
+              else
+                echo $GCP_SERVICE_ACCOUNT_KEY_DEV | base64 --decode > /tmp/gcloud-service-key.json
+            fi
+
+            gcloud auth activate-service-account --key-file /tmp/gcloud-service-key.json
       - restore_workspace
       - check_build_environment
       - run: yarn ws << parameters.package >> deploy:<< parameters.env >>
@@ -406,7 +416,7 @@ commands:
             - ~/.cache/yarn
           key: yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
-  prepare_gcloud:
+  install_gcloud:
     steps:
       - run:
           # gcloud install output is too large to display.
@@ -416,17 +426,22 @@ commands:
             export CLOUDSDK_CORE_DISABLE_PROMPTS=1
             curl https://sdk.cloud.google.com | bash  > /dev/null
             echo 'source ~/google-cloud-sdk/path.bash.inc' >> $BASH_ENV
+
+  install_git_lfs:
+    # https://github.com/git-lfs/git-lfs/wiki/Installation#ubuntu
+    steps:
       - run:
-          name: setup gcloud
+          name: Install Git LFS and Pull files
           command: |
-            echo $GCP_SERVICE_ACCOUNT_KEY_DEV | base64 --decode > /tmp/gcloud-service-key.dev.json
-            gcloud auth activate-service-account --key-file /tmp/gcloud-service-key.dev.json
-            echo $GCP_SERVICE_ACCOUNT_KEY_PRO | base64 --decode > /tmp/gcloud-service-key.pro.json
-            gcloud auth activate-service-account --key-file /tmp/gcloud-service-key.pro.json
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt-get install git-lfs
+            git lfs install
+            git lfs pull
 
   prepare_build:
     steps:
       - checkout
+      - install_git_lfs
       - restore_node_cache
       - run: yarn install
 
