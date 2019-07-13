@@ -3,6 +3,7 @@
  */
 import config from "./config";
 import { getLogger } from "./logger";
+import { callHttpsCallable } from "./firebase";
 
 const logger = getLogger("mikan:util");
 
@@ -169,14 +170,25 @@ const TWITTER_INTENT_ENDPOINT = "https://twitter.com/intent/tweet";
 /**
  * @see https://dev.twitter.com/web/tweet-button/web-intent
  */
-export function tweetByWebIntent(params: WebIntentParams) {
+export async function tweetByWebIntent(
+  params: WebIntentParams & { mediaData?: string }
+) {
   const queries: string[] = [];
 
   if (!!params.hashtags) {
     queries.push(`hashtags=${encodeURIComponent(params.hashtags.join(","))}`);
   }
   if (!!params.text) {
-    queries.push(`text=${encodeURIComponent(params.text)}`);
+    if (params.mediaData) {
+      const result = await callHttpsCallable("uploadImageToTwitter", {
+        mediaData: params.mediaData
+      });
+
+      const mediaUrl = result.data.url;
+      queries.push(`text=${encodeURIComponent(params.text)} ${mediaUrl}`);
+    } else {
+      queries.push(`text=${encodeURIComponent(params.text)}`);
+    }
   }
   if (!!params.url) {
     queries.push(`url=${encodeURIComponent(params.url)}`);
