@@ -8,7 +8,7 @@ const client = new Twitter({
   access_token_secret: config().twitter.access_token_secret
 });
 
-export default https.onCall(async (data, _context) => {
+export default https.onCall(async (data, context) => {
   const { mediaData } = data;
 
   if (!mediaData) {
@@ -17,12 +17,15 @@ export default https.onCall(async (data, _context) => {
       message: "mediaData is required."
     };
   }
+
   try {
     const { media_id_string } = await client.post("media/upload", {
       media_data: mediaData
     });
     const status = await client.post("statuses/update.json", {
-      status: `__${new Date().toDateString()}__`,
+      status: `${context.rawRequest.path}/${
+        process.env.GCLOUD_PROJECT
+      }/${new Date().toDateString()}`,
       media_ids: media_id_string
     });
 
