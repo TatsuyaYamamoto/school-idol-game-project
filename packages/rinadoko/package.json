@@ -1,0 +1,19 @@
+{
+  "name": "rinadoko",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack-dev-server --progress --colors --watch"
+  },
+  "dependencies": {
+    "pixi.js": "^5.3.3"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^4.5.0",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.9.7",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  }
+}
