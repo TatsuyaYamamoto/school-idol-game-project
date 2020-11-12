@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
-import { TweenMax, TimelineMax } from "gsap";
-import { State, stateMachineService } from "../";
+import { TimelineMax } from "gsap";
+import { State } from "../";
 import { RinaCandidate } from "../model/RinaCandidate";
 
 export class GameState implements State {
@@ -8,29 +8,31 @@ export class GameState implements State {
 
   private candidates: RinaCandidate[];
   private candidateNumber = 3;
-  private correctIndex: number;
 
   constructor(private context: { app: PIXI.Application; scale: number }) {}
 
   onEnter() {
     const resources = this.context.app.loader.resources;
-
-    this.correctIndex = this.createRandomInteger(0, 3);
-    this.candidates = Array.from(new Array(this.candidateNumber)).map(() => {
-      return new RinaCandidate({
-        scale: this.context.scale,
-        screen: {
-          width: this.context.app.screen.width,
-          height: this.context.app.screen.height
-        },
-        textures: {
-          hako1: resources["hako-1"].texture,
-          hako2: resources["hako-2"].texture,
-          fukidashiNiko: resources["fukidashi-niko"].texture,
-          fukidashiShun: resources["fukidashi-shun"].texture
-        }
-      });
-    });
+    const correctIndex = this.createRandomInteger(0, 3);
+    this.candidates = Array.from(new Array(this.candidateNumber)).map(
+      (_, index) => {
+        return new RinaCandidate({
+          inContainRina: index === correctIndex,
+          scale: this.context.scale,
+          screen: {
+            width: this.context.app.screen.width,
+            height: this.context.app.screen.height
+          },
+          textures: {
+            rina1: resources["rina-1"].texture,
+            hako1: resources["hako-1"].texture,
+            hako2: resources["hako-2"].texture,
+            fukidashiNiko: resources["fukidashi-niko"].texture,
+            fukidashiShun: resources["fukidashi-shun"].texture
+          }
+        });
+      }
+    );
 
     this.candidates[0].container.x = this.context.app.screen.width * 0.2;
     this.candidates[0].container.y = this.context.app.screen.height * 0.5;
@@ -45,16 +47,31 @@ export class GameState implements State {
       ...this.candidates.map(({ container }) => container)
     );
 
-    this.startShuffle();
+    this.initGame();
   }
   onExit() {}
 
-  startShuffle() {
-    this.candidates.map(c => {
-      c.hideArrow();
-      c.hideFukidashi();
-      c.showUnknownBox();
+  initGame() {
+    this.coverBox();
+  }
+
+  coverBox() {
+    const shuffleData = this.generateShuffleData(this.candidateNumber);
+
+    this.candidates.forEach((rina, index) => {
+      rina.container.x = shuffleData[index][0].x;
     });
+    const coverAnimePromise = this.candidates.map((rina, index) =>
+      rina.showCoverBoxAnime()
+    );
+
+    Promise.all(coverAnimePromise).then(() => {
+      this.startShuffle();
+    });
+  }
+
+  startShuffle() {
+    const shuffleData = this.generateShuffleData(this.candidateNumber);
 
     const timelines = this.candidates.map(() => {
       return new TimelineMax({});
@@ -72,15 +89,13 @@ export class GameState implements State {
       this.startSelect();
     });
 
-    const shuffleData = this.generateShuffleData(this.candidateNumber);
-
     shuffleData.forEach((data, index) => {
       const timeline = timelines[index];
       const target = this.candidates[index];
 
       data.forEach(({ x, duration }, index) => {
         if (index === 0) {
-          timeline.set(target.container, { x });
+          // ignore
         } else {
           timeline.to(target.container, duration, { x });
         }
@@ -103,19 +118,23 @@ export class GameState implements State {
   }
 
   checkResult(selectedIndex: number) {
-    if (this.correctIndex === selectedIndex /* 正解！ */) {
-      const rina = this.candidates[selectedIndex];
-      rina.hideArrow();
-      rina.showWinFukidashi();
-      rina.showWinBox();
+    const selectedCandidate = this.candidates[selectedIndex];
+    selectedCandidate.hideArrow();
+    if (selectedCandidate.inContainRina /* 正解！ */) {
+      selectedCandidate.showWinFukidashi();
+      selectedCandidate.showWinBox();
 
       setTimeout(() => {
+        selectedCandidate.hideFukidashi();
+        selectedCandidate.showUnknownBox();
         this.startShuffle();
       }, 1000);
     } /*不正解*/ else {
-      const rina = this.candidates[this.correctIndex];
-      rina.hideArrow();
-      rina.showLoseFukidashi();
+      this.candidates.forEach(c => {
+        if (c.inContainRina) {
+          c.showLoseFukidashi();
+        }
+      });
     }
   }
 

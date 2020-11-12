@@ -1,9 +1,11 @@
 import * as PIXI from "pixi.js";
+import { TimelineMax } from "gsap";
 
 import { SelectArrow } from "./SelectArrow";
 
 export class RinaCandidate {
   private _container: PIXI.Container;
+  private _rinaBody: PIXI.Sprite;
   private _candidateBox: PIXI.Sprite;
   private _fukidashi: PIXI.Sprite;
   private _selectArrow;
@@ -12,7 +14,9 @@ export class RinaCandidate {
     private context: {
       scale: number;
       screen: { width: number; height: number };
+      inContainRina: boolean;
       textures: {
+        rina1: PIXI.Texture;
         hako1: PIXI.Texture;
         hako2: PIXI.Texture;
         fukidashiNiko: PIXI.Texture;
@@ -22,9 +26,14 @@ export class RinaCandidate {
   ) {
     this._container = new PIXI.Container();
 
+    this._rinaBody = PIXI.Sprite.from(context.textures.rina1);
+    this._rinaBody.anchor.set(0.5);
+    this._rinaBody.scale.set(this.context.scale);
+
     this._candidateBox = PIXI.Sprite.from(context.textures.hako1);
     this._candidateBox.anchor.set(0.5, 0.5);
     this._candidateBox.scale.set(context.scale);
+    this._candidateBox.alpha = 0;
 
     this._fukidashi = PIXI.Sprite.from(context.textures.fukidashiNiko);
     this._fukidashi.anchor.set(0.5);
@@ -35,6 +44,9 @@ export class RinaCandidate {
     this._selectArrow = new SelectArrow();
     this._selectArrow.graphics.y = -this.context.screen.height * 0.1;
 
+    if (context.inContainRina) {
+      this._container.addChild(this._rinaBody);
+    }
     this._container.addChild(this._candidateBox);
   }
 
@@ -44,6 +56,10 @@ export class RinaCandidate {
 
   public get boxSprite() {
     return this._candidateBox;
+  }
+
+  public get inContainRina(): boolean {
+    return this.context.inContainRina;
   }
 
   public clickHandler(callback: (() => void) | null) {
@@ -74,6 +90,24 @@ export class RinaCandidate {
 
       callback();
     });
+  }
+
+  public showCoverBoxAnime(): Promise<void> {
+    const timeline = new TimelineMax({ paused: true });
+    timeline.to(this._candidateBox, 1, { alpha: 1 });
+
+    const p = new Promise<void>(resolve => {
+      timeline.eventCallback("onComplete", () => {
+        timeline.eventCallback("onComplete", null);
+
+        // ダンボールで覆ったら、リナちゃんは消す
+        this._rinaBody.alpha = 0;
+
+        resolve();
+      });
+    });
+    timeline.play();
+    return p;
   }
 
   public showUnknownBox() {

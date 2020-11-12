@@ -25,8 +25,8 @@ const scale = canvasWidth / unitWidth;
 export const app = new PIXI.Application({
   width: canvasWidth,
   height: canvasHeight,
-  // transparent: true
-  backgroundColor: 0xeeeeee
+  transparent: true
+  // backgroundColor: 0xeeeeee
 });
 document.getElementById("app").appendChild(app.view);
 const context = { app, scale };
