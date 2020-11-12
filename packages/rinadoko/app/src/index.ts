@@ -6,18 +6,37 @@ import { LoadingState } from "./state/LoadingState";
 import { TitleState } from "./state/TitleState";
 import { GameState } from "./state/GameState";
 
+const canvasWindowAspectRatio = 4 / 3;
+const windowWidth = window.innerWidth;
+const windowHeight = window.innerHeight;
+let canvasWidth;
+let canvasHeight;
+
+if (windowWidth * canvasWindowAspectRatio < windowHeight /*portrait*/) {
+  canvasWidth = windowWidth;
+  canvasHeight = canvasWidth * canvasWindowAspectRatio;
+} /* landscape*/ else {
+  canvasHeight = windowHeight;
+  canvasWidth = canvasHeight / canvasWindowAspectRatio;
+}
+const unitWidth = 4000;
+const scale = canvasWidth / unitWidth;
+
 export const app = new PIXI.Application({
+  width: canvasWidth,
+  height: canvasHeight,
   // transparent: true
   backgroundColor: 0xeeeeee
 });
 document.getElementById("app").appendChild(app.view);
+const context = { app, scale };
 
 const stateInstances = {
-  [IdleState.nodeKey]: new IdleState(app),
-  [LoadingState.nodeKey]: new LoadingState(app),
-  [TitleState.nodeKey]: new TitleState(app),
-  [IdleState.nodeKey]: new IdleState(app),
-  [GameState.nodeKey]: new GameState(app)
+  [IdleState.nodeKey]: new IdleState(context),
+  [LoadingState.nodeKey]: new LoadingState(context),
+  [TitleState.nodeKey]: new TitleState(context),
+  [IdleState.nodeKey]: new IdleState(context),
+  [GameState.nodeKey]: new GameState(context)
 };
 
 /**

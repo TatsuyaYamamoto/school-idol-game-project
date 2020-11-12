@@ -7,7 +7,7 @@ basicText.interactive = true;
 export class TitleState implements State {
   public static nodeKey = "@title";
 
-  constructor(private app: PIXI.Application) {}
+  constructor(private context: { app: PIXI.Application; scale: number }) {}
 
   onEnter() {
     basicText.addListener("pointerdown", e => {
@@ -16,11 +16,11 @@ export class TitleState implements State {
     basicText.x = 50;
     basicText.y = 100;
 
-    this.app.stage.addChild(...[basicText]);
+    this.context.app.stage.addChild(...[basicText]);
   }
 
   onExit() {
-    this.app.stage.removeChild(...[basicText]);
+    this.context.app.stage.removeChild(...[basicText]);
   }
 
   onStartGame() {

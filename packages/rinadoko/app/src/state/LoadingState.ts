@@ -11,13 +11,13 @@ const images = [
 export class LoadingState implements State {
   public static nodeKey = "@loading";
 
-  constructor(private app: PIXI.Application) {}
+  constructor(private context: { app: PIXI.Application; scale: number }) {}
 
   onEnter() {
     images.forEach(image => {
-      this.app.loader.add(image.name, image.url);
+      this.context.app.loader.add(image.name, image.url);
     });
-    this.app.loader.load(() => {
+    this.context.app.loader.load(() => {
       this.goNext();
     });
   }

@@ -14,10 +14,10 @@ export class GameState implements State {
   private candidateBoxTexture: PIXI.Texture;
   private correctBoxTexture: PIXI.Texture;
 
-  constructor(private app: PIXI.Application) {}
+  constructor(private context: { app: PIXI.Application; scale: number }) {}
 
   onEnter() {
-    const resources = this.app.loader.resources;
+    const resources = this.context.app.loader.resources;
 
     this.selectArrow = new PIXI.Graphics();
     this.selectArrow.beginFill(0xff3300);
@@ -32,17 +32,17 @@ export class GameState implements State {
     const fukidashiNikoTexture = resources["fukidashi-niko"].texture;
     this.fukidashiNiko = PIXI.Sprite.from(fukidashiNikoTexture);
     this.fukidashiNiko.anchor.set(0.5);
-    this.fukidashiNiko.scale.set(0.2);
-    this.fukidashiNiko.x = 120;
-    this.fukidashiNiko.y = -100;
+    this.fukidashiNiko.scale.set(this.context.scale);
+    this.fukidashiNiko.x = this.context.app.screen.width * 0.1;
+    this.fukidashiNiko.y = -this.context.app.screen.height * 0.05;
 
     this.candidates = Array.from(new Array(3)).map(() => {
       const container = new PIXI.Container();
 
       this.candidateBoxTexture = resources["hako-1"].texture;
       const candidateBox = PIXI.Sprite.from(this.candidateBoxTexture);
-      candidateBox.anchor.set(0.5);
-      candidateBox.scale.set(0.2);
+      candidateBox.anchor.set(0.5, 0.5);
+      candidateBox.scale.set(this.context.scale);
 
       this.correctBoxTexture = resources["hako-2"].texture;
 
@@ -54,16 +54,18 @@ export class GameState implements State {
       };
     });
 
-    this.candidates[0].container.x = 100;
-    this.candidates[0].container.y = 300;
+    console.log(this.context.app.screen);
 
-    this.candidates[1].container.x = 400;
-    this.candidates[1].container.y = 300;
+    this.candidates[0].container.x = this.context.app.screen.width * 0.2;
+    this.candidates[0].container.y = this.context.app.screen.height * 0.5;
 
-    this.candidates[2].container.x = 700;
-    this.candidates[2].container.y = 300;
+    this.candidates[1].container.x = this.context.app.screen.width * 0.5;
+    this.candidates[1].container.y = this.context.app.screen.height * 0.5;
 
-    this.app.stage.addChild(
+    this.candidates[2].container.x = this.context.app.screen.width * 0.8;
+    this.candidates[2].container.y = this.context.app.screen.height * 0.5;
+
+    this.context.app.stage.addChild(
       ...this.candidates.map(({ container }) => container)
     );
 
@@ -93,9 +95,9 @@ export class GameState implements State {
       this.startSelect();
     });
 
-    const position_1 = 100;
-    const position_2 = 400;
-    const position_3 = 700;
+    const position_1 = this.context.app.screen.width * 0.2;
+    const position_2 = this.context.app.screen.width * 0.5;
+    const position_3 = this.context.app.screen.width * 0.8;
     const unitMoveTime = 0.5;
 
     timelines[0]
