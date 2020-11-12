@@ -5,14 +5,19 @@ import { SelectArrow } from "./SelectArrow";
 export class RinaCandidate {
   private _container: PIXI.Container;
   private _candidateBox: PIXI.Sprite;
-  private _fukidashiNiko: PIXI.Sprite;
+  private _fukidashi: PIXI.Sprite;
   private _selectArrow;
 
   public constructor(
     private context: {
       scale: number;
       screen: { width: number; height: number };
-      textures: { hako1: PIXI.Texture; hako2: PIXI.Texture; fukidashiNiko };
+      textures: {
+        hako1: PIXI.Texture;
+        hako2: PIXI.Texture;
+        fukidashiNiko: PIXI.Texture;
+        fukidashiShun: PIXI.Texture;
+      };
     }
   ) {
     this._container = new PIXI.Container();
@@ -21,11 +26,11 @@ export class RinaCandidate {
     this._candidateBox.anchor.set(0.5, 0.5);
     this._candidateBox.scale.set(context.scale);
 
-    this._fukidashiNiko = PIXI.Sprite.from(context.textures.fukidashiNiko);
-    this._fukidashiNiko.anchor.set(0.5);
-    this._fukidashiNiko.scale.set(this.context.scale);
-    this._fukidashiNiko.x = this.context.screen.width * 0.1;
-    this._fukidashiNiko.y = -this.context.screen.height * 0.05;
+    this._fukidashi = PIXI.Sprite.from(context.textures.fukidashiNiko);
+    this._fukidashi.anchor.set(0.5);
+    this._fukidashi.scale.set(this.context.scale);
+    this._fukidashi.x = this.context.screen.width * 0.1;
+    this._fukidashi.y = -this.context.screen.height * 0.05;
 
     this._selectArrow = new SelectArrow();
     this._selectArrow.graphics.y = -this.context.screen.height * 0.1;
@@ -80,11 +85,17 @@ export class RinaCandidate {
   }
 
   public showWinFukidashi() {
-    this._container.addChild(this._fukidashiNiko);
+    this._fukidashi.texture = this.context.textures.fukidashiNiko;
+    this._container.addChild(this._fukidashi);
+  }
+
+  public showLoseFukidashi() {
+    this._fukidashi.texture = this.context.textures.fukidashiShun;
+    this._container.addChild(this._fukidashi);
   }
 
   public hideFukidashi() {
-    this._container.removeChild(this._fukidashiNiko);
+    this._container.removeChild(this._fukidashi);
   }
 
   public showArrow() {
