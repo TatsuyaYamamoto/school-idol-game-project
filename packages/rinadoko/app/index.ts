@@ -10,23 +10,44 @@ images.forEach(image => {
 });
 
 app.loader.load((loader, resources) => {
-  const hako1 = new PIXI.Sprite(resources["hako-1"].texture);
-  hako1.anchor.set(0.5);
-  hako1.scale.set(0.3);
-  hako1.x = 100;
-  hako1.y = 300;
+  const selectArrow = new PIXI.Graphics();
+  selectArrow.beginFill(0xff3300);
+  selectArrow.lineStyle(4, 0xffd900, 1);
+  selectArrow.moveTo(-150, 0);
+  selectArrow.lineTo(150, 0);
+  selectArrow.lineTo(0, 200);
+  selectArrow.lineTo(-150, 0);
+  selectArrow.closePath();
+  selectArrow.endFill();
 
-  const hako2 = new PIXI.Sprite(resources["hako-1"].texture);
-  hako2.anchor.set(0.5);
-  hako2.scale.set(0.3);
-  hako2.x = 400;
-  hako2.y = 300;
+  const boxes = Array.from(new Array(3)).map(() => {
+    const container = new PIXI.Container();
+    const hako = new PIXI.Sprite(resources["hako-1"].texture);
+    hako.anchor.set(0.5);
+    hako.scale.set(0.3);
+    hako.interactive = true;
+    hako.buttonMode = true;
+    hako.on("pointerover", e => {
+      selectArrow.y = -300;
+      hako.addChild(selectArrow);
+    });
+    hako.on("pointerout", e => {
+      hako.removeChild(selectArrow);
+    });
 
-  const hako3 = new PIXI.Sprite(resources["hako-1"].texture);
-  hako3.anchor.set(0.5);
-  hako3.scale.set(0.3);
-  hako3.x = 700;
-  hako3.y = 300;
+    container.addChild(hako);
 
-  app.stage.addChild(hako1, hako2, hako3);
+    return container;
+  });
+
+  boxes[0].x = 100;
+  boxes[0].y = 300;
+
+  boxes[1].x = 400;
+  boxes[1].y = 300;
+
+  boxes[2].x = 700;
+  boxes[2].y = 300;
+
+  app.stage.addChild(...boxes);
 });

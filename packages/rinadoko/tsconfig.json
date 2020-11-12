@@ -1,3 +1,5 @@
 {
-  "compilerOptions": {}
+  "compilerOptions": {
+    "lib": ["ES6", "DOM"]
+  }
 }
