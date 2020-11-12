@@ -11,6 +11,9 @@ const plugins = [
 module.exports = {
   mode: "development",
 
+  // https://github.com/TypeStrong/ts-loader#devtool--sourcemaps
+  devtool: "inline-source-map",
+
   entry: {
     app: path.resolve(__dirname, "app/index.ts")
   },
