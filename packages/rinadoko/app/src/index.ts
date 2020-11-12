@@ -4,63 +4,38 @@ import { Machine, interpret } from "xstate";
 import { IdleState } from "./state/IdleState";
 import { LoadingState } from "./state/LoadingState";
 import { TitleState } from "./state/TitleState";
+import { GameState } from "./state/GameState";
 
-export const app = new PIXI.Application({ transparent: true });
+export const app = new PIXI.Application({
+  // transparent: true
+  backgroundColor: 0xeeeeee
+});
 document.getElementById("app").appendChild(app.view);
 
 const stateInstances = {
   [IdleState.nodeKey]: new IdleState(app),
   [LoadingState.nodeKey]: new LoadingState(app),
-  [TitleState.nodeKey]: new TitleState(app)
+  [TitleState.nodeKey]: new TitleState(app),
+  [IdleState.nodeKey]: new IdleState(app),
+  [GameState.nodeKey]: new GameState(app)
 };
 
 /**
  * https://xstate.js.org/viz/
  */
-const gameMachine = {
-  initial: "init",
-  states: {
-    init: {
-      on: {
-        startShuffle: "shuffle"
-      }
-    },
-    shuffle: {
-      on: {
-        finished: "waitingForInput"
-      }
-    },
-    waitingForInput: {
-      on: {
-        select: "result"
-      }
-    },
-    result: {
-      on: {
-        correct: "shuffle",
-        incorrect: "gameover"
-      }
-    },
-    gameover: {
-      on: {
-        restart: "init",
-        backTitle: `#app.${TitleState.nodeKey}`
-      }
-    }
-  }
-};
-
 const appMachine = Machine(
   {
     id: "app",
     initial: IdleState.nodeKey,
-    context: {},
+    context: {
+      currentNodeKey: IdleState.nodeKey
+    },
     states: {
       [IdleState.nodeKey]: {
         entry: ["handleStateEntry"],
         exit: ["handleStateExit"],
         on: {
-          launch: LoadingState.nodeKey
+          LAUNCH: LoadingState.nodeKey
         }
       },
       [LoadingState.nodeKey]: {
@@ -74,25 +49,32 @@ const appMachine = Machine(
         entry: ["handleStateEntry"],
         exit: ["handleStateExit"],
         on: {
-          startGame: "game"
+          START_GAME: GameState.nodeKey
         }
       },
-      game: {
-        ...gameMachine
+      [GameState.nodeKey]: {
+        entry: ["handleStateEntry"],
+        exit: ["handleStateExit"],
+        on: {}
       }
     }
   },
   {
     actions: {
       handleStateEntry: (context, event) => {
-        console.log("handleStateEntry", context, event, stateMachineService);
-        const currentNodeKey = stateMachineService.state.value as string;
+        const stateValue = stateMachineService.state.value;
+        const currentNodeKey = stateValue["game"] || stateValue;
+
+        context.currentNodeKey = currentNodeKey;
+        console.log(`entry - ${currentNodeKey}`, context, event);
+
         const currentState = stateInstances[currentNodeKey];
         currentState.onEnter();
       },
       handleStateExit: (context, event) => {
-        console.log("handleStateEntry", context, event, stateMachineService);
-        const currentNodeKey = stateMachineService.state.value as string;
+        const currentNodeKey = context.currentNodeKey;
+        console.log(`exit  - ${currentNodeKey}`, context, event);
+
         const currentState = stateInstances[currentNodeKey];
         currentState.onExit();
       }
@@ -108,4 +90,4 @@ export interface State {
 }
 
 stateMachineService.start();
-stateMachineService.send("launch");
+stateMachineService.send("LAUNCH");

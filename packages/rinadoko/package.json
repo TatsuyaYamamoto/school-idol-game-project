@@ -7,6 +7,7 @@
     "dev": "webpack-dev-server --progress --colors --watch"
   },
   "dependencies": {
+    "gsap": "^3.5.1",
     "pixi.js": "^5.3.3",
     "xstate": "^4.14.0"
   },
