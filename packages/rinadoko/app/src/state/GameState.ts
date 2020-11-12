@@ -8,6 +8,7 @@ export class GameState implements State {
 
   private candidates: RinaCandidate[];
   private candidateNumber = 3;
+  private titleElement;
 
   constructor(private context: { app: PIXI.Application; scale: number }) {}
 
@@ -34,33 +35,29 @@ export class GameState implements State {
       }
     );
 
-    this.candidates[0].container.x = this.context.app.screen.width * 0.2;
-    this.candidates[0].container.y = this.context.app.screen.height * 0.5;
-
-    this.candidates[1].container.x = this.context.app.screen.width * 0.5;
-    this.candidates[1].container.y = this.context.app.screen.height * 0.5;
-
-    this.candidates[2].container.x = this.context.app.screen.width * 0.8;
-    this.candidates[2].container.y = this.context.app.screen.height * 0.5;
+    const shuffleData = this.generateShuffleData(this.candidateNumber);
+    this.candidates.forEach((rina, index) => {
+      rina.container.x = shuffleData[index][0].x;
+      rina.container.y = this.context.app.screen.height * 0.5;
+    });
 
     this.context.app.stage.addChild(
       ...this.candidates.map(({ container }) => container)
     );
 
-    this.initGame();
+    this.titleElement = document.getElementById("title");
+    window.addEventListener("pointerdown", this.initGame);
   }
+
   onExit() {}
 
-  initGame() {
+  initGame = () => {
+    window.removeEventListener("pointerdown", this.initGame);
+    this.titleElement.classList.add("container--hide");
     this.coverBox();
-  }
+  };
 
   coverBox() {
-    const shuffleData = this.generateShuffleData(this.candidateNumber);
-
-    this.candidates.forEach((rina, index) => {
-      rina.container.x = shuffleData[index][0].x;
-    });
     const coverAnimePromise = this.candidates.map((rina, index) =>
       rina.showCoverBoxAnime()
     );

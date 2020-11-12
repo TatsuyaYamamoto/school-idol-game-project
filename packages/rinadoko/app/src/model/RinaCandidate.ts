@@ -80,6 +80,7 @@ export class RinaCandidate {
     this._candidateBox.buttonMode = true;
 
     this._candidateBox.on("pointerover", e => {
+      console.log(e);
       this.showArrow();
     });
     this._candidateBox.on("pointerout", e => {

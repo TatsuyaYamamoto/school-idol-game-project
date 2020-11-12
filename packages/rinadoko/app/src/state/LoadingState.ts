@@ -3,11 +3,11 @@ import * as PIXI from "pixi.js";
 import { State, stateMachineService } from "../";
 
 const images = [
-  { name: "rina-1", url: "images/rina-1.png" },
-  { name: "hako-1", url: "images/hako-1.png" },
-  { name: "hako-2", url: "images/hako-2.png" },
-  { name: "fukidashi-niko", url: "images/fukidashi-niko.png" },
-  { name: "fukidashi-shun", url: "images/fukidashi-shun.png" }
+  { name: "rina-1", url: "assets/images/rina-1.png" },
+  { name: "hako-1", url: "assets/images/hako-1.png" },
+  { name: "hako-2", url: "assets/images/hako-2.png" },
+  { name: "fukidashi-niko", url: "assets/images/fukidashi-niko.png" },
+  { name: "fukidashi-shun", url: "assets/images/fukidashi-shun.png" }
 ];
 
 export class LoadingState implements State {

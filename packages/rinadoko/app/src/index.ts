@@ -3,7 +3,6 @@ import { Machine, interpret } from "xstate";
 
 import { IdleState } from "./state/IdleState";
 import { LoadingState } from "./state/LoadingState";
-import { TitleState } from "./state/TitleState";
 import { GameState } from "./state/GameState";
 
 const canvasWindowAspectRatio = 4 / 3;
@@ -23,6 +22,7 @@ const unitWidth = 4000;
 const scale = canvasWidth / unitWidth;
 
 export const app = new PIXI.Application({
+  view: document.getElementById("pixi") as HTMLCanvasElement,
   width: canvasWidth,
   height: canvasHeight,
   transparent: true
@@ -34,7 +34,6 @@ const context = { app, scale };
 const stateInstances = {
   [IdleState.nodeKey]: new IdleState(context),
   [LoadingState.nodeKey]: new LoadingState(context),
-  [TitleState.nodeKey]: new TitleState(context),
   [IdleState.nodeKey]: new IdleState(context),
   [GameState.nodeKey]: new GameState(context)
 };
@@ -61,14 +60,7 @@ const appMachine = Machine(
         entry: ["handleStateEntry"],
         exit: ["handleStateExit"],
         on: {
-          LOADED: TitleState.nodeKey
-        }
-      },
-      [TitleState.nodeKey]: {
-        entry: ["handleStateEntry"],
-        exit: ["handleStateExit"],
-        on: {
-          START_GAME: GameState.nodeKey
+          LOADED: GameState.nodeKey
         }
       },
       [GameState.nodeKey]: {

@@ -37,7 +37,7 @@ module.exports = {
   },
 
   devServer: {
-    contentBase: path.join(__dirname, "app/assets")
+    contentBase: path.join(__dirname, "app")
   },
 
   plugins: plugins
