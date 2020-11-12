@@ -9,6 +9,7 @@ export class GameState implements State {
   private candidates: RinaCandidate[];
   private candidateNumber = 3;
   private titleElement;
+  private selectGuideElement;
 
   constructor(private context: { app: PIXI.Application; scale: number }) {}
 
@@ -46,6 +47,7 @@ export class GameState implements State {
     );
 
     this.titleElement = document.getElementById("title");
+    this.selectGuideElement = document.getElementById("select-guide");
     window.addEventListener("pointerdown", this.initGame);
   }
 
@@ -103,6 +105,8 @@ export class GameState implements State {
   }
 
   startSelect() {
+    this.showSelectGuide();
+
     this.candidates.forEach((rina, index) => {
       rina.clickHandler(() => {
         this.candidates.forEach(rina => {
@@ -110,6 +114,7 @@ export class GameState implements State {
         });
 
         this.checkResult(index);
+        this.hideSelectGuide();
       });
     });
   }
@@ -171,5 +176,13 @@ export class GameState implements State {
     });
 
     return data;
+  }
+
+  private showSelectGuide() {
+    this.selectGuideElement.style.display = "block";
+  }
+
+  private hideSelectGuide() {
+    this.selectGuideElement.style.display = "none";
   }
 }

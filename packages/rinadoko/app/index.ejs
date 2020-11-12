@@ -36,7 +36,7 @@
       }
 
       .title {
-        margin-bottom: 100px;
+        padding-bottom: 100px;
       }
 
       .title__text {
@@ -52,6 +52,16 @@
         font-family: "PixelMplus12-Bold";
         font-size: 20px
       }
+
+      .select-guide {
+        display: none;
+        padding-bottom: 200px;
+      }
+
+      .select-guide .select-guide__text {
+        font-family: "PixelMplus12-Bold";
+        font-size: 20px
+      }
     </style>
 </head>
 <body>
@@ -63,7 +73,11 @@
             <span class="guide__text">タップしてリナちゃんを見付ける！</span>
         </div>
     </div>
-    <canvas id="pixi"></canvas>
+    <div id="select-guide" class="container select-guide">
+        <span class="select-guide__text">リナちゃんはどこ？</span>
+    </div>
+</div>
+<canvas id="pixi"></canvas>
 </div>
 </body>
 </html>
