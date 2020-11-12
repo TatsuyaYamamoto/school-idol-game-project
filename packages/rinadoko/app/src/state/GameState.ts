@@ -1,15 +1,12 @@
 import * as PIXI from "pixi.js";
 import { TweenMax, TimelineMax } from "gsap";
 import { State, stateMachineService } from "../";
+import { RinaCandidate } from "../model/RinaCandidate";
 
 export class GameState implements State {
   public static nodeKey = "@game";
 
-  private candidates: {
-    container: PIXI.Container;
-    box: PIXI.Sprite;
-  }[];
-  private selectArrow: PIXI.Graphics;
+  private candidates: RinaCandidate[];
   private fukidashiNiko: PIXI.Sprite;
   private candidateBoxTexture: PIXI.Texture;
   private correctBoxTexture: PIXI.Texture;
@@ -19,16 +16,6 @@ export class GameState implements State {
   onEnter() {
     const resources = this.context.app.loader.resources;
 
-    this.selectArrow = new PIXI.Graphics();
-    this.selectArrow.beginFill(0xff3300);
-    this.selectArrow.lineStyle(4, 0xffd900, 1);
-    this.selectArrow.moveTo(-50, 0);
-    this.selectArrow.lineTo(50, 0);
-    this.selectArrow.lineTo(0, 50);
-    this.selectArrow.lineTo(-50, 0);
-    this.selectArrow.closePath();
-    this.selectArrow.endFill();
-
     const fukidashiNikoTexture = resources["fukidashi-niko"].texture;
     this.fukidashiNiko = PIXI.Sprite.from(fukidashiNikoTexture);
     this.fukidashiNiko.anchor.set(0.5);
@@ -37,21 +24,18 @@ export class GameState implements State {
     this.fukidashiNiko.y = -this.context.app.screen.height * 0.05;
 
     this.candidates = Array.from(new Array(3)).map(() => {
-      const container = new PIXI.Container();
-
-      this.candidateBoxTexture = resources["hako-1"].texture;
-      const candidateBox = PIXI.Sprite.from(this.candidateBoxTexture);
-      candidateBox.anchor.set(0.5, 0.5);
-      candidateBox.scale.set(this.context.scale);
-
-      this.correctBoxTexture = resources["hako-2"].texture;
-
-      container.addChild(candidateBox);
-
-      return {
-        container,
-        box: candidateBox
-      };
+      return new RinaCandidate({
+        scale: this.context.scale,
+        screen: {
+          width: this.context.app.screen.width,
+          height: this.context.app.screen.height
+        },
+        textures: {
+          hako1: resources["hako-1"].texture,
+          hako2: resources["hako-2"].texture,
+          fukidashiNiko: resources["fukidashi-niko"].texture
+        }
+      });
     });
 
     console.log(this.context.app.screen);
@@ -74,9 +58,10 @@ export class GameState implements State {
   onExit() {}
 
   startShuffle() {
-    this.candidates.map(({ container, box }) => {
-      box.texture = this.candidateBoxTexture;
-      container.removeChild(this.fukidashiNiko);
+    this.candidates.map(c => {
+      c.hideArrow();
+      c.hideFukidashi();
+      c.showUnknownBox();
     });
 
     const timelines = this.candidates.map(() => {
@@ -127,35 +112,22 @@ export class GameState implements State {
   startSelect() {
     console.log("start select!!");
 
-    this.candidates.forEach(({ container, box }, index) => {
-      box.interactive = true;
-      box.buttonMode = true;
-
-      box.on("pointerover", e => {
-        this.selectArrow.y = -100;
-        container.addChild(this.selectArrow);
-      });
-      box.on("pointerout", e => {
-        container.removeChild(this.selectArrow);
-      });
-      box.on("pointerdown", e => {
-        this.candidates.forEach(({ box }) => {
-          box.interactive = false;
-          box.buttonMode = false;
-          box.off("pointerover");
-          box.off("pointerout");
-          box.off("pointerdown");
+    this.candidates.forEach((rina, index) => {
+      rina.clickHandler(() => {
+        this.candidates.forEach(rina => {
+          rina.clickHandler(null);
         });
+
         this.checkResult(index);
       });
     });
   }
 
   checkResult(index: number) {
-    const { container, box } = this.candidates[index];
-    box.texture = this.correctBoxTexture;
-    container.removeChild(this.selectArrow);
-    container.addChild(this.fukidashiNiko);
+    const candidate = this.candidates[index];
+    candidate.hideArrow();
+    candidate.showWinFukidashi();
+    candidate.showWinBox();
 
     setTimeout(() => {
       this.startShuffle();
