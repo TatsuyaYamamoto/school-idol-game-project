@@ -3,6 +3,7 @@ import PIXISound from "pixi-sound";
 
 import { State, StateEnterParams, stateMachineService } from "../index";
 import { RinaCandidate } from "../model/RinaCandidate";
+import { wait } from "../utils";
 
 export class GameSelectBoxState implements State {
   public static nodeKey = "@game-select-box";
@@ -44,12 +45,16 @@ export class GameSelectBoxState implements State {
       selectedCandidate.showWinFukidashi();
       selectedCandidate.showWinBox();
 
-      setTimeout(() => {
-        selectedCandidate.hideFukidashi();
-        selectedCandidate.showUnknownBox();
-
-        stateMachineService.send("BOX_SELECTED_OK");
-      }, 1000);
+      Promise.resolve()
+        .then(() => wait(1000))
+        .then(() => {
+          selectedCandidate.hideFukidashi();
+          selectedCandidate.showUnknownBox();
+        })
+        .then(() => wait(500))
+        .then(() => {
+          stateMachineService.send("BOX_SELECTED_OK");
+        });
     } /*不正解*/ else {
       this.soundNg.play();
 

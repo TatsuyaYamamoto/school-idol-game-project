@@ -1,3 +1,9 @@
+export const wait = (time: number) => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), time);
+  });
+};
+
 export const createRandomInteger = (min: number, max: number): number => {
   return Math.floor(Math.random() * (max - min)) + min;
 };
