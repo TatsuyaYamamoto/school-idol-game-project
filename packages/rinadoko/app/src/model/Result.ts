@@ -6,6 +6,7 @@ export class Result {
   private _result0: Sprite;
   private _result1: Sprite;
   private _result2: Sprite;
+  private _point: number = 0;
 
   public constructor(
     private context: {
@@ -51,7 +52,13 @@ export class Result {
     return this._container;
   }
 
+  public get point(): number {
+    return this._point;
+  }
+
   public set point(point: number) {
+    this._point = point;
+
     if (point === 0) {
       this._text.text = `ぜんぜん\n見つけられ\nなかった...`;
       this._container.addChild(this._result0);
