@@ -1,9 +1,11 @@
 <html>
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
 
     <title>りなどこ | そこんところ工房</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <script src="https://kit.fontawesome.com/50ec062835.js" crossorigin="anonymous"></script>
     <style>
       @font-face {
         font-family: 'PixelMplus12-Bold';
@@ -64,6 +66,35 @@
         font-family: "PixelMplus12-Bold";
         font-size: 20px
       }
+
+      .share-controller {
+        position: fixed;
+        bottom: 50px;
+      }
+
+      .share-controller--hide {
+        display: none;
+      }
+
+      .share-controller .twitter-share {
+        background-color: #039be5;
+        text-align: center;
+        cursor: pointer;
+
+        padding: 10px;
+        border-radius: 5px;
+      }
+
+      .share-controller .twitter-share .twitter-share__icon {
+        color: white;
+        font-size: 20px
+      }
+
+      .share-controller .twitter-share .twitter-share__label {
+        color: white;
+        font-family: "PixelMplus12-Bold";
+        font-size: 20px
+      }
     </style>
 </head>
 <body>
@@ -77,6 +108,12 @@
     </div>
     <div id="select-guide" class="container select-guide">
         <span class="select-guide__text">リナちゃんはどこ？</span>
+    </div>
+    <div id="share-controller" class="share-controller share-controller--hide">
+        <div id="twitter-share" class="twitter-share">
+            <i class="fab fa-twitter twitter-share__icon"></i>
+            <span class="twitter-share__label">Twitterで結果をつぶやく</span>
+        </div>
     </div>
 </div>
 <canvas id="pixi"></canvas>
