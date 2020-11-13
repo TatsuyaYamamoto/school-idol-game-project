@@ -63,7 +63,9 @@ export class GameResultState implements State {
     });
   }
   onExit({ context }) {
+    this.hideShareController();
     this.context.app.stage.removeChild(this.result.container);
+
     this.pixiState.removeEventListener("pointerdown", this.onTapStage);
     this.twitterShare.removeEventListener(
       "pointerdown",
@@ -78,6 +80,10 @@ export class GameResultState implements State {
 
   showShareController() {
     this.shareController.classList.remove("share-controller--hide");
+  }
+
+  hideShareController() {
+    this.shareController.classList.add("share-controller--hide");
   }
 
   onClickTwitterShare = () => {
