@@ -2,20 +2,36 @@ import * as PIXI from "pixi.js";
 import { TimelineMax } from "gsap";
 import { State } from "../";
 import { RinaCandidate } from "../model/RinaCandidate";
+import { Result } from "../model/Result";
 
 export class GameState implements State {
   public static nodeKey = "@game";
 
   private candidates: RinaCandidate[];
+  private result: Result;
   private candidateNumber = 3;
   private titleElement;
   private selectGuideElement;
+  private findCount = 0;
 
   constructor(private context: { app: PIXI.Application; scale: number }) {}
 
   onEnter() {
     const resources = this.context.app.loader.resources;
     const correctIndex = this.createRandomInteger(0, 3);
+
+    this.result = new Result({
+      scale: this.context.scale,
+      screen: {
+        width: this.context.app.screen.width,
+        height: this.context.app.screen.height
+      },
+      textures: {
+        result0: resources["last-1"].texture,
+        result1: resources["last-2"].texture,
+        result2: resources["last-3"].texture
+      }
+    });
     this.candidates = Array.from(new Array(this.candidateNumber)).map(
       (_, index) => {
         return new RinaCandidate({
@@ -93,7 +109,7 @@ export class GameState implements State {
       const target = this.candidates[index];
 
       data.forEach(({ x, duration }, index) => {
-        if (index === 0) {
+        if (index === 1) {
           // ignore
         } else {
           timeline.to(target.container, duration, { x });
@@ -127,6 +143,8 @@ export class GameState implements State {
       selectedCandidate.showWinBox();
 
       setTimeout(() => {
+        this.findCount += 1;
+
         selectedCandidate.hideFukidashi();
         selectedCandidate.showUnknownBox();
         this.startShuffle();
@@ -137,6 +155,7 @@ export class GameState implements State {
           c.showLoseFukidashi();
         }
       });
+      this.showResult();
     }
   }
 
@@ -176,6 +195,11 @@ export class GameState implements State {
     });
 
     return data;
+  }
+
+  showResult() {
+    this.result.point = this.findCount;
+    this.context.app.stage.addChild(this.result.container);
   }
 
   private showSelectGuide() {

@@ -3,6 +3,9 @@ import * as PIXI from "pixi.js";
 import { State, stateMachineService } from "../";
 
 const images = [
+  { name: "last-1", url: "assets/images/last-1.png" },
+  { name: "last-2", url: "assets/images/last-2.png" },
+  { name: "last-3", url: "assets/images/last-3.png" },
   { name: "rina-1", url: "assets/images/rina-1.png" },
   { name: "hako-1", url: "assets/images/hako-1.png" },
   { name: "hako-2", url: "assets/images/hako-2.png" },

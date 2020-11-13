@@ -5,6 +5,9 @@ import { IdleState } from "./state/IdleState";
 import { LoadingState } from "./state/LoadingState";
 import { GameState } from "./state/GameState";
 
+// https://okayu-moka.hatenablog.com/entry/2019/02/11/160906
+PIXI.TextMetrics.BASELINE_SYMBOL += "あ｜";
+
 const canvasWindowAspectRatio = 4 / 3;
 const windowWidth = window.innerWidth;
 const windowHeight = window.innerHeight;
