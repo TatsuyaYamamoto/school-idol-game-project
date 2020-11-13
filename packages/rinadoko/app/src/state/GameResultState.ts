@@ -52,7 +52,7 @@ export class GameResultState implements State {
     this.context.app.stage.addChild(this.result.container);
 
     this.showShareController();
-    this.soundBgm2.play();
+    this.soundBgm2.play({ volume: 0.2 });
 
     // add event listeners
     setTimeout(() => {

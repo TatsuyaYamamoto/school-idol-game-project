@@ -9,6 +9,8 @@ export class GameTitle implements State {
   public static nodeKey = "@game-title";
 
   private pixiState: HTMLElement;
+  private titleElement: HTMLElement;
+
   private soundButton1: PIXISound.Sound;
   private soundBgm1: PIXISound.Sound;
 
@@ -19,7 +21,9 @@ export class GameTitle implements State {
     const { candidateNumber } = context;
     const correctIndex = createRandomInteger(0, candidateNumber);
 
+    this.titleElement = document.getElementById("title");
     this.pixiState = document.getElementById("pixi");
+
     this.soundButton1 = PIXISound.Sound.from(
       this.context.app.loader.resources["sound_button1"]
     );
@@ -64,8 +68,9 @@ export class GameTitle implements State {
     this.context.app.stage.addChild(
       ...rinaCandidates.map(({ container }) => container)
     );
+    this.showTitle();
 
-    // this.soundBgm1.play({ volume: 0.2, loop: true });
+    this.soundBgm1.play({ volume: 0.2, loop: true });
     setTimeout(() => {
       this.pixiState.addEventListener("pointerdown", this.onGameStart);
     });
@@ -76,13 +81,14 @@ export class GameTitle implements State {
   }
   onGameStart = () => {
     this.soundButton1.play();
+    this.soundBgm1.stop();
+
     stateMachineService.send("GAME_START");
   };
   showTitle() {
-    const titleElement = document.getElementById("title");
+    this.titleElement.classList.remove("container--hide");
   }
   hideTitle() {
-    const titleElement = document.getElementById("title");
-    titleElement.classList.add("container--hide");
+    this.titleElement.classList.add("container--hide");
   }
 }
