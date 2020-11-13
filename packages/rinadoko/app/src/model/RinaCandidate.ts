@@ -95,7 +95,12 @@ export class RinaCandidate {
 
   public showCoverBoxAnime(): Promise<void> {
     const timeline = new TimelineMax({ paused: true });
-    timeline.to(this._candidateBox, 1, { alpha: 1 });
+    timeline.fromTo(
+      this._candidateBox,
+      1,
+      { alpha: 0, y: -this.context.screen.height * 0.05 },
+      { alpha: 1, y: 0 }
+    );
 
     const p = new Promise<void>(resolve => {
       timeline.eventCallback("onComplete", () => {
