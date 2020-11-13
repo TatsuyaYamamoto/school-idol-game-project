@@ -53,7 +53,7 @@ export class Result {
 
   public set point(point: number) {
     if (point === 0) {
-      this._text.text = `ぜんぜん\n見つけられなかった...`;
+      this._text.text = `ぜんぜん\n見つけられ\nなかった...`;
       this._container.addChild(this._result0);
       this._container.addChild(this._text);
     } else if (point < 10) {

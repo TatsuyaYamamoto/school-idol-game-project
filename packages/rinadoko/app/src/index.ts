@@ -35,7 +35,6 @@ export const app = new Application({
   transparent: true
   // backgroundColor: 0xeeeeee
 });
-document.getElementById("app").appendChild(app.view);
 
 /**
  * https://xstate.js.org/viz/
@@ -173,5 +172,20 @@ export interface State {
   onExit(params: StateExitParams): void;
 }
 
-stateMachineService.start();
-stateMachineService.send("LAUNCH");
+window.addEventListener("load", () => {
+  const appElement = document.getElementById("app");
+  const launchBeforeGuide = document.getElementById("launch-before-guide");
+  const launchButton = document.getElementById("game-launch-button");
+
+  const launch = () => {
+    launchBeforeGuide.style.display = "none";
+    appElement.style.display = "flex";
+
+    stateMachineService.start();
+    stateMachineService.send("LAUNCH");
+  };
+
+  launchButton.addEventListener("pointerdown", launch);
+  launchButton.classList.remove("launch-before-guide__button--initializing");
+  launchButton.classList.add("launch-before-guide__button--ready");
+});
