@@ -94,7 +94,7 @@ const appMachine = Machine(
         exit: ["handleStateExit"],
         on: {
           BOX_SELECTED_OK: {
-            target: GameResultState.nodeKey,
+            target: GameShuffleState.nodeKey,
             actions: [
               assign({
                 // @ts-ignore
@@ -108,7 +108,9 @@ const appMachine = Machine(
       [GameResultState.nodeKey]: {
         entry: ["handleStateEntry"],
         exit: ["handleStateExit"],
-        on: {}
+        on: {
+          RESTART: GameTitle.nodeKey
+        }
       }
     },
     on: {
