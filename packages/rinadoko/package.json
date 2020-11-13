@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "gsap": "^3.5.1",
+    "pixi-sound": "^3.0.5",
     "pixi.js": "^5.3.3",
     "xstate": "^4.14.0"
   },

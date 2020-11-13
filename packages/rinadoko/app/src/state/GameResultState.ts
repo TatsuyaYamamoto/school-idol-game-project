@@ -1,4 +1,6 @@
 import * as PIXI from "pixi.js";
+import PIXISound from "pixi-sound";
+
 import { State, StateEnterParams, stateMachineService } from "../index";
 import { Result } from "../model/Result";
 import { tweetByWebIntent } from "@sokontokoro/mikan/dist/utils";
@@ -10,6 +12,8 @@ export class GameResultState implements State {
   private twitterShare: HTMLElement;
   private pixiState: HTMLElement;
   private result: Result;
+  private soundButton1: PIXISound.Sound;
+  private soundBgm2: PIXISound.Sound;
 
   constructor(private context: { app: PIXI.Application; scale: number }) {}
 
@@ -18,6 +22,13 @@ export class GameResultState implements State {
 
     this.shareController = document.getElementById("share-controller");
     this.twitterShare = document.getElementById("twitter-share");
+    this.pixiState = document.getElementById("pixi");
+    this.soundButton1 = PIXISound.Sound.from(
+      this.context.app.loader.resources["sound_button1"]
+    );
+    this.soundBgm2 = PIXISound.Sound.from(
+      this.context.app.loader.resources["sound_bgm2"]
+    );
 
     this.result = new Result({
       scale: this.context.scale,
@@ -39,11 +50,17 @@ export class GameResultState implements State {
     );
     this.context.app.stage.addChild(this.result.container);
 
-    this.pixiState = document.getElementById("pixi");
-    this.pixiState.addEventListener("pointerdown", this.onTapStage);
-    this.twitterShare.addEventListener("pointerdown", this.onClickTwitterShare);
-
     this.showShareController();
+    this.soundBgm2.play();
+
+    // add event listeners
+    setTimeout(() => {
+      this.pixiState.addEventListener("pointerdown", this.onTapStage);
+      this.twitterShare.addEventListener(
+        "pointerdown",
+        this.onClickTwitterShare
+      );
+    });
   }
   onExit({ context }) {
     this.context.app.stage.removeChild(this.result.container);
@@ -54,9 +71,10 @@ export class GameResultState implements State {
     );
   }
 
-  onTapStage() {
+  onTapStage = () => {
+    this.soundButton1.play();
     stateMachineService.send("RESTART");
-  }
+  };
 
   showShareController() {
     this.shareController.classList.remove("share-controller--hide");

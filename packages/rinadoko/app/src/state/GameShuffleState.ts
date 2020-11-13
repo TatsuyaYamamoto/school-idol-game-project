@@ -1,5 +1,5 @@
-import * as PIXI from "pixi.js";
 import { TimelineMax } from "gsap";
+import PIXISound from "pixi-sound";
 
 import { State, StateEnterParams, stateMachineService } from "../index";
 import { generateShuffleData } from "../utils";
@@ -14,6 +14,10 @@ export class GameShuffleState implements State {
 
   onEnter({ context }: StateEnterParams) {
     const { candidateNumber, rinaCandidates } = context;
+    const moveSound = PIXISound.Sound.from(
+      this.context.app.loader.resources["sound_move1"]
+    );
+
     this.rinaCandidates = rinaCandidates;
     const shuffleData = generateShuffleData(
       [
@@ -46,7 +50,12 @@ export class GameShuffleState implements State {
 
       data.forEach(({ x, duration }) => {
         timeline.to(target.container, duration, {
-          x
+          x,
+          onStart: () => {
+            if (candidateIndex === 0) {
+              moveSound.play();
+            }
+          }
         });
       });
     });

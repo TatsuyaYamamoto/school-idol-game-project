@@ -10,7 +10,14 @@ const images = [
   { name: "hako-1", url: "assets/images/hako-1.png" },
   { name: "hako-2", url: "assets/images/hako-2.png" },
   { name: "fukidashi-niko", url: "assets/images/fukidashi-niko.png" },
-  { name: "fukidashi-shun", url: "assets/images/fukidashi-shun.png" }
+  { name: "fukidashi-shun", url: "assets/images/fukidashi-shun.png" },
+  // sound
+  { name: "sound_move1", url: "assets/sounds/move1.128k.aac" },
+  { name: "sound_button1", url: "assets/sounds/button1.128k.aac" },
+  { name: "sound_ok", url: "assets/sounds/ok.128k.aac" },
+  { name: "sound_ng", url: "assets/sounds/ng.128k.aac" },
+  { name: "sound_bgm1", url: "assets/sounds/bgm1.128k.aac" },
+  { name: "sound_bgm2", url: "assets/sounds/bgm2.128k.aac" }
 ];
 
 export class LoadingState implements State {

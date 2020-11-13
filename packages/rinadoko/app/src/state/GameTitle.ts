@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import PIXISound from "pixi-sound";
 
 import { State, StateEnterParams, stateMachineService } from "../index";
 import { createRandomInteger, generateShuffleData } from "../utils";
@@ -7,12 +8,24 @@ import { RinaCandidate } from "../model/RinaCandidate";
 export class GameTitle implements State {
   public static nodeKey = "@game-title";
 
+  private pixiState: HTMLElement;
+  private soundButton1: PIXISound.Sound;
+  private soundBgm1: PIXISound.Sound;
+
   constructor(private context: { app: PIXI.Application; scale: number }) {}
 
   onEnter({ context }: StateEnterParams) {
     const resources = this.context.app.loader.resources;
     const { candidateNumber } = context;
     const correctIndex = createRandomInteger(0, candidateNumber);
+
+    this.pixiState = document.getElementById("pixi");
+    this.soundButton1 = PIXISound.Sound.from(
+      this.context.app.loader.resources["sound_button1"]
+    );
+    this.soundBgm1 = PIXISound.Sound.from(
+      this.context.app.loader.resources["sound_bgm1"]
+    );
 
     const rinaCandidates = Array.from(new Array(candidateNumber)).map(
       (_, index) => {
@@ -52,15 +65,19 @@ export class GameTitle implements State {
       ...rinaCandidates.map(({ container }) => container)
     );
 
-    window.addEventListener("pointerdown", this.onGameStar);
+    // this.soundBgm1.play({ volume: 0.2, loop: true });
+    setTimeout(() => {
+      this.pixiState.addEventListener("pointerdown", this.onGameStart);
+    });
   }
   onExit({ context }) {
     this.hideTitle();
-    window.removeEventListener("pointerdown", this.onGameStar);
+    this.pixiState.removeEventListener("pointerdown", this.onGameStart);
   }
-  onGameStar() {
+  onGameStart = () => {
+    this.soundButton1.play();
     stateMachineService.send("GAME_START");
-  }
+  };
   showTitle() {
     const titleElement = document.getElementById("title");
   }
