@@ -14,7 +14,7 @@ export class GameShuffleState implements State {
   constructor(private context: { app: Application; scale: number }) {}
 
   onEnter({ context }: StateEnterParams) {
-    const { candidateNumber, rinaCandidates } = context;
+    const { candidateNumber, rinaCandidates, moveDuration } = context;
     const moveSound = PIXISound.Sound.from(
       this.context.app.loader.resources["sound_move1"]
     );
@@ -49,8 +49,8 @@ export class GameShuffleState implements State {
       const timeline = timelines[candidateIndex];
       const target = this.rinaCandidates[candidateIndex];
 
-      data.forEach(({ x, duration }) => {
-        timeline.to(target.container, duration, {
+      data.forEach(({ x }) => {
+        timeline.to(target.container, moveDuration, {
           x,
           onStart: () => {
             if (candidateIndex === 0) {

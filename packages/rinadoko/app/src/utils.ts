@@ -11,11 +11,10 @@ export const createRandomInteger = (min: number, max: number): number => {
 export const generateShuffleData = (
   positions: number[],
   moveTime: number
-): { x: number; duration: number }[][] => {
-  const data: { x: number; duration: number }[][] = [];
+): { x: number }[][] => {
+  const data: { x: number }[][] = [];
 
   const candidateNumber = positions.length;
-  const unitMoveTime = 0.5;
 
   Array.from(new Array(candidateNumber)).forEach((_, candidateIndex) => {
     data.push([]);
@@ -30,8 +29,7 @@ export const generateShuffleData = (
       positionIndexes.splice(random, 1);
       const x = positions[positionIndex];
       data[candidateIndex].push({
-        x,
-        duration: unitMoveTime
+        x
       });
     });
   });

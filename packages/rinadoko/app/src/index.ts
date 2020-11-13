@@ -30,6 +30,9 @@ if (windowWidth * canvasWindowAspectRatio < windowHeight /*portrait*/) {
 const unitWidth = 4000;
 const scale = canvasWidth / unitWidth;
 
+const MAX_MOVE_DURATION = 0.5;
+const MIN_MOVE_DURATION = 0.2;
+
 export const app = new Application({
   view: document.getElementById("pixi") as HTMLCanvasElement,
   width: canvasWidth,
@@ -48,6 +51,7 @@ const appMachine = Machine(
     context: {
       correctSelectCount: 0,
       candidateNumber: 3,
+      moveDuration: MAX_MOVE_DURATION,
       currentNodeKey: IdleState.nodeKey,
       rinaCandidates: []
     },
@@ -73,7 +77,12 @@ const appMachine = Machine(
         on: {
           GAME_START: {
             target: GameCoverBoxState.nodeKey,
-            actions: [assign({ correctSelectCount: () => 0 })]
+            actions: [
+              assign({
+                correctSelectCount: () => 0,
+                moveDuration: () => MAX_MOVE_DURATION
+              })
+            ]
           }
         }
       },
@@ -100,7 +109,17 @@ const appMachine = Machine(
             actions: [
               assign({
                 // @ts-ignore
-                correctSelectCount: context => context.correctSelectCount + 1
+                correctSelectCount: context => context.correctSelectCount + 1,
+
+                moveDuration: context => {
+                  // @ts-ignore
+                  if (context.moveDuration <= MIN_MOVE_DURATION) {
+                    return MIN_MOVE_DURATION;
+                  } else {
+                    // @ts-ignore
+                    return context.moveDuration - 0.02;
+                  }
+                }
               })
             ]
           },
