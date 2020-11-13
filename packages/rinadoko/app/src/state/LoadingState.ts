@@ -23,9 +23,17 @@ const images = [
 export class LoadingState implements State {
   public static nodeKey = "@loading";
 
+  private appElement: HTMLElement;
+  private launchBeforeGuide: HTMLElement;
+  private launchButton: HTMLElement;
+
   constructor(private context: { app: Application; scale: number }) {}
 
   onEnter({ context }: StateEnterParams) {
+    this.appElement = document.getElementById("app");
+    this.launchBeforeGuide = document.getElementById("launch-before-guide");
+    this.launchButton = document.getElementById("game-launch-button");
+
     images.forEach(image => {
       this.context.app.loader.add(image.name, image.url);
     });
@@ -33,8 +41,21 @@ export class LoadingState implements State {
       this.goNext();
     });
   }
-  onExit({ context }) {}
+  onExit({ context }) {
+    this.launchButton.removeEventListener("pointerdown", this.appLaunch);
+  }
+
+  appLaunch = () => {
+    this.launchBeforeGuide.style.display = "none";
+    this.appElement.style.display = "flex";
+    stateMachineService.send("SHOW_TITLE");
+  };
+
   goNext() {
-    stateMachineService.send("LOADED");
+    this.launchButton.addEventListener("pointerdown", this.appLaunch);
+    this.launchButton.classList.remove(
+      "launch-before-guide__button--initializing"
+    );
+    this.launchButton.classList.add("launch-before-guide__button--ready");
   }
 }
