@@ -1,9 +1,13 @@
 import * as PIXI from "pixi.js";
-import { Machine, interpret } from "xstate";
+import { Machine, interpret, assign } from "xstate";
 
 import { IdleState } from "./state/IdleState";
 import { LoadingState } from "./state/LoadingState";
-import { GameState } from "./state/GameState";
+import { GameTitle } from "./state/GameTitle";
+import { GameCoverBoxState } from "./state/GameCoverBoxState";
+import { GameShuffleState } from "./state/GameShuffleState";
+import { GameSelectBoxState } from "./state/GameSelectBoxState";
+import { GameResultState } from "./state/GameResultState";
 
 // https://okayu-moka.hatenablog.com/entry/2019/02/11/160906
 PIXI.TextMetrics.BASELINE_SYMBOL += "あ｜";
@@ -32,14 +36,6 @@ export const app = new PIXI.Application({
   // backgroundColor: 0xeeeeee
 });
 document.getElementById("app").appendChild(app.view);
-const context = { app, scale };
-
-const stateInstances = {
-  [IdleState.nodeKey]: new IdleState(context),
-  [LoadingState.nodeKey]: new LoadingState(context),
-  [IdleState.nodeKey]: new IdleState(context),
-  [GameState.nodeKey]: new GameState(context)
-};
 
 /**
  * https://xstate.js.org/viz/
@@ -49,7 +45,10 @@ const appMachine = Machine(
     id: "app",
     initial: IdleState.nodeKey,
     context: {
-      currentNodeKey: IdleState.nodeKey
+      correctSelectCount: 0,
+      candidateNumber: 3,
+      currentNodeKey: IdleState.nodeKey,
+      rinaCandidates: []
     },
     states: {
       [IdleState.nodeKey]: {
@@ -63,44 +62,113 @@ const appMachine = Machine(
         entry: ["handleStateEntry"],
         exit: ["handleStateExit"],
         on: {
-          LOADED: GameState.nodeKey
+          LOADED: GameTitle.nodeKey
         }
       },
-      [GameState.nodeKey]: {
+      [GameTitle.nodeKey]: {
+        entry: ["handleStateEntry"],
+        exit: ["handleStateExit"],
+        on: {
+          GAME_START: {
+            target: GameCoverBoxState.nodeKey,
+            actions: [assign({ correctSelectCount: () => 0 })]
+          }
+        }
+      },
+      [GameCoverBoxState.nodeKey]: {
+        entry: ["handleStateEntry"],
+        exit: ["handleStateExit"],
+        on: {
+          COVER_BOX_COMPLETED: GameShuffleState.nodeKey
+        }
+      },
+      [GameShuffleState.nodeKey]: {
+        entry: ["handleStateEntry"],
+        exit: ["handleStateExit"],
+        on: {
+          SHUFFLE_COMPLETED: GameSelectBoxState.nodeKey
+        }
+      },
+      [GameSelectBoxState.nodeKey]: {
+        entry: ["handleStateEntry"],
+        exit: ["handleStateExit"],
+        on: {
+          BOX_SELECTED_OK: {
+            target: GameResultState.nodeKey,
+            actions: [
+              assign({
+                // @ts-ignore
+                correctSelectCount: context => context.correctSelectCount + 1
+              })
+            ]
+          },
+          BOX_SELECTED_NG: GameResultState.nodeKey
+        }
+      },
+      [GameResultState.nodeKey]: {
         entry: ["handleStateEntry"],
         exit: ["handleStateExit"],
         on: {}
+      }
+    },
+    on: {
+      "rinaCandidates.UPDATE": {
+        actions: assign({
+          // @ts-ignore
+          rinaCandidates: (_, event) => event.rinaCandidates
+        })
       }
     }
   },
   {
     actions: {
       handleStateEntry: (context, event) => {
-        const stateValue = stateMachineService.state.value;
-        const currentNodeKey = stateValue["game"] || stateValue;
+        const currentNodeKey = stateMachineService.state.value as string;
 
         context.currentNodeKey = currentNodeKey;
         console.log(`entry - ${currentNodeKey}`, context, event);
 
         const currentState = stateInstances[currentNodeKey];
-        currentState.onEnter();
+        currentState.onEnter({ context });
       },
       handleStateExit: (context, event) => {
         const currentNodeKey = context.currentNodeKey;
         console.log(`exit  - ${currentNodeKey}`, context, event);
 
         const currentState = stateInstances[currentNodeKey];
-        currentState.onExit();
+        currentState.onExit({ context });
       }
     }
   }
 );
 
+export type StateMachineContext = typeof appMachine["context"];
+
+const context = { app, scale };
+const stateInstances = {
+  [IdleState.nodeKey]: new IdleState(context),
+  [LoadingState.nodeKey]: new LoadingState(context),
+  [IdleState.nodeKey]: new IdleState(context),
+  [GameTitle.nodeKey]: new GameTitle(context),
+  [GameCoverBoxState.nodeKey]: new GameCoverBoxState(context),
+  [GameShuffleState.nodeKey]: new GameShuffleState(context),
+  [GameSelectBoxState.nodeKey]: new GameSelectBoxState(context),
+  [GameResultState.nodeKey]: new GameResultState(context)
+};
+
 export const stateMachineService = interpret(appMachine);
 
+export type StateEnterParams = {
+  context: StateMachineContext;
+};
+
+export type StateExitParams = {
+  context: StateMachineContext;
+};
+
 export interface State {
-  onEnter();
-  onExit();
+  onEnter(params: StateEnterParams): void;
+  onExit(params: StateExitParams): void;
 }
 
 stateMachineService.start();

@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-import { State, stateMachineService } from "../";
+import { State, StateEnterParams, stateMachineService } from "../";
 
 const images = [
   { name: "last-1", url: "assets/images/last-1.png" },
@@ -18,7 +18,7 @@ export class LoadingState implements State {
 
   constructor(private context: { app: PIXI.Application; scale: number }) {}
 
-  onEnter() {
+  onEnter({ context }: StateEnterParams) {
     images.forEach(image => {
       this.context.app.loader.add(image.name, image.url);
     });
@@ -26,7 +26,7 @@ export class LoadingState implements State {
       this.goNext();
     });
   }
-  onExit() {}
+  onExit({ context }) {}
   goNext() {
     stateMachineService.send("LOADED");
   }

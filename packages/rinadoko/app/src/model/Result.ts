@@ -26,7 +26,7 @@ export class Result {
     this._container.y = this.context.screen.height * 0.5;
 
     this._text = new PIXI.Text(
-      this.getText(0),
+      "",
       new PIXI.TextStyle({
         fontFamily: "PixelMplus12-Bold",
         fontSize: 300 * this.context.scale,
@@ -36,17 +36,18 @@ export class Result {
     this._text.anchor.set(0.5);
     this._text.y = -this.context.screen.height * 0.3;
 
+    const imageScaleTuning = 4;
     this._result0 = PIXI.Sprite.from(context.textures.result0);
     this._result0.anchor.set(0.5);
-    this._result0.scale.set(this.context.scale * 2);
+    this._result0.scale.set(this.context.scale * imageScaleTuning);
 
     this._result1 = PIXI.Sprite.from(context.textures.result1);
     this._result1.anchor.set(0.5);
-    this._result1.scale.set(this.context.scale * 2);
+    this._result1.scale.set(this.context.scale * imageScaleTuning);
 
     this._result2 = PIXI.Sprite.from(context.textures.result2);
     this._result2.anchor.set(0.5);
-    this._result2.scale.set(this.context.scale * 2);
+    this._result2.scale.set(this.context.scale * imageScaleTuning);
   }
 
   public get container() {
@@ -67,9 +68,5 @@ export class Result {
       this._container.addChild(this._result2);
       this._container.addChild(this._text);
     }
-  }
-
-  private getText(point: number) {
-    return `${point}回\n見つけられたよ！`;
   }
 }
