@@ -1,6 +1,8 @@
 import { Application, TextMetrics } from "pixi.js";
 import { Machine, interpret, assign } from "xstate";
 
+import { init as initTracker } from "@sokontokoro/mikan/dist/Tracker";
+
 import { IdleState } from "./state/IdleState";
 import { LoadingState } from "./state/LoadingState";
 import { GameTitle } from "./state/GameTitle";
@@ -173,6 +175,8 @@ export interface State {
 }
 
 window.addEventListener("load", () => {
+  initTracker();
+
   const appElement = document.getElementById("app");
   const launchBeforeGuide = document.getElementById("launch-before-guide");
   const launchButton = document.getElementById("game-launch-button");

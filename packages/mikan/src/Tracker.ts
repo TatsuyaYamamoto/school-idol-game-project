@@ -21,14 +21,16 @@
  * @param uid
  * @param firstPath
  */
-export function init(uid: string) {
+export function init(uid?: string) {
   const trackingCode = (<any>window)["__TRACKING_CODE__"];
 
   // @ts-ignore
   gtag("js", new Date());
 
-  // @ts-ignore
-  gtag("set", { user_id: uid });
+  if (uid) {
+    // @ts-ignore
+    gtag("set", { user_id: uid });
+  }
 
   // @ts-ignore
   gtag("config", trackingCode, { send_page_view: false });

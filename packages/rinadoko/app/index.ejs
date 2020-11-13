@@ -19,96 +19,27 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/platform/1.3.5/platform.min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="./assets/css/launch-before-guide.css" />
-<style>
-    @font-face {
-        font-family: 'PixelMplus12-Bold';
-        src: url(assets/fonts/PixelMplus12-Bold.ttf);
-    }
+<link rel="stylesheet" type="text/css" href="./assets/css/app.css" />
 
-    body {
-        margin: 0;
-    }
+<!-- Global site tag (tracker.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=<%= trackingCode %>"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
 
-    #app {
-        display: flex;
-        height: 100vh;
-        /* https://zenn.dev/tak_dcxi/articles/2ac77656aa94c2cd40bf */
-        height: -webkit-fill-available;
-        justify-content: center;
-        align-items: center;
+  function gtag() {
+    dataLayer.push(arguments);
+  }
 
-        background-image: url("./assets/images/back.png");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: right 10% bottom 50%;
-    }
+  // init ga in mikan/Tracker
+  window.__TRACKING_CODE__ = '<%= trackingCode %>';
+</script>
 
-    .container {
-        position: absolute;
-        pointer-events: none;
-    }
-
-    .container--hide {
-        opacity: 0;
-    }
-
-    .title {
-        padding-bottom: 100px;
-    }
-
-    .title__text {
-        font-family: "PixelMplus12-Bold";
-        font-size: 40px
-    }
-
-    .guide {
-        text-align: center;
-    }
-
-    .guide__text {
-        font-family: "PixelMplus12-Bold";
-        font-size: 20px
-    }
-
-    .select-guide {
-        display: none;
-        padding-bottom: 200px;
-    }
-
-    .select-guide .select-guide__text {
-        font-family: "PixelMplus12-Bold";
-        font-size: 20px
-    }
-
-    .share-controller {
-        position: fixed;
-        bottom: 50px;
-    }
-
-    .share-controller--hide {
-        display: none;
-    }
-
-    .share-controller .twitter-share {
-        background-color: #039be5;
-        text-align: center;
-        cursor: pointer;
-
-        padding: 10px;
-        border-radius: 5px;
-    }
-
-    .share-controller .twitter-share .twitter-share__icon {
-        color: white;
-        font-size: 20px
-    }
-
-    .share-controller .twitter-share .twitter-share__label {
-        color: white;
-        font-family: "PixelMplus12-Bold";
-        font-size: 20px
-    }
-</style>
+<script>
+  window.addEventListener("error", function(e) {
+    console.error(e);
+    gtag("event", "exception", { description: e.message, fatal: true });
+  });
+</script>
 </head>
 <body>
 <div id="launch-before-guide" class="launch-before-guide">

@@ -1,6 +1,7 @@
 import { Application } from "pixi.js";
 import PIXISound from "pixi-sound";
 import { tweetByWebIntent } from "@sokontokoro/mikan/dist/utils";
+import { trackEvent } from "@sokontokoro/mikan/dist/Tracker";
 
 import { State, StateEnterParams, stateMachineService } from "../index";
 import { Result } from "../model/Result";
@@ -60,6 +61,12 @@ export class GameResultState implements State {
         "pointerdown",
         this.onClickTwitterShare
       );
+    });
+
+    // tracking
+    trackEvent("pointerdown", {
+      label: "result",
+      value: this.result.point
     });
   }
   onExit({ context }) {
