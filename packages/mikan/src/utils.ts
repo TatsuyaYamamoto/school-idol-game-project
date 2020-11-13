@@ -3,7 +3,6 @@
  */
 import config from "./config";
 import { getLogger } from "./logger";
-import { callHttpsCallable } from "./firebase";
 
 const logger = getLogger("mikan:util");
 
@@ -180,12 +179,13 @@ export async function tweetByWebIntent(
   }
   if (!!params.text) {
     if (params.mediaData) {
-      const result = await callHttpsCallable("uploadImageToTwitter", {
-        mediaData: params.mediaData
-      });
-
-      const mediaUrl = result.data.url;
-      queries.push(`text=${encodeURIComponent(params.text)} ${mediaUrl}`);
+      // TODO: use http://localhost:5001/sokontokoro-factory-develop/us-central1/httpsApp/twitter/media/upload
+      // const result = await callHttpsCallable("uploadImageToTwitter", {
+      //   mediaData: params.mediaData
+      // });
+      //
+      // const mediaUrl = result.data.url;
+      // queries.push(`text=${encodeURIComponent(params.text)} ${mediaUrl}`);
     } else {
       queries.push(`text=${encodeURIComponent(params.text)}`);
     }

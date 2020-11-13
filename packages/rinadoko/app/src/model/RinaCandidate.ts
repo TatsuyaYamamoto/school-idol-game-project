@@ -1,13 +1,13 @@
-import * as PIXI from "pixi.js";
+import { Container, Sprite, Texture } from "pixi.js";
 import { TimelineMax } from "gsap";
 
 import { SelectArrow } from "./SelectArrow";
 
 export class RinaCandidate {
-  private _container: PIXI.Container;
-  private _rinaBody: PIXI.Sprite;
-  private _candidateBox: PIXI.Sprite;
-  private _fukidashi: PIXI.Sprite;
+  private _container: Container;
+  private _rinaBody: Sprite;
+  private _candidateBox: Sprite;
+  private _fukidashi: Sprite;
   private _selectArrow;
 
   public constructor(
@@ -16,26 +16,26 @@ export class RinaCandidate {
       screen: { width: number; height: number };
       inContainRina: boolean;
       textures: {
-        rina1: PIXI.Texture;
-        hako1: PIXI.Texture;
-        hako2: PIXI.Texture;
-        fukidashiNiko: PIXI.Texture;
-        fukidashiShun: PIXI.Texture;
+        rina1: Texture;
+        hako1: Texture;
+        hako2: Texture;
+        fukidashiNiko: Texture;
+        fukidashiShun: Texture;
       };
     }
   ) {
-    this._container = new PIXI.Container();
+    this._container = new Container();
 
-    this._rinaBody = PIXI.Sprite.from(context.textures.rina1);
+    this._rinaBody = Sprite.from(context.textures.rina1);
     this._rinaBody.anchor.set(0.5);
     this._rinaBody.scale.set(this.context.scale);
 
-    this._candidateBox = PIXI.Sprite.from(context.textures.hako1);
+    this._candidateBox = Sprite.from(context.textures.hako1);
     this._candidateBox.anchor.set(0.5, 0.5);
     this._candidateBox.scale.set(context.scale);
     this._candidateBox.alpha = 0;
 
-    this._fukidashi = PIXI.Sprite.from(context.textures.fukidashiNiko);
+    this._fukidashi = Sprite.from(context.textures.fukidashiNiko);
     this._fukidashi.anchor.set(0.5);
     this._fukidashi.scale.set(this.context.scale);
     this._fukidashi.x = this.context.screen.width * 0.1;

@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import { Application } from "pixi.js";
 import { State, StateEnterParams, stateMachineService } from "../index";
 import { RinaCandidate } from "../model/RinaCandidate";
 
@@ -7,7 +7,7 @@ export class GameCoverBoxState implements State {
 
   private rinaCandidates: RinaCandidate[];
 
-  constructor(private context: { app: PIXI.Application; scale: number }) {}
+  constructor(private context: { app: Application; scale: number }) {}
 
   onEnter({ context }: StateEnterParams) {
     this.rinaCandidates = context.rinaCandidates;

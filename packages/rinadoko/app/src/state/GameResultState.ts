@@ -1,9 +1,9 @@
-import * as PIXI from "pixi.js";
+import { Application } from "pixi.js";
 import PIXISound from "pixi-sound";
+import { tweetByWebIntent } from "@sokontokoro/mikan/dist/utils";
 
 import { State, StateEnterParams, stateMachineService } from "../index";
 import { Result } from "../model/Result";
-import { tweetByWebIntent } from "@sokontokoro/mikan/dist/utils";
 
 export class GameResultState implements State {
   public static nodeKey = "@game-result";
@@ -15,7 +15,7 @@ export class GameResultState implements State {
   private soundButton1: PIXISound.Sound;
   private soundBgm2: PIXISound.Sound;
 
-  constructor(private context: { app: PIXI.Application; scale: number }) {}
+  constructor(private context: { app: Application; scale: number }) {}
 
   onEnter({ context }: StateEnterParams) {
     const { resources } = this.context.app.loader;

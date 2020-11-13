@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import { Application, TextMetrics } from "pixi.js";
 import { Machine, interpret, assign } from "xstate";
 
 import { IdleState } from "./state/IdleState";
@@ -10,7 +10,7 @@ import { GameSelectBoxState } from "./state/GameSelectBoxState";
 import { GameResultState } from "./state/GameResultState";
 
 // https://okayu-moka.hatenablog.com/entry/2019/02/11/160906
-PIXI.TextMetrics.BASELINE_SYMBOL += "あ｜";
+TextMetrics.BASELINE_SYMBOL += "あ｜";
 
 const canvasWindowAspectRatio = 4 / 3;
 const windowWidth = window.innerWidth;
@@ -28,7 +28,7 @@ if (windowWidth * canvasWindowAspectRatio < windowHeight /*portrait*/) {
 const unitWidth = 4000;
 const scale = canvasWidth / unitWidth;
 
-export const app = new PIXI.Application({
+export const app = new Application({
   view: document.getElementById("pixi") as HTMLCanvasElement,
   width: canvasWidth,
   height: canvasHeight,

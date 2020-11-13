@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import { Application } from "pixi.js";
 import PIXISound from "pixi-sound";
 
 import { State, StateEnterParams, stateMachineService } from "../index";
@@ -11,7 +11,7 @@ export class GameSelectBoxState implements State {
   private soundOk: PIXISound.Sound;
   private soundNg: PIXISound.Sound;
 
-  constructor(private context: { app: PIXI.Application; scale: number }) {}
+  constructor(private context: { app: Application; scale: number }) {}
 
   onEnter({ context }: StateEnterParams) {
     this.rinaCandidates = context.rinaCandidates;

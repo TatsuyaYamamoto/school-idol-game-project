@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import { Application } from "pixi.js";
 
 import { State, StateEnterParams, stateMachineService } from "../";
 
@@ -23,7 +23,7 @@ const images = [
 export class LoadingState implements State {
   public static nodeKey = "@loading";
 
-  constructor(private context: { app: PIXI.Application; scale: number }) {}
+  constructor(private context: { app: Application; scale: number }) {}
 
   onEnter({ context }: StateEnterParams) {
     images.forEach(image => {

@@ -1,4 +1,5 @@
 import { TimelineMax } from "gsap";
+import { Application } from "pixi.js";
 import PIXISound from "pixi-sound";
 
 import { State, StateEnterParams, stateMachineService } from "../index";
@@ -10,7 +11,7 @@ export class GameShuffleState implements State {
 
   private rinaCandidates: RinaCandidate[];
 
-  constructor(private context: { app: PIXI.Application; scale: number }) {}
+  constructor(private context: { app: Application; scale: number }) {}
 
   onEnter({ context }: StateEnterParams) {
     const { candidateNumber, rinaCandidates } = context;

@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import { Application } from "pixi.js";
 import PIXISound from "pixi-sound";
 
 import { State, StateEnterParams, stateMachineService } from "../index";
@@ -12,7 +12,7 @@ export class GameTitle implements State {
   private soundButton1: PIXISound.Sound;
   private soundBgm1: PIXISound.Sound;
 
-  constructor(private context: { app: PIXI.Application; scale: number }) {}
+  constructor(private context: { app: Application; scale: number }) {}
 
   onEnter({ context }: StateEnterParams) {
     const resources = this.context.app.loader.resources;
