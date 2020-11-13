@@ -72,6 +72,7 @@ export class GameResultState implements State {
   onExit({ context }) {
     this.hideShareController();
     this.context.app.stage.removeChild(this.result.container);
+    this.soundBgm2.stop();
 
     this.pixiState.removeEventListener("pointerdown", this.onTapStage);
     this.twitterShare.removeEventListener(
