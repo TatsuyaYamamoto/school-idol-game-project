@@ -23,6 +23,7 @@
 - [maruten](./packages/maruten#README.md)
 - [yamidori](./packages/yamidori#README.md)
 - [oimo-no-mikiri](./packages/oimo-no-mikiri#README.md)
+- [rinadoko](./packages/rinadoko#README.md)
 
 ### Others
 
