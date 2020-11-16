@@ -6,6 +6,9 @@
   "author": "TatsuyaYamamoto <yamamoto.tatsuya@fujixerox.co.jp>",
   "license": "MIT",
   "private": true,
+  "engines": {
+    "node": "8"
+  },
   "scripts": {
     "precommit": "pretty-quick --staged",
     "commit": "git-cz",

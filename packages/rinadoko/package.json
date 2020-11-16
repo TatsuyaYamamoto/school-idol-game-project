@@ -1,0 +1,28 @@
+{
+  "name": "rinadoko",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack-dev-server --progress --colors --watch",
+    "clean": "rm -rf dist",
+    "build:dev": "yarn clean &&                     webpack",
+    "build:pro": "yarn clean && NODE_ENV=production webpack",
+    "deploy:dev": "gsutil -m rsync -d -r dist/ gs://games-dev.sokontokoro-factory.net/rinadoko/",
+    "deploy:pro": "gsutil -m rsync -d -r dist/ gs://games.sokontokoro-factory.net/rinadoko/"
+  },
+  "dependencies": {
+    "gsap": "^3.5.1",
+    "pixi-sound": "^3.0.5",
+    "pixi.js": "^5.3.3",
+    "xstate": "^4.14.0"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^5.1.2",
+    "html-webpack-plugin": "^4.5.0",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.9.7",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  }
+}

@@ -1,0 +1,88 @@
+@font-face {
+  font-family: "PixelMplus12-Bold";
+  src: url(../fonts/PixelMplus12-Bold.ttf);
+}
+
+body {
+  margin: 0;
+}
+
+#app {
+  display: flex;
+  height: 100vh;
+  /* https://zenn.dev/tak_dcxi/articles/2ac77656aa94c2cd40bf */
+  height: -webkit-fill-available;
+  justify-content: center;
+  align-items: center;
+
+  background-image: url("../images/back.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: right 10% bottom 50%;
+}
+
+.container {
+  position: absolute;
+  pointer-events: none;
+}
+
+.container--hide {
+  opacity: 0;
+}
+
+.title {
+  padding-bottom: 100px;
+}
+
+.title__text {
+  font-family: "PixelMplus12-Bold";
+  font-size: 40px;
+}
+
+.guide {
+  text-align: center;
+}
+
+.guide__text {
+  font-family: "PixelMplus12-Bold";
+  font-size: 20px;
+}
+
+.select-guide {
+  display: none;
+  padding-bottom: 200px;
+}
+
+.select-guide .select-guide__text {
+  font-family: "PixelMplus12-Bold";
+  font-size: 20px;
+}
+
+.share-controller {
+  position: fixed;
+  bottom: 50px;
+}
+
+.share-controller--hide {
+  display: none;
+}
+
+.share-controller .twitter-share {
+  background-color: #039be5;
+  text-align: center;
+  cursor: pointer;
+
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.share-controller .twitter-share .twitter-share__icon {
+  color: white;
+  font-size: 20px;
+}
+
+.share-controller .twitter-share .twitter-share__label {
+  color: white;
+  font-family: "PixelMplus12-Bold";
+  font-size: 20px;
+}

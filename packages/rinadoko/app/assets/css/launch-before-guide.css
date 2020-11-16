@@ -1,0 +1,115 @@
+.launch-before-guide {
+  display: block;
+  color: #888;
+  text-align: center;
+  margin-top: 100px;
+  margin-left: 10px;
+  margin-right: 10px;
+
+  font-family: "Rounded Mplus 1c";
+}
+
+.launch-before-guide__title {
+  max-width: 400px;
+  margin: 0 auto;
+
+  position: relative;
+  background: #fff0cd;
+  box-shadow: 0 0 0 5px #fff0cd;
+  border: dashed 2px white;
+  padding: 0.2em 0.5em;
+  color: #454545;
+}
+
+.launch-before-guide__title:after {
+  position: absolute;
+  content: "";
+  right: -7px;
+  top: -7px;
+  border-width: 0 15px 15px 0;
+  border-style: solid;
+  border-color: #ffdb88 #fff #ffdb88;
+  box-shadow: -1px 1px 1px rgba(0, 0, 0, 0.15);
+}
+.launch-before-guide__title {
+}
+
+.launch-before-guide__title .app-title__game-name {
+  color: #555;
+  font-size: 22px;
+  font-weight: 300;
+}
+
+.launch-before-guide__title .app-title__author {
+  font-size: 15px;
+}
+
+.launch-before-guide__button--initializing:before {
+  content: "初期化中/Initializing";
+  color: rgba(255, 132, 0, 0.98);
+}
+
+.launch-before-guide__button--initializing {
+  cursor: wait;
+
+  background: #fff;
+  border: solid 1px #fd9535;
+}
+
+.launch-before-guide__button--ready:before {
+  content: "起動する/Launch";
+  color: #fff;
+}
+
+.launch-before-guide__button--ready {
+  cursor: pointer;
+
+  background: #fd9535;
+  border-bottom: solid 2px #d27d00;
+}
+
+.launch-before-guide__button {
+  margin-top: 30px;
+
+  position: relative;
+  display: inline-block;
+  padding: 0.25em 0.5em;
+
+  border-radius: 4px;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.2),
+    0 2px 2px rgba(0, 0, 0, 0.19);
+
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.launch-before-guide__button--ready:active {
+  border-bottom: solid 2px #fd9535;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.launch-before-guide__note {
+  margin-top: 30px;
+}
+.launch-before-guide__note .note__label {
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.launch-before-guide__note .note__body {
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.launch-before-guide__environment {
+  margin-top: 30px;
+}
+
+.environment-item {
+}
+
+.environment-item__label {
+}
+
+.environment-item__value {
+}
