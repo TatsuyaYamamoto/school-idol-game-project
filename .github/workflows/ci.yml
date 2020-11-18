@@ -1,0 +1,69 @@
+name: CI for rinadoko
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+      - develop-**
+
+env:
+  NODE_VERSION: 8.x
+
+jobs:
+  setup:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # https://github.com/actions/cache/blob/main/examples.md#node---yarn
+      - name: "Get yarn cache directory path"
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: "Restore yarn cache"
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - run: yarn install
+
+  build-apps:
+    runs-on: macos-latest
+    needs: setup
+    strategy:
+      matrix:
+        app: ["honocar", "rinadoko"]
+    if: ${{
+      github.ref == 'refs/heads/master' ||
+      github.ref == 'refs/heads/develop' ||
+      github.ref == 'refs/heads/develop-${{ matrix.app }}' ||
+      github.ref == 'refs/heads/develop-setup-githubactions'
+      }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # https://github.com/actions/cache/blob/main/examples.md#node---yarn
+      - name: "Get yarn cache directory path"
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: "Restore yarn cache"
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - run: yarn install
+      # todo: reuse as artifacts
+      - run: yarn workspace @sokontokoro/mikan build
+      - run: yarn workspace ${{ matrix.app }} build:dev
