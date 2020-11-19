@@ -1,4 +1,4 @@
-name: CI for rinadoko
+name: ci
 
 on:
   push:
@@ -38,7 +38,14 @@ jobs:
     needs: setup
     strategy:
       matrix:
-        app: ["honocar", "rinadoko"]
+        app:
+          - "honocar"
+          - "shakarin"
+          - "maruten"
+          - "oimo-no-mikiri"
+          - "rinadoko"
+          - "firebase"
+          - "ranking"
     if: ${{
       github.ref == 'refs/heads/master' ||
       github.ref == 'refs/heads/develop' ||
@@ -64,6 +71,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - run: yarn install
+
       # todo: reuse as artifacts
       - run: yarn workspace @sokontokoro/mikan build
       - run: yarn workspace ${{ matrix.app }} build:dev
