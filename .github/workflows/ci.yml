@@ -7,6 +7,9 @@ on:
       - develop
       - develop-**
 
+  schedule:
+    - cron: "0 9 * * *"
+
 env:
   NODE_VERSION: 8.x
 
@@ -33,7 +36,7 @@ jobs:
             ${{ runner.os }}-yarn-
       - run: yarn install
 
-  build-apps:
+  build-and-deploy:
     runs-on: macos-latest
     needs: setup
     strategy:
@@ -75,3 +78,13 @@ jobs:
       # todo: reuse as artifacts
       - run: yarn workspace @sokontokoro/mikan build
       - run: yarn workspace ${{ matrix.app }} build:dev
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY_DEV }}
+          export_default_credentials: true
+
+      - name: Deploy to dev
+        if: ${{ github.event_name == 'push' }}
+        run: yarn workspace ${{ matrix.app }} deploy:dev
