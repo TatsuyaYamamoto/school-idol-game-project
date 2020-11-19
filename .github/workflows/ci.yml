@@ -52,8 +52,7 @@ jobs:
     if: ${{
       github.ref == 'refs/heads/master' ||
       github.ref == 'refs/heads/develop' ||
-      github.ref == 'refs/heads/develop-${{ matrix.app }}' ||
-      github.ref == 'refs/heads/develop-setup-githubactions'
+      github.ref == 'refs/heads/develop-${{ matrix.app }}'
       }}
     steps:
       - uses: actions/checkout@v2
