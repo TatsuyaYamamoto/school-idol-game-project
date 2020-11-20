@@ -1,3 +1,10 @@
+# secrets.GCP_SERVICE_ACCOUNT_KEY_DEV
+# sokontokoro-factory-develop-65bafa735fc5_ci-account.json
+#
+# secrets.FIREBASE_TOKEN
+# $ firebase login:ci
+#
+
 name: ci
 
 on:
@@ -36,7 +43,7 @@ jobs:
             ${{ runner.os }}-yarn-
       - run: yarn install
 
-  build-and-deploy:
+  build-and-deploy-app:
     runs-on: macos-latest
     needs: setup
     strategy:
@@ -47,7 +54,6 @@ jobs:
           - "maruten"
           - "oimo-no-mikiri"
           - "rinadoko"
-          - "firebase"
           - "ranking"
     if: ${{
       github.ref == 'refs/heads/master' ||
@@ -86,4 +92,40 @@ jobs:
 
       - name: Deploy to dev
         if: ${{ github.event_name == 'push' }}
-        run: yarn workspace ${{ matrix.app }} deploy:dev
+        run: yarn workspace ${{ matrix.app }} deploy:dev ${{ (matrix.app == 'firebase' && '--token ${{secrets.FIREBASE_TOKEN}}') || '' }}
+
+  build-and-deploy-firebase:
+    runs-on: macos-latest
+    needs: setup
+    if: ${{
+      github.ref == 'refs/heads/master' ||
+      github.ref == 'refs/heads/develop' ||
+      github.ref == 'refs/heads/develop-firebase'
+      }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # https://github.com/actions/cache/blob/main/examples.md#node---yarn
+      - name: "Get yarn cache directory path"
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: "Restore yarn cache"
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - run: yarn install
+
+      # todo: reuse as artifacts
+      - run: yarn workspace @sokontokoro/mikan build
+      - run: yarn workspace firebase build:dev
+
+      - name: Deploy to dev
+        if: ${{ github.event_name == 'push' }}
+        run: yarn workspace firebase deploy:dev --token ${{ secrets.FIREBASE_TOKEN }}
