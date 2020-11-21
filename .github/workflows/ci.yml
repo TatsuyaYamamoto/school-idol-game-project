@@ -15,7 +15,7 @@ on:
       - develop-**
 
   schedule:
-    - cron: "0 9 * * *"
+    - cron: "0 9 * * 1"
 
 env:
   NODE_VERSION: 8.x
