@@ -129,3 +129,23 @@ jobs:
       - name: Deploy to dev
         if: ${{ github.event_name == 'push' }}
         run: yarn workspace firebase deploy:dev --token ${{ secrets.FIREBASE_TOKEN }}
+
+  notify:
+    runs-on: macos-latest
+    needs:
+      - build-and-deploy-app
+      - build-and-deploy-firebase
+    if: always()
+    steps:
+      # run this action to get workflow conclusion
+      # You can get conclusion via env (env.WORKFLOW_CONCLUSION)
+      - uses: technote-space/workflow-conclusion-action@v2
+
+      - uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ env.WORKFLOW_CONCLUSION }}
+          fields: all
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()
