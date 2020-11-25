@@ -1,8 +1,8 @@
-import { firestore, database } from "firebase/app";
-import FieldValue = firestore.FieldValue;
-import Timestamp = firestore.Timestamp;
-import DocumentReference = firestore.DocumentReference;
-import CollectionReference = firestore.CollectionReference;
+import firebase from "firebase/app";
+type FieldValue = firebase.firestore.FieldValue;
+type Timestamp = firebase.firestore.Timestamp;
+type DocumentReference = firebase.firestore.DocumentReference;
+type CollectionReference = firebase.firestore.CollectionReference;
 
 import { firebaseDb } from "./index";
 import { User } from "./User";
@@ -57,8 +57,8 @@ export class Presence {
    */
   public static initWatch(): string {
     const uid = User.getOwnRef().id;
-    const infoConnectedRef = database().ref(".info/connected");
-    const presencesRef = database().ref(`presences`);
+    const infoConnectedRef = firebase.database().ref(".info/connected");
+    const presencesRef = firebase.database().ref(`presences`);
     const newPresenceRef = presencesRef.push();
     const newPresenceId = newPresenceRef.key;
 
@@ -66,7 +66,7 @@ export class Presence {
       uid,
       online: true,
       userAgent: navigator.userAgent,
-      createdAt: database.ServerValue.TIMESTAMP
+      createdAt: firebase.database.ServerValue.TIMESTAMP
     };
 
     // since I can connect from multiple devices or browser tabs, we store each connection instance separately

@@ -1,5 +1,6 @@
-import { firestore, Unsubscribe } from "firebase/app";
-import DocumentSnapshot = firestore.DocumentSnapshot;
+import firebase from "firebase/app";
+type Unsubscribe = firebase.Unsubscribe;
+type DocumentSnapshot = firebase.firestore.DocumentSnapshot;
 
 import AutoBind from "autobind-decorator";
 import { EventEmitter } from "eventemitter3";

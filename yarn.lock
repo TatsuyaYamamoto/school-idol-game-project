@@ -861,11 +861,6 @@
   resolved "https://registry.yarnpkg.com/@firebase/app-types/-/app-types-0.3.10.tgz#8f6d24d80bf833622b53ed26eaa04cfa9dd0f2f3"
   integrity sha512-l+5BJtSQopalBXiY/YuSaB9KF9PnDj37FLV0Sx3qJjh5B3IthCuZbPc1Vpbbbee/QZgudl0G212BBsUMGHP+fQ==
 
-"@firebase/app-types@^0.4.0":
-  version "0.4.9"
-  resolved "https://registry.yarnpkg.com/@firebase/app-types/-/app-types-0.4.9.tgz#953e9da55d061343339f20f37ac54ef4d6324774"
-  integrity sha512-RoUkYVd5X106sFGX+rHVDGrtfZBRugMtT9Cx8YiXtLSqouhi0S+Sx1TVuK6Gkt7lJ27I8qlz/nBvNa0yjg3N7w==
-
 "@firebase/app@0.6.13":
   version "0.6.13"
   resolved "https://registry.yarnpkg.com/@firebase/app/-/app-0.6.13.tgz#f2e9fa9e75815e54161dc34659a60f1fffd9a450"
@@ -6437,7 +6432,7 @@ finity@^0.5.4:
   resolved "https://registry.yarnpkg.com/finity/-/finity-0.5.4.tgz#f2a8a9198e8286467328ec32c8bfcc19a2229c11"
   integrity sha512-3l+5/1tuw616Lgb0QBimxfdd2TqaDGpfCBpfX6EqtFmqUV3FtQnVEX4Aa62DagYEqnsTIjZcTfbq9msDbXYgyA==
 
-firebase-admin@^8.2.0:
+firebase-admin@^8.13.0:
   version "8.13.0"
   resolved "https://registry.yarnpkg.com/firebase-admin/-/firebase-admin-8.13.0.tgz#997d34ae8357d7dc162ba622148bbebcf7f2e923"
   integrity sha512-krXj5ncWMJBhCpXSn9UFY6zmDWjFjqgx+1e9ATXKFYndEjmKtNBuJzqdrAdDh7aTUR7X6+0TPx4Hbc08kd0lwQ==
@@ -6451,7 +6446,7 @@ firebase-admin@^8.2.0:
     "@google-cloud/firestore" "^3.0.0"
     "@google-cloud/storage" "^4.1.2"
 
-firebase-functions@^3.0.2:
+firebase-functions@^3.11.0:
   version "3.11.0"
   resolved "https://registry.yarnpkg.com/firebase-functions/-/firebase-functions-3.11.0.tgz#92f5a6af6a10641da6dc9b41b29974658b621a7b"
   integrity sha512-i1uMhZ/M6i5SCI3ulKo7EWX0/LD+I5o6N+sk0HbOWfzyWfOl0iJTvQkR3BVDcjrlhPVC4xG1bDTLxd+DTkLqaw==

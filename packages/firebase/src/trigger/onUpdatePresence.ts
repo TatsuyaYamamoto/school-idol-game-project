@@ -95,5 +95,6 @@ async function onChangeOffline(
     });
   });
 
-  await Promise.all([batch.commit(), offlineSnapshot.ref.remove()]);
+  // TODO type safe
+  await Promise.all<any>([batch.commit(), offlineSnapshot.ref.remove()]);
 }

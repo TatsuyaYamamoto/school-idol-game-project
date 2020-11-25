@@ -1,6 +1,6 @@
-import { firestore } from "firebase/app";
-import CollectionReference = firestore.CollectionReference;
-import FieldValue = firestore.FieldValue;
+import firebase from "firebase/app";
+type CollectionReference = firebase.firestore.CollectionReference;
+type FieldValue = firebase.firestore.FieldValue;
 
 import { firebaseDb } from "./index";
 import { Member } from "../model/members";

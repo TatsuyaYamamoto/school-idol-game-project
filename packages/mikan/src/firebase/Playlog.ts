@@ -1,6 +1,6 @@
-import { firestore } from "firebase/app";
-import DocumentReference = firestore.DocumentReference;
-import FieldValue = firestore.FieldValue;
+import firebase from "firebase/app";
+type DocumentReference = firebase.firestore.DocumentReference;
+type FieldValue = firebase.firestore.FieldValue;
 
 import { firebaseDb } from "./index";
 import { User } from "./User";
@@ -50,7 +50,7 @@ export class Playlog {
       userAgent: navigator.userAgent,
       language: navigator.languages[0],
       languages: navigator.languages.join(";"),
-      createdAt: FieldValue.serverTimestamp()
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
     return Playlog.getColRef().add(doc);

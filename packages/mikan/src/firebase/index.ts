@@ -1,4 +1,4 @@
-import { auth, initializeApp, firestore, functions } from "firebase/app";
+import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import "firebase/functions";
@@ -7,15 +7,16 @@ import "firebase/database";
 import { devConfig, proConfig } from "./config";
 
 const config = process.env.NODE_ENV === "production" ? proConfig : devConfig;
-initializeApp(config);
+firebase.initializeApp(config);
 
-export const firebaseAuth = auth();
+export const firebaseAuth = firebase.auth();
 
-export const firebaseDb = firestore();
+export const firebaseDb = firebase.firestore();
 firebaseDb.settings({
-  timestampsInSnapshots: true
+  // it's now enabled by v5.8 or later
+  // timestampsInSnapshots: true
 });
 
 export function callHttpsCallable(name: string, data: any): Promise<any> {
-  return functions().httpsCallable(name)(data);
+  return firebase.functions().httpsCallable(name)(data);
 }
