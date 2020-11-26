@@ -1,9 +1,9 @@
-import { firestore } from "firebase/app";
+import firebase from "firebase/app";
 
-import FieldValue = firestore.FieldValue;
-import QuerySnapshot = firestore.QuerySnapshot;
-import DocumentReference = firestore.DocumentReference;
-import CollectionReference = firestore.CollectionReference;
+type FieldValue = firebase.firestore.FieldValue;
+type QuerySnapshot = firebase.firestore.QuerySnapshot;
+type DocumentReference = firebase.firestore.DocumentReference;
+type CollectionReference = firebase.firestore.CollectionReference;
 
 import { firebaseDb } from "./index";
 

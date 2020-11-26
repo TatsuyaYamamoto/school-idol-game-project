@@ -110,13 +110,12 @@ abstract class ViewContainer extends Container implements State {
    *
    * @param {(ev: WindowEventMap[K]) => any} listener
    */
-  protected addClickWindowEventListener<K extends keyof WindowEventMap>(
-    listener: (this: Window, ev: WindowEventMap[K]) => any
+  protected addClickWindowEventListener(
+    listener: (this: Window, ev: WindowEventMap["touchstart" | "click"]) => any
   ): void {
-    window.addEventListener(
-      isSupportTouchEvent() ? "touchstart" : "click",
-      listener
-    );
+    const type = isSupportTouchEvent() ? "touchstart" : "click";
+
+    window.addEventListener(type, listener);
   }
 
   /**
@@ -145,11 +144,8 @@ abstract class ViewContainer extends Container implements State {
    *
    * @override
    */
-  public addChild<T extends DisplayObject>(
-    child: T,
-    ...additionalChildren: DisplayObject[]
-  ): T {
-    return super.addChild(child, ...additionalChildren);
+  public addChild<T extends DisplayObject = Container>(...children: T[]): T {
+    return super.addChild(...children);
   }
 
   /**
@@ -168,7 +164,9 @@ abstract class ViewContainer extends Container implements State {
    * @see this#addChild
    * @override
    */
-  public removeChild(child: DisplayObject): DisplayObject {
+  public removeChild<T extends DisplayObject = Container>(
+    child: DisplayObject
+  ): T {
     return super.removeChild(child);
   }
 
@@ -178,7 +176,7 @@ abstract class ViewContainer extends Container implements State {
    * @see this#addChild
    * @override
    */
-  public removeChildAt(index: number): DisplayObject {
+  public removeChildAt<T extends DisplayObject = Container>(index: number): T {
     return super.removeChildAt(index);
   }
 
@@ -188,10 +186,10 @@ abstract class ViewContainer extends Container implements State {
    * @see this#addChild
    * @override
    */
-  public removeChildren(
+  public removeChildren<T extends DisplayObject = Container>(
     beginIndex?: number,
     endIndex?: number
-  ): DisplayObject[] {
+  ): T[] {
     return super.removeChildren(beginIndex, endIndex);
   }
 

@@ -1,6 +1,6 @@
-import { firestore } from "firebase/app";
-import DocumentReference = firestore.DocumentReference;
-import FieldValue = firestore.FieldValue;
+import firebase from "firebase/app";
+type DocumentReference = firebase.firestore.DocumentReference;
+type FieldValue = firebase.firestore.FieldValue;
 
 import { firebaseDb } from "./index";
 import { Presence } from "./Presence";
@@ -107,8 +107,8 @@ export class Room implements RoomDocument {
       maxUserCount,
       lock: false,
       createdBy: createUserRef,
-      createdAt: firestore.FieldValue.serverTimestamp(),
-      expiredAt: firestore.Timestamp.fromDate(expiredDate)
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      expiredAt: firebase.firestore.Timestamp.fromDate(expiredDate)
     };
 
     const newRoomRef = Room.getColRef().doc();
@@ -139,8 +139,9 @@ export class Room implements RoomDocument {
 
     const roomRef = snapshot.docs[0].ref;
 
-    const updatedRoomDoc = await firestore().runTransaction(
-      async transaction => {
+    const updatedRoomDoc = await firebase
+      .firestore()
+      .runTransaction(async transaction => {
         const roomSnapshot = await transaction.get(roomRef);
 
         if (!roomSnapshot.exists) {
@@ -168,8 +169,7 @@ export class Room implements RoomDocument {
         transaction.update(roomRef, newRoomDoc);
 
         return roomDoc;
-      }
-    );
+      });
 
     if (updatedRoomDoc) {
       return {
@@ -195,7 +195,7 @@ export class Room implements RoomDocument {
 
     const roomRef = snapshot.docs[0].ref;
 
-    await firestore().runTransaction(async transaction => {
+    await firebase.firestore().runTransaction(async transaction => {
       const roomSnapshot = await transaction.get(roomRef);
 
       if (!roomSnapshot.exists) {

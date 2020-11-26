@@ -59,7 +59,7 @@
     "@sokontokoro/mikan": "^0.0.1",
     "animejs": "^2.0.2",
     "autobind-decorator": "^2.1.0",
-    "firebase": "^4.10.1",
+    "firebase": "^8.1.1",
     "i18next": "^9.0.0",
     "i18next-browser-languagedetector": "^2.0.0",
     "mousetrap": "^1.6.1",

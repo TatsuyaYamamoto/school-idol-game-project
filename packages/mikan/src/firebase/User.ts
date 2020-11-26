@@ -1,10 +1,11 @@
-import { User as FirebaseUser, firestore } from "firebase/app";
+import firebase from "firebase/app";
 
-import FieldValue = firestore.FieldValue;
-import UserCredential = firebase.auth.UserCredential;
-import DocumentReference = firestore.DocumentReference;
-import AdditionalUserInfo = firebase.auth.AdditionalUserInfo;
-import AuthCredential = firebase.auth.AuthCredential;
+type FirebaseUser = firebase.User;
+type FieldValue = firebase.firestore.FieldValue;
+type UserCredential = firebase.auth.UserCredential;
+type DocumentReference = firebase.firestore.DocumentReference;
+type AdditionalUserInfo = firebase.auth.AdditionalUserInfo;
+type AuthCredential = firebase.auth.AuthCredential;
 
 import { Twitter } from "twit";
 import TwitterUser = Twitter.User;
@@ -86,8 +87,8 @@ export class User {
       photoURL: null,
       highscoreRefs: {},
       providers: {},
-      createdAt: FieldValue.serverTimestamp(),
-      updatedAt: FieldValue.serverTimestamp(),
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
       duplicatedRefsByLink: [],
       presenceRefs: {}
     };
@@ -138,7 +139,7 @@ export class User {
     if (providerId === "twitter.com") {
       const profile = additionalUserInfo.profile as TwitterUser;
 
-      const batch = firestore().batch();
+      const batch = firebase.firestore().batch();
 
       // create batch of creation or updating credential
       const newCredentialDoc: Partial<CredentialDocument> = {
@@ -146,13 +147,13 @@ export class User {
           accessToken: (<any>credential).accessToken,
           secret: (<any>credential).secret
         },
-        updatedAt: FieldValue.serverTimestamp()
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       };
 
       if (isNewCredentialForIdp) {
         newCredentialDoc.userRef = userRef;
         newCredentialDoc.providerId = providerId;
-        newCredentialDoc.createdAt = FieldValue.serverTimestamp();
+        newCredentialDoc.createdAt = firebase.firestore.FieldValue.serverTimestamp();
 
         batch.set(credentialRef, newCredentialDoc);
       } else {
@@ -168,7 +169,7 @@ export class User {
         ...newUserDoc.providers,
         [providerId]: {
           userId: profile.id_str,
-          linkedAt: FieldValue.serverTimestamp(),
+          linkedAt: firebase.firestore.FieldValue.serverTimestamp(),
           credentialRef
         }
       };
@@ -182,7 +183,7 @@ export class User {
       }
 
       if (userDoc.debug) {
-        userDoc.debug = firestore.FieldValue.delete() as any;
+        userDoc.debug = firebase.firestore.FieldValue.delete() as any;
       }
 
       if (duplicatedUser) {

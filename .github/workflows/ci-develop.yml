@@ -5,12 +5,11 @@
 # $ firebase login:ci
 #
 
-name: ci
+name: ci-develop
 
 on:
   push:
     branches:
-      - master
       - develop
       - develop-**
 
@@ -18,7 +17,7 @@ on:
     - cron: "0 9 * * 1"
 
 env:
-  NODE_VERSION: 8.x
+  NODE_VERSION: 12.x
 
 jobs:
   setup:
@@ -56,12 +55,13 @@ jobs:
           - "rinadoko"
           - "ranking"
     if: ${{
-      github.ref == 'refs/heads/master' ||
       github.ref == 'refs/heads/develop' ||
       github.ref == 'refs/heads/develop-${{ matrix.app }}'
       }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          lfs: true
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -98,7 +98,6 @@ jobs:
     runs-on: macos-latest
     needs: setup
     if: ${{
-      github.ref == 'refs/heads/master' ||
       github.ref == 'refs/heads/develop' ||
       github.ref == 'refs/heads/develop-firebase'
       }}

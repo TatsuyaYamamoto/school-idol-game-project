@@ -1,20 +1,20 @@
-import { firestore } from "firebase";
+import firebase from "firebase";
 
 import { firebaseDb } from "./index";
 import { Member } from "../model/members";
 import { Game } from "../model/games";
 
 export interface HighscoreDocument /* extends firestore.DocumentData */ {
-  userRef: firestore.DocumentReference;
+  userRef: firebase.firestore.DocumentReference;
   game: Game;
   member: Member;
   point: number;
   label: object;
   count: number;
 
-  createdAt: firestore.FieldValue | Date;
-  updatedAt: firestore.FieldValue | Date;
-  brokenAt: firestore.FieldValue | Date;
+  createdAt: firebase.firestore.FieldValue | Date;
+  updatedAt: firebase.firestore.FieldValue | Date;
+  brokenAt: firebase.firestore.FieldValue | Date;
 }
 
 export class Highscore {

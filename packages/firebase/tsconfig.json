@@ -6,8 +6,8 @@
     "outDir": "dist",
     "sourceMap": true,
     "target": "es6",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "skipLibCheck": true
   },
-  "compileOnSave": true,
   "include": ["src"]
 }

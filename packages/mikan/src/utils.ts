@@ -179,13 +179,8 @@ export async function tweetByWebIntent(
   }
   if (!!params.text) {
     if (params.mediaData) {
-      // TODO: use http://localhost:5001/sokontokoro-factory-develop/us-central1/httpsApp/twitter/media/upload
-      // const result = await callHttpsCallable("uploadImageToTwitter", {
-      //   mediaData: params.mediaData
-      // });
-      //
-      // const mediaUrl = result.data.url;
-      // queries.push(`text=${encodeURIComponent(params.text)} ${mediaUrl}`);
+      const { mediaUrl } = await uploadImageToTwitter(params.mediaData);
+      queries.push(`text=${encodeURIComponent(params.text)} ${mediaUrl}`);
     } else {
       queries.push(`text=${encodeURIComponent(params.text)}`);
     }
@@ -239,3 +234,13 @@ export function convertYyyyMmDd(date: Date) {
 
   return `${yyyy}${mm}${dd}`;
 }
+
+const uploadImageToTwitter = (mediaData: string) => {
+  return fetch(`https://api.sokontokoro-factory.net/twitter/media/upload`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ mediaData })
+  }).then(res => res.json());
+};

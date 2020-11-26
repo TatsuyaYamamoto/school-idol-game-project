@@ -1,6 +1,6 @@
-import { auth } from "firebase/app";
+import firebase from "firebase/app";
 
-import UserCredential = auth.UserCredential;
+type UserCredential = firebase.auth.UserCredential;
 
 import { firebaseAuth } from "./index";
 
@@ -8,15 +8,15 @@ import { getLogger } from "../logger";
 import { User, UserDocument } from "./User";
 
 const logger = getLogger("mikan/firebase/auth");
-const twitterAuthProvider = new auth.TwitterAuthProvider();
+const twitterAuthProvider = new firebase.auth.TwitterAuthProvider();
 let isInitRequested = false;
 
 /**
  * @see https://firebase.google.com/docs/reference/js/firebase.auth.Auth#getRedirectResult
  */
-interface AuthCredentialAlreadyInUseError extends auth.Error {
+interface AuthCredentialAlreadyInUseError extends firebase.auth.Error {
   email: string;
-  credential: auth.AuthCredential;
+  credential: firebase.auth.AuthCredential;
 }
 
 /**
@@ -114,7 +114,7 @@ export function init(): Promise<UserDocument> {
          */
         throwErrorAsUndefinedRedirectOperation(userCredential);
       })
-      .catch(async (error: auth.Error) => {
+      .catch(async (error: firebase.auth.Error) => {
         if (error.code === "auth/credential-already-in-use") {
           /**
            * User accepted to link between anonymous firebase user and twitter ID.
@@ -204,7 +204,7 @@ export function getUid(): string {
  *
  * @return Promise<auth.UserCredential>
  */
-export function signInAsAnonymous(): Promise<auth.UserCredential> {
+export function signInAsAnonymous(): Promise<firebase.auth.UserCredential> {
   return firebaseAuth.signInAnonymously();
 }
 
