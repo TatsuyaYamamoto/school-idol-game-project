@@ -5,12 +5,11 @@
 # $ firebase login:ci
 #
 
-name: ci
+name: ci-develop
 
 on:
   push:
     branches:
-      - master
       - develop
       - develop-**
 
@@ -56,7 +55,6 @@ jobs:
           - "rinadoko"
           - "ranking"
     if: ${{
-      github.ref == 'refs/heads/master' ||
       github.ref == 'refs/heads/develop' ||
       github.ref == 'refs/heads/develop-${{ matrix.app }}'
       }}
@@ -100,7 +98,6 @@ jobs:
     runs-on: macos-latest
     needs: setup
     if: ${{
-      github.ref == 'refs/heads/master' ||
       github.ref == 'refs/heads/develop' ||
       github.ref == 'refs/heads/develop-firebase'
       }}
