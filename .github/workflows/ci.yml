@@ -18,7 +18,7 @@ on:
     - cron: "0 9 * * 1"
 
 env:
-  NODE_VERSION: 8.x
+  NODE_VERSION: 12.x
 
 jobs:
   setup:
