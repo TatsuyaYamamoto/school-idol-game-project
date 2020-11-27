@@ -20,6 +20,7 @@ import Oimo from "../../../texture/sprite/character/Oimo";
 import { VirtualPageViews } from "../../../helper/tracker";
 
 import { Ids as SoundIds } from "../../../resources/sound";
+import { DisplayObject } from "pixi.js";
 
 class HowToPlayState extends TopViewState {
   private _usageTextArea: UsageTextArea;
@@ -71,7 +72,7 @@ class HowToPlayState extends TopViewState {
 
     this.backGroundLayer.addChild(this.background);
 
-    this.applicationLayer.addChild(
+    this.applicationLayer.addChild<DisplayObject>(
       this._usageTextArea,
       this._oimo,
       this._player,

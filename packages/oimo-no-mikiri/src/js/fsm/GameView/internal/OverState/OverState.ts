@@ -1,4 +1,4 @@
-import { Texture, Sprite, Container } from "pixi.js";
+import { Texture, Sprite, Container, DisplayObject } from "pixi.js";
 
 import {
   Deliverable,
@@ -120,7 +120,7 @@ abstract class OverState extends GameViewState {
         : this._from(this.opponent.winTexture);
     opponentSprite.position.set(paperWidth * 0.2, paperHeight * 0.3);
 
-    this._resultPaper.addChild(
+    this._resultPaper.addChild<DisplayObject>(
       calligraphyPaper,
       topTime,
       playerName,

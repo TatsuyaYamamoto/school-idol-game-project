@@ -3,6 +3,7 @@ import * as Mousetrap from "mousetrap";
 import ActionState, { EnterParams as ActionEnterParams } from "./ActionState";
 
 import Actor from "../../../../models/Actor";
+import { DisplayObject } from "pixi.js";
 
 export interface EnterParams extends ActionEnterParams {
   autoOpponentAttackInterval: number;
@@ -38,7 +39,7 @@ class SinglePlayActionState extends ActionState {
       this.signalTime + params.autoOpponentAttackInterval;
 
     this.backGroundLayer.addChild(this.background);
-    this.applicationLayer.addChild(
+    this.applicationLayer.addChild<DisplayObject>(
       this.oimo,
       this.player,
       this.opponent,

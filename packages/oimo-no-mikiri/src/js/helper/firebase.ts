@@ -1,29 +1,32 @@
-import { initializeApp, auth, database, User } from "firebase";
+import firebase from "firebase";
 
 import { FIREBASE_OPTIONS } from "../Constants";
 
 export function init() {
-  initializeApp(FIREBASE_OPTIONS);
+  firebase.initializeApp(FIREBASE_OPTIONS);
 
-  database()
+  firebase
+    .database()
     .ref(".info/connected")
     .on("value", snapshot => {
-      const user = auth().currentUser;
+      const user = firebase.auth().currentUser;
       if (!user) {
         return;
       }
 
       if (snapshot.exists()) {
-        const ownRef = database().ref(`/users/${user.uid}/isConnecting`);
+        const ownRef = firebase
+          .database()
+          .ref(`/users/${user.uid}/isConnecting`);
         ownRef.set(true);
         ownRef.onDisconnect().set(false);
       }
     });
 
-  auth().signInAnonymously();
+  firebase.auth().signInAnonymously();
 
-  return new Promise<User>(resolve => {
-    const unsubscribe = auth().onAuthStateChanged(function(user) {
+  return new Promise<firebase.User>(resolve => {
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         console.log("logged-in", user.uid);
         unsubscribe();

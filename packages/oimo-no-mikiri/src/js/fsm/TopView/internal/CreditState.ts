@@ -18,6 +18,7 @@ import { Ids as SoundIds } from "../../../resources/sound";
 import { Ids as StringIds } from "../../../resources/string";
 
 import { URL } from "../../../Constants";
+import { DisplayObject } from "pixi.js";
 
 class CreditState extends TopViewState {
   private _t28Credit: CreditItem;
@@ -90,7 +91,7 @@ class CreditState extends TopViewState {
 
     this.backGroundLayer.addChild(this.background);
 
-    this.applicationLayer.addChild(
+    this.applicationLayer.addChild<DisplayObject>(
       this._backToMenuButton,
       this._t28Credit,
       this._sanzashiCredit,

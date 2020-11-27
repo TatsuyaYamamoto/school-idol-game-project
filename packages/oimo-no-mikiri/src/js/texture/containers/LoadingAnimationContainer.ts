@@ -1,4 +1,4 @@
-import { Container } from "pixi.js";
+import { Container, DisplayObject } from "pixi.js";
 
 import { BrandLogoAnimation } from "@sokontokoro/mikan";
 
@@ -56,7 +56,7 @@ class LoadingAnimationContainer extends Container {
     this._kotoriImage.scale.set(0.2);
     this._kotoriImage.progress(0);
 
-    this.addChild(
+    this.addChild<DisplayObject>(
       this._brandLogoAnimation,
       this._kotoriImage,
       this._loadProgressText

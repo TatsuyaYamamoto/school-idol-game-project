@@ -5,6 +5,7 @@ import * as Mousetrap from "mousetrap";
 import BattleStatusBoard from "../../../../texture/containers/label/BattleStatusBoard";
 import Actor from "../../../../models/Actor";
 import PlayCharaIndicateLabel from "../../../../texture/containers/PlayCharaIndicateLabel";
+import { DisplayObject } from "pixi.js";
 
 export interface EnterParams extends ActionEnterParams {
   battleLeft: number;
@@ -61,7 +62,7 @@ class OnlineActionState extends ActionState {
     );
 
     this.backGroundLayer.addChild(this.background);
-    this.applicationLayer.addChild(
+    this.applicationLayer.addChild<DisplayObject>(
       this.oimo,
       this.player,
       this.opponent,

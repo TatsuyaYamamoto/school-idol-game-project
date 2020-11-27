@@ -1,4 +1,4 @@
-import { Container, Graphics, TextStyleOptions } from "pixi.js";
+import { Container, DisplayObject, Graphics, TextStyleOptions } from "pixi.js";
 
 import { getCurrentLanguage, t } from "@sokontokoro/mikan";
 
@@ -41,7 +41,7 @@ class BattleResultLabel extends Container {
     );
     this._rectangle.endFill();
 
-    this.addChild(this._rectangle, this._text);
+    this.addChild<DisplayObject>(this._rectangle, this._text);
   }
 
   set text(text: string) {

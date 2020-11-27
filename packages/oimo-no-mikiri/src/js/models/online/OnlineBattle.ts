@@ -1,4 +1,4 @@
-import { database } from "firebase";
+import firebase from "firebase";
 
 import Battle, { BattleEvents } from "../Battle";
 import Actor from "../Actor";
@@ -15,7 +15,7 @@ class OnlineBattle extends Battle {
   private _idActorMap: Map<string, Actor>;
   private _actorIdMap: Map<Actor, string>;
   private _attackTimeMap: Map<Actor, number>;
-  private _battleRef: database.Reference;
+  private _battleRef: firebase.database.Reference;
 
   constructor(params: OnlineBattleParams) {
     super();
@@ -32,7 +32,9 @@ class OnlineBattle extends Battle {
 
     this._attackTimeMap = new Map();
 
-    this._battleRef = database().ref(`/games/${gameId}/battles/${round}`);
+    this._battleRef = firebase
+      .database()
+      .ref(`/games/${gameId}/battles/${round}`);
     this._battleRef.child("winner").on("value", this.onWinnerUpdated);
     this._battleRef.child("signalTime").on("value", this.onSignalTimeUpdated);
     this._battleRef
@@ -53,7 +55,7 @@ class OnlineBattle extends Battle {
       return (
         current || {
           signalTime: time,
-          createdAt: database.ServerValue.TIMESTAMP
+          createdAt: firebase.database.ServerValue.TIMESTAMP
         }
       );
     }, "initial_battle");
@@ -93,7 +95,7 @@ class OnlineBattle extends Battle {
    * Callback methods
    */
 
-  protected onWinnerUpdated = (snapshot: database.DataSnapshot) => {
+  protected onWinnerUpdated = (snapshot: firebase.database.DataSnapshot) => {
     if (!snapshot.exists() || this._winner) {
       return;
     }
@@ -109,7 +111,9 @@ class OnlineBattle extends Battle {
     );
   };
 
-  protected onSignalTimeUpdated = (snapshot: database.DataSnapshot) => {
+  protected onSignalTimeUpdated = (
+    snapshot: firebase.database.DataSnapshot
+  ) => {
     if (!snapshot.exists()) {
       return;
     }
@@ -118,7 +122,7 @@ class OnlineBattle extends Battle {
     console.log("signal time was updated.", this._signalTime);
   };
 
-  protected onAttackTimeAdded = (snapshot: database.DataSnapshot) => {
+  protected onAttackTimeAdded = (snapshot: firebase.database.DataSnapshot) => {
     if (!snapshot.exists()) {
       return;
     }
@@ -219,7 +223,7 @@ class OnlineBattle extends Battle {
     }
   };
 
-  protected onFalseStartAdded = (snapshot: database.DataSnapshot) => {
+  protected onFalseStartAdded = (snapshot: firebase.database.DataSnapshot) => {
     if (!snapshot.exists()) {
       return;
     }

@@ -1,4 +1,4 @@
-import { filters } from "pixi.js";
+import { DisplayObject, filters } from "pixi.js";
 import * as anime from "animejs";
 
 import { Deliverable, dispatchEvent } from "@sokontokoro/mikan";
@@ -63,7 +63,7 @@ class ResultState extends GameViewState {
 
     this.backGroundLayer.addChild(this.background);
 
-    this.applicationLayer.addChild(
+    this.applicationLayer.addChild<DisplayObject>(
       this.player,
       this.opponent,
       this.oimo,
@@ -158,46 +158,50 @@ class ResultState extends GameViewState {
     const periodTimeMillis = 100;
 
     const timeLine = anime.timeline({
-      // @ts-ignore
-      targets: target.position,
-      easing: "linear",
       loop: 3
     });
 
-    timeLine
-      // @ts-ignore
-      .add({ x: right, duration: periodTimeMillis / 4 })
-      .add({ x: center, duration: periodTimeMillis / 4 })
-      .add({ x: left, duration: periodTimeMillis / 4 })
-      .add({ x: center, duration: periodTimeMillis / 4 });
-
-    return timeLine.finished;
-  };
-
-  protected whiteOut = (onStartRefresh: Function, onComplete: Function) => {
-    const timeLine = anime.timeline({
-      // @ts-ignore
-      targets: this.whiteLayer,
+    const getAnimParam = (x: number) => ({
+      x,
+      targets: target.position,
+      duration: periodTimeMillis / 4,
       easing: "linear"
     });
 
     timeLine
+      .add(getAnimParam(right))
+      .add(getAnimParam(center))
+      .add(getAnimParam(left))
+      .add(getAnimParam(center));
+
+    return timeLine.finished;
+  };
+
+  protected whiteOut = (onStartRefresh: () => void, onComplete: () => void) => {
+    const timeLine = anime.timeline({});
+
+    timeLine
       // Start white out.
-      // @ts-ignore
       .add({
+        targets: this.whiteLayer,
         alpha: 1,
-        duration: 100
+        duration: 100,
+        easing: "linear"
       })
       // Refresh white out.
       .add({
+        targets: this.whiteLayer,
         begin: onStartRefresh,
         alpha: 0,
-        duration: 300
+        duration: 300,
+        easing: "linear"
       })
       // Show result animation.
       .add({
+        targets: this.whiteLayer,
         duration: 300,
-        complete: onComplete
+        complete: onComplete,
+        easing: "linear"
       });
 
     timeLine.play();

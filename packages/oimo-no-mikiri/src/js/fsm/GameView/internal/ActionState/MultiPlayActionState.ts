@@ -4,6 +4,7 @@ import ActionState, { EnterParams as ActionEnterParams } from "./ActionState";
 
 import Actor from "../../../../models/Actor";
 import BattleStatusBoard from "../../../../texture/containers/label/BattleStatusBoard";
+import { DisplayObject } from "pixi.js";
 
 export interface EnterParams extends ActionEnterParams {
   battleLeft: number;
@@ -54,7 +55,7 @@ class MultiPlayActionState extends ActionState {
     this._battleStatusBoard.twoPlayerWins = params.wins.twoPlayer;
 
     this.backGroundLayer.addChild(this.background);
-    this.applicationLayer.addChild(
+    this.applicationLayer.addChild<DisplayObject>(
       this.oimo,
       this.player,
       this.opponent,
