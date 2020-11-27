@@ -6,7 +6,7 @@ import {
   getScale,
   addEvents,
   removeEvents,
-  toggleSound
+  toggleSound,
 } from "@sokontokoro/mikan";
 
 import { default as InitialViewState } from "./InitialView";
@@ -20,21 +20,21 @@ import { isOnlineMode } from "../models/Game";
 export enum Events {
   INITIALIZED = "ApplicationState@INITIALIZED",
   REQUESTED_GAME_START = "ApplicationState@REQUESTED_GAME_START",
-  REQUESTED_BACK_TO_TOP = "ApplicationState@REQUESTED_BACK_TO_TOP"
+  REQUESTED_BACK_TO_TOP = "ApplicationState@REQUESTED_BACK_TO_TOP",
 }
 
 enum InnerStates {
   INITIAL = "initial",
   TOP = "top",
   GAME = "game",
-  ONLINE_GAME = "online_game"
+  ONLINE_GAME = "online_game",
 }
 
 @AutoBind
 class ApplicationState extends Application {
   constructor() {
     const params = {
-      ...getCurrentViewSize()
+      ...getCurrentViewSize(),
     };
     super(params);
   }
@@ -58,13 +58,13 @@ class ApplicationState extends Application {
       [InnerStates.INITIAL]: new InitialViewState(),
       [InnerStates.TOP]: new TopViewState(),
       [InnerStates.GAME]: new LocalGameView(),
-      [InnerStates.ONLINE_GAME]: new OnlineGameView()
+      [InnerStates.ONLINE_GAME]: new OnlineGameView(),
     });
 
     addEvents({
       [Events.INITIALIZED]: this.handleInitializedEvent,
       [Events.REQUESTED_GAME_START]: this.handleRequestedGameStartEvent,
-      [Events.REQUESTED_BACK_TO_TOP]: this.handleRequestedBackToTopEvent
+      [Events.REQUESTED_BACK_TO_TOP]: this.handleRequestedBackToTopEvent,
     });
 
     window.addEventListener("resize", this.onResize);

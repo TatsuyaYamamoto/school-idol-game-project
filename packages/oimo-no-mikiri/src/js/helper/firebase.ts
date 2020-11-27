@@ -8,7 +8,7 @@ export function init() {
   firebase
     .database()
     .ref(".info/connected")
-    .on("value", snapshot => {
+    .on("value", (snapshot) => {
       const user = firebase.auth().currentUser;
       if (!user) {
         return;
@@ -25,8 +25,8 @@ export function init() {
 
   firebase.auth().signInAnonymously();
 
-  return new Promise<firebase.User>(resolve => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+  return new Promise<firebase.User>((resolve) => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         console.log("logged-in", user.uid);
         unsubscribe();

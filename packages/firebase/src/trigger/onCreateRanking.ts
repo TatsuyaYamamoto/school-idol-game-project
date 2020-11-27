@@ -14,7 +14,7 @@ export default firestore.document("ranking/{rankingId}").onCreate(
     );
 
     await sendToSlack({
-      text: `generated ranking of ${game}. ${consoleUrl}`
+      text: `generated ranking of ${game}. ${consoleUrl}`,
     });
   })
 );

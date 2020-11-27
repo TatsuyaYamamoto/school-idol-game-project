@@ -1,6 +1,6 @@
 import {
   Application as PixiApplication,
-  ApplicationOptions as PixiApplicationOptions
+  ApplicationOptions as PixiApplicationOptions,
 } from "pixi.js";
 
 import State from "./State";
@@ -42,7 +42,7 @@ abstract class Application extends PixiApplication implements State {
       Object.assign(
         {
           backgroundColor: config.rendererBackgroundColor,
-          autoStart: false
+          autoStart: false,
         },
         options
       )

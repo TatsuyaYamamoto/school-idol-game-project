@@ -79,7 +79,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - run: yarn install
-
       # todo: reuse as artifacts
       - run: yarn workspace @sokontokoro/mikan build
       - run: yarn workspace ${{ matrix.app }} build:dev
@@ -120,7 +119,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - run: yarn install
-
       # todo: reuse as artifacts
       - run: yarn workspace @sokontokoro/mikan build
       - run: yarn workspace firebase build:dev

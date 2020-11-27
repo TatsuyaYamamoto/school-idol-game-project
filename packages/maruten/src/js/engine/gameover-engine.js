@@ -6,7 +6,7 @@ import {
   trackEvent,
   tracePage,
   createUrchinTrackingModuleQuery,
-  convertYyyyMmDd
+  convertYyyyMmDd,
 } from "@sokontokoro/mikan";
 
 import State from "../state.js";
@@ -128,7 +128,7 @@ export default class GameoverEngine {
               const utmQuery = createUrchinTrackingModuleQuery({
                 campaign: `result-share_${yyyymmdd}`,
                 source: "twitter",
-                medium: "social"
+                medium: "social",
               });
               const url = `${LINK.GAME}?${utmQuery.join("&")}`;
 
@@ -149,9 +149,9 @@ export default class GameoverEngine {
                 text: GameoverEngine.getTweetText(),
                 url,
                 hashtags: ["まるてん", "そこんところ工房"],
-                mediaData
+                mediaData,
               });
-            }
+            },
           },
           {
             text: "CANCEL",
@@ -159,9 +159,9 @@ export default class GameoverEngine {
             onClick: () => {
               State.object.sound.BACK.stop();
               State.object.sound.BACK.play();
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
     };
 
@@ -223,7 +223,7 @@ export default class GameoverEngine {
             );
             break;
         }
-      }
+      },
     };
   }
 
@@ -246,22 +246,14 @@ export default class GameoverEngine {
 
         switch (Math.floor(Math.random() * 4)) {
           case 0:
-            return `まる「やーっぱり、よしこちゃんは${
-              State.gameScore
-            }ヨハネじゃないと！」`;
+            return `まる「やーっぱり、よしこちゃんは${State.gameScore}ヨハネじゃないと！」`;
           case 1:
-            return `まる「ずら！まるがお願い聞いたずら！危なくなったら止めてと！」${
-              State.gameScore
-            }ヨハネ！`;
+            return `まる「ずら！まるがお願い聞いたずら！危なくなったら止めてと！」${State.gameScore}ヨハネ！`;
           case 2:
-            return `まる「さぁ！まるてん行くずらー！」 ${
-              State.gameScore
-            }ヨハネ！`;
+            return `まる「さぁ！まるてん行くずらー！」 ${State.gameScore}ヨハネ！`;
           case 3:
           default:
-            return `まる「まさか${
-              State.gameScore
-            }ヨハネも堕天するとは思わなかったずら」`;
+            return `まる「まさか${State.gameScore}ヨハネも堕天するとは思わなかったずら」`;
         }
         break;
 
@@ -278,22 +270,14 @@ export default class GameoverEngine {
 
         switch (Math.floor(Math.random() * 4)) {
           case 0:
-            return `よう「${
-              State.gameScore
-            }リリー！スクールアイドルだもんね！」`;
+            return `よう「${State.gameScore}リリー！スクールアイドルだもんね！」`;
           case 1:
-            return `よう「おっ、${
-              State.gameScore
-            }リリーなんて、なかなかのリコちゃんマニアだね？！」`;
+            return `よう「おっ、${State.gameScore}リリーなんて、なかなかのリコちゃんマニアだね？！」`;
           case 2:
-            return `よう「堕天使だってタダじゃないんだから、リコちゃんもがんばルビィして！」 ${
-              State.gameScore
-            }リリー！`;
+            return `よう「堕天使だってタダじゃないんだから、リコちゃんもがんばルビィして！」 ${State.gameScore}リリー！`;
           case 3:
           default:
-            return `よう「船も水泳も堕天使も、ユニフォームがあるところがいいんだよね。リコチャンもかわいくて最高♪」${
-              State.gameScore
-            }リリー！`;
+            return `よう「船も水泳も堕天使も、ユニフォームがあるところがいいんだよね。リコチャンもかわいくて最高♪」${State.gameScore}リリー！`;
         }
         break;
 

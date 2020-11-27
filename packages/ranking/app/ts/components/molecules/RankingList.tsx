@@ -6,7 +6,7 @@ import {
   InfiniteLoader,
   List,
   AutoSizer,
-  WindowScroller
+  WindowScroller,
 } from "react-virtualized";
 
 import RankItem from "./RankItem";
@@ -17,7 +17,7 @@ interface Props {
   loadMoreItem: (params: IndexRange) => Promise<any>;
 }
 
-const RankingList: React.SFC<Props> = props => {
+const RankingList: React.SFC<Props> = (props) => {
   const { list, hasMoreItem, loadMoreItem } = props;
 
   const rowCount = hasMoreItem ? list.length + 5 : list.length;
@@ -31,7 +31,7 @@ const RankingList: React.SFC<Props> = props => {
       <div
         key={key}
         style={{
-          ...style
+          ...style,
         }}
       >
         {item || <div>Loading...</div>}

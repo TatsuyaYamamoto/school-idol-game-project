@@ -20,7 +20,7 @@ abstract class Character extends AnimatedSprite {
 
   constructor(frameTextures: Texture[], indexes: FrameStructureIndexes) {
     // initial animation state is wait.
-    super(indexes.WAIT.map(i => frameTextures[i]));
+    super(indexes.WAIT.map((i) => frameTextures[i]));
 
     this._frameTextures = frameTextures;
     this._frameStructureIndexes = indexes;
@@ -74,27 +74,27 @@ abstract class Character extends AnimatedSprite {
   }
 
   private _getWaitTextures = (): Texture[] => {
-    return this._frameStructureIndexes.WAIT.map(i => this._frameTextures[i]);
+    return this._frameStructureIndexes.WAIT.map((i) => this._frameTextures[i]);
   };
 
   private _getTryAttackTextures = (): Texture[] => {
     return this._frameStructureIndexes.TRY_ATTACK.map(
-      i => this._frameTextures[i]
+      (i) => this._frameTextures[i]
     );
   };
 
   private _getSuccessAttackTextures = (): Texture[] => {
     return this._frameStructureIndexes.SUCCESS_ATTACK.map(
-      i => this._frameTextures[i]
+      (i) => this._frameTextures[i]
     );
   };
 
   private _getWinTextures = (): Texture[] => {
-    return this._frameStructureIndexes.WIN.map(i => this._frameTextures[i]);
+    return this._frameStructureIndexes.WIN.map((i) => this._frameTextures[i]);
   };
 
   private _getLoseTextures = (): Texture[] => {
-    return this._frameStructureIndexes.LOSE.map(i => this._frameTextures[i]);
+    return this._frameStructureIndexes.LOSE.map((i) => this._frameTextures[i]);
   };
 }
 

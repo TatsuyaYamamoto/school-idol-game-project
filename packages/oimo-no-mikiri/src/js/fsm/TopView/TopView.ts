@@ -10,7 +10,7 @@ import {
   hide as hideConnecting,
   timeout,
   playOnLoop,
-  stop
+  stop,
 } from "@sokontokoro/mikan";
 
 import { Events as AppEvents } from "../ApplicationState";
@@ -31,7 +31,7 @@ import {
   openCreateRoomModal,
   openJoinRoomModal,
   openReadyRoomModal,
-  openRejectJoinRoomModal
+  openRejectJoinRoomModal,
 } from "../../helper/modals";
 
 export enum Events {
@@ -39,14 +39,14 @@ export enum Events {
   REQUEST_BACK_TO_MENU = "GameView@REQUEST_BACK_TO_MENU",
   REQUEST_HOW_TO_PLAY = "GameView@REQUEST_HOW_TO_PLAY",
   REQUEST_CREDIT = "GameView@REQUEST_CREDIT",
-  FIXED_PLAY_MODE = "GameView@FIXED_PLAY_MODE"
+  FIXED_PLAY_MODE = "GameView@FIXED_PLAY_MODE",
 }
 
 enum InnerStates {
   TITLE = "title",
   MENU = "menu",
   HOW_TO_PLAY = "how_to_play",
-  CREDIT = "credit"
+  CREDIT = "credit",
 }
 
 @AutoBind
@@ -70,7 +70,7 @@ class TopViewState extends ViewContainer {
       [InnerStates.TITLE]: new TitleState(),
       [InnerStates.MENU]: new MenuState(),
       [InnerStates.HOW_TO_PLAY]: new HowToPlayState(),
-      [InnerStates.CREDIT]: new CreditState()
+      [InnerStates.CREDIT]: new CreditState(),
     });
 
     addEvents({
@@ -78,7 +78,7 @@ class TopViewState extends ViewContainer {
       [Events.REQUEST_BACK_TO_MENU]: this.onBackMenuRequested,
       [Events.REQUEST_HOW_TO_PLAY]: this.onHowToPlayeRequested,
       [Events.REQUEST_CREDIT]: this.onCreditRequested,
-      [Events.FIXED_PLAY_MODE]: this.onPlayModeFixed
+      [Events.FIXED_PLAY_MODE]: this.onPlayModeFixed,
     });
 
     playOnLoop(SoundIds.SOUND_ZENKAI);
@@ -98,7 +98,7 @@ class TopViewState extends ViewContainer {
       Events.TAP_TITLE,
       Events.REQUEST_BACK_TO_MENU,
       Events.REQUEST_HOW_TO_PLAY,
-      Events.FIXED_PLAY_MODE
+      Events.FIXED_PLAY_MODE,
     ]);
   }
 
@@ -144,7 +144,7 @@ class TopViewState extends ViewContainer {
         break;
       default:
         dispatchEvent(AppEvents.REQUESTED_GAME_START, {
-          game: new LocalGame(mode)
+          game: new LocalGame(mode),
         });
     }
   }
@@ -213,7 +213,7 @@ class TopViewState extends ViewContainer {
       dispatchEvent(AppEvents.REQUESTED_GAME_START, { game });
     });
 
-    game.join().catch(type => {
+    game.join().catch((type) => {
       openRejectJoinRoomModal(type).then(() => {
         // Prevent move menu from title view.
         setTimeout(() => this.to(InnerStates.TITLE), 1);

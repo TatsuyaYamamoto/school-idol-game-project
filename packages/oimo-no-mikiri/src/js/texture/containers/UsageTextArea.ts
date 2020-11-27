@@ -13,7 +13,7 @@ class UsageTextArea extends Container {
     super();
 
     this._text = new Text(t(Ids[Ids.HOW_TO_PLAY_INFORMATION]), {
-      fontSize: 16
+      fontSize: 16,
     });
 
     const rectWidth = this._text.width * 1.2;

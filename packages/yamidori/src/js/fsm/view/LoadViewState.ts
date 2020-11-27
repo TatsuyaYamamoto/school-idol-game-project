@@ -8,7 +8,7 @@ import LoadKotoriAnimation from "../../container/LoadKotoriAnimation";
 import {
   addEvents,
   removeEvents,
-  dispatchEvent
+  dispatchEvent,
 } from "../../framework/EventUtils";
 import AssetLoader, { Asset } from "../../framework/AssetLoader";
 
@@ -18,7 +18,7 @@ import { SKIP_BRAND_LOGO_ANIMATION } from "../../Constants";
 
 export enum Events {
   COMPLETE_LOAD = "LoadViewState@COMPLETE_LOAD",
-  COMPLETE_LOGO_ANIMATION = "LoadViewState@COMPLETE_LOGO_ANIMATION"
+  COMPLETE_LOGO_ANIMATION = "LoadViewState@COMPLETE_LOGO_ANIMATION",
 }
 
 class LoadViewState extends ViewContainer {
@@ -47,7 +47,7 @@ class LoadViewState extends ViewContainer {
 
     addEvents({
       [Events.COMPLETE_LOAD]: this._handleLoadCompleteEvent,
-      [Events.COMPLETE_LOGO_ANIMATION]: this._handleLogoAnimCompleteEvent
+      [Events.COMPLETE_LOGO_ANIMATION]: this._handleLogoAnimCompleteEvent,
     });
 
     this._loadingInfoText = new Text(

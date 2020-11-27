@@ -24,7 +24,7 @@ class StateMachine<S extends State> {
   }
 
   public add(states: { [key: string]: S }): void {
-    Object.keys(states).forEach(key => {
+    Object.keys(states).forEach((key) => {
       this._states.set(key, states[key]);
     });
   }

@@ -15,13 +15,13 @@ class StraightWins extends Container {
     this._label = new Text(t(StringIds[StringIds.LABEL_STRAIGHT_WINS]), {
       fontFamily: "g_brushtappitsu_freeH",
       fontSize: 50,
-      padding: 5 // prevent to cut off words.
+      padding: 5, // prevent to cut off words.
     });
 
     this._value = new Text(`${wins}`, {
       fontFamily: "g_brushtappitsu_freeH",
       fontSize: 60,
-      padding: 5 // prevent to cut off words.
+      padding: 5, // prevent to cut off words.
     });
 
     // Set position to be set center as anchor.

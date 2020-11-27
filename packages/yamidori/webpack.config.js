@@ -13,41 +13,44 @@ const htmlParams = {
   description:
     "ことりちゃんが、あの闇でケーキな鍋を完成させる、、、のを阻止するブラウザゲームです！そこんところ工房のファンゲームです。",
   ogUrl: "https://games.sokontokoro-factory.net/yamidori/",
-  ogImage: "https://games.sokontokoro-factory.net/yamidori/assets/image/ogp.jpg"
+  ogImage:
+    "https://games.sokontokoro-factory.net/yamidori/assets/image/ogp.jpg",
 };
 
 isProduction &&
   Object.assign(htmlParams, {
     title: "やみどり！ -そこんところ工房-",
     trackingCode: config.trackingCode.pro,
-    noIndex: false
+    noIndex: false,
   });
 
 const plugins = [
   new HtmlWebpackPlugin({
     templateParameters: htmlParams,
     template: "src/index.ejs",
-    hash: true
+    hash: true,
   }),
-  new CopyWebpackPlugin([{ context: "src/assets", from: "**/*", to: "assets" }])
+  new CopyWebpackPlugin([
+    { context: "src/assets", from: "**/*", to: "assets" },
+  ]),
 ];
 
 module.exports = {
   mode: isProduction ? "production" : "development",
 
   entry: {
-    app: path.resolve(__dirname, "src/js/index.ts")
+    app: path.resolve(__dirname, "src/js/index.ts"),
   },
 
   output: {
     path: path.resolve(__dirname, "dist/"),
-    filename: "[name].bundle.js"
+    filename: "[name].bundle.js",
   },
 
   devtool: isProduction ? "none" : "source-map",
 
   resolve: {
-    extensions: [".js", ".ts"]
+    extensions: [".js", ".ts"],
   },
 
   module: {
@@ -55,11 +58,11 @@ module.exports = {
       {
         test: /\.(tsx?|jsx?)$/,
         exclude: /node_modules/,
-        use: [{ loader: "ts-loader" }]
+        use: [{ loader: "ts-loader" }],
       },
       { test: /\.css$/, loader: "style-loader!css-loader" },
-      { test: /\.woff$/, loader: "url-loader" }
-    ]
+      { test: /\.woff$/, loader: "url-loader" },
+    ],
   },
 
   optimization: {
@@ -68,15 +71,15 @@ module.exports = {
         commons: {
           test: /[\\/]node_modules[\\/]/,
           name: "vendor",
-          chunks: "all"
-        }
-      }
-    }
+          chunks: "all",
+        },
+      },
+    },
   },
 
   // https://github.com/pixijs/pixi-sound/issues/28
   // Resolve node fs module for pixi-sound.
   node: { fs: "empty" },
 
-  plugins: plugins
+  plugins: plugins,
 };

@@ -48,7 +48,7 @@ export const Ids = {
 
   OPEN_EXTERNAL_SITE_INFO: "open_external_site_info",
   OPEN_RANKING_INFO: "open_ranking_info",
-  OPEN_HOMEPAGE_INFO: "open_homepage_info"
+  OPEN_HOMEPAGE_INFO: "open_homepage_info",
 };
 
 export default {
@@ -143,7 +143,7 @@ LEFT, RIGHTボタン(キーボードの←→でも可！)
 
       [Ids.OPEN_EXTERNAL_SITE_INFO]: "外部サイト({{ domain }})を開きます！",
       [Ids.OPEN_RANKING_INFO]: "ランキングページを開きます！",
-      [Ids.OPEN_HOMEPAGE_INFO]: "ホームページへ移動します！"
-    }
-  }
+      [Ids.OPEN_HOMEPAGE_INFO]: "ホームページへ移動します！",
+    },
+  },
 };

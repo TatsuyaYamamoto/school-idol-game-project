@@ -14,7 +14,7 @@ import cloudFunctionsWarnLog from "./pubsub/cloudFunctionsWarnLog";
 
 initializeApp();
 firestore().settings({
-  timestampsInSnapshots: true
+  timestampsInSnapshots: true,
 });
 
 // https
@@ -26,7 +26,7 @@ export {
   onCreateRanking,
   onWriteUser,
   onUpdatePresence,
-  onUpdateRoom
+  onUpdateRoom,
 };
 
 // pubsub

@@ -5,7 +5,7 @@ import {
   playOnLoop,
   stop,
   dispatchEvent,
-  tracePage
+  tracePage,
 } from "@sokontokoro/mikan";
 
 import Player from "../../texture/sprite/character/Player";
@@ -33,7 +33,7 @@ export enum Events {
   ATTACK = "GameView@ATTACK",
   FIXED_RESULT = "GameView@FIXED_RESULT",
   RESTART_GAME = "GameView@RESTART_GAME",
-  BACK_TO_TOP = "GameView@BACK_TO_TOP"
+  BACK_TO_TOP = "GameView@BACK_TO_TOP",
 }
 
 export interface EnterParams extends Deliverable {
@@ -44,7 +44,7 @@ export enum InnerStates {
   READY = "ready",
   ACTION = "action",
   RESULT = "result",
-  OVER = "over"
+  OVER = "over",
 }
 
 abstract class GameView extends ViewContainer {

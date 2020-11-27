@@ -49,13 +49,13 @@ class OnlineBattle extends Battle {
    * Status change methods
    */
   public start() {
-    return this.transaction(current => {
+    return this.transaction((current) => {
       const time = this.createSignalTime();
 
       return (
         current || {
           signalTime: time,
-          createdAt: firebase.database.ServerValue.TIMESTAMP
+          createdAt: firebase.database.ServerValue.TIMESTAMP,
         }
       );
     }, "initial_battle");
@@ -105,9 +105,7 @@ class OnlineBattle extends Battle {
     this._winnerAttackTime = winner.attackTime;
 
     console.log(
-      `winner was decided. actor: ${this._winner}, time: ${
-        this._winnerAttackTime
-      }`
+      `winner was decided. actor: ${this._winner}, time: ${this._winnerAttackTime}`
     );
   };
 
@@ -187,15 +185,13 @@ class OnlineBattle extends Battle {
 
           if (this.isFalseStarted(Actor.PLAYER)) {
             console.log(
-              `This battle is fixed with false-start. winner: ${
-                Actor.OPPONENT
-              }.`
+              `This battle is fixed with false-start. winner: ${Actor.OPPONENT}.`
             );
             this.fix(this.toId(Actor.OPPONENT));
 
             this.dispatch(BattleEvents.FALSE_STARTED, {
               winner: Actor.OPPONENT,
-              attacker: actor
+              attacker: actor,
             });
           } else {
             this.falseStart(Actor.PLAYER);
@@ -212,7 +208,7 @@ class OnlineBattle extends Battle {
             this.fix(this.toId(Actor.PLAYER));
             this.dispatch(BattleEvents.FALSE_STARTED, {
               winner: Actor.PLAYER,
-              attacker: actor
+              attacker: actor,
             });
           } else {
             this.falseStart(Actor.OPPONENT);
@@ -259,7 +255,7 @@ class OnlineBattle extends Battle {
   protected reset(): void {
     this._attackTimeMap.clear();
 
-    this.transaction(current => {
+    this.transaction((current) => {
       const time = this.createSignalTime();
       if (current && current.attackTime) {
         current.attackTime = null;

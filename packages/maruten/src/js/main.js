@@ -12,8 +12,8 @@ import Util from "./util.js";
 import properties from "./static/properties";
 import State from "./state";
 
-window.onload = function() {
-  State.firebaseInitPromise = initAuth().then(user => {
+window.onload = function () {
+  State.firebaseInitPromise = initAuth().then((user) => {
     if (!user.isAnonymous) {
       alertify.log("ランキングシステム ログイン中！", "success", 3000);
       properties.asyncImage.TWITTER_ICON.url = user.photoURL;
@@ -62,10 +62,10 @@ window.onload = function() {
   createjs.DisplayObject.suppressCrossDomainErrors = true;
 
   // サウンド用イベント
-  window.addEventListener("blur", function() {
+  window.addEventListener("blur", function () {
     Util.soundTurnOff();
   });
-  window.addEventListener("focus", function() {
+  window.addEventListener("focus", function () {
     Util.soundTurnOn();
   });
 

@@ -37,7 +37,7 @@ export function dispatchEvent(type: string): void {
  * @param events
  */
 export function addEvents(events: { [key: string]: (Event) => void }): void {
-  Object.keys(events).forEach(key => {
+  Object.keys(events).forEach((key) => {
     eventTarget.addEventListener(key, events[key]);
     cacheEvents[key] = events[key];
   });
@@ -49,7 +49,7 @@ export function addEvents(events: { [key: string]: (Event) => void }): void {
  * @param keys
  */
 export function removeEvents(keys: string[]): void {
-  keys.forEach(key => {
+  keys.forEach((key) => {
     eventTarget.removeEventListener(key, cacheEvents[key]);
     delete cacheEvents[key];
   });

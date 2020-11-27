@@ -8,7 +8,7 @@ export default class MikanError extends Error {
 
   public toJSON = () => ({
     code: this.code,
-    message: this.message
+    message: this.message,
   });
 }
 
@@ -21,5 +21,5 @@ export enum ErrorCode {
   SKYWAY_FAIL_DATA_CONNECT = "skyway/fail-data-connect",
   SKYWAY_ALREADY_ROOM_MEMBER = "skyway/already-room-member",
 
-  NTP_NOT_SYNCHRONIZED = "ntp/not-synchronized"
+  NTP_NOT_SYNCHRONIZED = "ntp/not-synchronized",
 }

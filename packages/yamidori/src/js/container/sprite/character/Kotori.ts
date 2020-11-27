@@ -8,12 +8,12 @@ import { GAME_PARAMETERS } from "../../../Constants";
 export enum Speed {
   LOW = GAME_PARAMETERS.KOTORI_SPEED_LOW,
   MIDDLE = GAME_PARAMETERS.KOTORI_SPEED_MIDDLE,
-  HIGH = GAME_PARAMETERS.KOTORI_SPEED_HIGH
+  HIGH = GAME_PARAMETERS.KOTORI_SPEED_HIGH,
 }
 
 export enum Direction {
   RIGHT,
-  LEFT
+  LEFT,
 }
 
 interface ConstructorParams {
@@ -23,7 +23,7 @@ interface ConstructorParams {
 
 const defaultConstructorParams: ConstructorParams = {
   direction: Direction.RIGHT,
-  speed: Speed.LOW
+  speed: Speed.LOW,
 };
 
 class Kotori extends ClickableSprite {
@@ -83,7 +83,7 @@ class Kotori extends ClickableSprite {
 
     Promise.resolve()
       .then(() => {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
           this.startAlphaDecrementLoop(resolve);
         });
       })

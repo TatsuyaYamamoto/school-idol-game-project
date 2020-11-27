@@ -60,7 +60,7 @@ function gameReady() {
         _imageObj.BUTTON_TOP,
         _imageObj.BUTTON_BOTTOM,
         _player.img,
-        _textObj.SCORE_COUNT
+        _textObj.SCORE_COUNT,
       ]);
 
       // タイマーアニメーション開始

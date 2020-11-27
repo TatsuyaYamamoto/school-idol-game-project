@@ -31,8 +31,8 @@ const HeaderSpace = styled.div`
 
 const styles = {
   root: {
-    backgroundColor: white
-  }
+    backgroundColor: white,
+  },
 };
 
 @AutoBind
@@ -47,7 +47,7 @@ class AppBar extends React.Component<Props & WithStyles, State> {
     }
 
     this.state = {
-      tabIndex
+      tabIndex,
     };
   }
 

@@ -1,6 +1,6 @@
 const KEY = "honocar";
 const initialState = JSON.stringify({
-  character: "honoka"
+  character: "honoka",
 });
 
 function getRoot() {

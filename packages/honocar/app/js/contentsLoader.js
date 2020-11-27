@@ -27,7 +27,7 @@ export function loadContent() {
   const loadImage = getLoadImage();
   const loadText = getLoadText();
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     globals.gameStage.removeAllChildren();
     globals.gameStage.addChild(loadText);
     globals.gameStage.addChild(loadImage);
@@ -35,7 +35,7 @@ export function loadContent() {
     globals.queue = new createjs.LoadQueue(false);
     globals.queue.installPlugin(createjs.Sound);
     globals.queue.setMaxConnections(6);
-    globals.queue.addEventListener("complete", function() {
+    globals.queue.addEventListener("complete", function () {
       logger.debug(`loading progress is completed.`);
 
       globals.loginPromise.then(() => {
@@ -86,7 +86,7 @@ export function loadContent() {
         resolve();
       });
     });
-    globals.queue.addEventListener("progress", event => {
+    globals.queue.addEventListener("progress", (event) => {
       // ロード情報
       loadText.text = `loading...${Math.floor(event.loaded * 100)}%`;
 
@@ -106,7 +106,7 @@ function validateLoadedResult() {
   const targetItemIds = Object.keys(globals.queue._loadItemsById);
   const loadedResultIds = Object.keys(globals.queue._loadedResults);
 
-  return /* failItemIds */ targetItemIds.filter(item => {
+  return /* failItemIds */ targetItemIds.filter((item) => {
     for (const result of loadedResultIds) {
       if (item === result) {
         return false;
@@ -152,7 +152,7 @@ function setSpriteSheetContents() {
     const spriteSheet = new createjs.SpriteSheet({
       images: [globals.queue.getResult(properties.ss[key].id)],
       frames: properties.ss[key].frames,
-      animations: properties.ss[key].animations
+      animations: properties.ss[key].animations,
     });
 
     globals.ssObj[key] = new createjs.Sprite(

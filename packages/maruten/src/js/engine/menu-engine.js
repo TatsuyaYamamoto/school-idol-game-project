@@ -4,7 +4,7 @@ import {
   signInAsTwitterUser,
   signOut,
   trackEvent,
-  tracePage
+  tracePage,
 } from "@sokontokoro/mikan";
 
 import State from "../state.js";
@@ -133,7 +133,7 @@ export default class MenuEngine {
               State.object.sound.OK.play();
 
               openExternalSite(LINK.SOKONTOKORO_HOME, false);
-            }
+            },
           },
           {
             text: "CANCEL",
@@ -141,9 +141,9 @@ export default class MenuEngine {
             onClick: () => {
               State.object.sound.BACK.stop();
               State.object.sound.BACK.play();
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
     };
 
@@ -163,7 +163,7 @@ export default class MenuEngine {
               State.object.sound.OK.play();
 
               openExternalSite(LINK.RANKING, false);
-            }
+            },
           },
           {
             text: "CANCEL",
@@ -171,9 +171,9 @@ export default class MenuEngine {
             onClick: () => {
               State.object.sound.BACK.stop();
               State.object.sound.BACK.play();
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
     };
 
@@ -331,7 +331,7 @@ export default class MenuEngine {
             );
             break;
         }
-      }
+      },
     };
   }
 }

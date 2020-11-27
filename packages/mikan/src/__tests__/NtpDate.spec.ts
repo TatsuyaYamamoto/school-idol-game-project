@@ -40,7 +40,7 @@ describe("NtpDate class", () => {
           st: 1541592277.014,
           leap: 36,
           next: 1483228800,
-          step: 1
+          step: 1,
         })
       )
       .once(
@@ -50,7 +50,7 @@ describe("NtpDate class", () => {
           st: 1541592277.2,
           leap: 36,
           next: 1483228800,
-          step: 1
+          step: 1,
         })
       );
     // Mock current time
@@ -93,7 +93,7 @@ describe("NtpDate class", () => {
           st: 1541638077.571,
           leap: 36,
           next: 1483228800,
-          step: 1
+          step: 1,
         })
       )
       .once(
@@ -103,7 +103,7 @@ describe("NtpDate class", () => {
           st: 1541638077.743,
           leap: 36,
           next: 1483228800,
-          step: 1
+          step: 1,
         })
       );
     // Mock current time

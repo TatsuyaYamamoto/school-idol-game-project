@@ -37,8 +37,8 @@ class ResultState extends GameViewState {
         ? "playerWin"
         : "opponentWin"
       : params.falseStarter
-        ? "falseStart"
-        : "draw";
+      ? "falseStart"
+      : "draw";
     const name = params.winner
       ? params.winner === Actor.PLAYER
         ? this.player.name
@@ -158,14 +158,14 @@ class ResultState extends GameViewState {
     const periodTimeMillis = 100;
 
     const timeLine = anime.timeline({
-      loop: 3
+      loop: 3,
     });
 
     const getAnimParam = (x: number) => ({
       x,
       targets: target.position,
       duration: periodTimeMillis / 4,
-      easing: "linear"
+      easing: "linear",
     });
 
     timeLine
@@ -186,7 +186,7 @@ class ResultState extends GameViewState {
         targets: this.whiteLayer,
         alpha: 1,
         duration: 100,
-        easing: "linear"
+        easing: "linear",
       })
       // Refresh white out.
       .add({
@@ -194,14 +194,14 @@ class ResultState extends GameViewState {
         begin: onStartRefresh,
         alpha: 0,
         duration: 300,
-        easing: "linear"
+        easing: "linear",
       })
       // Show result animation.
       .add({
         targets: this.whiteLayer,
         duration: 300,
         complete: onComplete,
-        easing: "linear"
+        easing: "linear",
       });
 
     timeLine.play();

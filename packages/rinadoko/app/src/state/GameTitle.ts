@@ -38,15 +38,15 @@ export class GameTitle implements State {
           scale: this.context.scale,
           screen: {
             width: this.context.app.screen.width,
-            height: this.context.app.screen.height
+            height: this.context.app.screen.height,
           },
           textures: {
             rina1: resources["rina-1"].texture,
             hako1: resources["hako-1"].texture,
             hako2: resources["hako-2"].texture,
             fukidashiNiko: resources["fukidashi-niko"].texture,
-            fukidashiShun: resources["fukidashi-shun"].texture
-          }
+            fukidashiShun: resources["fukidashi-shun"].texture,
+          },
         });
       }
     );
@@ -56,7 +56,7 @@ export class GameTitle implements State {
       [
         this.context.app.screen.width * 0.2,
         this.context.app.screen.width * 0.5,
-        this.context.app.screen.width * 0.8
+        this.context.app.screen.width * 0.8,
       ],
       1
     );

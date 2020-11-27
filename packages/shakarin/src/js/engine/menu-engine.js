@@ -4,7 +4,7 @@ import {
   signInAsTwitterUser,
   signOut,
   tracePage,
-  trackEvent
+  trackEvent,
 } from "@sokontokoro/mikan";
 
 import State from "../state.js";
@@ -114,7 +114,7 @@ export default class MenuEngine {
               State.object.sound.OK.play();
 
               openExternalSite(config.link.homepage, false);
-            }
+            },
           },
           {
             text: "CANCEL",
@@ -122,9 +122,9 @@ export default class MenuEngine {
             onClick: () => {
               State.object.sound.BACK.stop();
               State.object.sound.BACK.play();
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
     };
 
@@ -144,7 +144,7 @@ export default class MenuEngine {
               State.object.sound.OK.play();
 
               openExternalSite(config.link.ranking, false);
-            }
+            },
           },
           {
             text: "CANCEL",
@@ -152,9 +152,9 @@ export default class MenuEngine {
             onClick: () => {
               State.object.sound.BACK.stop();
               State.object.sound.BACK.play();
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
     };
 
@@ -242,7 +242,7 @@ export default class MenuEngine {
         );
         State.object.image.BUTTON_RANKING.removeAllEventListeners("mousedown");
         State.object.ss.BUTTON_SOUND_SS.removeAllEventListeners("mousedown");
-      }
+      },
     };
   }
 }

@@ -49,7 +49,7 @@ export function tracePage(pagePath?: string) {
   // @ts-ignore
   gtag("config", trackingCode, {
     page_title: document.title,
-    page_path
+    page_path,
   });
 }
 
@@ -66,7 +66,7 @@ export function trackEvent(
   {
     category,
     label,
-    value
+    value,
   }: { category?: string; label?: string; value?: number }
 ) {
   const params: { [key: string]: string | number } = {};
@@ -104,7 +104,7 @@ export function trackTiming(
     name,
     value,
     event_category: optionalParams.category,
-    event_label: optionalParams.label
+    event_label: optionalParams.label,
   });
 }
 

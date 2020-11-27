@@ -52,11 +52,11 @@ function Player(playCharacter) {
  *
  * @param isTransparent
  */
-Player.prototype.transparent = function(isTransparent) {
+Player.prototype.transparent = function (isTransparent) {
   this.img.alpha = isTransparent ? 0.5 : 1;
 };
 
-Player.prototype.checkLane = function() {
+Player.prototype.checkLane = function () {
   const { gameScrean } = globals;
 
   switch (this.lane) {
@@ -71,18 +71,18 @@ Player.prototype.checkLane = function() {
   }
 };
 
-Player.prototype.moveRight = function() {
+Player.prototype.moveRight = function () {
   createjs.Tween.get(this.img)
     .call(this.img.gotoAndPlay, ["escapeR"])
     .to({ x: this.checkLane() }, 100);
 };
-Player.prototype.moveLeft = function() {
+Player.prototype.moveLeft = function () {
   createjs.Tween.get(this.img)
     .call(this.img.gotoAndPlay, ["escapeL"])
     .to({ x: this.checkLane() }, 100);
 };
 
-Player.prototype.howToMove = function() {
+Player.prototype.howToMove = function () {
   const { gameScrean } = globals;
 
   createjs.Tween.get(this.img, { loop: true })

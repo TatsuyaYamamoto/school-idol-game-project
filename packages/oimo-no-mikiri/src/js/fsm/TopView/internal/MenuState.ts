@@ -9,7 +9,7 @@ import {
   trackEvent,
   openExternalSite,
   openModal,
-  t
+  t,
 } from "@sokontokoro/mikan";
 
 import { Events } from "../TopView";
@@ -82,10 +82,10 @@ class MenuState extends TopViewState {
       this.viewWidth * 0.5,
       this.viewHeight * 0.5
     );
-    this._selectMultiPlayModeBoard.onClick("online", e =>
+    this._selectMultiPlayModeBoard.onClick("online", (e) =>
       this._onModeSelected(e, Mode.MULTI_ONLINE)
     );
-    this._selectMultiPlayModeBoard.onClick("offline", e =>
+    this._selectMultiPlayModeBoard.onClick("offline", (e) =>
       this._onModeSelected(e, Mode.MULTI_LOCAL)
     );
     this._selectMultiPlayModeBoard.onClick("back", this.backHomeMenu);
@@ -134,19 +134,19 @@ class MenuState extends TopViewState {
 
             trackEvent(Action.TAP, {
               category: Category.BUTTON,
-              label: "home"
+              label: "home",
             });
             openExternalSite(URL.SOKONTOKORO_HOME, false);
-          }
+          },
         },
         {
           text: "CANCEL",
           type: "cancel",
           onClick: () => {
             play(SoundIds.SOUND_CANCEL);
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
   };
 
@@ -160,7 +160,7 @@ class MenuState extends TopViewState {
 
     trackEvent(Action.TAP, {
       category: Category.BUTTON,
-      label: "toggle_sound"
+      label: "toggle_sound",
     });
   };
 

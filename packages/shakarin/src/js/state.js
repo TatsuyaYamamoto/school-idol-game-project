@@ -20,6 +20,6 @@ export default {
     image: {},
     ss: {},
     sound: {},
-    text: {}
-  }
+    text: {},
+  },
 };

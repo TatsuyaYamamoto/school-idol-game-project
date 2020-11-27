@@ -2,7 +2,7 @@ import config from "./resources/config";
 import globals from "./globals";
 
 export function wait(time) {
-  return new Promise(resolve => setTimeout(resolve, time));
+  return new Promise((resolve) => setTimeout(resolve, time));
 }
 
 //ゲームスクリーンサイズ初期化用-----------------------
@@ -98,7 +98,7 @@ export function initClient() {
 
   isNew = true;
 
-  return SkyWayClient.createClient(skyWayApiKey).then(client => {
+  return SkyWayClient.createClient(skyWayApiKey).then((client) => {
     CLIENT = client;
     return isNew;
   });

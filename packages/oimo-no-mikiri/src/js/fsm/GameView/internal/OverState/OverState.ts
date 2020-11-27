@@ -4,7 +4,7 @@ import {
   Deliverable,
   dispatchEvent,
   play,
-  trackEvent
+  trackEvent,
 } from "@sokontokoro/mikan";
 
 import GameViewState from "../GameViewState";
@@ -155,7 +155,7 @@ abstract class OverState extends GameViewState {
 
     trackEvent(Action.TAP, {
       category: Category.BUTTON,
-      label: "restart_game"
+      label: "restart_game",
     });
   };
 
@@ -171,7 +171,7 @@ abstract class OverState extends GameViewState {
     trackEvent(Action.GAMEOVER, {
       category: Category.ACHIEVEMENT,
       label: `Fixed_${mode}`,
-      value: round
+      value: round,
     });
   };
 

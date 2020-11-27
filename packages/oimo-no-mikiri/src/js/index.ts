@@ -7,7 +7,7 @@ import {
   isSupportTouchEvent,
   initTracker,
   tracePage,
-  initAuth
+  initAuth,
 } from "@sokontokoro/mikan";
 
 import ApplicationState from "./fsm/ApplicationState";
@@ -17,7 +17,7 @@ import {
   SUPPORTED_LANGUAGES,
   DEFAULT_LANGUAGE,
   BASIC_IMAGE_WIDTH,
-  BASIC_IMAGE_HEIGHT
+  BASIC_IMAGE_HEIGHT,
 } from "./Constants";
 
 import { VirtualPageViews } from "./helper/tracker";
@@ -28,7 +28,7 @@ require("../fonts/g_brushtappitsu_freeH.css");
 
 // initialize firebase modules
 initFirebase();
-initAuth().then(user => {
+initAuth().then((user) => {
   initTracker(user.uid);
 });
 
@@ -67,7 +67,7 @@ function init() {
 
   // set framework configuration
   config.supportedLanguages = Object.keys(SUPPORTED_LANGUAGES).map(
-    key => SUPPORTED_LANGUAGES[key]
+    (key) => SUPPORTED_LANGUAGES[key]
   );
   config.defaultLanguage = DEFAULT_LANGUAGE;
   config.basicImageWidth = BASIC_IMAGE_WIDTH;
@@ -85,5 +85,5 @@ function init() {
 
 // Fire init() on page loaded.
 window.addEventListener(isSupportTouchEvent() ? "touchstart" : "click", init, {
-  once: true
+  once: true,
 });

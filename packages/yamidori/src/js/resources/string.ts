@@ -12,7 +12,7 @@ export const Ids = {
   CREDIT_T28: "CREDIT_T28",
   CREDIT_SANZASHI: "CREDIT_SANZASHI",
   CREDIT_ON_JIN: "CREDIT_ON_JIN",
-  CREDIT_LOVELIVE: "CREDIT_LOVELIVE"
+  CREDIT_LOVELIVE: "CREDIT_LOVELIVE",
 };
 
 export default {
@@ -45,8 +45,8 @@ and prevent that she puts it!`,
 
       [Ids.CREDIT_ON_JIN]: "Sound effect: On-Jin ～音人～",
 
-      [Ids.CREDIT_LOVELIVE]: "PROJECT Lovelive!"
-    }
+      [Ids.CREDIT_LOVELIVE]: "PROJECT Lovelive!",
+    },
   },
   ja: {
     translation: {
@@ -67,7 +67,7 @@ and prevent that she puts it!`,
 
       [Ids.CREDIT_ON_JIN]: "効果音: On-Jin ～音人～",
 
-      [Ids.CREDIT_LOVELIVE]: "プロジェクト ラブライブ！"
-    }
-  }
+      [Ids.CREDIT_LOVELIVE]: "プロジェクト ラブライブ！",
+    },
+  },
 };

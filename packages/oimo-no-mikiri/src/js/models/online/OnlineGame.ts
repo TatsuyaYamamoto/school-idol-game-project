@@ -13,7 +13,7 @@ export enum GameEvents {
   MEMBER_JOINED = "member_joined",
   FULFILLED_MEMBERS = "fulfilled_members",
   MEMBER_LEFT = "member_left",
-  ROUND_PROCEED = "round_proceed"
+  ROUND_PROCEED = "round_proceed",
 }
 
 class OnlineGame extends Game {
@@ -33,15 +33,11 @@ class OnlineGame extends Game {
    * Static methods
    */
   public static async create() {
-    const gameId = firebase
-      .database()
-      .ref()
-      .child("games")
-      .push().key;
+    const gameId = firebase.database().ref().child("games").push().key;
     const ref = firebase.database().ref(`games/${gameId}`);
 
     await ref.set({
-      createdAt: firebase.database.ServerValue.TIMESTAMP
+      createdAt: firebase.database.ServerValue.TIMESTAMP,
     });
     ref.onDisconnect().set(null);
 
@@ -102,7 +98,7 @@ class OnlineGame extends Game {
   public join() {
     const { uid } = firebase.auth().currentUser;
 
-    const checkGameExistPromise = gameSnapshot =>
+    const checkGameExistPromise = (gameSnapshot) =>
       new Promise((resolve, reject) => {
         if (gameSnapshot.exists()) {
           resolve();
@@ -112,14 +108,14 @@ class OnlineGame extends Game {
       });
 
     const joinInTransaction = () =>
-      this.transaction(current => {
+      this.transaction((current) => {
         if (!current) {
           return current;
         }
 
         if (!current.members || Object.keys(current.members).length < 2) {
           current.members = Object.assign({}, current.members, {
-            [uid]: false
+            [uid]: false,
           });
         }
 
@@ -146,10 +142,7 @@ class OnlineGame extends Game {
         this._gameRef
           .child("currentRound")
           .on("value", this.onCurrentRoundUpdated);
-        this._gameRef
-          .child(`members/${uid}`)
-          .onDisconnect()
-          .set(null);
+        this._gameRef.child(`members/${uid}`).onDisconnect().set(null);
       });
   }
 
@@ -161,31 +154,28 @@ class OnlineGame extends Game {
   public async leave() {
     const { uid } = firebase.auth().currentUser;
     await this._gameRef.child("members").update({
-      [uid]: null
+      [uid]: null,
     });
-    await this._gameRef
-      .child(`members/${uid}`)
-      .onDisconnect()
-      .cancel();
+    await this._gameRef.child(`members/${uid}`).onDisconnect().cancel();
   }
 
   public async requestReady() {
     const { uid } = firebase.auth().currentUser;
     await this._gameRef.child("members").update({
-      [uid]: true
+      [uid]: true,
     });
   }
 
   public async start(): Promise<void> {
     const now = firebase.database.ServerValue.TIMESTAMP;
     const members = (await this._gameRef.child("members").once("value")).val();
-    await this.transaction(current => {
+    await this.transaction((current) => {
       if (current && current.currentRound !== 1) {
         Object.assign(current, {
           members,
           currentRound: 1,
           battles: {},
-          updatedAt: now
+          updatedAt: now,
         });
       }
       return current;
@@ -201,7 +191,7 @@ class OnlineGame extends Game {
     const nextRound = this.currentRound + 1;
     const now = firebase.database.ServerValue.TIMESTAMP;
 
-    await this.transaction(current => {
+    await this.transaction((current) => {
       if (current && current.currentRound !== nextRound) {
         current.currentRound = nextRound;
         current.updatedAt = now;
@@ -256,7 +246,7 @@ class OnlineGame extends Game {
 
     // Update local members status.
     this.members.clear();
-    snapshot.forEach(child => {
+    snapshot.forEach((child) => {
       this.members.set(child.key, child.val());
       return false; // Keep enumeration
     });
@@ -314,7 +304,7 @@ class OnlineGame extends Game {
     // Is every member ready?
     if (
       currentMembers.size === 2 &&
-      Array.from(currentMembers.values()).every(isReady => isReady)
+      Array.from(currentMembers.values()).every((isReady) => isReady)
     ) {
       this.dispatch(GameEvents.IS_READY);
     }
@@ -333,7 +323,7 @@ class OnlineGame extends Game {
       gameId: this._id,
       round: nextRound,
       playerId: this.ownId,
-      opponentId: this.opponentId
+      opponentId: this.opponentId,
     });
 
     if (nextRound === 1) {

@@ -26,7 +26,7 @@ export class GameSelectBoxState implements State {
 
     this.rinaCandidates.forEach((rina, index) => {
       rina.clickHandler(() => {
-        this.rinaCandidates.forEach(rina => {
+        this.rinaCandidates.forEach((rina) => {
           rina.clickHandler(null);
         });
 
@@ -58,7 +58,7 @@ export class GameSelectBoxState implements State {
     } /*不正解*/ else {
       this.soundNg.play();
 
-      this.rinaCandidates.forEach(c => {
+      this.rinaCandidates.forEach((c) => {
         if (c.inContainRina) {
           c.showLoseFukidashi();
         }

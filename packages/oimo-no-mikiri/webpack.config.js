@@ -14,52 +14,54 @@ const htmlParams = {
   keyword:
     "ラブライブ！サンシャイン!!,LoveLive！,国木田花丸, はなまる, 黒澤ルビィ, るびぃ, すいぽ, おいも, ゲーム, フリゲ, フリーゲーム",
   ogUrl: "https://games.sokontokoro-factory.net/oimo/",
-  ogImage: "https://games.sokontokoro-factory.net/oimo/assets/image/ogp.png"
+  ogImage: "https://games.sokontokoro-factory.net/oimo/assets/image/ogp.png",
 };
 
 isProduction &&
   Object.assign(htmlParams, {
     title: "おいものみきり！ -そこんところ工房-",
     trackingCode: config.trackingCode.pro,
-    noIndex: false
+    noIndex: false,
   });
 
 const plugins = [
   new HtmlWebpackPlugin({
     template: "src/index.ejs",
     templateParameters: htmlParams,
-    hash: true
+    hash: true,
   }),
-  new CopyWebpackPlugin([{ context: "src/assets", from: "**/*", to: "assets" }])
+  new CopyWebpackPlugin([
+    { context: "src/assets", from: "**/*", to: "assets" },
+  ]),
 ];
 
 module.exports = {
   mode: isProduction ? "production" : "development",
 
   entry: {
-    app: path.resolve(__dirname, "src/js/index.ts")
+    app: path.resolve(__dirname, "src/js/index.ts"),
   },
 
   output: {
     path: path.resolve(__dirname, "dist/"),
-    filename: "[name].bundle.js"
+    filename: "[name].bundle.js",
   },
 
   devtool: isProduction ? "none" : "source-map",
 
   resolve: {
-    extensions: [".js", ".ts"]
+    extensions: [".js", ".ts"],
   },
 
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: [{ loader: "ts-loader" }]
+        use: [{ loader: "ts-loader" }],
       },
       { test: /\.css$/, loader: "style-loader!css-loader" },
-      { test: /\.(woff|ttf)$/, loader: "url-loader" }
-    ]
+      { test: /\.(woff|ttf)$/, loader: "url-loader" },
+    ],
   },
 
   optimization: {
@@ -68,15 +70,15 @@ module.exports = {
         commons: {
           test: /[\\/]node_modules[\\/]/,
           name: "vendor",
-          chunks: "all"
-        }
-      }
-    }
+          chunks: "all",
+        },
+      },
+    },
   },
 
   // https://github.com/pixijs/pixi-sound/issues/28
   // Resolve node fs module for pixi-sound.
   node: { fs: "empty" },
 
-  plugins: plugins
+  plugins: plugins,
 };

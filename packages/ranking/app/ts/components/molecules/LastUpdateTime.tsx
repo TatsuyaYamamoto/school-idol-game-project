@@ -19,7 +19,7 @@ const Time = styled.span`
 
 const DateValue = styled.span``;
 
-const LastUpdateTime: React.SFC<Props> = props => {
+const LastUpdateTime: React.SFC<Props> = (props) => {
   const { time } = props;
 
   const yyyy = time.getFullYear();

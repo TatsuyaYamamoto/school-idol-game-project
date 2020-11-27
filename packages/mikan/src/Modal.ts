@@ -40,7 +40,7 @@ export function openModal(props: ModalProps & SweetAlertOptions): void {
     showConfirmButton: false,
     allowOutsideClick: false,
     allowEscapeKey: false,
-    ...sweetAlertOptions
+    ...sweetAlertOptions,
   });
 
   // Get action area element of modal.
@@ -54,7 +54,7 @@ export function openModal(props: ModalProps & SweetAlertOptions): void {
         tooltipText,
         type = "confirm",
         autoClose = true,
-        onClick
+        onClick,
       }: Action,
       index: number
     ) => {
@@ -75,7 +75,7 @@ export function openModal(props: ModalProps & SweetAlertOptions): void {
           arrow: true,
           onShow(instance: any) {
             setTimeout(() => instance.hide(), 1500);
-          }
+          },
         });
       }
 

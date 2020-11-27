@@ -13,18 +13,18 @@ export default {
     framerate: 30,
     gamescrean: {
       width: 640,
-      height: 896
+      height: 896,
     },
     car: {
       width: 135,
       height: 169,
       fasterSpeed: 1600,
-      slowerSpeed: 2000
+      slowerSpeed: 2000,
     },
     anime: {
-      registrationFeedTime: 500
+      registrationFeedTime: 500,
     },
-    difficultyLength: 0.3
+    difficultyLength: 0.3,
   },
   link: {
     game: `https:${gamesAuthority}/honocar`,
@@ -35,8 +35,8 @@ export default {
     sanzashi: "https://twitter.com/xxsanzashixx",
     soundeffect: "http://soundeffect-lab.info/",
     on_jin: "http://on-jin.com/",
-    lovelive: "http://www.lovelive-anime.jp/"
-  }
+    lovelive: "http://www.lovelive-anime.jp/",
+  },
 };
 
 const basePath = `/honocar`;
@@ -51,11 +51,11 @@ export const TRACK_PAGES = {
   GAME: `${basePath}/#/game`,
   GAMEOVER: `${basePath}/#/gameover`,
   GAME_ONLINE: `${basePath}/#/game_online`,
-  GAMEOVER_ONLINE: `${basePath}/#/gameover_online`
+  GAMEOVER_ONLINE: `${basePath}/#/gameover_online`,
 };
 
 export const TRACK_ACTION = {
   CLICK: "click",
   SELECT_CHARA: "select_chara",
-  GAMEOVER: "gameover"
+  GAMEOVER: "gameover",
 };

@@ -81,7 +81,7 @@ class OnlineActionState extends ActionState {
     // Fade out player and opponent indicate label.
     const values = {
       playerAlpha: 1,
-      opponentAlpha: 1
+      opponentAlpha: 1,
     };
 
     anime({
@@ -94,7 +94,7 @@ class OnlineActionState extends ActionState {
       update: () => {
         this.playerCharaIndicateLabel.alpha = values.playerAlpha;
         this.opponentCharaIndicateLabel.alpha = values.opponentAlpha;
-      }
+      },
     });
   }
 

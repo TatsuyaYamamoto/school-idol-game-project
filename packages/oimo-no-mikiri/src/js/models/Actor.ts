@@ -1,6 +1,6 @@
 enum Actor {
   PLAYER = "player",
-  OPPONENT = "opponent"
+  OPPONENT = "opponent",
 }
 
 export default Actor;

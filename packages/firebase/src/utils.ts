@@ -11,9 +11,7 @@ export function getHighscoreColRef() {
 }
 
 export function getMetadataRef(game: string): adminFirestore.DocumentReference {
-  return adminFirestore()
-    .collection("metadata")
-    .doc(game);
+  return adminFirestore().collection("metadata").doc(game);
 }
 
 export async function loadedMetadata(game: string): Promise<MetadataDocument> {
@@ -81,22 +79,20 @@ type Handler<T> = (value: T, context: EventContext) => PromiseLike<any>;
  * @param fn
  */
 export function catchErrorWrapper<T>(fn: Handler<T>): Handler<T> {
-  return async function(change, context) {
+  return async function (change, context) {
     try {
       await fn(change, context);
     } catch (e) {
       console.error({
         message: "FATAL ERROR! catch unhandled error.",
-        detail: e
+        detail: e,
       });
     }
   };
 }
 
 export function getDocUrl(collection: string, id: string) {
-  return `https://console.firebase.google.com/u/0/project/${
-    process.env.GCLOUD_PROJECT
-  }/database/firestore/data~2F${collection}~2F${id}`;
+  return `https://console.firebase.google.com/u/0/project/${process.env.GCLOUD_PROJECT}/database/firestore/data~2F${collection}~2F${id}`;
 }
 
 export function slackUrl(url: string, text: string) {
@@ -106,7 +102,7 @@ export function slackUrl(url: string, text: string) {
 export function sendToSlack({
   title,
   text,
-  color = "good"
+  color = "good",
 }: {
   title?: string;
   text: string;
@@ -117,8 +113,8 @@ export function sendToSlack({
       {
         title,
         text,
-        color
-      }
-    ]
+        color,
+      },
+    ],
   });
 }

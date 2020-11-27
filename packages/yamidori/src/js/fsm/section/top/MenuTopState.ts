@@ -164,7 +164,7 @@ class MenuTopState extends ViewContainer {
     this._okSound.play();
     trackEvent(TRACK_ACTION.CLICK, { label: "change_language" });
 
-    swal(t(Ids.CHANGE_LANGUAGE_INFO), { buttons: true }).then(willChange => {
+    swal(t(Ids.CHANGE_LANGUAGE_INFO), { buttons: true }).then((willChange) => {
       if (willChange) {
         swal(t(Ids.RELOAD_APP_INFO)).then(() => {
           const nextLang =

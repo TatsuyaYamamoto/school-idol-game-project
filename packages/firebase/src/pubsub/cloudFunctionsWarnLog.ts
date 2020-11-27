@@ -7,7 +7,7 @@ export default pubsub
   .onPublish(async (message, context) => {
     console.log({
       message: `subscribe "cloud-functions-warn-log" topic.`,
-      detail: [message, context]
+      detail: [message, context],
     });
 
     try {
@@ -25,17 +25,17 @@ export default pubsub
       const result = await sendToSlack({
         title,
         text,
-        color: "danger"
+        color: "danger",
       });
 
       console.log({
         message: "slack nitif is success.",
-        detail: result
+        detail: result,
       });
     } catch (e) {
       console.log({
         message: "FATAL ERROR! Could not send slack webhook!",
-        detail: e
+        detail: e,
       });
     }
   });

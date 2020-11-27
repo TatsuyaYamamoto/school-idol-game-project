@@ -30,7 +30,7 @@ class Index extends React.Component<
     const { game } = this.props.match.params;
 
     this.state = {
-      game
+      game,
     };
   }
 
@@ -61,7 +61,7 @@ class Index extends React.Component<
   private onTabChanged(page: "ranking" | "help") {
     const { search } = this.props.location;
     this.props.history.push(`/${page}`, {
-      search
+      search,
     });
   }
 
@@ -77,7 +77,7 @@ class Index extends React.Component<
 
     this.props.history.replace({
       ...this.props.location,
-      search
+      search,
     });
   }
 
@@ -85,7 +85,7 @@ class Index extends React.Component<
     this.props.history.replace(`/ranking/${gameIds[index]}`);
 
     this.setState({
-      game: gameIds[index]
+      game: gameIds[index],
     });
   }
 

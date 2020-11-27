@@ -44,12 +44,12 @@ class TitleTopState extends ViewContainer {
     this._titleLog.position.set(this.viewWidth * 0.5, this.viewHeight * 0.5);
 
     this._appVersion = new Text(`v${version}`, {
-      fontSize: 40
+      fontSize: 40,
     });
     this._appVersion.position.set(this.viewWidth * 0.1, this.viewHeight * 0.95);
 
     this._tapInfoText = new Text(t(Ids.TAP_DISPLAY_INFO), {
-      fontSize: 40
+      fontSize: 40,
     });
     this._tapInfoText.position.set(this.viewWidth * 0.5, this.viewHeight * 0.9);
 

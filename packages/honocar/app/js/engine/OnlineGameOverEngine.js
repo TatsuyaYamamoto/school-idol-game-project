@@ -9,7 +9,7 @@ import {
   convertYyyyMmDd,
   createUrchinTrackingModuleQuery,
   tweetByWebIntent,
-  NtpDate
+  NtpDate,
 } from "@sokontokoro/mikan";
 
 import TopEngine from "./TopEngine";
@@ -22,14 +22,14 @@ import { P2PEvents } from "../constants";
 import {
   getClient as getSkyWayClient,
   getTweetText,
-  unixtimeToRoundSeconds
+  unixtimeToRoundSeconds,
 } from "../common";
 
 import { Ids } from "../resources/string";
 import {
   default as config,
   TRACK_ACTION,
-  TRACK_PAGES
+  TRACK_PAGES,
 } from "../resources/config";
 
 const logger = getLogger("online-game-over");
@@ -49,7 +49,7 @@ class OnlineGameOverEngine extends Engine {
     tracePage(TRACK_PAGES.GAMEOVER_ONLINE);
     trackEvent(TRACK_ACTION.GAMEOVER, {
       label: "multi",
-      value: this.passCarCount
+      value: this.passCarCount,
     });
 
     const { result } = params;
@@ -60,7 +60,7 @@ class OnlineGameOverEngine extends Engine {
       GAME_BACKGROUND,
       GAMEOVER_WIN,
       GAMEOVER_LOSE,
-      GAMEOVER_DRAW
+      GAMEOVER_DRAW,
     } = globals.imageObj;
     const { BUTTON_TWITTER_GAMEOVER_SS } = globals.ssObj;
 
@@ -146,12 +146,12 @@ class OnlineGameOverEngine extends Engine {
 
     openModal({
       text: t(Ids.ONLINE_DIALOG_REPLAY_WAITING_TEXT),
-      actions: []
+      actions: [],
     });
 
     // TODO restartイベントをonする前にmessageを送信する可能性がある。
     const message = {
-      type: P2PEvents.RESTART
+      type: P2PEvents.RESTART,
     };
     getSkyWayClient().send(message);
   }
@@ -161,21 +161,21 @@ class OnlineGameOverEngine extends Engine {
       openModal({
         title: t(Ids.ONLINE_DIALOG_READY_ROOM_TITLE),
         text: t(Ids.ONLINE_DIALOG_READY_ROOM_TEXT),
-        actions: []
+        actions: [],
       });
 
       getSkyWayClient()
         .trySyncStartTime()
-        .then(startTime => {
+        .then((startTime) => {
           const now = NtpDate.now();
           const timeLeft = now < startTime ? startTime - now : 0;
 
           openModal({
             title: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TITLE),
             text: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TEXT, {
-              timeLeft: unixtimeToRoundSeconds(timeLeft)
+              timeLeft: unixtimeToRoundSeconds(timeLeft),
             }),
-            actions: []
+            actions: [],
           });
 
           setTimeout(() => {
@@ -197,11 +197,11 @@ class OnlineGameOverEngine extends Engine {
             autoClose: true,
             onClick: () => {
               const message = {
-                type: P2PEvents.RESTART_ACCEPT
+                type: P2PEvents.RESTART_ACCEPT,
               };
               getSkyWayClient().send(message);
               startGameAfterSync();
-            }
+            },
           },
           {
             text: "NO",
@@ -210,9 +210,9 @@ class OnlineGameOverEngine extends Engine {
 
               globals.soundObj.SOUND_BACK.play();
               to(TopEngine);
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
     }
 
@@ -244,16 +244,16 @@ class OnlineGameOverEngine extends Engine {
             const utmQuery = createUrchinTrackingModuleQuery({
               campaign: `result-share_${yyyymmdd}`,
               source: "twitter",
-              medium: "social"
+              medium: "social",
             });
             const url = `${config.link.game}?${utmQuery.join("&")}`;
 
             tweetByWebIntent({
               text: getTweetText(count, chara),
               url,
-              hashtags: ["ほのCar", "そこんところ工房"]
+              hashtags: ["ほのCar", "そこんところ工房"],
             });
-          }
+          },
         },
         {
           text: "CANCEL",
@@ -261,9 +261,9 @@ class OnlineGameOverEngine extends Engine {
           onClick: () => {
             globals.soundObj.SOUND_BACK.stop();
             globals.soundObj.SOUND_BACK.play();
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
   }
 }

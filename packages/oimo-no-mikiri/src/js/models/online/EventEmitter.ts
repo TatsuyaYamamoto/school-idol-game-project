@@ -2,7 +2,7 @@ abstract class EventEmitter {
   private _callbacks: { [eventType: string]: Function[] } = {};
 
   public once(eventType: string, callback) {
-    const onceCallback = params => {
+    const onceCallback = (params) => {
       this.off(eventType, onceCallback);
 
       callback(params);
@@ -22,7 +22,7 @@ abstract class EventEmitter {
     console.log(`${this.constructor.name}@Remove event.`, eventType);
 
     if (!eventType) {
-      Object.keys(this._callbacks).forEach(eventType => {
+      Object.keys(this._callbacks).forEach((eventType) => {
         delete this._callbacks[eventType];
       });
       return;
@@ -34,7 +34,7 @@ abstract class EventEmitter {
 
     if (callback) {
       const targetIndex = this._callbacks[eventType].findIndex(
-        registered => registered === callback
+        (registered) => registered === callback
       );
       this._callbacks[eventType].splice(targetIndex, 1);
     } else {
@@ -49,7 +49,7 @@ abstract class EventEmitter {
       return;
     }
 
-    this._callbacks[eventType].forEach(callback => {
+    this._callbacks[eventType].forEach((callback) => {
       callback(params);
     });
   }

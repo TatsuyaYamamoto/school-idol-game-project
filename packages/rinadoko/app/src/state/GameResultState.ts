@@ -35,19 +35,19 @@ export class GameResultState implements State {
       scale: this.context.scale,
       screen: {
         width: this.context.app.screen.width,
-        height: this.context.app.screen.height
+        height: this.context.app.screen.height,
       },
       textures: {
         result0: resources["last-1"].texture,
         result1: resources["last-2"].texture,
-        result2: resources["last-3"].texture
-      }
+        result2: resources["last-3"].texture,
+      },
     });
 
     this.result.point = context.correctSelectCount;
 
     this.context.app.stage.removeChild(
-      ...context.rinaCandidates.map(r => r.container)
+      ...context.rinaCandidates.map((r) => r.container)
     );
     this.context.app.stage.addChild(this.result.container);
 
@@ -66,7 +66,7 @@ export class GameResultState implements State {
     // tracking
     trackEvent("pointerdown", {
       label: "result",
-      value: this.result.point
+      value: this.result.point,
     });
   }
   onExit({ context }) {
@@ -107,8 +107,8 @@ export class GameResultState implements State {
         "リナちゃんボックスどこ",
         "そこんところ工房",
         "lovelive",
-        "虹ヶ咲"
-      ]
+        "虹ヶ咲",
+      ],
     });
   };
 }

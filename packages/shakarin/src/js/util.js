@@ -52,7 +52,7 @@ export default class Util {
 
   static soundTurnOff() {
     State.isSoundMute = true;
-    Object.keys(State.object.sound).forEach(key => {
+    Object.keys(State.object.sound).forEach((key) => {
       if (properties.sound[key].canMute) {
         State.object.sound[key].muted = true;
       }
@@ -61,7 +61,7 @@ export default class Util {
 
   static soundTurnOn() {
     State.isSoundMute = false;
-    Object.keys(State.object.sound).forEach(key => {
+    Object.keys(State.object.sound).forEach((key) => {
       if (properties.sound[key].canMute) {
         State.object.sound[key].muted = false;
       }

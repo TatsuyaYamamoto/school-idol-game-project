@@ -3,7 +3,7 @@ import {
   dispatchEvent,
   t,
   play,
-  tracePage
+  tracePage,
 } from "@sokontokoro/mikan";
 
 import TopViewState from "./TopViewState";

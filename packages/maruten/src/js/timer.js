@@ -6,17 +6,17 @@ export default class Timer {
       position: {
         time: {
           x: State.gameScrean.width * 0.15,
-          y: State.gameScrean.height * 0.9
+          y: State.gameScrean.height * 0.9,
         },
         subtitle: {
           x: State.gameScrean.width * 0.15,
-          y: State.gameScrean.height * 0.85
+          y: State.gameScrean.height * 0.85,
         },
         unit: {
           x: State.gameScrean.width * 0.15,
-          y: State.gameScrean.height * 0.95
-        }
-      }
+          y: State.gameScrean.height * 0.95,
+        },
+      },
     };
     const shapeSize = State.gameScrean.width * 0.1;
     const unitTextSize = State.gameScrean.width * 0.04;

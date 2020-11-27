@@ -96,7 +96,7 @@ export default class StateMachine {
    */
   gameState() {
     Util.removeAllChildren();
-    new GameEngine(this.tick, player => {
+    new GameEngine(this.tick, (player) => {
       this.gameOverState(player);
     }).start();
   }

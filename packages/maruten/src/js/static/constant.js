@@ -10,7 +10,7 @@ const gamesAuthority =
 
 export const CHARACTER = {
   HANAMARU: "hanamaru",
-  YOU: "you"
+  YOU: "you",
 };
 
 export const LINK = {
@@ -21,5 +21,5 @@ export const LINK = {
   SANZASHI_TWITTER: "https://twitter.com/xxsanzashixx",
   SOUNDEFFECT_HOME: "http://soundeffect-lab.info/",
   ONJIN_HOME: "http://on-jin.com/",
-  LOVELIVE: "http://lovelive-anime.jp"
+  LOVELIVE: "http://lovelive-anime.jp",
 };

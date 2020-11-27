@@ -8,7 +8,7 @@ import {
   isIOS,
   resumeContext,
   tracePage,
-  trackTiming
+  trackTiming,
 } from "@sokontokoro/mikan";
 
 import { Events as ApplicationEvents } from "./ApplicationState";
@@ -25,7 +25,7 @@ import { VirtualPageViews } from "../helper/tracker";
 
 export enum Events {
   COMPLETE_PRELOAD = "InitialViewState@COMPLETE_LOAD",
-  COMPLETE_LOGO_ANIMATION = "InitialViewState@COMPLETE_LOGO_ANIMATION"
+  COMPLETE_LOGO_ANIMATION = "InitialViewState@COMPLETE_LOGO_ANIMATION",
 }
 
 class InitialViewState extends ViewContainer {
@@ -48,7 +48,7 @@ class InitialViewState extends ViewContainer {
 
     addEvents({
       [Events.COMPLETE_PRELOAD]: this._handleLoadCompleteEvent,
-      [Events.COMPLETE_LOGO_ANIMATION]: this._handleLogoAnimCompleteEvent
+      [Events.COMPLETE_LOGO_ANIMATION]: this._handleLogoAnimCompleteEvent,
     });
 
     // TODO: check logged-in.

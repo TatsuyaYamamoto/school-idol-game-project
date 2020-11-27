@@ -3,7 +3,7 @@ import { TextStyleOptions } from "pixi.js";
 import Text from "../../internal/Text";
 
 const defaultStyle: TextStyleOptions = {
-  align: "center"
+  align: "center",
 };
 
 class VerticalText extends Text {

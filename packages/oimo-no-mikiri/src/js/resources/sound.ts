@@ -15,7 +15,7 @@ export enum Ids {
   SOUND_ATTACK,
   SOUND_READY,
   SOUND_FALSE_START,
-  SOUND_DRAW
+  SOUND_DRAW,
 }
 
 const manifest: SoundManifest = {
@@ -29,7 +29,7 @@ const manifest: SoundManifest = {
   [Ids.SOUND_ATTACK]: "attack.mp3",
   [Ids.SOUND_READY]: "ready.mp3",
   [Ids.SOUND_FALSE_START]: "false_start.mp3",
-  [Ids.SOUND_DRAW]: "draw.mp3"
+  [Ids.SOUND_DRAW]: "draw.mp3",
 };
 
 export default manifest;

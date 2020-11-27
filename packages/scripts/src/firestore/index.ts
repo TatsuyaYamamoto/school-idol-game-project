@@ -9,13 +9,13 @@ const serviceAccount = require("../../../../../../../../../.ssh/service_account/
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://oimo-no-mikiri-development.firebaseio.com"
+  databaseURL: "https://oimo-no-mikiri-development.firebaseio.com",
 });
 
 export const auth = admin.auth();
 export const db = admin.firestore();
 db.settings({
-  timestampsInSnapshots: true
+  timestampsInSnapshots: true,
 });
 
 program.version("1.0.0");
@@ -74,14 +74,14 @@ if (process.argv.length === 2) {
 async function healthCheck() {
   console.log("should auth user === /databases/{database}/documents.users");
   await auth.listUsers().then(({ users }) => {
-    return users.map(user => user.uid);
+    return users.map((user) => user.uid);
   });
 }
 
 async function publish(topic: string, data: any, _cmd: any) {
   const message = {
     data: JSON.parse(data),
-    topic
+    topic,
   };
   console.log("message: ", message);
 

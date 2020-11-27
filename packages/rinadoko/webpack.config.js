@@ -13,23 +13,23 @@ const htmlParams = {
   appVersion,
   trackingCode: config.trackingCode.dev,
   helpUrlJa: "http://games-dev.sokontokoro-factory.net/#/help?language=ja",
-  helpUrlEn: "http://games-dev.sokontokoro-factory.net/#/help?language=en"
+  helpUrlEn: "http://games-dev.sokontokoro-factory.net/#/help?language=en",
 };
 
 isProduction &&
   Object.assign(htmlParams, {
     trackingCode: config.trackingCode.pro,
     helpUrlJa: "http://games.sokontokoro-factory.net/#/help?language=ja",
-    helpUrlEn: "http://games.sokontokoro-factory.net/#/help?language=en"
+    helpUrlEn: "http://games.sokontokoro-factory.net/#/help?language=en",
   });
 
 const plugins = [
   new HtmlWebpackPlugin({
     template: "app/index.ejs",
     templateParameters: htmlParams,
-    hash: true
+    hash: true,
   }),
-  new CopyPlugin([{ from: "app/assets", to: "assets" }])
+  new CopyPlugin([{ from: "app/assets", to: "assets" }]),
 ];
 
 module.exports = {
@@ -39,26 +39,26 @@ module.exports = {
   devtool: "inline-source-map",
 
   entry: {
-    app: path.resolve(__dirname, "app/src/index.ts")
+    app: path.resolve(__dirname, "app/src/index.ts"),
   },
 
   output: {
     path: path.resolve(__dirname, "dist/"),
-    filename: "[name].bundle.js"
+    filename: "[name].bundle.js",
   },
 
   resolve: {
-    extensions: [".js", ".ts"]
+    extensions: [".js", ".ts"],
   },
 
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: [{ loader: "ts-loader" }]
-      }
-    ]
+        use: [{ loader: "ts-loader" }],
+      },
+    ],
   },
 
-  plugins: plugins
+  plugins: plugins,
 };

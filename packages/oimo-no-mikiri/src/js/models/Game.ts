@@ -20,7 +20,7 @@ abstract class Game extends EventEmitter {
   public get bestTime(): number {
     let time = 99999;
 
-    this._battles.forEach(b => {
+    this._battles.forEach((b) => {
       if (isSingleMode(this.mode)) {
         if (b.winnerAttackTime < time && b.winner === Actor.PLAYER) {
           time = b.winnerAttackTime;
@@ -43,7 +43,7 @@ abstract class Game extends EventEmitter {
     }
 
     let wins = 0;
-    this._battles.forEach(b => {
+    this._battles.forEach((b) => {
       if (b.winner === Actor.PLAYER) {
         // tslint:disable-next-line:no-increment-decrement
         wins++;
@@ -61,7 +61,7 @@ abstract class Game extends EventEmitter {
     }
 
     let winner = Actor.PLAYER;
-    this._battles.forEach(b => {
+    this._battles.forEach((b) => {
       if (b.winner === Actor.OPPONENT) {
         winner = Actor.OPPONENT;
       }
@@ -92,7 +92,7 @@ abstract class Game extends EventEmitter {
   public getWins(actor: Actor): number {
     let wins = 0;
 
-    this._battles.forEach(b => {
+    this._battles.forEach((b) => {
       if (b.winner === actor) {
         // tslint:disable-next-line:no-increment-decrement
         wins++;
@@ -115,18 +115,18 @@ abstract class Game extends EventEmitter {
 
 export function isSingleMode(mode: Mode) {
   return [Mode.SINGLE_BEGINNER, Mode.SINGLE_NOVICE, Mode.SINGLE_EXPERT].some(
-    singleMode => mode === singleMode
+    (singleMode) => mode === singleMode
   );
 }
 
 export function isMultiMode(mode: Mode) {
   return [Mode.MULTI_LOCAL, Mode.MULTI_ONLINE].some(
-    multiMode => mode === multiMode
+    (multiMode) => mode === multiMode
   );
 }
 
 export function isOnlineMode(mode: Mode) {
-  return [Mode.MULTI_ONLINE].some(multiMode => mode === multiMode);
+  return [Mode.MULTI_ONLINE].some((multiMode) => mode === multiMode);
 }
 
 export default Game;

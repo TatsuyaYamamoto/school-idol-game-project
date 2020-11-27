@@ -37,7 +37,7 @@ export function initI18n(
     {},
     {
       fallbackLng: config.defaultLanguage,
-      debug: false
+      debug: false,
     },
     options
   );
@@ -116,5 +116,5 @@ export function getCurrentLanguage(): string {
  * @private
  */
 function isDefinedLanguage(targetLanguage: string): boolean {
-  return config.supportedLanguages.some(l => l === targetLanguage);
+  return config.supportedLanguages.some((l) => l === targetLanguage);
 }

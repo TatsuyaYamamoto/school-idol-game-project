@@ -14,7 +14,7 @@ const Root = styled.div`
   text-align: center;
 `;
 
-const GameSelectorItem: React.SFC<Props> = props => {
+const GameSelectorItem: React.SFC<Props> = (props) => {
   const { title, imageUrl } = props;
 
   return (

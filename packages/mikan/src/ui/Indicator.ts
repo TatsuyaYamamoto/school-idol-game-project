@@ -22,7 +22,7 @@ const SPINNER_OPTS = {
   // zIndex: 2e9, // The z-index (defaults to 2000000000)
   // className: 'spinner', // The CSS class to assign to the spinner
   top: "50%", // Top position relative to parent
-  left: "15%" // Left position relative to parent
+  left: "15%", // Left position relative to parent
   // shadow: "none", // Box-shadow for the lines
   // position: 'relative' // Element positioning
 };

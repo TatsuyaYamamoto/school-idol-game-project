@@ -60,5 +60,5 @@ const candidates = [
   "awashima",
 
   // ruby
-  "shinkai"
+  "shinkai",
 ];

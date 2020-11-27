@@ -11,7 +11,7 @@ const VERTICAL_SUPPORT_LANGUAGES = ["ja"];
 
 const labelTextStyle: TextStyleOptions = {
   fontFamily: "g_brushtappitsu_freeH",
-  fontSize: 35
+  fontSize: 35,
 };
 
 class BattleResultLabel extends Container {

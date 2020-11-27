@@ -8,11 +8,11 @@ import { white } from "../../muiTheme";
 const styles = {
   root: {
     backgroundColor: white,
-    fontFamily: "PixelMplus"
-  }
+    fontFamily: "PixelMplus",
+  },
 };
 
-const AppTitle: React.SFC<WithStyles> = prop => (
+const AppTitle: React.SFC<WithStyles> = (prop) => (
   <Typography variant="h6" className={prop.classes.root}>
     そこんところ工房ゲームズ ポータル
   </Typography>

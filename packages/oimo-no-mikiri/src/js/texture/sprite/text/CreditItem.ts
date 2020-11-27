@@ -12,11 +12,11 @@ class CreditItem extends Container {
     super();
 
     this._name = new Text(nameAndRole, {
-      fontSize: 20
+      fontSize: 20,
     });
     this._name.y -= this._name.height * 0.5;
     this._url = new Text(url, {
-      fontSize: 20
+      fontSize: 20,
     });
     this._url.y += this._url.height * 0.5;
 
@@ -27,7 +27,7 @@ class CreditItem extends Container {
     this.on(isSupportTouchEvent() ? "touchstart" : "click", () => {
       trackEvent(Action.TAP, {
         category: Category.BUTTON,
-        label: `credit: ${url}`
+        label: `credit: ${url}`,
       });
       window.location.href = url;
     });

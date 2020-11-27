@@ -56,6 +56,6 @@ export default class Item {
     createjs.Tween.get(this.img)
       .wait(200)
       .to({ alpha: 0 }, 200)
-      .call(function() {});
+      .call(function () {});
   }
 }

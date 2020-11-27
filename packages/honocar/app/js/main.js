@@ -12,7 +12,7 @@ import {
   initAuth,
   tracePage,
   initTracker,
-  Presence
+  Presence,
 } from "@sokontokoro/mikan";
 
 import { to } from "./stateMachine";
@@ -33,7 +33,7 @@ const gameLaunchButtonElement = document.getElementById("game-launch-button");
 window.__debug__ = {
   fps: 0,
   ignoreCrash: false,
-  preventSoundToggle: false
+  preventSoundToggle: false,
 };
 
 function init() {
@@ -47,7 +47,7 @@ function init() {
   }, 150);
 
   /*---------- ログインチェック ----------*/
-  globals.loginPromise = initAuth().then(user => {
+  globals.loginPromise = initAuth().then((user) => {
     if (!user.isAnonymous) {
       alertify.log(t(Ids.LOGIN_SUCCESS), "success", 3000);
     }
@@ -74,10 +74,10 @@ function init() {
 
   // toggle sound with blur or focus
   if (!window.__debug__.preventSoundToggle) {
-    window.addEventListener("blur", function() {
+    window.addEventListener("blur", function () {
       soundTurnOff();
     });
-    window.addEventListener("focus", function() {
+    window.addEventListener("focus", function () {
       soundTurnOn();
     });
   }

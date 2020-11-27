@@ -64,7 +64,7 @@ const Member = styled.div`
  * @param props
  * @constructor
  */
-const RankItem: React.SFC<Props> = props => {
+const RankItem: React.SFC<Props> = (props) => {
   const { rank, point, userName, member } = props;
 
   const tooltip = `${MEMBERS[member].name.ja}とプレイしました！`;

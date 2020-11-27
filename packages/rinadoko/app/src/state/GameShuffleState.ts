@@ -24,7 +24,7 @@ export class GameShuffleState implements State {
       [
         this.context.app.screen.width * 0.2,
         this.context.app.screen.width * 0.5,
-        this.context.app.screen.width * 0.8
+        this.context.app.screen.width * 0.8,
       ],
       5
     );
@@ -33,8 +33,8 @@ export class GameShuffleState implements State {
       return new TimelineMax({});
     });
 
-    const timelinePromises = timelines.map(t => {
-      return new Promise(resolve => {
+    const timelinePromises = timelines.map((t) => {
+      return new Promise((resolve) => {
         t.eventCallback("onComplete", () => {
           resolve();
         });
@@ -56,12 +56,12 @@ export class GameShuffleState implements State {
             if (candidateIndex === 0) {
               moveSound.play();
             }
-          }
+          },
         });
       });
     });
 
-    timelines.forEach(t => t.play());
+    timelines.forEach((t) => t.play());
   }
 
   onExit({ context }) {}

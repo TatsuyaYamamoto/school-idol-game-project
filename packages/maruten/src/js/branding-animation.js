@@ -12,7 +12,7 @@ const TIMELINE = {
   HAMMER_MOVING: 700,
   CHARACTER_BOU_WAITING: 300,
   CHARACTER_BOU_ROTATION: 100,
-  BUFFER: 300
+  BUFFER: 300,
 };
 
 export default class BrandingAnimation {
@@ -70,7 +70,7 @@ export default class BrandingAnimation {
      * 各文字のCreatejs.Textインスタンスを作成
      * 作成後、コンテナに追加
      */
-    BRAND_CHARACTERS.forEach(character => {
+    BRAND_CHARACTERS.forEach((character) => {
       const text = BrandingAnimation.getTextCreatejsObject(
         character,
         this._x,
@@ -175,7 +175,7 @@ export default class BrandingAnimation {
         .to({ rotation: 0 }, TIMELINE.SHRINK)
         .to(
           {
-            regY: hammer.image.height * 0.5
+            regY: hammer.image.height * 0.5,
           },
           0
         )

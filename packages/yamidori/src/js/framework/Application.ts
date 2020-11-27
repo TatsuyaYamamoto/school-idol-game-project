@@ -35,7 +35,7 @@ abstract class Application extends PIXI.Application implements State {
       Object.assign(
         {
           backgroundColor: config.rendererBackgroundColor,
-          autoStart: false
+          autoStart: false,
         },
         options
       )

@@ -79,14 +79,14 @@ export class RinaCandidate {
     this._candidateBox.interactive = true;
     this._candidateBox.buttonMode = true;
 
-    this._candidateBox.on("pointerover", e => {
+    this._candidateBox.on("pointerover", (e) => {
       console.log(e);
       this.showArrow();
     });
-    this._candidateBox.on("pointerout", e => {
+    this._candidateBox.on("pointerout", (e) => {
       this.hideArrow();
     });
-    this._candidateBox.on("pointerdown", e => {
+    this._candidateBox.on("pointerdown", (e) => {
       turnOff();
 
       callback();
@@ -102,7 +102,7 @@ export class RinaCandidate {
       { alpha: 1, y: 0 }
     );
 
-    const p = new Promise<void>(resolve => {
+    const p = new Promise<void>((resolve) => {
       timeline.eventCallback("onComplete", () => {
         timeline.eventCallback("onComplete", null);
 

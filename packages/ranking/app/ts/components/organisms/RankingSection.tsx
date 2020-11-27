@@ -6,7 +6,7 @@ import {
   firebaseDb,
   MetadataDocument,
   RankItemDocument,
-  getLogger
+  getLogger,
 } from "@sokontokoro/mikan";
 
 import RankingList from "../molecules/RankingList";
@@ -38,7 +38,7 @@ export default class RankingSection extends React.Component<Props, State> {
       hasMoreItem: true,
       rankingList: [],
       lastVisibleSnapshot: null,
-      lastUpdatedAt: new Date()
+      lastUpdatedAt: new Date(),
     };
   }
 
@@ -50,7 +50,7 @@ export default class RankingSection extends React.Component<Props, State> {
         game: nextProps.game,
         hasMoreItem: true,
         rankingList: [],
-        lastVisibleSnapshot: null
+        lastVisibleSnapshot: null,
       };
     }
 
@@ -98,7 +98,7 @@ export default class RankingSection extends React.Component<Props, State> {
       return;
     }
 
-    this.setState(state => {
+    this.setState((state) => {
       if (state.game !== game) {
         logger.debug(
           `active game; ${game} is changed. ignore this game ranking list push.`
@@ -107,7 +107,7 @@ export default class RankingSection extends React.Component<Props, State> {
       }
 
       const pushedItems = state.rankingList;
-      scores.forEach(r => {
+      scores.forEach((r) => {
         const doc = r.data() as RankItemDocument;
         pushedItems.push(
           <RankItem
@@ -122,7 +122,7 @@ export default class RankingSection extends React.Component<Props, State> {
       const newState = {
         ...state,
         rankingList: pushedItems,
-        lastVisibleSnapshot: scores.docs[scores.size - 1]
+        lastVisibleSnapshot: scores.docs[scores.size - 1],
       };
       if (metadata.updatedAt) {
         newState.lastUpdatedAt = (metadata.updatedAt as any).toDate();

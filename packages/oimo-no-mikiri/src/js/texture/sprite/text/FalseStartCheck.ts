@@ -4,7 +4,7 @@ import TextStyleOptions = PIXI.TextStyleOptions;
 const defaultStyle: TextStyleOptions = {
   fontFamily: "g_brushtappitsu_freeH",
   fontSize: 70,
-  fill: 0xffffff
+  fill: 0xffffff,
 };
 
 class FalseStartCheck extends Text {

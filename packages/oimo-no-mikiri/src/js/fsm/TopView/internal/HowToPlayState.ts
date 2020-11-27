@@ -2,7 +2,7 @@ import {
   Deliverable,
   dispatchEvent,
   play,
-  tracePage
+  tracePage,
 } from "@sokontokoro/mikan";
 
 import TopViewState from "./TopViewState";

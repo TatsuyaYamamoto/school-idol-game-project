@@ -12,10 +12,10 @@ import Util from "./util.js";
 import State from "./state.js";
 import { config, TRACK_PAGES } from "./config.js";
 
-window.onload = function() {
+window.onload = function () {
   /*---------- ログインチェック ----------*/
   // 完了後にコンテンツオブジェクトのセットアップを開始する
-  State.firebaseInitPromise = initAuth().then(user => {
+  State.firebaseInitPromise = initAuth().then((user) => {
     if (!user.isAnonymous) {
       alertify.log("ランキングシステム ログイン中！", "success", 3000);
     }
@@ -64,10 +64,10 @@ window.onload = function() {
   createjs.DisplayObject.suppressCrossDomainErrors = true;
 
   // サウンド用イベント
-  window.addEventListener("blur", function() {
+  window.addEventListener("blur", function () {
     Util.soundTurnOff();
   });
-  window.addEventListener("focus", function() {
+  window.addEventListener("focus", function () {
     Util.soundTurnOn();
   });
 

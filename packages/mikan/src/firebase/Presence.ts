@@ -66,7 +66,7 @@ export class Presence {
       uid,
       online: true,
       userAgent: navigator.userAgent,
-      createdAt: firebase.database.ServerValue.TIMESTAMP
+      createdAt: firebase.database.ServerValue.TIMESTAMP,
     };
 
     // since I can connect from multiple devices or browser tabs, we store each connection instance separately
@@ -75,14 +75,14 @@ export class Presence {
 
     // stores the timestamp of my last disconnect (the last time I was seen online)
 
-    infoConnectedRef.on("value", async function(snapshot) {
+    infoConnectedRef.on("value", async function (snapshot) {
       if (snapshot && snapshot.val() === true) {
         // We're connected (or reconnected)! Do anything here that should happen only if online (or on reconnect)
         // var con = ownPresenceRef.push();
 
         // When I disconnect, remove this device
         newPresenceRef.onDisconnect().update({
-          online: false
+          online: false,
         });
 
         // Add this device to my connections list

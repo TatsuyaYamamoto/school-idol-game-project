@@ -72,10 +72,10 @@ class AssetLoader extends loaders.Loader {
 
     // add each asset info to loader.
     const assetIds = Object.keys(targetManifest);
-    assetIds.forEach(id =>
+    assetIds.forEach((id) =>
       this.add({
         name: id,
-        url: `${IMAGE_BASE_DIR}${targetManifest[id]}`
+        url: `${IMAGE_BASE_DIR}${targetManifest[id]}`,
       })
     );
   }
@@ -88,10 +88,10 @@ class AssetLoader extends loaders.Loader {
   public setSoundManifest(soundManifest: SoundManifest): void {
     // add each asset info to loader.
     const assetIds = Object.keys(soundManifest);
-    assetIds.forEach(id =>
+    assetIds.forEach((id) =>
       this.add({
         name: id,
-        url: `${SOUND_BASE_DIR}${soundManifest[id]}`
+        url: `${SOUND_BASE_DIR}${soundManifest[id]}`,
       })
     );
   }
@@ -106,7 +106,7 @@ class AssetLoader extends loaders.Loader {
   private setAssets(loader: AssetLoader, assets: { [key: string]: Asset }) {
     const assetIds = Object.keys(assets);
 
-    assetIds.forEach(id => {
+    assetIds.forEach((id) => {
       const asset = assets[id];
       AssetsCache[asset.name] = asset;
     });

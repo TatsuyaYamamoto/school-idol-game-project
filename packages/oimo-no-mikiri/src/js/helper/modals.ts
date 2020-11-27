@@ -10,16 +10,14 @@ export function closeModal() {
 }
 
 export function openCreateRoomModal(gameId: string) {
-  const url = `${location.protocol}//${location.host}${
-    location.pathname
-  }?gameId=${gameId}`;
+  const url = `${location.protocol}//${location.host}${location.pathname}?gameId=${gameId}`;
 
   SweetAlert({
     title: t(StringIds[StringIds.MODAL_CREATE_ROOM_TITLE]),
     text: t(StringIds[StringIds.MODAL_CREATE_ROOM_TEXT]),
     showConfirmButton: false,
     allowOutsideClick: false,
-    allowEscapeKey: false
+    allowEscapeKey: false,
   });
 
   const baseButton = document.createElement("button");
@@ -58,7 +56,7 @@ export function openCreateRoomModal(gameId: string) {
     arrow: true,
     onShow(instance) {
       setTimeout(() => instance.hide(), 1500);
-    }
+    },
   });
 
   return new Promise((resolve, reject) => {
@@ -69,7 +67,7 @@ export function openCreateRoomModal(gameId: string) {
       tweetByWebIntent({
         text: t(StringIds[StringIds.INVITE_MULTI_PLAY_MESSAGE]),
         url,
-        hashtags: ["おいものみきり", "そこんところ工房"]
+        hashtags: ["おいものみきり", "そこんところ工房"],
       });
     });
     cancelButton.addEventListener("click", () => {
@@ -84,7 +82,7 @@ export function openJoinRoomModal(roomId) {
     text: t(StringIds[StringIds.MODAL_JOIN_ROOM_TEXT], { roomId }),
     showConfirmButton: false,
     allowOutsideClick: false,
-    allowEscapeKey: false
+    allowEscapeKey: false,
   });
 }
 
@@ -93,7 +91,7 @@ export function openReadyRoomModal() {
     title: t(StringIds[StringIds.MODAL_GAME_READY_TITLE]),
     showConfirmButton: false,
     allowOutsideClick: false,
-    allowEscapeKey: false
+    allowEscapeKey: false,
   });
 }
 
@@ -113,7 +111,7 @@ export function openRejectJoinRoomModal(type) {
     text,
     showConfirmButton: true,
     allowOutsideClick: false,
-    allowEscapeKey: false
+    allowEscapeKey: false,
   });
 }
 
@@ -122,7 +120,7 @@ export function openWaitingRestartModal() {
     text: t(StringIds[StringIds.MODAL_WAIT_RESTART_TEXT]),
     showConfirmButton: false,
     allowOutsideClick: false,
-    allowEscapeKey: false
+    allowEscapeKey: false,
   });
 }
 
@@ -132,7 +130,7 @@ export function openRestartConfirmModal() {
     showConfirmButton: true,
     showCancelButton: true,
     allowOutsideClick: false,
-    allowEscapeKey: false
+    allowEscapeKey: false,
   });
 }
 
@@ -141,7 +139,7 @@ export function openMemberLeftModal() {
     text: t(StringIds[StringIds.MODAL_MEMBER_LEFT_TEXT]),
     showConfirmButton: false,
     allowOutsideClick: false,
-    allowEscapeKey: false
+    allowEscapeKey: false,
   });
 }
 
@@ -161,6 +159,6 @@ export function openConfirmCloseGameModal() {
     ),
     reverseButtons: true,
     allowOutsideClick: false,
-    allowEscapeKey: false
+    allowEscapeKey: false,
   });
 }

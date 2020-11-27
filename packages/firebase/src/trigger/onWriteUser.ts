@@ -15,7 +15,7 @@ export default firestore.document("users/{userId}").onWrite(
 
       await sendToSlack({
         title: `new user joined! ${consoleUrl}`,
-        text: `UID: ${afterUser.uid}`
+        text: `UID: ${afterUser.uid}`,
       });
       return;
     }
@@ -29,7 +29,7 @@ export default firestore.document("users/{userId}").onWrite(
 
       await sendToSlack({
         title: `user linked! ${consoleUrl}`,
-        text: `UID: ${afterUser.uid}\nName: ${afterUser.displayName}`
+        text: `UID: ${afterUser.uid}\nName: ${afterUser.displayName}`,
       });
       return;
     }

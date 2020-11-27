@@ -8,7 +8,7 @@
  * @param numbers
  */
 export function sum(numbers: number[]) {
-  return numbers.reduce(function(prev, current) {
+  return numbers.reduce(function (prev, current) {
     return prev + current;
   });
 }

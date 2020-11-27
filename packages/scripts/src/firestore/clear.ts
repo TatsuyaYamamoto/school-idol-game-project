@@ -21,7 +21,7 @@ export default async function clearFirestore() {
 
     for (const batchTarget of splitList(rankingListSnapshot.docs, 300)) {
       const batch = firestore().batch();
-      batchTarget.forEach(item => batch.delete(item.ref));
+      batchTarget.forEach((item) => batch.delete(item.ref));
       await batch.commit();
     }
   }
@@ -42,7 +42,7 @@ export default async function clearFirestore() {
 
     for (const batchTargetRefs of splitList(targetRefs, 100)) {
       const batch = db.batch();
-      batchTargetRefs.forEach(ref => batch.delete(ref));
+      batchTargetRefs.forEach((ref) => batch.delete(ref));
       await batch.commit();
     }
 
@@ -53,14 +53,12 @@ export default async function clearFirestore() {
   // see auth limit https://firebase.google.com/docs/auth/limits
   const { users } = await auth.listUsers();
   console.log(
-    `"auth" has ${
-      users.length
-    } users. try split deletion under firebase auth limit.`
+    `"auth" has ${users.length} users. try split deletion under firebase auth limit.`
   );
 
   for (const batchTarget of splitList(users, 10)) {
     Promise.all(
-      batchTarget.map(user => {
+      batchTarget.map((user) => {
         return auth.deleteUser(user.uid);
       })
     );
@@ -75,7 +73,7 @@ export default async function clearFirestore() {
 }
 
 function wait(ms: number) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 }

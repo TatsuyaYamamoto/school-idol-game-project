@@ -40,7 +40,7 @@ const config: Config = {
    * Default language.
    * This is fallback when user required unsupported language.
    */
-  defaultLanguage: null
+  defaultLanguage: null,
 };
 
 export default config;

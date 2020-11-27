@@ -7,7 +7,7 @@ export enum BattleEvents {
   FIXED = "fixed",
   SUCCEED_ATTACK = "succeed_attack",
   FALSE_STARTED = "false_started",
-  DRAW = "draw"
+  DRAW = "draw",
 }
 
 abstract class Battle extends EventEmitter {

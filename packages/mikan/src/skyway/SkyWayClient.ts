@@ -17,7 +17,7 @@ import {
   Room,
   RoomDocument,
   RoomName,
-  User
+  User,
 } from "..";
 import { mean } from "../util/Calculation";
 import { getLogger } from "../logger";
@@ -83,7 +83,7 @@ class SkyWayClient extends EventEmitter {
       key: params.apiKey,
       debug: 2,
       credential: params.credential,
-      logFunction: (args: any) => logger.debug(args)
+      logFunction: (args: any) => logger.debug(args),
     };
 
     this._peer = new Peer(params.peerId, peerOptions);
@@ -109,12 +109,12 @@ class SkyWayClient extends EventEmitter {
 
   public get remotePeerIds(): string[] {
     return Array.from(this._destinations.values()).map(
-      d => d.dataConnection.remoteId
+      (d) => d.dataConnection.remoteId
     );
   }
 
   public get averagePings(): number[] {
-    return Array.from(this._destinations.values()).map(d => d.averagePing);
+    return Array.from(this._destinations.values()).map((d) => d.averagePing);
   }
 
   /**
@@ -154,7 +154,7 @@ class SkyWayClient extends EventEmitter {
 
     const ownUserId = User.getOwnRef().id;
     const result = await callHttpsCallable("p2pCredential", {
-      peerId: ownUserId
+      peerId: ownUserId,
     });
 
     if (!result.data) {
@@ -166,7 +166,7 @@ class SkyWayClient extends EventEmitter {
     return new SkyWayClient({
       apiKey,
       credential,
-      peerId: ownUserId
+      peerId: ownUserId,
     });
   }
 
@@ -225,7 +225,7 @@ class SkyWayClient extends EventEmitter {
     this._currentRoom = Room.fromData(doc);
 
     for (const remoteId of this._currentRoom.memberIds.filter(
-      id => id !== ownUserId
+      (id) => id !== ownUserId
     )) {
       const dataConnection = this._peer.connect(remoteId);
       dataConnection.on("open", () => {
@@ -254,7 +254,7 @@ class SkyWayClient extends EventEmitter {
     this._unsubscribeRoomSnapshot = null;
 
     // off all room events.
-    this.eventNames().forEach(eventName => {
+    this.eventNames().forEach((eventName) => {
       /** @see SkyWayEvents */
       if (eventName.toString().startsWith("room")) {
         this.removeAllListeners(eventName);
@@ -320,7 +320,7 @@ class SkyWayClient extends EventEmitter {
     enum MessageType {
       PROPOSAL = "sync-start/proposal",
       ACCEPTANCE = "sync-start/acceptance",
-      DECISION = "sync-start/decision"
+      DECISION = "sync-start/decision",
     }
     const isFirstSignalSender = !!this.isRoomOwner;
     const acceptanceMap = new Map<string /*peerId*/, boolean>();
@@ -335,7 +335,7 @@ class SkyWayClient extends EventEmitter {
       detail: any;
     }
 
-    return new Promise<number>(resolve => {
+    return new Promise<number>((resolve) => {
       /**
        *
        */
@@ -369,8 +369,8 @@ class SkyWayClient extends EventEmitter {
           detail: {
             proposalId: currentProposalId,
             startTime: currentProposalStartTime,
-            expiredAt: currentProposalExpirationTime
-          }
+            expiredAt: currentProposalExpirationTime,
+          },
         };
 
         this.send(message);
@@ -418,8 +418,8 @@ class SkyWayClient extends EventEmitter {
         const message = {
           type: MessageType.ACCEPTANCE,
           detail: {
-            proposalId
-          }
+            proposalId,
+          },
         };
 
         this.send(message);
@@ -468,7 +468,7 @@ class SkyWayClient extends EventEmitter {
       const sendDecision = () => {
         const message = {
           type: MessageType.DECISION,
-          detail: {}
+          detail: {},
         };
 
         this.send(message);
@@ -660,7 +660,7 @@ class SkyWayClient extends EventEmitter {
     this._destinations.set(peerId, {
       dataConnection,
       averagePing: 0,
-      pingHistory: new LimitedArray(PING_COUNT_FOR_AVERAGE)
+      pingHistory: new LimitedArray(PING_COUNT_FOR_AVERAGE),
     });
 
     this.emit(SkyWayEvents.CONNECTION_OPENED, peerId);
@@ -742,8 +742,8 @@ class SkyWayClient extends EventEmitter {
       const nextMemberCount = next.memberCount;
 
       if (nextMemberCount < prevMemberCount) {
-        const leftUserId = prev.memberIds.find(prevId => {
-          return !next.memberIds.find(nextId => nextId === prevId);
+        const leftUserId = prev.memberIds.find((prevId) => {
+          return !next.memberIds.find((nextId) => nextId === prevId);
         });
 
         this.emit(RoomEvents.MEMBER_LEFT, leftUserId);
@@ -756,9 +756,11 @@ class SkyWayClient extends EventEmitter {
   private startLoopConnectionCheck(shouldReadyMemberCount: number) {
     logger.debug("check all members are ready.");
 
-    const readyCount = Array.from(this._destinations.values()).filter(dest => {
-      return dest.dataConnection.open === true;
-    }).length;
+    const readyCount = Array.from(this._destinations.values()).filter(
+      (dest) => {
+        return dest.dataConnection.open === true;
+      }
+    ).length;
 
     if (readyCount === shouldReadyMemberCount) {
       logger.debug("all ready.");

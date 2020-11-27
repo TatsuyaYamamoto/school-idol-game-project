@@ -17,7 +17,7 @@ const images = [
   { name: "sound_ok", url: "assets/sounds/ok.128k.aac" },
   { name: "sound_ng", url: "assets/sounds/ng.128k.aac" },
   { name: "sound_bgm1", url: "assets/sounds/bgm1.128k.aac" },
-  { name: "sound_bgm2", url: "assets/sounds/bgm2.128k.aac" }
+  { name: "sound_bgm2", url: "assets/sounds/bgm2.128k.aac" },
 ];
 
 export class LoadingState implements State {
@@ -34,7 +34,7 @@ export class LoadingState implements State {
     this.launchBeforeGuide = document.getElementById("launch-before-guide");
     this.launchButton = document.getElementById("game-launch-button");
 
-    images.forEach(image => {
+    images.forEach((image) => {
       this.context.app.loader.add(image.name, image.url);
     });
     this.context.app.loader.load(() => {

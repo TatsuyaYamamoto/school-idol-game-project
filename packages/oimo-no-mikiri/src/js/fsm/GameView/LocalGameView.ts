@@ -6,7 +6,7 @@ import {
   removeEvents,
   play,
   vibrate,
-  trackEvent
+  trackEvent,
 } from "@sokontokoro/mikan";
 
 import GameView, { EnterParams, Events, InnerStates } from "./GameView";
@@ -14,22 +14,22 @@ import GameView, { EnterParams, Events, InnerStates } from "./GameView";
 import ReadyState from "./internal/ReadyState";
 import {
   default as MultiPlayOverState,
-  EnterParams as MultiPlayOverStateEnterParams
+  EnterParams as MultiPlayOverStateEnterParams,
 } from "./internal/OverState/MultiPlayOverState";
 import {
   default as MultiPlayActionState,
-  EnterParams as MultiPlayActionStateEnterParams
+  EnterParams as MultiPlayActionStateEnterParams,
 } from "./internal/ActionState/MultiPlayActionState";
 import {
   default as SinglePlayOverState,
-  EnterParams as SinglePlayOverStateEnterParams
+  EnterParams as SinglePlayOverStateEnterParams,
 } from "./internal/OverState/SinglePlayOverState";
 import {
   default as SinglePlayActionState,
-  EnterParams as SinglePlayActionStateEnterParams
+  EnterParams as SinglePlayActionStateEnterParams,
 } from "./internal/ActionState/SinglePlayActionState";
 import ResultState, {
-  EnterParams as ResultStateEnterParams
+  EnterParams as ResultStateEnterParams,
 } from "./internal/ResultState";
 
 import Actor from "../../models/Actor";
@@ -54,7 +54,7 @@ class LocalGameView extends GameView {
       [InnerStates.RESULT]: new ResultState(this),
       [InnerStates.OVER]: isSingleMode(this.game.mode)
         ? new SinglePlayOverState(this)
-        : new MultiPlayOverState(this)
+        : new MultiPlayOverState(this),
     });
 
     addEvents({
@@ -63,7 +63,7 @@ class LocalGameView extends GameView {
       [Events.ATTACK]: this.onAttacked,
       [Events.FIXED_RESULT]: this.onFixedResult,
       [Events.RESTART_GAME]: this.onRequestedRestart,
-      [Events.BACK_TO_TOP]: this.onBackToTopRequested
+      [Events.BACK_TO_TOP]: this.onBackToTopRequested,
     });
 
     this.game.start();
@@ -83,7 +83,7 @@ class LocalGameView extends GameView {
       Events.ATTACK,
       Events.FIXED_RESULT,
       Events.RESTART_GAME,
-      Events.BACK_TO_TOP
+      Events.BACK_TO_TOP,
     ]);
   }
 
@@ -114,7 +114,7 @@ class LocalGameView extends GameView {
     const signalTime = this.game.currentBattle.signalTime;
     const isFalseStarted = {
       player: this.game.currentBattle.isFalseStarted(Actor.PLAYER),
-      opponent: this.game.currentBattle.isFalseStarted(Actor.OPPONENT)
+      opponent: this.game.currentBattle.isFalseStarted(Actor.OPPONENT),
     };
 
     const offEvents = () => {
@@ -123,7 +123,7 @@ class LocalGameView extends GameView {
       this.game.currentBattle.off(BattleEvents.DRAW);
     };
 
-    this.game.currentBattle.on(BattleEvents.SUCCEED_ATTACK, winner => {
+    this.game.currentBattle.on(BattleEvents.SUCCEED_ATTACK, (winner) => {
       offEvents();
       play(SoundIds.SOUND_ATTACK);
       vibrate(VIBRATE_TIME.ATTACK);
@@ -137,7 +137,7 @@ class LocalGameView extends GameView {
         vibrate(VIBRATE_TIME.FALSE_START);
         this.to<ResultStateEnterParams>(InnerStates.RESULT, {
           winner,
-          falseStarter: attacker
+          falseStarter: attacker,
         });
       }
     );
@@ -154,20 +154,20 @@ class LocalGameView extends GameView {
       this.to<SinglePlayActionStateEnterParams>(InnerStates.ACTION, {
         signalTime,
         isFalseStarted,
-        autoOpponentAttackInterval
+        autoOpponentAttackInterval,
       });
     } else {
       const battleLeft = this.game.battleLeft;
       const wins = {
         onePlayer: this.game.getWins(Actor.PLAYER),
-        twoPlayer: this.game.getWins(Actor.OPPONENT)
+        twoPlayer: this.game.getWins(Actor.OPPONENT),
       };
 
       this.to<MultiPlayActionStateEnterParams>(InnerStates.ACTION, {
         signalTime,
         isFalseStarted,
         battleLeft,
-        wins
+        wins,
       });
     }
   }
@@ -190,7 +190,7 @@ class LocalGameView extends GameView {
         bestTime,
         mode,
         round: currentRound,
-        straightWins: this.game.straightWins
+        straightWins: this.game.straightWins,
       });
     } else {
       this.to<MultiPlayOverStateEnterParams>(InnerStates.OVER, {
@@ -199,7 +199,7 @@ class LocalGameView extends GameView {
         mode,
         round: currentRound,
         onePlayerWins: this.game.getWins(Actor.PLAYER),
-        twoPlayerWins: this.game.getWins(Actor.OPPONENT)
+        twoPlayerWins: this.game.getWins(Actor.OPPONENT),
       });
     }
   }
@@ -221,7 +221,7 @@ class LocalGameView extends GameView {
 
     trackEvent(Action.TAP, {
       category: Category.BUTTON,
-      label: "back_to_menu"
+      label: "back_to_menu",
     });
   }
 }

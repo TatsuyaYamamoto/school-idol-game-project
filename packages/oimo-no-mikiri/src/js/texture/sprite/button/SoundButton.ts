@@ -20,9 +20,8 @@ class SoundButton extends Button {
     this._offTexture = offTexture;
 
     isMute() ? this.turnOff() : this.turnOn();
-    this.setOnClickListener(
-      (event: interaction.InteractionEvent) =>
-        isMute() ? this.turnOn() : this.turnOff()
+    this.setOnClickListener((event: interaction.InteractionEvent) =>
+      isMute() ? this.turnOn() : this.turnOff()
     );
   }
 

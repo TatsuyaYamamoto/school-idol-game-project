@@ -76,10 +76,10 @@ class AssetLoader extends loaders.Loader {
 
     // add each asset info to loader.
     const assetIds = Object.keys(targetManifest);
-    assetIds.forEach(id =>
+    assetIds.forEach((id) =>
       this.add({
         name: `image@${id}`,
-        url: `${IMAGE_BASE_DIR}${targetManifest[id]}`
+        url: `${IMAGE_BASE_DIR}${targetManifest[id]}`,
       })
     );
   }
@@ -92,10 +92,10 @@ class AssetLoader extends loaders.Loader {
   public setSoundManifest(soundManifest: SoundManifest): void {
     // add each asset info to loader.
     const assetIds = Object.keys(soundManifest);
-    assetIds.forEach(id =>
+    assetIds.forEach((id) =>
       this.add({
         name: `sound@${id}`,
-        url: `${SOUND_BASE_DIR}${soundManifest[id]}`
+        url: `${SOUND_BASE_DIR}${soundManifest[id]}`,
       })
     );
   }
@@ -110,7 +110,7 @@ class AssetLoader extends loaders.Loader {
   private setAssets(_loader: AssetLoader, assets: { [key: string]: Asset }) {
     const assetIds = Object.keys(assets);
 
-    assetIds.forEach(id => {
+    assetIds.forEach((id) => {
       const asset = assets[id];
       assetsCache[asset.name] = asset;
     });
@@ -141,7 +141,7 @@ export function loadFrames(id: string | number): Texture[] {
     throw new Error("Fail to load cached assets. ID: " + id);
   }
 
-  return Object.keys(textures).map(textureKey => {
+  return Object.keys(textures).map((textureKey) => {
     return textures[textureKey];
   });
 }

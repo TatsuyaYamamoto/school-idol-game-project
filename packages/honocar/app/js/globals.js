@@ -14,5 +14,5 @@ export default {
   ssObj: {},
   soundObj: {},
   textObj: {},
-  loginUser: null
+  loginUser: null,
 };

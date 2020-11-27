@@ -49,7 +49,7 @@ interface SynchronizedData {
 
 const NICT_JSON_NTP_SERVER_URLS = [
   "https://ntp-a1.nict.go.jp/cgi-bin/json",
-  "https://ntp-b1.nict.go.jp/cgi-bin/json"
+  "https://ntp-b1.nict.go.jp/cgi-bin/json",
 ];
 
 const logger = getLogger("mikan:ntp-date");
@@ -91,15 +91,15 @@ class NtpDate {
         roundTripTime: receiveTime - initialTime,
         estimatedClockDifference: sendTime - (initialTime + receiveTime) / 2,
         estimatedLowerBound: initialTime - sendTime - 16,
-        estimatedUpperBound: receiveTime - sendTime + 16
+        estimatedUpperBound: receiveTime - sendTime + 16,
       });
     }
 
     const maxLowerBound = Math.max(
-      ...receivedJstDataList.map(data => data.estimatedLowerBound)
+      ...receivedJstDataList.map((data) => data.estimatedLowerBound)
     );
     const minUpperBound = Math.min(
-      ...receivedJstDataList.map(data => data.estimatedUpperBound)
+      ...receivedJstDataList.map((data) => data.estimatedUpperBound)
     );
     const offset = (maxLowerBound + minUpperBound) / 2;
 
@@ -107,8 +107,8 @@ class NtpDate {
       offset === 0
         ? `correct`
         : 0 < offset
-          ? `${offset}ms faster`
-          : `${offset}ms slower`;
+        ? `${offset}ms faster`
+        : `${offset}ms slower`;
     logger.debug(
       `sync to nict ntp server. this client's clock is ${clockStateMessage}.`
     );
@@ -116,7 +116,7 @@ class NtpDate {
     return (this._synchronizedData = {
       offset,
       maxLowerBound,
-      minUpperBound
+      minUpperBound,
     });
   }
 

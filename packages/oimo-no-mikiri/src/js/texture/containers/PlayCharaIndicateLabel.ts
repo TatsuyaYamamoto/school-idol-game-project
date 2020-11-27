@@ -5,7 +5,7 @@ import Text from "../internal/Text";
 
 const labelTextStyle: TextStyleOptions = {
   fontFamily: "g_brushtappitsu_freeH",
-  fontSize: 35
+  fontSize: 35,
 };
 
 class PlayerCharacterIndicateBoard extends Container {

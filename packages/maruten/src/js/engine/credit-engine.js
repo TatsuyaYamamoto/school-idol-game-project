@@ -2,7 +2,7 @@ import {
   openExternalSite,
   openModal,
   tracePage,
-  trackEvent
+  trackEvent,
 } from "@sokontokoro/mikan";
 
 import State from "../state.js";
@@ -27,7 +27,7 @@ export default class CreditEngine {
       State.object.text.LINK_SANZASHI,
       State.object.text.LINK_LOVELIVE,
       State.object.text.LINK_SOUNDEFFECT,
-      State.object.text.LINK_ONJIN
+      State.object.text.LINK_ONJIN,
     ]);
     State.gameStage.update();
   }
@@ -101,7 +101,7 @@ export default class CreditEngine {
         State.object.text.LINK_SOKONTOKORO.removeAllEventListeners("mousedown");
         State.object.text.LINK_SANZASHI.removeAllEventListeners("mousedown");
         State.object.text.LINK_LOVELIVE.removeAllEventListeners("mousedown");
-      }
+      },
     };
   }
   static showLinkDialog(url, displayDomain) {
@@ -120,7 +120,7 @@ export default class CreditEngine {
             State.object.sound.OK.play();
 
             openExternalSite(url);
-          }
+          },
         },
         {
           text: "CANCEL",
@@ -128,9 +128,9 @@ export default class CreditEngine {
           onClick: () => {
             State.object.sound.BACK.stop();
             State.object.sound.BACK.play();
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
   }
 }

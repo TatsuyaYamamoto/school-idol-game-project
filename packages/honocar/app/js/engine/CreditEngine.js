@@ -3,7 +3,7 @@ import {
   openModal,
   t,
   tracePage,
-  trackEvent
+  trackEvent,
 } from "@sokontokoro/mikan";
 
 import globals from "../globals";
@@ -91,7 +91,7 @@ function showLinkDialog(url, displayDomain) {
 
   openModal({
     text: t(Ids.OPEN_EXTERNAL_SITE_INFO, {
-      domain: displayDomain
+      domain: displayDomain,
     }),
     actions: [
       {
@@ -102,7 +102,7 @@ function showLinkDialog(url, displayDomain) {
 
           trackEvent(TRACK_ACTION.CLICK, { label: "credit_link" });
           openExternalSite(url);
-        }
+        },
       },
       {
         text: "CANCEL",
@@ -110,9 +110,9 @@ function showLinkDialog(url, displayDomain) {
         onClick: () => {
           globals.soundObj.SOUND_BACK.stop();
           globals.soundObj.SOUND_BACK.play();
-        }
-      }
-    ]
+        },
+      },
+    ],
   });
 }
 

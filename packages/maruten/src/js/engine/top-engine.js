@@ -20,7 +20,7 @@ export default class TopEngine {
       State.object.image.BACKGROUND,
       TopEngine.getTitleLogChild(),
       State.object.text.START,
-      State.object.text.VERSION
+      State.object.text.VERSION,
     ]);
     State.gameStage.update();
 
@@ -58,7 +58,7 @@ export default class TopEngine {
       },
       remove: () => {
         State.object.image.BACKGROUND.removeAllEventListeners("mousedown");
-      }
+      },
     };
   }
 }

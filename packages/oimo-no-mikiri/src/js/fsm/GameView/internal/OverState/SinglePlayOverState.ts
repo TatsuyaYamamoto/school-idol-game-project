@@ -5,12 +5,12 @@ import {
   Playlog,
   t,
   trackEvent,
-  tweetByWebIntent
+  tweetByWebIntent,
 } from "@sokontokoro/mikan";
 
 import {
   default as OverState,
-  EnterParams as AbstractEnterParams
+  EnterParams as AbstractEnterParams,
 } from "./OverState";
 
 import TweetButton from "../../../../texture/sprite/button/TweetButton";
@@ -69,14 +69,14 @@ class SinglePlayOverState extends OverState {
     Playlog.save("oimo-no-mikiri", "hanamaru", bestTime, {
       mode,
       straightWins,
-      round
+      round,
     }).then(() => {});
   }
 
   private _onClickTweetButton = (bestTime: number, wins: number) => {
     trackEvent(Action.TAP, {
       category: Category.BUTTON,
-      label: "result_tweet"
+      label: "result_tweet",
     });
 
     let tweetText =
@@ -86,14 +86,14 @@ class SinglePlayOverState extends OverState {
 
     if (wins === 0) {
       tweetText = t(StringIds[StringIds.GAME_RESULT_TWEET_ZERO_POINT], {
-        wins
+        wins,
       });
     }
 
     if (wins === 5) {
       tweetText = t(StringIds[StringIds.GAME_RESULT_TWEET_COMPLETE], {
         bestTime,
-        wins
+        wins,
       });
     }
 
@@ -101,14 +101,14 @@ class SinglePlayOverState extends OverState {
     const utmQuery = createUrchinTrackingModuleQuery({
       campaign: `result-share_${yyyymmdd}`,
       source: "twitter",
-      medium: "social"
+      medium: "social",
     });
     const url = `${URL.OIMO_NO_MIKIRI}?${utmQuery.join("&")}`;
     const hashtags = ["おいものみきり", "そこんところ工房"];
     tweetByWebIntent({
       text: tweetText,
       url,
-      hashtags
+      hashtags,
     });
   };
 }

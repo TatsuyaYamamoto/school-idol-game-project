@@ -146,7 +146,7 @@ abstract class ActionState extends GameViewState {
 
     dispatchEvent(Events.ATTACK, {
       attackTime,
-      attacker: actor
+      attacker: actor,
     });
   };
 

@@ -14,7 +14,7 @@ const FRAMES: FrameStructureIndexes = {
   LOSE: [8, 9],
   WIN: [5, 6, 7],
   LOSE_TEXTURE: 8,
-  WIN_TEXTURE: 5
+  WIN_TEXTURE: 5,
 };
 
 /**

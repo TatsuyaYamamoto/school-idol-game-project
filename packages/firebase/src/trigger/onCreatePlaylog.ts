@@ -4,21 +4,21 @@ import { firestore } from "firebase-admin";
 import {
   PlaylogDocument,
   HighscoreDocument,
-  UserDocument
+  UserDocument,
 } from "@sokontokoro/mikan";
 
 import {
   getHighscoreColRef,
   getCompare,
   loadedMetadata,
-  catchErrorWrapper
+  catchErrorWrapper,
 } from "../utils";
 
 export default functions.firestore.document("playlogs/{playlogId}").onCreate(
   catchErrorWrapper(async (snapshot, context) => {
     console.log({
       message: `start playlogs/${snapshot.id}#onCreate event.`,
-      detail: [snapshot, context]
+      detail: [snapshot, context],
     });
 
     /**
@@ -56,7 +56,7 @@ export default functions.firestore.document("playlogs/{playlogId}").onCreate(
         count: 1,
         createdAt: firestore.FieldValue.serverTimestamp(),
         updatedAt: firestore.FieldValue.serverTimestamp(),
-        brokenAt: firestore.FieldValue.serverTimestamp()
+        brokenAt: firestore.FieldValue.serverTimestamp(),
       };
 
       batch.set(highscoreRef, doc);
@@ -65,8 +65,8 @@ export default functions.firestore.document("playlogs/{playlogId}").onCreate(
       const updateUserDoc: Partial<UserDocument> = {
         highscoreRefs: {
           ...userDoc.highscoreRefs,
-          [game]: highscoreRef as any
-        }
+          [game]: highscoreRef as any,
+        },
       };
 
       batch.update(userRef as any, updateUserDoc);
@@ -79,7 +79,7 @@ export default functions.firestore.document("playlogs/{playlogId}").onCreate(
 
       const doc: Partial<HighscoreDocument> = {
         count: prevScoreDoc.count + 1,
-        updatedAt: firestore.FieldValue.serverTimestamp()
+        updatedAt: firestore.FieldValue.serverTimestamp(),
       };
 
       if (shouldUpdate(prevScoreDoc.point, playlogDoc.point)) {
@@ -95,7 +95,7 @@ export default functions.firestore.document("playlogs/{playlogId}").onCreate(
     await batch.commit();
 
     console.log({
-      message: `end playlogs/${snapshot.id}#onCreate success.`
+      message: `end playlogs/${snapshot.id}#onCreate success.`,
     });
   })
 );

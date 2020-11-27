@@ -8,22 +8,22 @@ import { Ids as StringIds } from "../../../resources/string";
 
 const winsLabelStyle = {
   fontFamily: "g_brushtappitsu_freeH",
-  fontSize: 35
+  fontSize: 35,
 };
 
 const winsStyle = {
   fontFamily: "g_brushtappitsu_freeH",
-  fontSize: 60
+  fontSize: 60,
 };
 
 const battleLeftLabelStyle = {
   fontFamily: "g_brushtappitsu_freeH",
-  fontSize: 35
+  fontSize: 35,
 };
 
 const battleLeftStyle = {
   fontFamily: "g_brushtappitsu_freeH",
-  fontSize: 60
+  fontSize: 60,
 };
 
 class BattleStatusBoard extends Container {

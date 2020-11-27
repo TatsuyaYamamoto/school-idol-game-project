@@ -1,7 +1,7 @@
 import State from "../state.js";
 import {
   GAME_TIME_LENGTH_SECONDS,
-  ADD_TIME_SECONDS_BY_ITEM
+  ADD_TIME_SECONDS_BY_ITEM,
 } from "../static/config.js";
 import { CHARACTER } from "../static/constant.js";
 import Util from "../util.js";
@@ -47,7 +47,7 @@ export default class GameEngine {
     Util.addChildren([
       State.object.image.BACKGROUND,
       State.object.text.GAMESTART_COUNT,
-      this.player.img
+      this.player.img,
     ]);
 
     // ゲームスタートカウントスタート
@@ -85,7 +85,7 @@ export default class GameEngine {
                 State.object.image.BACKGROUND,
                 this.player.img,
                 State.object.text.SCORE_COUNT,
-                State.object.image.COUNT_YOSHIKO
+                State.object.image.COUNT_YOSHIKO,
               ].concat(this.timer.getElementArray())
             );
             break;
@@ -95,7 +95,7 @@ export default class GameEngine {
                 State.object.image.BACKGROUND,
                 this.player.img,
                 State.object.text.SCORE_COUNT,
-                State.object.image.COUNT_RIKO
+                State.object.image.COUNT_RIKO,
               ].concat(this.timer.getElementArray())
             );
             break;
@@ -150,7 +150,7 @@ export default class GameEngine {
    * 羽と画面内オブジェクトの当たり判定チェック
    */
   checkHit() {
-    this.feathers.forEach(feather => {
+    this.feathers.forEach((feather) => {
       // よしこ
       if (this.enemy != null && this.enemy.doseColideWithFeather(feather)) {
         this.enemy.hit();
@@ -242,7 +242,7 @@ export default class GameEngine {
       remove: () => {
         State.gameStage.removeEventListener("pressup", this.touchEvent);
         State.gameStage.removeEventListener("mousedown", this.touchEvent);
-      }
+      },
     };
   }
 

@@ -28,7 +28,7 @@ export class Result {
       new TextStyle({
         fontFamily: "PixelMplus12-Bold",
         fontSize: 300 * this.context.scale,
-        lineHeight: 400 * this.context.scale
+        lineHeight: 400 * this.context.scale,
       })
     );
     this._text.anchor.set(0.5);

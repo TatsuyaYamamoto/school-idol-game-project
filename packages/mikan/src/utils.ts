@@ -122,7 +122,7 @@ export function copyTextToClipboard(text: string): boolean {
 }
 
 export function timeout(ms: number): Promise<void> {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), ms);
   });
 }
@@ -239,8 +239,8 @@ const uploadImageToTwitter = (mediaData: string) => {
   return fetch(`https://api.sokontokoro-factory.net/twitter/media/upload`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({ mediaData })
-  }).then(res => res.json());
+    body: JSON.stringify({ mediaData }),
+  }).then((res) => res.json());
 };

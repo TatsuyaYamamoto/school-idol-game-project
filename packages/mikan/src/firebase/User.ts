@@ -90,7 +90,7 @@ export class User {
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
       duplicatedRefsByLink: [],
-      presenceRefs: {}
+      presenceRefs: {},
     };
 
     /**
@@ -118,7 +118,7 @@ export class User {
     const {
       user,
       additionalUserInfo,
-      credential
+      credential,
     } = User.shouldFulfilledCredential(newCredential);
 
     const { providerId } = credential;
@@ -145,9 +145,9 @@ export class User {
       const newCredentialDoc: Partial<CredentialDocument> = {
         data: {
           accessToken: (<any>credential).accessToken,
-          secret: (<any>credential).secret
+          secret: (<any>credential).secret,
         },
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
       };
 
       if (isNewCredentialForIdp) {
@@ -162,7 +162,7 @@ export class User {
 
       // create batch of updating user
       const newUserDoc: Partial<UserDocument> = {
-        isAnonymous: false
+        isAnonymous: false,
       };
 
       newUserDoc.providers = {
@@ -170,8 +170,8 @@ export class User {
         [providerId]: {
           userId: profile.id_str,
           linkedAt: firebase.firestore.FieldValue.serverTimestamp(),
-          credentialRef
-        }
+          credentialRef,
+        },
       };
 
       if (isFirstLinkForUser) {
@@ -188,7 +188,7 @@ export class User {
 
       if (duplicatedUser) {
         newUserDoc.duplicatedRefsByLink = userDoc.duplicatedRefsByLink.concat([
-          User.getDocRef(duplicatedUser.uid)
+          User.getDocRef(duplicatedUser.uid),
         ]);
       }
 
@@ -221,7 +221,7 @@ export class User {
     return {
       user,
       additionalUserInfo,
-      credential
+      credential,
     };
   }
 }

@@ -81,9 +81,7 @@ export class Room implements RoomDocument {
   }
 
   public static async duplicateName(roomName: string): Promise<boolean> {
-    const snapshot = await Room.getColRef()
-      .where("name", "==", roomName)
-      .get();
+    const snapshot = await Room.getColRef().where("name", "==", roomName).get();
 
     return !snapshot.empty;
   }
@@ -101,14 +99,14 @@ export class Room implements RoomDocument {
     const newRoomDoc: RoomDocument = {
       name,
       userPresenceRefs: {
-        [createUserRef.id]: presenceRef
+        [createUserRef.id]: presenceRef,
       },
       game,
       maxUserCount,
       lock: false,
       createdBy: createUserRef,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      expiredAt: firebase.firestore.Timestamp.fromDate(expiredDate)
+      expiredAt: firebase.firestore.Timestamp.fromDate(expiredDate),
     };
 
     const newRoomRef = Room.getColRef().doc();
@@ -117,7 +115,7 @@ export class Room implements RoomDocument {
 
     return {
       doc: newRoomDoc,
-      ref: newRoomRef
+      ref: newRoomRef,
     };
   }
 
@@ -126,9 +124,7 @@ export class Room implements RoomDocument {
     joinUserId: string
   ): Promise<{ doc: RoomDocument; ref: DocumentReference } | null> {
     const presenceRef = Presence.getDocRef(Presence.id);
-    const snapshot = await Room.getColRef()
-      .where("name", "==", roomName)
-      .get();
+    const snapshot = await Room.getColRef().where("name", "==", roomName).get();
 
     if (snapshot.empty) {
       throw new MikanError(
@@ -141,7 +137,7 @@ export class Room implements RoomDocument {
 
     const updatedRoomDoc = await firebase
       .firestore()
-      .runTransaction(async transaction => {
+      .runTransaction(async (transaction) => {
         const roomSnapshot = await transaction.get(roomRef);
 
         if (!roomSnapshot.exists) {
@@ -162,8 +158,8 @@ export class Room implements RoomDocument {
         const newRoomDoc: Partial<RoomDocument> = {
           userPresenceRefs: {
             ...roomDoc.userPresenceRefs,
-            [joinUserId]: presenceRef
-          }
+            [joinUserId]: presenceRef,
+          },
         };
 
         transaction.update(roomRef, newRoomDoc);
@@ -174,7 +170,7 @@ export class Room implements RoomDocument {
     if (updatedRoomDoc) {
       return {
         doc: updatedRoomDoc,
-        ref: roomRef
+        ref: roomRef,
       };
     } else {
       return null;
@@ -195,7 +191,7 @@ export class Room implements RoomDocument {
 
     const roomRef = snapshot.docs[0].ref;
 
-    await firebase.firestore().runTransaction(async transaction => {
+    await firebase.firestore().runTransaction(async (transaction) => {
       const roomSnapshot = await transaction.get(roomRef);
 
       if (!roomSnapshot.exists) {
@@ -205,13 +201,13 @@ export class Room implements RoomDocument {
       const roomDoc = roomSnapshot.data() as RoomDocument;
 
       const leftMemberPresenceRefs = {
-        ...roomDoc.userPresenceRefs
+        ...roomDoc.userPresenceRefs,
       };
 
       delete leftMemberPresenceRefs[leaveUserId];
 
       const newRoomDoc: Partial<RoomDocument> = {
-        userPresenceRefs: leftMemberPresenceRefs
+        userPresenceRefs: leftMemberPresenceRefs,
       };
 
       transaction.update(roomRef, newRoomDoc);

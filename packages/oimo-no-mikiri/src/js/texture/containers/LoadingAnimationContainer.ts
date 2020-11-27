@@ -9,7 +9,7 @@ class LoadProgressText extends Text {
   constructor() {
     super(`Now loading... 0%`, {
       fontSize: 30,
-      fontFamily: "PixelMplus10-Regular"
+      fontFamily: "PixelMplus10-Regular",
     });
   }
 

@@ -33,12 +33,12 @@ export function init(): Promise<UserDocument> {
 
   isInitRequested = true;
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     /**
      * First state change event will fire after getting redirect result; {@link auth#getRedirectResult}.
      */
     const unsubscribe = firebaseAuth.onAuthStateChanged(
-      async authUser => {
+      async (authUser) => {
         if (authUser) {
           /**
            * Received firebase auth user data.
@@ -69,7 +69,7 @@ export function init(): Promise<UserDocument> {
         logger.debug("signed-out. try signing-in anonymously");
         signInAsAnonymous();
       },
-      e => {
+      (e) => {
         logger.error(e);
       },
       () => {

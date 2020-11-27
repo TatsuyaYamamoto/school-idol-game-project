@@ -50,7 +50,7 @@ export class Playlog {
       userAgent: navigator.userAgent,
       language: navigator.languages[0],
       languages: navigator.languages.join(";"),
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     };
 
     return Playlog.getColRef().add(doc);

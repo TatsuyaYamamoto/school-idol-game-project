@@ -13,7 +13,7 @@ if (require("os").userInfo().username === "circleci") {
   process.exit(0);
 }
 
-stdin.on("data", function(chunk) {
+stdin.on("data", function (chunk) {
   if (chunk.indexOf("y") === 0) {
     process.stdout.write(OK_MESSAGE);
     process.exit(0);

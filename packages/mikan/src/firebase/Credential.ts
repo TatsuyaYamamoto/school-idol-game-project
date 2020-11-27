@@ -36,8 +36,6 @@ export class Credential {
   }
 
   public static get(userRef: DocumentReference): Promise<QuerySnapshot> {
-    return Credential.getColRef()
-      .where("userRef", "==", userRef)
-      .get();
+    return Credential.getColRef().where("userRef", "==", userRef).get();
   }
 }

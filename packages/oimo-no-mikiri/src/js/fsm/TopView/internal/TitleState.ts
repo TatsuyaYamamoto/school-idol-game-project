@@ -5,7 +5,7 @@ import {
   dispatchEvent,
   t,
   play,
-  tracePage
+  tracePage,
 } from "@sokontokoro/mikan";
 
 import TopViewState from "./TopViewState";
@@ -51,14 +51,14 @@ class TitleState extends TopViewState {
     this._appVersion = new Text(`v${version}`, {
       fontSize: 20,
       stroke: "#ffffff",
-      strokeThickness: 1
+      strokeThickness: 1,
     });
     this._appVersion.position.set(this.viewWidth * 0.9, this.viewHeight * 0.95);
 
     this._tapInfoText = new Text(t(StringIds[StringIds.TAP_DISPLAY_INFO]), {
       fontSize: 40,
       stroke: "#ffffff",
-      strokeThickness: 2
+      strokeThickness: 2,
     });
     this._tapInfoText.position.set(this.viewWidth * 0.5, this.viewHeight * 0.9);
 

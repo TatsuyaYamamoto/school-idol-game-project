@@ -18,6 +18,6 @@ export default {
     image: {},
     spritesheet: {},
     sound: {},
-    text: {}
-  }
+    text: {},
+  },
 };

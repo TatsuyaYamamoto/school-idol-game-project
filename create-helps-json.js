@@ -14,7 +14,7 @@ const ENGLISH_KEY = "en";
 
 const helpMap = {
   [JAPANESE_KEY]: [],
-  [ENGLISH_KEY]: []
+  [ENGLISH_KEY]: [],
 };
 
 async function main() {
@@ -62,15 +62,15 @@ async function main() {
       id: basename,
       title: attributes.title,
       tags: attributes.tags,
-      body
+      body,
     });
   }
 
   const eachLanguageDocSizes = Object.keys(helpMap).map(
-    language => helpMap[language].length
+    (language) => helpMap[language].length
   );
 
-  if (!eachLanguageDocSizes.every(size => size)) {
+  if (!eachLanguageDocSizes.every((size) => size)) {
     console.warn("😈each language doc sizes are different.");
   }
 
@@ -81,7 +81,7 @@ async function main() {
 
 function readDir(path) {
   return new Promise((resolve, reject) => {
-    fs.readdir(path, function(err, fileNames) {
+    fs.readdir(path, function (err, fileNames) {
       if (err) {
         reject(err);
       } else {
@@ -93,7 +93,7 @@ function readDir(path) {
 
 function readFile(path) {
   return new Promise((resolve, reject) => {
-    fs.readFile(path, "utf8", function(err, data) {
+    fs.readFile(path, "utf8", function (err, data) {
       if (err) {
         reject(err);
       } else {
@@ -104,7 +104,7 @@ function readFile(path) {
 }
 function writeFile(path, content) {
   return new Promise((resolve, reject) => {
-    fs.writeFile(path, content, err => {
+    fs.writeFile(path, content, (err) => {
       if (err) {
         reject(err);
       } else {
@@ -114,7 +114,7 @@ function writeFile(path, content) {
   });
 }
 
-main().catch(e => {
+main().catch((e) => {
   console.error(e);
   process.exit(1);
 });

@@ -35,7 +35,7 @@ class LocalGame extends Game {
   public getWins(actor: Actor): number {
     let wins = 0;
 
-    this._battles.forEach(b => {
+    this._battles.forEach((b) => {
       if (b.winner === actor) {
         // tslint:disable-next-line:no-increment-decrement
         wins++;
@@ -48,7 +48,7 @@ class LocalGame extends Game {
   public get bestTime(): number {
     let time = 99999;
 
-    this._battles.forEach(b => {
+    this._battles.forEach((b) => {
       if (isSingleMode(this.mode)) {
         if (b.winnerAttackTime < time && b.winner === Actor.PLAYER) {
           time = b.winnerAttackTime;
@@ -71,7 +71,7 @@ class LocalGame extends Game {
     }
 
     let wins = 0;
-    this._battles.forEach(b => {
+    this._battles.forEach((b) => {
       if (b.winner === Actor.PLAYER) {
         // tslint:disable-next-line:no-increment-decrement
         wins++;
@@ -97,7 +97,7 @@ class LocalGame extends Game {
     if (isSingleMode(this.mode)) {
       let isFixed = false;
 
-      this._battles.forEach(b => {
+      this._battles.forEach((b) => {
         if (b.winner === Actor.OPPONENT) {
           isFixed = true;
         }
@@ -108,7 +108,7 @@ class LocalGame extends Game {
       }
 
       let fixedBattleCount = 0;
-      this._battles.forEach(b => {
+      this._battles.forEach((b) => {
         if (b.isFixed()) {
           // tslint:disable-next-line:no-increment-decrement
           fixedBattleCount++;

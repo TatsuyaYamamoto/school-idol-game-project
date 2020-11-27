@@ -9,8 +9,8 @@ export default https.onCall(async (data, context) => {
     return {
       error: {
         status: "INVALID_ARGUMENT",
-        message: "authenticated user only is allowed."
-      }
+        message: "authenticated user only is allowed.",
+      },
     };
   }
 
@@ -18,7 +18,7 @@ export default https.onCall(async (data, context) => {
 
   if (!peerId) {
     return {
-      error: { status: "INVALID_ARGUMENT", message: "No peer ID is provided." }
+      error: { status: "INVALID_ARGUMENT", message: "No peer ID is provided." },
     };
   }
 
@@ -27,7 +27,7 @@ export default https.onCall(async (data, context) => {
   return {
     timestamp: Math.floor(Date.now() / 1000), // SkyWay needs the current unix timestamp.
     ttl: credentialTTL,
-    authToken: calculateAuthToken(peerId, unixTimestamp)
+    authToken: calculateAuthToken(peerId, unixTimestamp),
   };
 });
 
