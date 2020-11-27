@@ -4,10 +4,14 @@ import { TimelineMax } from "gsap";
 import { SelectArrow } from "./SelectArrow";
 
 export class RinaCandidate {
-  private _container: Container;
-  private _rinaBody: Sprite;
-  private _candidateBox: Sprite;
-  private _fukidashi: Sprite;
+  readonly _container: Container;
+
+  readonly _rinaBody: Sprite;
+
+  readonly _candidateBox: Sprite;
+
+  readonly _fukidashi: Sprite;
+
   private _selectArrow;
 
   public constructor(
@@ -50,11 +54,11 @@ export class RinaCandidate {
     this._container.addChild(this._candidateBox);
   }
 
-  public get container() {
+  public get container(): Container {
     return this._container;
   }
 
-  public get boxSprite() {
+  public get boxSprite(): Sprite {
     return this._candidateBox;
   }
 
@@ -62,7 +66,7 @@ export class RinaCandidate {
     return this.context.inContainRina;
   }
 
-  public clickHandler(callback: (() => void) | null) {
+  public clickHandler(callback: (() => void) | null): void {
     const turnOff = () => {
       this._candidateBox.interactive = false;
       this._candidateBox.buttonMode = false;
@@ -83,10 +87,10 @@ export class RinaCandidate {
       console.log(e);
       this.showArrow();
     });
-    this._candidateBox.on("pointerout", (e) => {
+    this._candidateBox.on("pointerout", () => {
       this.hideArrow();
     });
-    this._candidateBox.on("pointerdown", (e) => {
+    this._candidateBox.on("pointerdown", () => {
       turnOff();
 
       callback();
@@ -116,33 +120,33 @@ export class RinaCandidate {
     return p;
   }
 
-  public showUnknownBox() {
+  public showUnknownBox(): void {
     this._candidateBox.texture = this.context.textures.hako1;
   }
 
-  public showWinBox() {
+  public showWinBox(): void {
     this._candidateBox.texture = this.context.textures.hako2;
   }
 
-  public showWinFukidashi() {
+  public showWinFukidashi(): void {
     this._fukidashi.texture = this.context.textures.fukidashiNiko;
     this._container.addChild(this._fukidashi);
   }
 
-  public showLoseFukidashi() {
+  public showLoseFukidashi(): void {
     this._fukidashi.texture = this.context.textures.fukidashiShun;
     this._container.addChild(this._fukidashi);
   }
 
-  public hideFukidashi() {
+  public hideFukidashi(): void {
     this._container.removeChild(this._fukidashi);
   }
 
-  public showArrow() {
+  public showArrow(): void {
     this._container.addChild(this._selectArrow.graphics);
   }
 
-  public hideArrow() {
+  public hideArrow(): void {
     this._container.removeChild(this._selectArrow.graphics);
   }
 }

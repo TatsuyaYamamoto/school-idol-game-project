@@ -1,7 +1,7 @@
 import { Application, TextMetrics } from "pixi.js";
 import { Machine, interpret, assign } from "xstate";
 
-import { init as initTracker } from "@sokontokoro/mikan/dist/Tracker";
+import { initTracker } from "@sokontokoro/mikan";
 
 import { IdleState } from "./state/IdleState";
 import { LoadingState } from "./state/LoadingState";
@@ -20,10 +20,10 @@ const windowHeight = window.innerHeight;
 let canvasWidth;
 let canvasHeight;
 
-if (windowWidth * canvasWindowAspectRatio < windowHeight /*portrait*/) {
+if (windowWidth * canvasWindowAspectRatio < windowHeight /* portrait */) {
   canvasWidth = windowWidth;
   canvasHeight = canvasWidth * canvasWindowAspectRatio;
-} /* landscape*/ else {
+} /* landscape */ else {
   canvasHeight = windowHeight;
   canvasWidth = canvasHeight / canvasWindowAspectRatio;
 }
@@ -108,17 +108,22 @@ const appMachine = Machine(
             target: GameShuffleState.nodeKey,
             actions: [
               assign({
+                // TODO
+                // eslint-disable-next-line
                 // @ts-ignore
                 correctSelectCount: (context) => context.correctSelectCount + 1,
 
                 moveDuration: (context) => {
+                  // TODO
+                  // eslint-disable-next-line
                   // @ts-ignore
                   if (context.moveDuration <= MIN_MOVE_DURATION) {
                     return MIN_MOVE_DURATION;
-                  } else {
-                    // @ts-ignore
-                    return context.moveDuration - 0.02;
                   }
+                  // TODO
+                  // eslint-disable-next-line
+                  // @ts-ignore
+                  return context.moveDuration - 0.02;
                 },
               }),
             ],
@@ -137,6 +142,8 @@ const appMachine = Machine(
     on: {
       "rinaCandidates.UPDATE": {
         actions: assign({
+          // TODO
+          // eslint-disable-next-line
           // @ts-ignore
           rinaCandidates: (_, event) => event.rinaCandidates,
         }),
@@ -146,18 +153,21 @@ const appMachine = Machine(
   {
     actions: {
       handleStateEntry: (context, event) => {
+        // eslint-disable-next-line
         const currentNodeKey = stateMachineService.state.value as string;
 
         context.currentNodeKey = currentNodeKey;
         console.log(`entry - ${currentNodeKey}`, context, event);
 
+        // eslint-disable-next-line
         const currentState = stateInstances[currentNodeKey];
         currentState.onEnter({ context });
       },
       handleStateExit: (context, event) => {
-        const currentNodeKey = context.currentNodeKey;
+        const { currentNodeKey } = context;
         console.log(`exit  - ${currentNodeKey}`, context, event);
 
+        // eslint-disable-next-line
         const currentState = stateInstances[currentNodeKey];
         currentState.onExit({ context });
       },
@@ -165,9 +175,8 @@ const appMachine = Machine(
   }
 );
 
-export type StateMachineContext = typeof appMachine["context"];
-
 const context = { app, scale };
+export type StateContext = typeof context;
 const stateInstances = {
   [IdleState.nodeKey]: new IdleState(context),
   [LoadingState.nodeKey]: new LoadingState(context),
@@ -180,6 +189,8 @@ const stateInstances = {
 };
 
 export const stateMachineService = interpret(appMachine);
+
+export type StateMachineContext = typeof appMachine["context"];
 
 export type StateEnterParams = {
   context: StateMachineContext;

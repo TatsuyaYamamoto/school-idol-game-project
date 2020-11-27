@@ -15,7 +15,7 @@ export class SelectArrow {
     this._graphics.endFill();
   }
 
-  public get graphics() {
+  public get graphics(): Graphics {
     return this._graphics;
   }
 }

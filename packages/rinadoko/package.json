@@ -12,6 +12,7 @@
     "deploy:pro": "gsutil -m rsync -d -r dist/ gs://games.sokontokoro-factory.net/rinadoko/"
   },
   "dependencies": {
+    "@sokontokoro/mikan": "*",
     "gsap": "^3.5.1",
     "pixi-sound": "^3.0.5",
     "pixi.js": "^5.3.3",

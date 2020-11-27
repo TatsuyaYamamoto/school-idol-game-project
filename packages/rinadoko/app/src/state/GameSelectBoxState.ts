@@ -1,33 +1,43 @@
-import { Application } from "pixi.js";
 import PIXISound from "pixi-sound";
 
-import { State, StateEnterParams, stateMachineService } from "../index";
+import {
+  State,
+  StateContext,
+  StateEnterParams,
+  stateMachineService,
+} from "../index";
 import { RinaCandidate } from "../model/RinaCandidate";
 import { wait } from "../utils";
 
 export class GameSelectBoxState implements State {
   public static nodeKey = "@game-select-box";
 
+  private stateContext: StateContext;
+
   private rinaCandidates: RinaCandidate[];
+
   private soundOk: PIXISound.Sound;
+
   private soundNg: PIXISound.Sound;
 
-  constructor(private context: { app: Application; scale: number }) {}
+  constructor(ctx: StateContext) {
+    this.stateContext = ctx;
+  }
 
-  onEnter({ context }: StateEnterParams) {
+  onEnter({ context }: StateEnterParams): void {
     this.rinaCandidates = context.rinaCandidates;
     this.soundOk = PIXISound.Sound.from(
-      this.context.app.loader.resources["sound_ok"]
+      this.stateContext.app.loader.resources.sound_ok
     );
     this.soundNg = PIXISound.Sound.from(
-      this.context.app.loader.resources["sound_ng"]
+      this.stateContext.app.loader.resources.sound_ng
     );
     this.showGuide();
 
     this.rinaCandidates.forEach((rina, index) => {
       rina.clickHandler(() => {
-        this.rinaCandidates.forEach((rina) => {
-          rina.clickHandler(null);
+        this.rinaCandidates.forEach((r) => {
+          r.clickHandler(null);
         });
 
         this.hideGuide();
@@ -35,7 +45,10 @@ export class GameSelectBoxState implements State {
       });
     });
   }
-  onExit({ context }) {}
+
+  onExit(): void {
+    // do nothing
+  }
 
   private checkResult(selectedIndex: number) {
     const selectedCandidate = this.rinaCandidates[selectedIndex];
@@ -55,7 +68,7 @@ export class GameSelectBoxState implements State {
         .then(() => {
           stateMachineService.send("BOX_SELECTED_OK");
         });
-    } /*不正解*/ else {
+    } /* 不正解 */ else {
       this.soundNg.play();
 
       this.rinaCandidates.forEach((c) => {
@@ -70,11 +83,12 @@ export class GameSelectBoxState implements State {
     }
   }
 
-  private showGuide() {
+  private showGuide(): void {
     const selectGuideElement = document.getElementById("select-guide");
     selectGuideElement.style.display = "block";
   }
-  private hideGuide() {
+
+  private hideGuide(): void {
     const selectGuideElement = document.getElementById("select-guide");
     selectGuideElement.style.display = "none";
   }

@@ -1,41 +1,54 @@
-import { Application } from "pixi.js";
 import PIXISound from "pixi-sound";
 import { tweetByWebIntent } from "@sokontokoro/mikan/dist/utils";
 import { trackEvent } from "@sokontokoro/mikan/dist/Tracker";
 
-import { State, StateEnterParams, stateMachineService } from "../index";
+import {
+  State,
+  StateContext,
+  StateEnterParams,
+  stateMachineService,
+} from "../index";
 import { Result } from "../model/Result";
 
 export class GameResultState implements State {
   public static nodeKey = "@game-result";
 
+  private stateContext: StateContext;
+
   private shareController: HTMLElement;
+
   private twitterShare: HTMLElement;
+
   private pixiState: HTMLElement;
+
   private result: Result;
+
   private soundButton1: PIXISound.Sound;
+
   private soundBgm2: PIXISound.Sound;
 
-  constructor(private context: { app: Application; scale: number }) {}
+  constructor(context: StateContext) {
+    this.stateContext = context;
+  }
 
-  onEnter({ context }: StateEnterParams) {
-    const { resources } = this.context.app.loader;
+  onEnter({ context }: StateEnterParams): void {
+    const { resources } = this.stateContext.app.loader;
 
     this.shareController = document.getElementById("share-controller");
     this.twitterShare = document.getElementById("twitter-share");
     this.pixiState = document.getElementById("pixi");
     this.soundButton1 = PIXISound.Sound.from(
-      this.context.app.loader.resources["sound_button1"]
+      this.stateContext.app.loader.resources.sound_button1
     );
     this.soundBgm2 = PIXISound.Sound.from(
-      this.context.app.loader.resources["sound_bgm2"]
+      this.stateContext.app.loader.resources.sound_bgm2
     );
 
     this.result = new Result({
-      scale: this.context.scale,
+      scale: this.stateContext.scale,
       screen: {
-        width: this.context.app.screen.width,
-        height: this.context.app.screen.height,
+        width: this.stateContext.app.screen.width,
+        height: this.stateContext.app.screen.height,
       },
       textures: {
         result0: resources["last-1"].texture,
@@ -46,10 +59,10 @@ export class GameResultState implements State {
 
     this.result.point = context.correctSelectCount;
 
-    this.context.app.stage.removeChild(
+    this.stateContext.app.stage.removeChild(
       ...context.rinaCandidates.map((r) => r.container)
     );
-    this.context.app.stage.addChild(this.result.container);
+    this.stateContext.app.stage.addChild(this.result.container);
 
     this.showShareController();
     this.soundBgm2.play({ volume: 0.2 });
@@ -69,9 +82,10 @@ export class GameResultState implements State {
       value: this.result.point,
     });
   }
-  onExit({ context }) {
+
+  onExit(): void {
     this.hideShareController();
-    this.context.app.stage.removeChild(this.result.container);
+    this.stateContext.app.stage.removeChild(this.result.container);
     this.soundBgm2.stop();
 
     this.pixiState.removeEventListener("pointerdown", this.onTapStage);
@@ -81,22 +95,22 @@ export class GameResultState implements State {
     );
   }
 
-  onTapStage = () => {
+  onTapStage = (): void => {
     this.soundButton1.play();
     stateMachineService.send("RESTART");
   };
 
-  showShareController() {
+  showShareController(): void {
     this.shareController.classList.remove("share-controller--hide");
   }
 
-  hideShareController() {
+  hideShareController(): void {
     this.shareController.classList.add("share-controller--hide");
   }
 
-  onClickTwitterShare = () => {
+  onClickTwitterShare = (): void => {
     let text = `全然見つけられなかった...`;
-    if (0 < this.result.point) {
+    if (this.result.point > 0) {
       text = `${this.result.point}回見つけられたよ！`;
     }
 

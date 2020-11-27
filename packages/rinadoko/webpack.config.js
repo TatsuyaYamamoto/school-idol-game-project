@@ -16,12 +16,13 @@ const htmlParams = {
   helpUrlEn: "http://games-dev.sokontokoro-factory.net/#/help?language=en",
 };
 
-isProduction &&
+if (isProduction) {
   Object.assign(htmlParams, {
     trackingCode: config.trackingCode.pro,
     helpUrlJa: "http://games.sokontokoro-factory.net/#/help?language=ja",
     helpUrlEn: "http://games.sokontokoro-factory.net/#/help?language=en",
   });
+}
 
 const plugins = [
   new HtmlWebpackPlugin({
@@ -60,5 +61,5 @@ module.exports = {
     ],
   },
 
-  plugins: plugins,
+  plugins,
 };

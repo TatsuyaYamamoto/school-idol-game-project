@@ -1,10 +1,19 @@
-import { Application } from "pixi.js";
-import { State, StateEnterParams } from "../";
+import { State, StateContext } from "..";
 
 export class IdleState implements State {
   public static nodeKey = "@idle";
 
-  constructor(private context: { app: Application; scale: number }) {}
-  onEnter({ context }: StateEnterParams) {}
-  onExit({ context }) {}
+  private stateContext: StateContext;
+
+  constructor(context: StateContext) {
+    this.stateContext = context;
+  }
+
+  onEnter(): void {
+    // do nothing
+  }
+
+  onExit(): void {
+    // do nothing
+  }
 }
