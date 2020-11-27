@@ -13,14 +13,17 @@ export type DeliverableConverter = (source?: Deliverable) => Deliverable;
  */
 class StateMachine<S extends State> {
   private _currentState: S | undefined;
-  private _states: Map<String | number, S> = new Map();
+
+  private _states: Map<string | number, S> = new Map();
 
   public get current(): S | undefined {
     return this._currentState;
   }
 
   public update(elapsedTime: number): void {
-    this._currentState && this._currentState.update(elapsedTime);
+    if (this._currentState) {
+      this._currentState.update(elapsedTime);
+    }
   }
 
   public add(states: { [key: string]: S }): void {
@@ -59,7 +62,9 @@ class StateMachine<S extends State> {
     }
 
     // Make state exit, if there is previous state.
-    this._currentState && this._currentState.onExit();
+    if (this._currentState) {
+      this._currentState.onExit();
+    }
 
     // Set next state and make new state enter.
     this._currentState = nextState;

@@ -1,11 +1,11 @@
 import firebase from "firebase/app";
 
-type UserCredential = firebase.auth.UserCredential;
-
 import { firebaseAuth } from "./index";
 
 import { getLogger } from "../logger";
 import { User, UserDocument } from "./User";
+
+type UserCredential = firebase.auth.UserCredential;
 
 const logger = getLogger("mikan/firebase/auth");
 const twitterAuthProvider = new firebase.auth.TwitterAuthProvider();
@@ -17,6 +17,40 @@ let isInitRequested = false;
 interface AuthCredentialAlreadyInUseError extends firebase.auth.Error {
   email: string;
   credential: firebase.auth.AuthCredential;
+}
+
+function throwErrorAsUndefinedRedirectOperation(
+  userCredential: UserCredential
+) {
+  const { operationType, credential, user } = userCredential;
+
+  let message = `unexpected redirect result is received.`;
+
+  if (user) {
+    message += ` user id: ${user.uid}`;
+  } else {
+    message += ` user is null`;
+  }
+
+  message += `, operationType: ${operationType}`;
+
+  if (credential) {
+    const { providerId, signInMethod } = credential;
+    message += `, providerId: ${providerId}, signInMethod: ${signInMethod}`;
+  } else {
+    message += `, credential is null`;
+  }
+
+  throw new Error(message);
+}
+
+/**
+ * Sign in to firebase auth as anonymous user.
+ *
+ * @return Promise<auth.UserCredential>
+ */
+export function signInAsAnonymous(): Promise<firebase.auth.UserCredential> {
+  return firebaseAuth.signInAnonymously();
 }
 
 /**
@@ -176,7 +210,7 @@ export function init(): Promise<UserDocument> {
  * @param forceRefresh if false, try get from local storage.
  * @return Promise<string>
  */
-export function getIdToken(forceRefresh: boolean = true): Promise<string> {
+export function getIdToken(forceRefresh = true): Promise<string> {
   const user = firebaseAuth.currentUser;
 
   if (!user) {
@@ -200,15 +234,6 @@ export function getUid(): string {
 }
 
 /**
- * Sign in to firebase auth as anonymous user.
- *
- * @return Promise<auth.UserCredential>
- */
-export function signInAsAnonymous(): Promise<firebase.auth.UserCredential> {
-  return firebaseAuth.signInAnonymously();
-}
-
-/**
  * Sign in firebase auth as Twitter User.
  *
  * @return Promise<void>
@@ -228,29 +253,4 @@ export function signInAsTwitterUser(): Promise<void> {
  */
 export function signOut(): Promise<void> {
   return firebaseAuth.signOut();
-}
-
-function throwErrorAsUndefinedRedirectOperation(
-  userCredential: UserCredential
-) {
-  const { operationType, credential, user } = userCredential;
-
-  let message = `unexpected redirect result is received.`;
-
-  if (user) {
-    message += ` user id: ${user.uid}`;
-  } else {
-    message += ` user is null`;
-  }
-
-  message += `, operationType: ${operationType}`;
-
-  if (credential) {
-    const { providerId, signInMethod } = credential;
-    message += `, providerId: ${providerId}, signInMethod: ${signInMethod}`;
-  } else {
-    message += `, credential is null`;
-  }
-
-  throw new Error(message);
 }

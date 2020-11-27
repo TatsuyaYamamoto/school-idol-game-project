@@ -21,10 +21,6 @@ export type Member =
   | "mari"
   | "ruby";
 
-export function getMemberIcon(member: Member): string {
-  return MEMBERS[member].icon;
-}
-
 export interface MemberDetail {
   icon: string;
   name: {
@@ -164,3 +160,7 @@ export const MEMBERS: { [K in Member]: MemberDetail } = {
     },
   },
 };
+
+export function getMemberIcon(member: Member): string {
+  return MEMBERS[member].icon;
+}

@@ -14,6 +14,7 @@ const eventTarget: EventTarget = document;
 /**
  * Event list
  */
+// eslint-disable-next-line
 export type Events = { [key: string]: (event: any) => void };
 
 /**
@@ -29,7 +30,9 @@ const cacheEvents: Events = {};
  * @param {string} type
  * @param {Object} detail
  */
+// eslint-disable-next-line @typescript-eslint/ban-types
 export function dispatchEvent(type: string, detail?: object): void {
+  // eslint-disable-next-line no-prototype-builtins
   if (!cacheEvents.hasOwnProperty(type)) {
     console.error("Provided event type is not defined.", type);
   }

@@ -1,11 +1,11 @@
 import firebase from "firebase/app";
 
+import { firebaseDb } from "./index";
+
 type FieldValue = firebase.firestore.FieldValue;
 type QuerySnapshot = firebase.firestore.QuerySnapshot;
 type DocumentReference = firebase.firestore.DocumentReference;
 type CollectionReference = firebase.firestore.CollectionReference;
-
-import { firebaseDb } from "./index";
 
 /**
  * @link https://github.com/firebase/firebase-js-sdk/blob/master/packages/auth/src/idp.js#L34
@@ -21,7 +21,7 @@ export interface CredentialDocument /* extends firestore.DocumentData */ {
         accessToken: string;
         secret: string;
       }
-    | {};
+    | Record<string, never> /* empty object */;
   createdAt: FieldValue | Date;
   updatedAt: FieldValue | Date;
 }

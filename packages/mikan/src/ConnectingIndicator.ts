@@ -58,17 +58,17 @@ indicator.appendChild(background);
 indicator.appendChild(text);
 document.body.appendChild(indicator);
 
-hide();
-
 /**
  * @deprecated
  */
-export function show() {
+export function show(): void {
   indicator.hidden = false;
 }
 /**
  * @deprecated
  */
-export function hide() {
+export function hide(): void {
   indicator.hidden = true;
 }
+
+hide();

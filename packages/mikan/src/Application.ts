@@ -35,18 +35,14 @@ import ViewContainer from "./ViewContainer";
  * @class
  */
 abstract class Application extends PixiApplication implements State {
-  private _stateMachine: StateMachine<ViewContainer>;
+  readonly _stateMachine: StateMachine<ViewContainer>;
 
-  constructor(options: PixiApplicationOptions) {
-    super(
-      Object.assign(
-        {
-          backgroundColor: config.rendererBackgroundColor,
-          autoStart: false,
-        },
-        options
-      )
-    );
+  protected constructor(options: PixiApplicationOptions) {
+    super({
+      backgroundColor: config.rendererBackgroundColor,
+      autoStart: false,
+      ...options,
+    });
 
     // setup tick callback function.
     this.ticker.add(() => this.update(this.ticker.elapsedMS));
@@ -85,19 +81,26 @@ abstract class Application extends PixiApplication implements State {
    * @inheritDoc
    * @override
    */
-  update(_elapsedMS: number): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  update(_elapsedMS: number): void {
+    // do nothing
+  }
 
   /**
    * @inheritDoc
    * @override
    */
-  onEnter(): void {}
+  onEnter(): void {
+    // do nothing
+  }
 
   /**
    * @inheritDoc
    * @override
    */
-  onExit(): void {}
+  onExit(): void {
+    // do nothing
+  }
 
   protected to<T>(stateTag: string, params?: T): void {
     const current = this.stateMachine.change(stateTag, params);

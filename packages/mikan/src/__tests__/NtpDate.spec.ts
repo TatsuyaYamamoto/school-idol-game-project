@@ -1,14 +1,15 @@
+import * as fetch from "jest-fetch-mock";
 import NtpDate from "../NtpDate";
 import { ErrorCode } from "../MikanError";
 
-import * as fetch from "jest-fetch-mock";
-
+// eslint-disable-next-line
 // @ts-ignore
 global.fetch = fetch;
 
 describe("NtpDate class", () => {
   it("should throw MikanError when instantiate before syncing.", () => {
     try {
+      // eslint-disable-next-line no-new
       new NtpDate();
       fail();
     } catch (e) {
@@ -26,16 +27,19 @@ describe("NtpDate class", () => {
   });
 
   it("should return adjusted current unixtime after syncing.", async () => {
+    /* eslint-disable camelcase */
     const mockInitialTime_1st = 1541592275662;
     const mockReceiveTime_1st = 1541592275820;
     const mockInitialTime_2nd = 1541592275822;
     const mockReceiveTime_2nd = 1541592275988;
+    /* eslint-enable camelcase */
 
     // Mock fetch to connect NICT NTP web api
     fetch
       .once(
         JSON.stringify({
           id: "ntp-a1.nict.go.jp",
+          /* eslint-disable-next-line camelcase */
           it: mockInitialTime_1st / 1000,
           st: 1541592277.014,
           leap: 36,
@@ -46,6 +50,7 @@ describe("NtpDate class", () => {
       .once(
         JSON.stringify({
           id: "ntp-b1.nict.go.jp",
+          /* eslint-disable-next-line camelcase */
           it: mockInitialTime_2nd / 1000,
           st: 1541592277.2,
           leap: 36,
@@ -79,10 +84,12 @@ describe("NtpDate class", () => {
   });
 
   it("faster should return adjusted current unixtime after syncing.", async () => {
+    /* eslint-disable camelcase */
     const mockInitialTime_1st = 1541638078825;
     const mockReceiveTime_1st = 1541638078973;
     const mockInitialTime_2nd = 1541638078973;
     const mockReceiveTime_2nd = 1541638079141;
+    /* eslint-disable-enable camelcase */
 
     // Mock fetch to connect NICT NTP web api
     fetch

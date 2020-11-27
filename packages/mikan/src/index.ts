@@ -93,7 +93,7 @@ export {
 } from "./Tracker";
 
 // firebase -----------------------------------------------------------------------
-export { firebaseDb, firebaseAuth, callHttpsCallable } from "./firebase";
+export { firebaseDb, firebaseAuth } from "./firebase";
 
 export {
   init as initAuth,

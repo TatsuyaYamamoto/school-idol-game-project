@@ -1,15 +1,14 @@
-import firebase from "firebase";
+import firebase from "firebase/app";
 
 import { firebaseDb } from "./index";
-import { Member } from "../model/members";
-import { Game } from "../model/games";
+import { Member, Game } from "..";
 
 export interface HighscoreDocument /* extends firestore.DocumentData */ {
   userRef: firebase.firestore.DocumentReference;
   game: Game;
   member: Member;
   point: number;
-  label: object;
+  label: Record<string, unknown> /* any object */;
   count: number;
 
   createdAt: firebase.firestore.FieldValue | Date;
@@ -18,11 +17,11 @@ export interface HighscoreDocument /* extends firestore.DocumentData */ {
 }
 
 export class Highscore {
-  public static getColRef() {
+  public static getColRef(): firebase.firestore.CollectionReference {
     return firebaseDb.collection("highscores");
   }
 
-  public static getDocRef(id: string) {
+  public static getDocRef(id: string): firebase.firestore.DocumentReference {
     return Highscore.getColRef().doc(id);
   }
 }

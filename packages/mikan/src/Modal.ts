@@ -2,6 +2,8 @@
  * @fileOverview Handle modal based on SweetAlert2.
  */
 import Swal, { SweetAlertOptions } from "sweetalert2";
+
+// eslint-disable-next-line
 const tippy = require("tippy.js");
 
 export interface Action {
@@ -22,6 +24,13 @@ export interface ModalProps {
 const baseAction = document.createElement("button");
 baseAction.classList.add("swal2-styled");
 baseAction.style.cssText = "padding: 0.4em;";
+
+/**
+ * Close modal
+ */
+export function closeModal(): void {
+  Swal.close();
+}
 
 /**
  * Open modal
@@ -73,6 +82,7 @@ export function openModal(props: ModalProps & SweetAlertOptions): void {
         tippy(`#${id}`, {
           trigger: "click",
           arrow: true,
+          // eslint-disable-next-line
           onShow(instance: any) {
             setTimeout(() => instance.hide(), 1500);
           },
@@ -91,11 +101,4 @@ export function openModal(props: ModalProps & SweetAlertOptions): void {
       });
     }
   );
-}
-
-/**
- * Close modal
- */
-export function closeModal(): void {
-  Swal.close();
 }

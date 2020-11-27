@@ -17,6 +17,13 @@ const IMAGE_BASE_DIR = "assets/image/";
 const SOUND_BASE_DIR = "assets/sound/";
 
 /**
+ * Texture and Sound resource interface loaded with PIXI Loader.
+ */
+export interface Asset extends loaders.Resource {
+  sound: Sound;
+}
+
+/**
  * Cache space of loaded resources.
  *
  * @type {any}
@@ -27,17 +34,11 @@ const assetsCache: {
 } = Object.create(null);
 
 /**
- * Texture and Sound resource interface loaded with PIXI Loader.
- */
-export interface Asset extends loaders.Resource {
-  sound: Sound;
-}
-
-/**
  * Image manifest interface that the loader requires.
  */
 export interface ImageManifest {
   [language: string]: {
+    // eslint-disable-next-line
     [key: number]: any;
   };
 }
@@ -46,6 +47,7 @@ export interface ImageManifest {
  * Sound manifest interface that the loader requires.
  */
 export interface SoundManifest {
+  // eslint-disable-next-line
   [key: string]: any;
 }
 
@@ -57,6 +59,7 @@ class AssetLoader extends loaders.Loader {
   constructor() {
     super();
     // TODO check spec
+    // eslint-disable-next-line
     // @ts-ignore
     this.on("complete", this.setAssets);
   }
@@ -68,11 +71,10 @@ class AssetLoader extends loaders.Loader {
    */
   public setImageManifest(imageManifest: ImageManifest): void {
     // Concat manifests with base and current language.
-    const targetManifest: ImageManifest = Object.assign(
-      {},
-      imageManifest[config.defaultLanguage],
-      imageManifest[getCurrentLanguage()]
-    );
+    const targetManifest: ImageManifest = {
+      ...imageManifest[config.defaultLanguage],
+      ...imageManifest[getCurrentLanguage()],
+    };
 
     // add each asset info to loader.
     const assetIds = Object.keys(targetManifest);
@@ -135,10 +137,10 @@ export function loadTexture(id: string | number): Texture {
  */
 export function loadFrames(id: string | number): Texture[] {
   const cache = assetsCache[`image@${id}`];
-  const textures = cache.textures;
+  const { textures } = cache;
 
   if (!textures) {
-    throw new Error("Fail to load cached assets. ID: " + id);
+    throw new Error(`Fail to load cached assets. ID: ${id}`);
   }
 
   return Object.keys(textures).map((textureKey) => {

@@ -1,9 +1,10 @@
 import firebase from "firebase/app";
-type CollectionReference = firebase.firestore.CollectionReference;
-type FieldValue = firebase.firestore.FieldValue;
 
 import { firebaseDb } from "./index";
-import { Member } from "../model/members";
+import { Member } from "..";
+
+type CollectionReference = firebase.firestore.CollectionReference;
+type FieldValue = firebase.firestore.FieldValue;
 
 export interface RankItemDocument /* extends firestore.DocumentData */ {
   uid: string;
@@ -21,11 +22,11 @@ export interface RankingDocument /* extends firestore.DocumentData */ {
 }
 
 export class Ranking {
-  public static getColRef() {
+  public static getColRef(): firebase.firestore.CollectionReference {
     return firebaseDb.collection("ranking");
   }
 
-  public static getDocRef(id: string) {
+  public static getDocRef(id: string): firebase.firestore.DocumentReference {
     return Ranking.getColRef().doc(id);
   }
 }

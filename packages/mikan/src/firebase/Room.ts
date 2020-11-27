@@ -1,11 +1,12 @@
 import firebase from "firebase/app";
-type DocumentReference = firebase.firestore.DocumentReference;
-type FieldValue = firebase.firestore.FieldValue;
 
 import { firebaseDb } from "./index";
 import { Presence } from "./Presence";
-import { Game } from "../model/games";
+import { Game } from "..";
 import MikanError, { ErrorCode } from "../MikanError";
+
+type DocumentReference = firebase.firestore.DocumentReference;
+type FieldValue = firebase.firestore.FieldValue;
 
 const ROOM_LIFETIEM = 1; // 1day
 
@@ -28,6 +29,7 @@ export interface RoomDocument /* extends firestore.DocumentData */ {
 }
 
 export class Room implements RoomDocument {
+  // eslint-disable-next-line no-useless-constructor
   public constructor(
     readonly name: RoomName,
     readonly userPresenceRefs: {
@@ -41,7 +43,7 @@ export class Room implements RoomDocument {
     readonly expiredAt: FieldValue | Date
   ) {}
 
-  /****************************************************************
+  /** **************************************************************
    * members
    */
   public get memberIds(): string[] {
@@ -56,7 +58,7 @@ export class Room implements RoomDocument {
     return this.memberCount === this.maxUserCount;
   }
 
-  /****************************************************************
+  /** **************************************************************
    * methods
    */
   public static fromData(snapshotData: RoomDocument): Room {
@@ -72,11 +74,11 @@ export class Room implements RoomDocument {
     );
   }
 
-  public static getColRef() {
+  public static getColRef(): firebase.firestore.CollectionReference {
     return firebaseDb.collection("rooms");
   }
 
-  public static getDocRef(id: string) {
+  public static getDocRef(id: string): firebase.firestore.DocumentReference {
     return Room.getColRef().doc(id);
   }
 
@@ -172,12 +174,11 @@ export class Room implements RoomDocument {
         doc: updatedRoomDoc,
         ref: roomRef,
       };
-    } else {
-      return null;
     }
+    return null;
   }
 
-  public async leave(leaveUserId: string) {
+  public async leave(leaveUserId: string): Promise<void> {
     const snapshot = await Room.getColRef()
       .where("name", "==", this.name)
       .get();
@@ -212,6 +213,7 @@ export class Room implements RoomDocument {
 
       transaction.update(roomRef, newRoomDoc);
 
+      // eslint-disable-next-line
       return roomDoc;
     });
   }

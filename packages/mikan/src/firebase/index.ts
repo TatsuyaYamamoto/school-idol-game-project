@@ -16,7 +16,3 @@ firebaseDb.settings({
   // it's now enabled by v5.8 or later
   // timestampsInSnapshots: true
 });
-
-export function callHttpsCallable(name: string, data: any): Promise<any> {
-  return firebase.functions().httpsCallable(name)(data);
-}

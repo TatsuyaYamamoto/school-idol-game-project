@@ -24,48 +24,14 @@ import config from "./config";
 let i18n: i18next.i18n | null = null;
 
 /**
- * Initialize i18next module.
+ * Return true if targetLanguage is prop that {@link supportedLanguages} has.
  *
- * @param {i18next.InitOptions} options
- * @param {i18next.Callback} callback
+ * @param {string} targetLanguage
+ * @returns {boolean}
+ * @private
  */
-export function initI18n(
-  options?: i18next.InitOptions,
-  callback?: i18next.Callback
-): void {
-  const opts = Object.assign(
-    {},
-    {
-      fallbackLng: config.defaultLanguage,
-      debug: false,
-    },
-    options
-  );
-
-  i18n = i18next.use(Detector).init(opts, callback);
-
-  const detectedLang = i18n.language.substr(0, 2); // extract language string only.
-  changeLanguage(detectedLang);
-}
-
-/**
- * Get message resource with provide key.
- *
- * @param key
- * @param options
- * @return {string}
- * @see i18n#t
- */
-// tslint:disable-next-line:function-name
-export function t(
-  key: string | string[],
-  options?: { [key: string]: any }
-): string {
-  if (!i18n) {
-    throw new Error("i18n module is not initialized.");
-  }
-
-  return i18n.t(key, options);
+function isDefinedLanguage(targetLanguage: string): boolean {
+  return config.supportedLanguages.some((l) => l === targetLanguage);
 }
 
 /**
@@ -91,6 +57,49 @@ export function changeLanguage(
 }
 
 /**
+ * Initialize i18next module.
+ *
+ * @param {i18next.InitOptions} options
+ * @param {i18next.Callback} callback
+ */
+export function initI18n(
+  options?: i18next.InitOptions,
+  callback?: i18next.Callback
+): void {
+  const opts = {
+    fallbackLng: config.defaultLanguage,
+    debug: false,
+    ...options,
+  };
+
+  i18n = i18next.use(Detector).init(opts, callback);
+
+  const detectedLang = i18n.language.substr(0, 2); // extract language string only.
+  changeLanguage(detectedLang);
+}
+
+/**
+ * Get message resource with provide key.
+ *
+ * @param key
+ * @param options
+ * @return {string}
+ * @see i18n#t
+ */
+// tslint:disable-next-line:function-name
+export function t(
+  key: string | string[],
+  // eslint-disable-next-line
+  options?: { [key: string]: any }
+): string {
+  if (!i18n) {
+    throw new Error("i18n module is not initialized.");
+  }
+
+  return i18n.t(key, options);
+}
+
+/**
  * Return the current detected or set language.
  *
  * @see i18n#language
@@ -106,15 +115,4 @@ export function getCurrentLanguage(): string {
   const lang = i18n.language.substr(0, 2);
 
   return isDefinedLanguage(lang) ? lang : config.defaultLanguage;
-}
-
-/**
- * Return true if targetLanguage is prop that {@link supportedLanguages} has.
- *
- * @param {string} targetLanguage
- * @returns {boolean}
- * @private
- */
-function isDefinedLanguage(targetLanguage: string): boolean {
-  return config.supportedLanguages.some((l) => l === targetLanguage);
 }

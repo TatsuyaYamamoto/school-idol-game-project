@@ -1,12 +1,13 @@
 import firebase from "firebase/app";
-type FieldValue = firebase.firestore.FieldValue;
-type Timestamp = firebase.firestore.Timestamp;
-type DocumentReference = firebase.firestore.DocumentReference;
-type CollectionReference = firebase.firestore.CollectionReference;
 
 import { firebaseDb } from "./index";
 import { User } from "./User";
 import MikanError, { ErrorCode } from "../MikanError";
+
+type FieldValue = firebase.firestore.FieldValue;
+type Timestamp = firebase.firestore.Timestamp;
+type DocumentReference = firebase.firestore.DocumentReference;
+type CollectionReference = firebase.firestore.CollectionReference;
 
 /**
  * Schema for Realtime Database
@@ -18,6 +19,7 @@ export interface PresenceDbJson {
   uid: string;
   online: true;
   userAgent: string;
+  // eslint-disable-next-line
   createdAt: /* read */ number | /* write */ Object;
 }
 
@@ -31,6 +33,7 @@ export class Presence {
   private static _id: string | null = null;
 
   public static get id(): string {
+    // eslint-disable-next-line
     if (!Presence._id) {
       throw new MikanError(
         ErrorCode.FIREBASE_NO_PRESENCE,
@@ -38,6 +41,7 @@ export class Presence {
       );
     }
 
+    // eslint-disable-next-line
     return Presence._id;
   }
 
@@ -75,7 +79,7 @@ export class Presence {
 
     // stores the timestamp of my last disconnect (the last time I was seen online)
 
-    infoConnectedRef.on("value", async function (snapshot) {
+    infoConnectedRef.on("value", async (snapshot) => {
       if (snapshot && snapshot.val() === true) {
         // We're connected (or reconnected)! Do anything here that should happen only if online (or on reconnect)
         // var con = ownPresenceRef.push();
@@ -95,6 +99,9 @@ export class Presence {
       throw new Error("fail to issue new presence ID.");
     }
 
-    return (Presence._id = newPresenceId);
+    // eslint-disable-next-line
+    Presence._id = newPresenceId;
+
+    return newPresenceId;
   }
 }

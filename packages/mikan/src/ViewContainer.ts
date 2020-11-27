@@ -14,18 +14,21 @@ import StateMachine from "./StateMachine";
  * @class
  */
 abstract class ViewContainer extends Container implements State {
-  private _stateMachine: StateMachine<ViewContainer>;
+  readonly _stateMachine: StateMachine<ViewContainer>;
 
-  private _backGroundLayer: Container;
-  private _applicationLayer: Container;
-  private _informationLayer: Container;
+  readonly _backGroundLayer: Container;
 
-  private _viewWidth: number;
-  private _viewHeight: number;
+  readonly _applicationLayer: Container;
 
-  private _elapsedTimeMillis: number = 0;
+  readonly _informationLayer: Container;
 
-  constructor() {
+  readonly _viewWidth: number;
+
+  readonly _viewHeight: number;
+
+  private _elapsedTimeMillis = 0;
+
+  protected constructor() {
     super();
 
     this._stateMachine = new StateMachine<ViewContainer>();
@@ -97,7 +100,9 @@ abstract class ViewContainer extends Container implements State {
   onExit(): void | Deliverable {
     console.log(`${this.constructor.name}@onExit`);
 
-    this.stateMachine.current && this.stateMachine.current.onExit();
+    if (this.stateMachine.current) {
+      this.stateMachine.current.onExit();
+    }
 
     this.backGroundLayer.removeChildren();
     this.applicationLayer.removeChildren();
@@ -111,7 +116,7 @@ abstract class ViewContainer extends Container implements State {
    * @param {(ev: WindowEventMap[K]) => any} listener
    */
   protected addClickWindowEventListener(
-    listener: (this: Window, ev: WindowEventMap["touchstart" | "click"]) => any
+    listener: (this: Window, ev: WindowEventMap["touchstart" | "click"]) => void
   ): void {
     const type = isSupportTouchEvent() ? "touchstart" : "click";
 

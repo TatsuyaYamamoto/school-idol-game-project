@@ -127,7 +127,7 @@ export function timeout(ms: number): Promise<void> {
   });
 }
 
-export function vibrate(patternMillis: number | number[]) {
+export function vibrate(patternMillis: number | number[]): void {
   if (!navigator.vibrate) {
     console.warn("Vibrate API is not supporting.");
     return;
@@ -143,59 +143,27 @@ export function vibrate(patternMillis: number | number[]) {
 export function getCurrentUrl(
   option: { path: boolean; hash: boolean } = { path: true, hash: true }
 ): string {
-  const protocol = location.protocol;
-  const host = location.hostname;
-  const path = option.path ? location.pathname : "";
-  const hash = option.hash ? location.hash : "";
+  const { protocol } = window.location;
+  const host = window.location.hostname;
+  const path = option.path ? window.location.pathname : "";
+  const hash = option.hash ? window.location.hash : "";
   const port =
-    !location.port || location.port === "80" ? `` : `:${location.port}`;
+    !window.location.port || window.location.port === "80"
+      ? ``
+      : `:${window.location.port}`;
 
-  return protocol + "//" + host + port + path + hash;
+  return `${protocol}//${host}${port}${path}${hash}`;
 }
 
-/**
- * @see https://dev.twitter.com/web/tweet-button/web-intent
- * @see https://ga-dev-tools.appspot.com/campaign-url-builder/
- */
-export interface WebIntentParams {
-  text?: string;
-  url?: string;
-  hashtags?: string[];
-  via?: string;
-}
-
-const TWITTER_INTENT_ENDPOINT = "https://twitter.com/intent/tweet";
-
-/**
- * @see https://dev.twitter.com/web/tweet-button/web-intent
- */
-export async function tweetByWebIntent(
-  params: WebIntentParams & { mediaData?: string }
-) {
-  const queries: string[] = [];
-
-  if (!!params.hashtags) {
-    queries.push(`hashtags=${encodeURIComponent(params.hashtags.join(","))}`);
-  }
-  if (!!params.text) {
-    if (params.mediaData) {
-      const { mediaUrl } = await uploadImageToTwitter(params.mediaData);
-      queries.push(`text=${encodeURIComponent(params.text)} ${mediaUrl}`);
-    } else {
-      queries.push(`text=${encodeURIComponent(params.text)}`);
-    }
-  }
-  if (!!params.url) {
-    queries.push(`url=${encodeURIComponent(params.url)}`);
-  }
-  if (!!params.via) {
-    queries.push(`via=${encodeURIComponent(params.via)}`);
-  }
-
-  const url = `${TWITTER_INTENT_ENDPOINT}?${queries.join("&")}`;
-
-  openExternalSite(url);
-}
+const uploadImageToTwitter = (mediaData: string) => {
+  return fetch(`https://api.sokontokoro-factory.net/twitter/media/upload`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ mediaData }),
+  }).then((res) => res.json());
+};
 
 /**
  * Open provided URL with new window.
@@ -204,7 +172,7 @@ export async function tweetByWebIntent(
  * @param popup
  * @param url
  */
-export function openExternalSite(url: string, popup: boolean = true) {
+export function openExternalSite(url: string, popup = true): void {
   logger.debug(`open external site; ${url}`);
 
   if (!popup) {
@@ -227,20 +195,54 @@ export function openExternalSite(url: string, popup: boolean = true) {
   }, 500);
 }
 
-export function convertYyyyMmDd(date: Date) {
+/**
+ * @see https://dev.twitter.com/web/tweet-button/web-intent
+ * @see https://ga-dev-tools.appspot.com/campaign-url-builder/
+ */
+export interface WebIntentParams {
+  text?: string;
+  url?: string;
+  hashtags?: string[];
+  via?: string;
+}
+
+const TWITTER_INTENT_ENDPOINT = "https://twitter.com/intent/tweet";
+
+/**
+ * @see https://dev.twitter.com/web/tweet-button/web-intent
+ */
+export async function tweetByWebIntent(
+  params: WebIntentParams & { mediaData?: string }
+): Promise<void> {
+  const queries: string[] = [];
+
+  if (params.hashtags) {
+    queries.push(`hashtags=${encodeURIComponent(params.hashtags.join(","))}`);
+  }
+  if (params.text) {
+    if (params.mediaData) {
+      const { mediaUrl } = await uploadImageToTwitter(params.mediaData);
+      queries.push(`text=${encodeURIComponent(params.text)} ${mediaUrl}`);
+    } else {
+      queries.push(`text=${encodeURIComponent(params.text)}`);
+    }
+  }
+  if (params.url) {
+    queries.push(`url=${encodeURIComponent(params.url)}`);
+  }
+  if (params.via) {
+    queries.push(`via=${encodeURIComponent(params.via)}`);
+  }
+
+  const url = `${TWITTER_INTENT_ENDPOINT}?${queries.join("&")}`;
+
+  openExternalSite(url);
+}
+
+export function convertYyyyMmDd(date: Date): string {
   const yyyy = date.getFullYear();
-  const mm = ("00" + (date.getMonth() + 1)).slice(-2);
-  const dd = ("00" + date.getDate()).slice(-2);
+  const mm = `00${date.getMonth() + 1}`.slice(-2);
+  const dd = `00${date.getDate()}`.slice(-2);
 
   return `${yyyy}${mm}${dd}`;
 }
-
-const uploadImageToTwitter = (mediaData: string) => {
-  return fetch(`https://api.sokontokoro-factory.net/twitter/media/upload`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ mediaData }),
-  }).then((res) => res.json());
-};

@@ -1,12 +1,3 @@
-export function getRandomRoomName(suffix: number = 0) {
-  const min = 0;
-  const max = candidates.length - 1;
-  const index = Math.floor(Math.random() * (max + 1 - min)) + min;
-
-  const prefix = candidates[index];
-  return `${prefix}-${suffix}`;
-}
-
 const candidates = [
   // honoka
   "take",
@@ -62,3 +53,12 @@ const candidates = [
   // ruby
   "shinkai",
 ];
+
+export function getRandomRoomName(suffix = 0): string {
+  const min = 0;
+  const max = candidates.length - 1;
+  const index = Math.floor(Math.random() * (max + 1 - min)) + min;
+
+  const prefix = candidates[index];
+  return `${prefix}-${suffix}`;
+}

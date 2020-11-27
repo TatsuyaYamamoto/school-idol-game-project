@@ -19,19 +19,22 @@
  * init tracker module
  *
  * @param uid
- * @param firstPath
  */
-export function init(uid?: string) {
-  const trackingCode = (<any>window)["__TRACKING_CODE__"];
+export function init(uid?: string): void {
+  // eslint-disable-next-line
+  const trackingCode = (<any>window).__TRACKING_CODE__;
 
+  // eslint-disable-next-line
   // @ts-ignore
   gtag("js", new Date());
 
   if (uid) {
+    // eslint-disable-next-line
     // @ts-ignore
     gtag("set", { user_id: uid });
   }
 
+  // eslint-disable-next-line
   // @ts-ignore
   gtag("config", trackingCode, { send_page_view: false });
 }
@@ -42,10 +45,13 @@ export function init(uid?: string) {
  * @param pagePath
  * @link https://developers.google.com/analytics/devguides/collection/gtagjs/pages?hl=ja
  */
-export function tracePage(pagePath?: string) {
-  const trackingCode = (<any>window)["__TRACKING_CODE__"];
+export function tracePage(pagePath?: string): void {
+  // eslint-disable-next-line
+  const trackingCode = (<any>window).__TRACKING_CODE__;
+  // eslint-disable-next-line
   const page_path = pagePath || location.pathname + location.hash;
 
+  // eslint-disable-next-line
   // @ts-ignore
   gtag("config", trackingCode, {
     page_title: document.title,
@@ -68,7 +74,7 @@ export function trackEvent(
     label,
     value,
   }: { category?: string; label?: string; value?: number }
-) {
+): void {
   const params: { [key: string]: string | number } = {};
   if (category) {
     params.event_category = category;
@@ -80,6 +86,7 @@ export function trackEvent(
     params.value = value;
   }
 
+  // eslint-disable-next-line
   // @ts-ignore
   gtag("event", action, params);
 }
@@ -98,7 +105,8 @@ export function trackTiming(
     category?: string | "assets";
     label?: string;
   } = {}
-) {
+): void {
+  // eslint-disable-next-line
   // @ts-ignore
   gtag("event", "timing_complete", {
     name,

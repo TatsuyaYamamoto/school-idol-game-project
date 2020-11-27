@@ -7,7 +7,7 @@ import PixiSound from "pixi-sound";
 
 import { loadSound } from "./AssetLoader";
 
-export function play(soundId: string | number, volume?: number) {
+export function play(soundId: string | number, volume?: number): void {
   const sound = loadSound(soundId);
   const v = sound.volume;
   const completed = () => {
@@ -21,7 +21,7 @@ export function play(soundId: string | number, volume?: number) {
   sound.play(completed);
 }
 
-export function playOnLoop(soundId: string | number, volume?: number) {
+export function playOnLoop(soundId: string | number, volume?: number): void {
   const sound = loadSound(soundId);
   const v = sound.volume;
   const completed = () => {
@@ -35,7 +35,7 @@ export function playOnLoop(soundId: string | number, volume?: number) {
   sound.play({ loop: true }, completed);
 }
 
-export function stop(soundId: string | number) {
+export function stop(soundId: string | number): void {
   loadSound(soundId).stop();
 }
 

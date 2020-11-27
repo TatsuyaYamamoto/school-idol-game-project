@@ -1,18 +1,19 @@
 import firebase from "firebase/app";
 
+// eslint-disable-next-line
+import { Twitter } from "twit";
+
+import { firebaseAuth, firebaseDb } from "./index";
+import { Credential, CredentialDocument } from "./Credential";
+import { getRandomAnonymousName } from "..";
+
 type FirebaseUser = firebase.User;
 type FieldValue = firebase.firestore.FieldValue;
 type UserCredential = firebase.auth.UserCredential;
 type DocumentReference = firebase.firestore.DocumentReference;
 type AdditionalUserInfo = firebase.auth.AdditionalUserInfo;
 type AuthCredential = firebase.auth.AuthCredential;
-
-import { Twitter } from "twit";
 import TwitterUser = Twitter.User;
-
-import { firebaseAuth, firebaseDb } from "./index";
-import { Credential, CredentialDocument } from "./Credential";
-import { getRandomAnonymousName } from "../model/anonymous";
 
 export interface ProviderData {
   /**
@@ -59,11 +60,11 @@ export interface UserDocument /* extends firestore.DocumentData */ {
 }
 
 export class User {
-  public static getColRef() {
+  public static getColRef(): firebase.firestore.CollectionReference {
     return firebaseDb.collection("users");
   }
 
-  public static getDocRef(id: string) {
+  public static getDocRef(id: string): firebase.firestore.DocumentReference {
     return User.getColRef().doc(id);
   }
 
@@ -144,7 +145,9 @@ export class User {
       // create batch of creation or updating credential
       const newCredentialDoc: Partial<CredentialDocument> = {
         data: {
+          // eslint-disable-next-line
           accessToken: (<any>credential).accessToken,
+          // eslint-disable-next-line
           secret: (<any>credential).secret,
         },
         updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -183,6 +186,7 @@ export class User {
       }
 
       if (userDoc.debug) {
+        // eslint-disable-next-line
         userDoc.debug = firebase.firestore.FieldValue.delete() as any;
       }
 

@@ -5,17 +5,19 @@ log.setLevel(log.levels.DEBUG);
 /**
  * Overwrite output message format.
  */
-(function () {
+(() => {
   // save original.
   const originalFactory = log.methodFactory;
 
   // overwrite logging method.
+  // eslint-disable-next-line
   // @ts-ignore
-  log.methodFactory = function (methodName, logLevel, loggerName) {
+  log.methodFactory = (methodName, logLevel, loggerName) => {
     const rawMethod = originalFactory(methodName, logLevel, loggerName);
 
     // received params according to `console.log()` style.
-    return function (message?: any, ...optionalParams: any[]) {
+    // eslint-disable-next-line
+    return (message?: any, ...optionalParams: any[]) => {
       const customMessage = `${methodName.toUpperCase()} [${loggerName}] ${message}`;
 
       const args = [customMessage];
@@ -28,6 +30,6 @@ log.setLevel(log.levels.DEBUG);
   };
 })();
 
-export function getLogger(loggerName: string) {
+export function getLogger(loggerName: string): log.Logger {
   return log.getLogger(loggerName);
 }

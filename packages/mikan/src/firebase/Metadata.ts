@@ -1,4 +1,5 @@
-import firebase from "firebase";
+import firebase from "firebase/app";
+
 type DocumentReference = firebase.firestore.DocumentReference;
 
 export interface MetadataDocument /* extends firestore.DocumentData */ {

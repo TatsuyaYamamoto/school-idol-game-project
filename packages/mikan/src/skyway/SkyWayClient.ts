@@ -1,6 +1,4 @@
 import firebase from "firebase/app";
-type Unsubscribe = firebase.Unsubscribe;
-type DocumentSnapshot = firebase.firestore.DocumentSnapshot;
 
 import AutoBind from "autobind-decorator";
 import { EventEmitter } from "eventemitter3";
@@ -10,7 +8,6 @@ import Credential from "./Credential";
 import Data, { Message } from "./Data";
 
 import {
-  callHttpsCallable,
   ErrorCode,
   Game,
   MikanError,
@@ -18,18 +15,24 @@ import {
   RoomDocument,
   RoomName,
   User,
+  mean,
 } from "..";
-import { mean } from "../util/Calculation";
 import { getLogger } from "../logger";
 import { getRandomRoomName } from "../model/roomNames";
 import NtpDate from "../NtpDate";
 import LimitedArray from "../util/LimitedArray";
 
+type Unsubscribe = firebase.Unsubscribe;
+type DocumentSnapshot = firebase.firestore.DocumentSnapshot;
+
+// eslint-disable-next-line
 const Peer = require("skyway-js");
 
 const logger = getLogger("skyway:client");
 
+// eslint-disable-next-line
 export type Peer = any;
+// eslint-disable-next-line
 export type Connection = any;
 export type PeerID = string;
 
@@ -39,18 +42,21 @@ export interface SkyWayClientConstructorParams {
   credential: Credential;
 }
 
+// eslint-disable-next-line
 export type MediaConnection = any;
 
 /**
  * @see https://webrtc.ecl.ntt.com/skyway-js-sdk-doc/ja/dataconnection/
  */
 export interface DataConnection {
-  readonly metadata: object;
+  readonly metadata: Record<string, unknown>;
   readonly open: boolean;
   readonly remoteId: string;
 
+  // eslint-disable-next-line
   send(data: any): void;
   close(): void;
+  // eslint-disable-next-line
   on(type: string, callback: (params: any) => void): void;
   removeAllListeners(type?: string): void;
 }
@@ -66,10 +72,14 @@ const PING_COUNT_FOR_AVERAGE = 5;
 @AutoBind
 class SkyWayClient extends EventEmitter {
   private _peer: Peer;
+
   private _destinations: Map<PeerID, Destination> = new Map();
+
   private _currentRoom: Room | null = null;
+
   private _unsubscribeRoomSnapshot: Unsubscribe | null = null;
-  private _isRoomOwner: boolean = false;
+
+  private _isRoomOwner = false;
 
   /**
    * Constructor
@@ -83,6 +93,7 @@ class SkyWayClient extends EventEmitter {
       key: params.apiKey,
       debug: 2,
       credential: params.credential,
+      // eslint-disable-next-line
       logFunction: (args: any) => logger.debug(args),
     };
 
@@ -96,7 +107,7 @@ class SkyWayClient extends EventEmitter {
     this._peer.on("error", this.onPeerError);
   }
 
-  /*****************************************************************************
+  /** ***************************************************************************
    * Members
    */
 
@@ -142,18 +153,18 @@ class SkyWayClient extends EventEmitter {
     return this._currentRoom;
   }
 
-  /*****************************************************************************
+  /** ***************************************************************************
    * Methods
    */
-  public isListeningTo(eventName: string | SkyWayEvents | RoomEvents) {
-    return 0 < this.listeners(eventName).length;
+  public isListeningTo(eventName: string | SkyWayEvents | RoomEvents): boolean {
+    return this.listeners(eventName).length > 0;
   }
 
   public static async createClient(apiKey: string): Promise<SkyWayClient> {
     await NtpDate.sync();
 
     const ownUserId = User.getOwnRef().id;
-    const result = await callHttpsCallable("p2pCredential", {
+    const result = await firebase.functions().httpsCallable("p2pCredential")({
       peerId: ownUserId,
     });
 
@@ -176,7 +187,7 @@ class SkyWayClient extends EventEmitter {
    */
   public async createRoom(
     game: Game,
-    maxMemberCount: number = 2
+    maxMemberCount = 2
   ): Promise<RoomDocument> {
     if (this.room) {
       throw new MikanError(
@@ -189,7 +200,8 @@ class SkyWayClient extends EventEmitter {
     let suffix = 0;
     do {
       roomName = getRandomRoomName(suffix);
-      suffix++;
+      suffix += 1;
+      // eslint-disable-next-line
     } while (await Room.duplicateName(roomName));
 
     const { doc, ref } = await Room.create(
@@ -224,6 +236,7 @@ class SkyWayClient extends EventEmitter {
     this._unsubscribeRoomSnapshot = ref.onSnapshot(this.onRoomSnapshotUpdated);
     this._currentRoom = Room.fromData(doc);
 
+    // eslint-disable-next-line
     for (const remoteId of this._currentRoom.memberIds.filter(
       (id) => id !== ownUserId
     )) {
@@ -237,7 +250,7 @@ class SkyWayClient extends EventEmitter {
   /**
    *
    */
-  public async leaveRoom() {
+  public async leaveRoom(): Promise<void> {
     const userId = User.getOwnRef().id;
 
     // remove current room.
@@ -269,7 +282,9 @@ class SkyWayClient extends EventEmitter {
     this._destinations.clear();
   }
 
-  public async lockRoom() {}
+  public async lockRoom(): Promise<void> {
+    // do nothing
+  }
 
   /**
    * send {@code message}. if peerId is not provided, try broadcast.
@@ -277,7 +292,7 @@ class SkyWayClient extends EventEmitter {
    * @param message
    * @param peerId
    */
-  public send(message: Message, peerId?: PeerID) {
+  public send(message: Message, peerId?: PeerID): void {
     if (!peerId) {
       const data: Data = { message, timestamp: NtpDate.now() };
 
@@ -315,15 +330,15 @@ class SkyWayClient extends EventEmitter {
    *
    */
   public trySyncStartTime(): Promise<number> {
-    const OFFSET = 4 * 1000; //[ms]
+    const OFFSET = 4 * 1000; // [ms]
     const PROPOSAL_LIFETIME = 2 * 1000; // [ms]
     enum MessageType {
       PROPOSAL = "sync-start/proposal",
       ACCEPTANCE = "sync-start/acceptance",
       DECISION = "sync-start/decision",
     }
-    const isFirstSignalSender = !!this.isRoomOwner;
-    const acceptanceMap = new Map<string /*peerId*/, boolean>();
+    const isFirstSignalSender = this.isRoomOwner;
+    const acceptanceMap = new Map<string /* peerId */, boolean>();
     const remotePeerCount = this._destinations.size;
     let isResolved = false;
     let currentProposalId = "__dummy__";
@@ -332,6 +347,7 @@ class SkyWayClient extends EventEmitter {
 
     interface TrySyncData {
       type: MessageType;
+      // eslint-disable-next-line
       detail: any;
     }
 
@@ -345,12 +361,27 @@ class SkyWayClient extends EventEmitter {
         logger.debug(`sync start time is resolved.`, time);
 
         if (isFirstSignalSender) {
+          // eslint-disable-next-line
           this.off(SkyWayEvents.DATA, onFirstSignalSenderDataReceived);
         } else {
+          // eslint-disable-next-line
           this.off(SkyWayEvents.DATA, onReceiverDataReceived);
         }
 
         resolve(currentProposalStartTime);
+      };
+
+      /**
+       * Proposalがexpireした
+       */
+      const onExpireProposal = () => {
+        if (!isResolved) {
+          logger.debug(
+            `proposal expired. try to propose again. proposalId: ${currentProposalId}`
+          );
+          // eslint-disable-next-line
+          sendProposal();
+        }
       };
 
       /**
@@ -381,6 +412,24 @@ class SkyWayClient extends EventEmitter {
       };
 
       /**
+       * Acceptanceを送信する
+       *
+       * @param proposalId
+       */
+      const sendAcceptance = (proposalId: string) => {
+        const message = {
+          type: MessageType.ACCEPTANCE,
+          detail: {
+            proposalId,
+          },
+        };
+
+        this.send(message);
+
+        logger.debug(`accept sync proposal. proposalId: ${currentProposalId}`);
+      };
+
+      /**
        * Proposalを受信した
        *
        * @param proposalId
@@ -398,33 +447,19 @@ class SkyWayClient extends EventEmitter {
       };
 
       /**
-       * Proposalがexpireした
+       * Decisionを送信する
        */
-      const onExpireProposal = () => {
-        if (!isResolved) {
-          logger.debug(
-            `proposal expired. try to propose again. proposalId: ${currentProposalId}`
-          );
-          sendProposal();
-        }
-      };
-
-      /**
-       * Acceptanceを送信する
-       *
-       * @param proposalId
-       */
-      const sendAcceptance = (proposalId: string) => {
+      const sendDecision = () => {
         const message = {
-          type: MessageType.ACCEPTANCE,
-          detail: {
-            proposalId,
-          },
+          type: MessageType.DECISION,
+          detail: {},
         };
 
         this.send(message);
 
-        logger.debug(`accept sync proposal. proposalId: ${currentProposalId}`);
+        logger.debug(
+          `send decision of start time of sync proposal. proposalId: ${currentProposalId}`
+        );
       };
 
       /**
@@ -460,22 +495,6 @@ class SkyWayClient extends EventEmitter {
             resolveSync();
           }
         }
-      };
-
-      /**
-       * Decisionを送信する
-       */
-      const sendDecision = () => {
-        const message = {
-          type: MessageType.DECISION,
-          detail: {},
-        };
-
-        this.send(message);
-
-        logger.debug(
-          `send decision of start time of sync proposal. proposalId: ${currentProposalId}`
-        );
       };
 
       /**
@@ -545,7 +564,7 @@ class SkyWayClient extends EventEmitter {
     });
   }
 
-  /*****************************************************************************
+  /** ***************************************************************************
    * Events
    */
   /**
@@ -554,8 +573,8 @@ class SkyWayClient extends EventEmitter {
    * @see https://webrtc.ecl.ntt.com/skyway-js-sdk-doc/ja/peer/#open
    * @param peerId
    */
-  protected onPeerOpened(peerId: PeerID) {
-    logger.debug("peer opened. ID: " + peerId);
+  protected onPeerOpened(peerId: PeerID): void {
+    logger.debug(`peer opened. ID: ${peerId}`);
 
     this.emit(SkyWayEvents.PEER_OPEN, peerId);
   }
@@ -566,7 +585,7 @@ class SkyWayClient extends EventEmitter {
    * @see https://webrtc.ecl.ntt.com/skyway-js-sdk-doc/ja/peer/#call_1
    * @param mediaConnection
    */
-  protected onPeerCalled(mediaConnection: MediaConnection) {
+  protected onPeerCalled(mediaConnection: MediaConnection): void {
     this.emit(SkyWayEvents.PEER_CALL, mediaConnection);
   }
 
@@ -575,7 +594,7 @@ class SkyWayClient extends EventEmitter {
    *
    * @see https://webrtc.ecl.ntt.com/skyway-js-sdk-doc/ja/peer/#close
    */
-  protected onPeerClosed() {
+  protected onPeerClosed(): void {
     this.emit(SkyWayEvents.PEER_CLOSE);
   }
 
@@ -589,7 +608,7 @@ class SkyWayClient extends EventEmitter {
    * @see SkyWayClient#onDataConnectionOpened
    * @param dataConnection
    */
-  protected onDataConnectionReceived(dataConnection: DataConnection) {
+  protected onDataConnectionReceived(dataConnection: DataConnection): void {
     logger.debug(
       "received new data connection instance.",
       dataConnection.remoteId
@@ -608,7 +627,7 @@ class SkyWayClient extends EventEmitter {
    * @see https://webrtc.ecl.ntt.com/skyway-js-sdk-doc/ja/peer/#disconnected
    * @param peerId
    */
-  protected onPeerDisconnected(peerId: PeerID) {
+  protected onPeerDisconnected(peerId: PeerID): void {
     const destination = this._destinations.get(peerId);
 
     if (!destination) {
@@ -627,7 +646,7 @@ class SkyWayClient extends EventEmitter {
    * @see https://webrtc.ecl.ntt.com/skyway-js-sdk-doc/ja/peer/#expiresin
    * @param timeLeft
    */
-  protected onCredentialExpiresIn(timeLeft: number) {
+  protected onCredentialExpiresIn(timeLeft: number): void {
     this.emit(SkyWayEvents.CREDENTIAL_EXPIRES_IN, timeLeft);
   }
 
@@ -637,7 +656,7 @@ class SkyWayClient extends EventEmitter {
    * @see https://webrtc.ecl.ntt.com/skyway-js-sdk-doc/ja/peer/#error
    * @param e
    */
-  protected onPeerError(e: Error) {
+  protected onPeerError(e: Error): void {
     this.emit(SkyWayEvents.PEER_ERROR, e);
   }
 
@@ -646,10 +665,11 @@ class SkyWayClient extends EventEmitter {
    *
    * @param dataConnection
    */
-  protected onDataConnectionOpened(dataConnection: DataConnection) {
+  protected onDataConnectionOpened(dataConnection: DataConnection): void {
     const peerId = dataConnection.remoteId;
     logger.debug("data connection is opened.", peerId);
 
+    // eslint-disable-next-line
     dataConnection.on("data", (data: any) => {
       this.onDataReceived(data, peerId);
     });
@@ -673,7 +693,7 @@ class SkyWayClient extends EventEmitter {
    * @param peerId
    * @param data
    */
-  protected onDataReceived(data: Data, peerId: string) {
+  protected onDataReceived(data: Data, peerId: string): void {
     if (logger.getLevel() === logger.levels.DEBUG) {
       const ping = NtpDate.now() - data.timestamp;
 
@@ -701,7 +721,7 @@ class SkyWayClient extends EventEmitter {
    * @see https://webrtc.ecl.ntt.com/skyway-js-sdk-doc/ja/dataconnection/#close_1
    * @param peerId
    */
-  protected onDataConnectionClosed(peerId: string) {
+  protected onDataConnectionClosed(peerId: string): void {
     logger.debug("data connection closed", peerId);
 
     this.emit(SkyWayEvents.CONNECTION_CLOSED, peerId);
@@ -712,7 +732,7 @@ class SkyWayClient extends EventEmitter {
    *
    * @param snapshot
    */
-  protected onRoomSnapshotUpdated(snapshot: DocumentSnapshot) {
+  protected onRoomSnapshotUpdated(snapshot: DocumentSnapshot): void {
     logger.debug("room snapshot changed");
 
     if (!snapshot.exists) {
@@ -720,6 +740,7 @@ class SkyWayClient extends EventEmitter {
       return;
     }
     const prev = this._currentRoom;
+    // eslint-disable-next-line
     const next = Room.fromData(snapshot.data() as any);
 
     if (prev) {
