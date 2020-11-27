@@ -5,7 +5,7 @@ import { UserDocument } from "@sokontokoro/mikan";
 import { catchErrorWrapper, getDocUrl, sendToSlack, slackUrl } from "../utils";
 
 export default firestore.document("users/{userId}").onWrite(
-  catchErrorWrapper(async (change, _context) => {
+  catchErrorWrapper(async (change) => {
     const afterUser = change.after.data() as UserDocument;
 
     if (!change.before.exists) {

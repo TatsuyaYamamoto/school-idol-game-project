@@ -25,8 +25,8 @@ export default functions.firestore.document("playlogs/{playlogId}").onCreate(
      * Check targer log
      */
     const playlogDoc = snapshot.data() as PlaylogDocument;
-    const game = playlogDoc.game;
-    const userRef = playlogDoc.userRef;
+    const { game } = playlogDoc;
+    const { userRef } = playlogDoc;
     const userDoc = (await userRef.get()).data() as UserDocument;
 
     const highscoreSnapshot = await getHighscoreColRef()
@@ -65,10 +65,12 @@ export default functions.firestore.document("playlogs/{playlogId}").onCreate(
       const updateUserDoc: Partial<UserDocument> = {
         highscoreRefs: {
           ...userDoc.highscoreRefs,
+          // eslint-disable-next-line
           [game]: highscoreRef as any,
         },
       };
 
+      // eslint-disable-next-line
       batch.update(userRef as any, updateUserDoc);
     } else {
       console.log(

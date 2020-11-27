@@ -32,6 +32,7 @@ export default pubsub
     console.log(`run scheduled "generate-ranking" job. ID: ${context.eventId}`);
 
     try {
+      // eslint-disable-next-line
       for (const game of TARGET_GAMES) {
         console.log(`start creation. game: ${game}`);
 
@@ -43,6 +44,7 @@ export default pubsub
          * step 1
          * Load all highscore resources and calculate ranking list.
          */
+        // eslint-disable-next-line
         const rankingList = await createRankingList(game);
 
         console.log(
@@ -53,6 +55,7 @@ export default pubsub
          * step 2
          * save new ranking list with batch
          */
+        // eslint-disable-next-line
         await addDocWithBatch(newRankingListRef, rankingList);
 
         console.log(
@@ -72,11 +75,13 @@ export default pubsub
         metadataBatch.set(newRankingRef, newRanking);
 
         const newMetadata: Partial<MetadataDocument> = {
+          // eslint-disable-next-line
           rankingRef: newRankingRef as any,
           updatedAt: firestore.FieldValue.serverTimestamp(),
         };
         metadataBatch.update(metadataRef, newMetadata);
 
+        // eslint-disable-next-line
         await metadataBatch.commit();
 
         console.log(`success! game: ${game}`);
@@ -113,8 +118,9 @@ async function createRankingList(game: string): Promise<RankItemDocument[]> {
     .orderBy("point", compareType)
     .get();
 
+  // eslint-disable-next-line
   for (const scoreDoc of allHighscores.docs) {
-    higherScoreCount++;
+    higherScoreCount += 1;
     const highscore = scoreDoc.data() as HighscoreDocument;
 
     // 同率考慮の計算
@@ -124,9 +130,11 @@ async function createRankingList(game: string): Promise<RankItemDocument[]> {
       currentPoint = highscore.point;
     }
 
+    // eslint-disable-next-line
     const userSnapshot = await highscore.userRef.get();
 
     if (!userSnapshot.exists) {
+      // TODO
     }
 
     const userDoc = userSnapshot.data() as UserDocument;

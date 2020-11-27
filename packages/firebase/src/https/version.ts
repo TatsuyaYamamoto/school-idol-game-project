@@ -1,6 +1,6 @@
 import { https } from "firebase-functions";
 
-const pkg = require("../../package.json");
+import * as pkg from "../../package.json";
 
 export default https.onRequest((_request, response) => {
   response.send(
