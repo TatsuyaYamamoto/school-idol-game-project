@@ -1,4 +1,4 @@
-import { Container, Graphics } from "pixi.js";
+import { Container, DisplayObject, Graphics } from "pixi.js";
 
 import Text from "../sprite/text/Text";
 
@@ -31,7 +31,7 @@ class UsageTextArea extends Container {
     );
     this._roundedRectangle.endFill();
 
-    this.addChild(this._roundedRectangle, this._text);
+    this.addChild<DisplayObject>(this._roundedRectangle, this._text);
   }
 }
 
