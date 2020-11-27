@@ -1,4 +1,4 @@
-import { Graphics, Texture, Container } from "pixi.js";
+import { Graphics } from "pixi.js";
 
 /**
  * Graphics of calligraphy paper.

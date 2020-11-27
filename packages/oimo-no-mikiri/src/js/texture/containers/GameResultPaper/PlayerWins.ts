@@ -7,9 +7,11 @@ import Text from "../../internal/Text";
 import { Ids as StringIds } from "../../../resources/string";
 
 class PlayerWins extends Container {
-  private _playerNumberLabel: Text;
-  private _winsLabel: Text;
-  private _winsValue: Text;
+  readonly _playerNumberLabel: Text;
+
+  readonly _winsLabel: Text;
+
+  readonly _winsValue: Text;
 
   constructor(playerNumber: number, wins: number) {
     super();

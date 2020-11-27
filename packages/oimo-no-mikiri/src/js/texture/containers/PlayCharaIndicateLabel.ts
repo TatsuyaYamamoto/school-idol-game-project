@@ -9,8 +9,9 @@ const labelTextStyle: TextStyleOptions = {
 };
 
 class PlayerCharacterIndicateBoard extends Container {
-  private _text: VerticalText;
-  private _rectangle: Graphics;
+  readonly _text: VerticalText;
+
+  readonly _rectangle: Graphics;
 
   constructor(text: string, isVertical = true) {
     super();

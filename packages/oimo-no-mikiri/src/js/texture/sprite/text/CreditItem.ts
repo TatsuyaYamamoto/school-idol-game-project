@@ -5,8 +5,9 @@ import Text from "../../internal/Text";
 import { Action, Category } from "../../../helper/tracker";
 
 class CreditItem extends Container {
-  private _name: Text;
-  private _url: Text;
+  readonly _name: Text;
+
+  readonly _url: Text;
 
   constructor(nameAndRole: string, url: string) {
     super();

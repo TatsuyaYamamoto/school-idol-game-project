@@ -7,8 +7,9 @@ import Text from "../../internal/Text";
 import { Ids as StringIds } from "../../../resources/string";
 
 class StraightWins extends Container {
-  private _label: Text;
-  private _value: Text;
+  readonly _label: Text;
+
+  readonly _value: Text;
 
   constructor(wins: number) {
     super();

@@ -1,3 +1,5 @@
+// TODO
+/* eslint-disable max-classes-per-file */
 import { t, loadTexture, loadFrames } from "@sokontokoro/mikan";
 
 import { FrameStructureIndexes } from "./Character";
@@ -30,12 +32,10 @@ class UchicchiCloseUp extends OpponentCloseUp {
  * @class
  */
 class Uchicchi extends Opponent {
+  readonly name = t(StringIds[StringIds.CHARA_NAME_UCHICCHI]);
+
   public constructor() {
     super(loadFrames(Ids.CHARACTER_UCHICCHI), FRAMES, new UchicchiCloseUp());
-  }
-
-  public get name(): string {
-    return t(StringIds[StringIds.CHARA_NAME_UCHICCHI]);
   }
 }
 

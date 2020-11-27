@@ -21,11 +21,13 @@ import Mode from "../../../models/Mode";
 import { Ids as SoundIds } from "../../../resources/sound";
 import { Ids as StringIds } from "../../../resources/string";
 
-const { version } = require("../../../../../package.json");
+import { version } from "../../../../../package.json";
 
 class TitleState extends TopViewState {
   private _titleLogo: TitleLogo;
+
   private _appVersion: Text;
+
   private _tapInfoText: Text;
 
   /**
@@ -95,8 +97,9 @@ class TitleState extends TopViewState {
   };
 
   private clearQueryString = () => {
-    const url = `${location.protocol}//${location.host}${location.pathname}`;
-    history.replaceState(null, null, url);
+    const { protocol, host, pathname } = window.location;
+    const url = `${protocol}//${host}${pathname}`;
+    window.history.replaceState(null, null, url);
   };
 }
 

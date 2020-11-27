@@ -1,4 +1,4 @@
-import { Container, TextStyleOptions } from "pixi.js";
+import { Container } from "pixi.js";
 
 import { t } from "@sokontokoro/mikan";
 
@@ -27,12 +27,17 @@ const battleLeftStyle = {
 };
 
 class BattleStatusBoard extends Container {
-  private _onePlayerWinsLabel: Text;
-  private _onePlayerWins: Text;
-  private _twoPlayerWinsLabel: Text;
-  private _twoPlayerWins: Text;
-  private _battleLeftLabel: Text;
-  private _battleLeft: Text;
+  readonly _onePlayerWinsLabel: Text;
+
+  readonly _onePlayerWins: Text;
+
+  readonly _twoPlayerWinsLabel: Text;
+
+  readonly _twoPlayerWins: Text;
+
+  readonly _battleLeftLabel: Text;
+
+  readonly _battleLeft: Text;
 
   constructor(width: number, height: number) {
     super();

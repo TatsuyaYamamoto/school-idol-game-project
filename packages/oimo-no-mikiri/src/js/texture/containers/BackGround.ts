@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { Sprite, extras, Container } from "pixi.js";
 
 import { loadTexture, loadFrames } from "@sokontokoro/mikan";
@@ -37,9 +38,11 @@ class BeachLayer extends AnimatedSprite {
  * @class
  */
 class BackGround extends Container {
-  private _skyLayer: SkyLayer;
-  private _cloudLayer: CloudLayer;
-  private _beachLayer: BeachLayer;
+  readonly _skyLayer: SkyLayer;
+
+  readonly _cloudLayer: CloudLayer;
+
+  readonly _beachLayer: BeachLayer;
 
   public constructor() {
     super();

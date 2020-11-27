@@ -34,7 +34,9 @@ export interface EnterParams extends Deliverable {
 
 abstract class OverState extends GameViewState {
   private _gameOverLogo: GameOverLogo;
+
   private _restartButton: RestartButton;
+
   private _backToTopButton: BackToTopButton;
 
   // TODO: implements once method
@@ -163,7 +165,7 @@ abstract class OverState extends GameViewState {
    *
    * @private
    */
-  protected _onClickBackToTopButton = () => {
+  protected _onClickBackToTopButton = (): void => {
     dispatchEvent(Events.BACK_TO_TOP);
   };
 

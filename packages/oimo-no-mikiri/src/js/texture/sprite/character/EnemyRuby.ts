@@ -1,3 +1,5 @@
+// TODO
+/* eslint-disable max-classes-per-file */
 import { t, loadTexture, loadFrames } from "@sokontokoro/mikan";
 
 import { FrameStructureIndexes } from "./Character";
@@ -17,25 +19,17 @@ const FRAMES: FrameStructureIndexes = {
   WIN_TEXTURE: 5,
 };
 
-/**
- * @class
- */
 class EnemyRubyCloseUp extends OpponentCloseUp {
   public constructor() {
     super(loadTexture(Ids.CHARACTER_ENEMY_RUBY_CLOSEUP));
   }
 }
 
-/**
- * @class
- */
 class EnemyRuby extends Opponent {
+  readonly name = t(StringIds[StringIds.CHARA_NAME_ENEMY_RUBY]);
+
   public constructor() {
     super(loadFrames(Ids.CHARACTER_ENEMY_RUBY), FRAMES, new EnemyRubyCloseUp());
-  }
-
-  public get name(): string {
-    return t(StringIds[StringIds.CHARA_NAME_ENEMY_RUBY]);
   }
 }
 

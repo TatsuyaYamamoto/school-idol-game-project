@@ -2,7 +2,7 @@ import firebase from "firebase";
 
 import { FIREBASE_OPTIONS } from "../Constants";
 
-export function init() {
+export function init(): Promise<firebase.User> {
   firebase.initializeApp(FIREBASE_OPTIONS);
 
   firebase

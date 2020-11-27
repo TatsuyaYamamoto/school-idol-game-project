@@ -17,11 +17,52 @@ const helpMap = {
   [ENGLISH_KEY]: [],
 };
 
+// eslint-disable-next-line
+function readDir(path) {
+  return new Promise((resolve, reject) => {
+    fs.readdir(path, (err, fileNames) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(fileNames);
+      }
+    });
+  });
+}
+
+// eslint-disable-next-line
+function readFile(path) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, "utf8", (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+}
+
+// eslint-disable-next-line
+function writeFile(path, content) {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(path, content, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
 async function main() {
   const fileNames = await readDir(HELP_MARKDOWNS_DIR_PATH);
 
+  // eslint-disable-next-line
   for (const fileName of fileNames) {
     if (fileName === ".DS_Store") {
+      // eslint-disable-next-line
       continue;
     }
 
@@ -47,6 +88,7 @@ async function main() {
       );
     }
 
+    // eslint-disable-next-line
     const content = await readFile(
       path.resolve(HELP_MARKDOWNS_DIR_PATH, fileName)
     );
@@ -77,41 +119,6 @@ async function main() {
   await writeFile(OUTPUT_JSON_PATH, JSON.stringify(helpMap));
 
   console.log("🍊 create help.json successfully 🍊");
-}
-
-function readDir(path) {
-  return new Promise((resolve, reject) => {
-    fs.readdir(path, function (err, fileNames) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(fileNames);
-      }
-    });
-  });
-}
-
-function readFile(path) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path, "utf8", function (err, data) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
-      }
-    });
-  });
-}
-function writeFile(path, content) {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(path, content, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
 }
 
 main().catch((e) => {

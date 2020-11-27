@@ -1,3 +1,5 @@
+// TODO
+/* eslint-disable max-classes-per-file */
 import { t, loadTexture, loadFrames } from "@sokontokoro/mikan";
 
 import { FrameStructureIndexes } from "./Character";
@@ -30,16 +32,14 @@ class LittleDaemonCloseUp extends OpponentCloseUp {
  * @class
  */
 class LittleDaemon extends Opponent {
+  readonly name = t(StringIds[StringIds.CHARA_NAME_LITTLE_DAEMON]);
+
   public constructor() {
     super(
       loadFrames(Ids.CHARACTER_LITTLE_DAEMON),
       FRAMES,
       new LittleDaemonCloseUp()
     );
-  }
-
-  public get name(): string {
-    return t(StringIds[StringIds.CHARA_NAME_LITTLE_DAEMON]);
   }
 }
 

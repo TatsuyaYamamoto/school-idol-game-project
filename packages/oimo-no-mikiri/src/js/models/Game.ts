@@ -4,13 +4,22 @@ import Mode from "./Mode";
 import EventEmitter from "./online/EventEmitter";
 import { DEFAULT_ROUND_SIZE } from "../Constants";
 
+export function isSingleMode(mode: Mode): boolean {
+  return [Mode.SINGLE_BEGINNER, Mode.SINGLE_NOVICE, Mode.SINGLE_EXPERT].some(
+    (singleMode) => mode === singleMode
+  );
+}
+
 abstract class Game extends EventEmitter {
   protected _mode: Mode;
+
   protected _roundSize: number;
+
   protected _currentRound: number;
+
   protected _battles: Map<number, Battle>;
 
-  constructor(mode: Mode, roundSize?: number) {
+  protected constructor(mode: Mode, roundSize?: number) {
     super();
     this._mode = mode;
     this._roundSize = roundSize || DEFAULT_ROUND_SIZE;
@@ -25,10 +34,8 @@ abstract class Game extends EventEmitter {
         if (b.winnerAttackTime < time && b.winner === Actor.PLAYER) {
           time = b.winnerAttackTime;
         }
-      } else {
-        if (b.winnerAttackTime < time) {
-          time = b.winnerAttackTime;
-        }
+      } else if (b.winnerAttackTime < time) {
+        time = b.winnerAttackTime;
       }
     });
     return Math.round(time);
@@ -36,17 +43,16 @@ abstract class Game extends EventEmitter {
 
   public get straightWins(): number {
     if (!isSingleMode(this.mode)) {
-      console.error(
+      throw new Error(
         "This variable is not supported outside of one player mode."
       );
-      return;
     }
 
     let wins = 0;
     this._battles.forEach((b) => {
       if (b.winner === Actor.PLAYER) {
         // tslint:disable-next-line:no-increment-decrement
-        wins++;
+        wins += 1;
       }
     });
     return wins;
@@ -69,7 +75,7 @@ abstract class Game extends EventEmitter {
     return winner;
   }
 
-  public get mode() {
+  public get mode(): Mode {
     return this._mode;
   }
 
@@ -95,7 +101,7 @@ abstract class Game extends EventEmitter {
     this._battles.forEach((b) => {
       if (b.winner === actor) {
         // tslint:disable-next-line:no-increment-decrement
-        wins++;
+        wins += 1;
       }
     });
 
@@ -113,19 +119,13 @@ abstract class Game extends EventEmitter {
   abstract release(): void;
 }
 
-export function isSingleMode(mode: Mode) {
-  return [Mode.SINGLE_BEGINNER, Mode.SINGLE_NOVICE, Mode.SINGLE_EXPERT].some(
-    (singleMode) => mode === singleMode
-  );
-}
-
-export function isMultiMode(mode: Mode) {
+export function isMultiMode(mode: Mode): boolean {
   return [Mode.MULTI_LOCAL, Mode.MULTI_ONLINE].some(
     (multiMode) => mode === multiMode
   );
 }
 
-export function isOnlineMode(mode: Mode) {
+export function isOnlineMode(mode: Mode): boolean {
   return [Mode.MULTI_ONLINE].some((multiMode) => mode === multiMode);
 }
 

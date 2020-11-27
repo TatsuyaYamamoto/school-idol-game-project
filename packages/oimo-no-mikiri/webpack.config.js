@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const config = require("../../package.json").config.sokontokoro;
+
 const isProduction = process.env.NODE_ENV === "production";
 
 const htmlParams = {
@@ -17,12 +18,13 @@ const htmlParams = {
   ogImage: "https://games.sokontokoro-factory.net/oimo/assets/image/ogp.png",
 };
 
-isProduction &&
+if (isProduction) {
   Object.assign(htmlParams, {
     title: "おいものみきり！ -そこんところ工房-",
     trackingCode: config.trackingCode.pro,
     noIndex: false,
   });
+}
 
 const plugins = [
   new HtmlWebpackPlugin({
@@ -80,5 +82,5 @@ module.exports = {
   // Resolve node fs module for pixi-sound.
   node: { fs: "empty" },
 
-  plugins: plugins,
+  plugins,
 };

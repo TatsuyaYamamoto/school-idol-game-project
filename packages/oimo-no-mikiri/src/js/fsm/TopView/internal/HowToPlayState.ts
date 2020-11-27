@@ -5,6 +5,7 @@ import {
   tracePage,
 } from "@sokontokoro/mikan";
 
+import { DisplayObject } from "pixi.js";
 import TopViewState from "./TopViewState";
 import { Events } from "../TopView";
 
@@ -20,13 +21,14 @@ import Oimo from "../../../texture/sprite/character/Oimo";
 import { VirtualPageViews } from "../../../helper/tracker";
 
 import { Ids as SoundIds } from "../../../resources/sound";
-import { DisplayObject } from "pixi.js";
 
 class HowToPlayState extends TopViewState {
   private _usageTextArea: UsageTextArea;
 
   private _oimo: Oimo;
+
   private _player: Player;
+
   private _opponent: Opponent;
 
   private _backToMenuButton: BackToMenuButton;

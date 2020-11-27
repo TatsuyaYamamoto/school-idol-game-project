@@ -1,4 +1,4 @@
-import { default as AutoBind } from "autobind-decorator";
+import AutoBind from "autobind-decorator";
 
 import {
   Application,
@@ -9,11 +9,11 @@ import {
   toggleSound,
 } from "@sokontokoro/mikan";
 
-import { default as InitialViewState } from "./InitialView";
+import InitialViewState from "./InitialView";
 import { EnterParams as GameViewEnterParams } from "./GameView/GameView";
 import LocalGameView from "./GameView/LocalGameView";
 import OnlineGameView from "./GameView/OnlineGameView";
-import { default as TopViewState } from "./TopView";
+import TopViewState from "./TopView";
 
 import { isOnlineMode } from "../models/Game";
 
@@ -104,7 +104,9 @@ class ApplicationState extends Application {
    *
    */
   private updateStageScale() {
-    this.stage.scale.x = this.stage.scale.y = getScale();
+    const scale = getScale();
+    this.stage.scale.x = scale;
+    this.stage.scale.y = scale;
   }
 
   /**
@@ -134,10 +136,12 @@ class ApplicationState extends Application {
     this.to(InnerStates.TOP);
   }
 
+  // eslint-disable-next-line
   private turnSoundOn() {
     toggleSound("on");
   }
 
+  // eslint-disable-next-line
   private turnSoundOff() {
     toggleSound("off");
   }

@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "es5",
     "lib": ["dom", "es2015"],
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "resolveJsonModule": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

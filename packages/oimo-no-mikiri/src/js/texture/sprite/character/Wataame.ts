@@ -1,3 +1,5 @@
+// TODO
+/* eslint-disable max-classes-per-file */
 import { t, loadTexture, loadFrames } from "@sokontokoro/mikan";
 
 import { FrameStructureIndexes } from "./Character";
@@ -30,12 +32,10 @@ class WataameCloseUp extends OpponentCloseUp {
  * @class
  */
 class Wataame extends Opponent {
+  readonly name = t(StringIds[StringIds.CHARA_NAME_WATAAME]);
+
   public constructor() {
     super(loadFrames(Ids.CHARACTER_WATAAME), FRAMES, new WataameCloseUp());
-  }
-
-  public get name(): string {
-    return t(StringIds[StringIds.CHARA_NAME_WATAAME]);
   }
 }
 

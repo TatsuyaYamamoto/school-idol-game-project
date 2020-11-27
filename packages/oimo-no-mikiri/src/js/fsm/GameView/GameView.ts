@@ -51,6 +51,7 @@ abstract class GameView extends ViewContainer {
   private _game: Game;
 
   private _player: Player;
+
   /**
    * 2Player's character for multi play mode.
    */
@@ -120,13 +121,13 @@ abstract class GameView extends ViewContainer {
     stop(SoundIds.SOUND_WAVE_LOOP);
   }
 
-  protected onAttacked(e: CustomEvent) {
+  protected onAttacked(e: CustomEvent): void {
     const { attacker, attackTime } = e.detail;
 
     this.game.currentBattle.attack(attacker, attackTime);
   }
 
-  protected onBackToTopRequested() {
+  protected onBackToTopRequested(): void {
     // prevent to propagate to invoke tap event on title view.
     setTimeout(() => dispatchEvent(AppEvents.REQUESTED_BACK_TO_TOP), 1);
 

@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { Graphics } from "pixi.js";
 import { ViewContainer } from "@sokontokoro/mikan";
 
@@ -20,10 +21,11 @@ class WhiteLayer extends Graphics {
 abstract class GameViewState extends ViewContainer {
   private _gameView: GameView;
 
-  private _background: BackGround;
-  private _oimo: Oimo;
+  readonly _background: BackGround;
 
-  private _whiteLayer: WhiteLayer;
+  readonly _oimo: Oimo;
+
+  readonly _whiteLayer: WhiteLayer;
 
   constructor(gameView: GameView) {
     super();

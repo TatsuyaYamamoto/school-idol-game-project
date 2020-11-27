@@ -1,4 +1,4 @@
-import { default as AutoBind } from "autobind-decorator";
+import AutoBind from "autobind-decorator";
 
 import {
   addEvents,
@@ -12,20 +12,16 @@ import {
 import GameView, { EnterParams, Events, InnerStates } from "./GameView";
 
 import ReadyState from "./internal/ReadyState";
-import {
-  default as MultiPlayOverState,
+import MultiPlayOverState, {
   EnterParams as MultiPlayOverStateEnterParams,
 } from "./internal/OverState/MultiPlayOverState";
-import {
-  default as MultiPlayActionState,
+import MultiPlayActionState, {
   EnterParams as MultiPlayActionStateEnterParams,
 } from "./internal/ActionState/MultiPlayActionState";
-import {
-  default as SinglePlayOverState,
+import SinglePlayOverState, {
   EnterParams as SinglePlayOverStateEnterParams,
 } from "./internal/OverState/SinglePlayOverState";
-import {
-  default as SinglePlayActionState,
+import SinglePlayActionState, {
   EnterParams as SinglePlayActionStateEnterParams,
 } from "./internal/ActionState/SinglePlayActionState";
 import ResultState, {
@@ -91,7 +87,7 @@ class LocalGameView extends GameView {
    *
    * @private
    */
-  protected onRequestedReady() {
+  protected onRequestedReady(): void {
     if (this.game.isFixed()) {
       dispatchEvent(Events.FIXED_RESULT);
       return;
@@ -110,8 +106,8 @@ class LocalGameView extends GameView {
   /**
    *
    */
-  protected onReady() {
-    const signalTime = this.game.currentBattle.signalTime;
+  protected onReady(): void {
+    const { signalTime } = this.game.currentBattle;
     const isFalseStarted = {
       player: this.game.currentBattle.isFalseStarted(Actor.PLAYER),
       opponent: this.game.currentBattle.isFalseStarted(Actor.OPPONENT),
@@ -157,7 +153,7 @@ class LocalGameView extends GameView {
         autoOpponentAttackInterval,
       });
     } else {
-      const battleLeft = this.game.battleLeft;
+      const { battleLeft } = this.game;
       const wins = {
         onePlayer: this.game.getWins(Actor.PLAYER),
         twoPlayer: this.game.getWins(Actor.OPPONENT),
@@ -175,7 +171,7 @@ class LocalGameView extends GameView {
   /**
    *
    */
-  protected onFixedResult() {
+  protected onFixedResult(): void {
     const { bestTime, winner, mode, currentRound } = this.game;
 
     console.log(
@@ -204,19 +200,19 @@ class LocalGameView extends GameView {
     }
   }
 
-  protected onRequestedRestart() {
+  protected onRequestedRestart(): void {
     this.game.start();
     dispatchEvent(Events.REQUEST_READY);
   }
 
-  protected onAttacked(e: CustomEvent) {
+  protected onAttacked(e: CustomEvent): void {
     super.onAttacked(e);
   }
 
   /**
    * @override
    */
-  protected onBackToTopRequested() {
+  protected onBackToTopRequested(): void {
     super.onBackToTopRequested();
 
     trackEvent(Action.TAP, {

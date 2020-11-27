@@ -1,4 +1,4 @@
-import { default as AutoBind } from "autobind-decorator";
+import AutoBind from "autobind-decorator";
 
 import {
   Deliverable,
@@ -24,10 +24,7 @@ import OnlineOverState, {
   EnterParams as OnlineEnterParams,
 } from "./internal/OverState/OnlineOverState";
 
-import {
-  GameEvents,
-  default as OnlineGame,
-} from "../../models/online/OnlineGame";
+import OnlineGame, { GameEvents } from "../../models/online/OnlineGame";
 import Actor from "../../models/Actor";
 import { Events as AppEvents } from "../ApplicationState";
 
@@ -64,7 +61,7 @@ class OnlineGameView extends GameView {
 
     this.game.on(GameEvents.MEMBER_LEFT, () => {
       // Left myself?
-      const ownId = (<OnlineGame>this.game).ownId;
+      const { ownId } = <OnlineGame>this.game;
       if (!(<OnlineGame>this.game).members.has(ownId)) {
         return;
       }
@@ -125,13 +122,13 @@ class OnlineGameView extends GameView {
    * @private
    */
   private _onReady = () => {
-    const signalTime = this.game.currentBattle.signalTime;
+    const { signalTime } = this.game.currentBattle;
     const isFalseStarted = {
       player: this.game.currentBattle.isFalseStarted(Actor.PLAYER),
       opponent: this.game.currentBattle.isFalseStarted(Actor.OPPONENT),
     };
 
-    const battleLeft = this.game.battleLeft;
+    const { battleLeft } = this.game;
     const wins = {
       onePlayer: this.game.getWins(Actor.PLAYER),
       twoPlayer: this.game.getWins(Actor.OPPONENT),
@@ -237,7 +234,7 @@ class OnlineGameView extends GameView {
    * @param {CustomEvent} e
    * @override
    */
-  protected onAttacked(e: CustomEvent) {
+  protected onAttacked(e: CustomEvent): void {
     showConnecting();
 
     super.onAttacked(e);
@@ -251,7 +248,7 @@ class OnlineGameView extends GameView {
   /**
    * @override
    */
-  protected onBackToTopRequested() {
+  protected onBackToTopRequested(): void {
     super.onBackToTopRequested();
 
     (<OnlineGame>this.game).leave();

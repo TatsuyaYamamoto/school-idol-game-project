@@ -11,7 +11,7 @@ import {
 } from "@sokontokoro/mikan";
 
 import ApplicationState from "./fsm/ApplicationState";
-import { default as resources } from "./resources/string";
+import resources from "./resources/string";
 import { init as initFirebase } from "./helper/firebase";
 import {
   SUPPORTED_LANGUAGES,

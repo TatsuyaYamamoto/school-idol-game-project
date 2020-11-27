@@ -1,10 +1,10 @@
 import firebase from "firebase";
 
+import { isUndefined } from "util";
 import Mode from "../Mode";
 import Game from "../Game";
 import Actor from "../Actor";
 import OnlineBattle from "./OnlineBattle";
-import { isUndefined } from "util";
 
 export enum GameEvents {
   REQUESTED_START = "requested_start",
@@ -17,8 +17,10 @@ export enum GameEvents {
 }
 
 class OnlineGame extends Game {
-  private _id: string;
-  private _members: Map<string, boolean>;
+  readonly _id: string;
+
+  readonly _members: Map<string, boolean>;
+
   private _gameRef: firebase.database.Reference;
 
   constructor(id: string) {
@@ -29,10 +31,10 @@ class OnlineGame extends Game {
     this._gameRef = firebase.database().ref(`/games/${this._id}`);
   }
 
-  /************************************************************************************
+  /** **********************************************************************************
    * Static methods
    */
-  public static async create() {
+  public static async create(): Promise<OnlineGame> {
     const gameId = firebase.database().ref().child("games").push().key;
     const ref = firebase.database().ref(`games/${gameId}`);
 
@@ -44,7 +46,7 @@ class OnlineGame extends Game {
     return new OnlineGame(gameId);
   }
 
-  /************************************************************************************
+  /** **********************************************************************************
    * Accessor
    */
 
@@ -91,11 +93,11 @@ class OnlineGame extends Game {
     return opponentId;
   }
 
-  /************************************************************************************
+  /** **********************************************************************************
    * Status change methods
    */
 
-  public join() {
+  public join(): Promise<void> {
     const { uid } = firebase.auth().currentUser;
 
     const checkGameExistPromise = (gameSnapshot) =>
@@ -103,7 +105,7 @@ class OnlineGame extends Game {
         if (gameSnapshot.exists()) {
           resolve();
         } else {
-          reject("no_game");
+          reject(new Error("no_game"));
         }
       });
 
@@ -114,20 +116,19 @@ class OnlineGame extends Game {
         }
 
         if (!current.members || Object.keys(current.members).length < 2) {
-          current.members = Object.assign({}, current.members, {
-            [uid]: false,
-          });
+          // eslint-disable-next-line no-param-reassign
+          current.members = { ...current.members, [uid]: false };
         }
 
         return current;
       }, "join_game");
 
-    const checkFulfilledMemberPromise = ({ committed, snapshot }) =>
+    const checkFulfilledMemberPromise = ({ snapshot }) =>
       new Promise((resolve, reject) => {
         if (snapshot.hasChild(`members/${uid}`)) {
           resolve();
         } else {
-          reject("already_fulfilled");
+          reject(new Error("already_fulfilled"));
         }
       });
 
@@ -146,12 +147,12 @@ class OnlineGame extends Game {
       });
   }
 
-  public async remove() {
+  public async remove(): Promise<void> {
     await this.release();
     await this._gameRef.set(null);
   }
 
-  public async leave() {
+  public async leave(): Promise<void> {
     const { uid } = firebase.auth().currentUser;
     await this._gameRef.child("members").update({
       [uid]: null,
@@ -159,7 +160,7 @@ class OnlineGame extends Game {
     await this._gameRef.child(`members/${uid}`).onDisconnect().cancel();
   }
 
-  public async requestReady() {
+  public async requestReady(): Promise<void> {
     const { uid } = firebase.auth().currentUser;
     await this._gameRef.child("members").update({
       [uid]: true,
@@ -193,7 +194,9 @@ class OnlineGame extends Game {
 
     await this.transaction((current) => {
       if (current && current.currentRound !== nextRound) {
+        // eslint-disable-next-line no-param-reassign
         current.currentRound = nextRound;
+        // eslint-disable-next-line no-param-reassign
         current.updatedAt = now;
       }
       return current;
@@ -217,7 +220,7 @@ class OnlineGame extends Game {
     return isFixed;
   }
 
-  public async release() {
+  public async release(): Promise<void> {
     this.off();
 
     this._gameRef.child("members").off();
@@ -229,7 +232,7 @@ class OnlineGame extends Game {
     this._battles.clear();
   }
 
-  /************************************************************************************
+  /** **********************************************************************************
    * Callback methods
    */
 
@@ -237,7 +240,9 @@ class OnlineGame extends Game {
    *
    * @param {firebase.database.DataSnapshot} snapshot
    */
-  protected onMemberUpdated = (snapshot: firebase.database.DataSnapshot) => {
+  protected onMemberUpdated = (
+    snapshot: firebase.database.DataSnapshot
+  ): void => {
     if (!snapshot.exists()) {
       return;
     }
@@ -280,8 +285,8 @@ class OnlineGame extends Game {
         .ref(`users/${this.opponentId}/isConnecting`);
       opponentConnectingRef.on(
         "value",
-        (snapshot: firebase.database.DataSnapshot) => {
-          if (snapshot.exists() && !snapshot.val()) {
+        (snap: firebase.database.DataSnapshot) => {
+          if (snap.exists() && !snap.val()) {
             this.dispatch(GameEvents.MEMBER_LEFT);
           }
         }
@@ -312,7 +317,7 @@ class OnlineGame extends Game {
 
   protected onCurrentRoundUpdated = async (
     snapshot: firebase.database.DataSnapshot
-  ) => {
+  ): Promise<void> => {
     if (!snapshot.exists()) {
       return;
     }
@@ -341,18 +346,15 @@ class OnlineGame extends Game {
     this.dispatch(GameEvents.ROUND_PROCEED, { nextRound });
   };
 
-  /************************************************************************************
+  /** **********************************************************************************
    * Private methods
    */
 
   /**
    *
-   *
-   * @param {(current: any) => any} transactionUpdate
-   * @param {string} tag
-   * @return {Promise<{committed: boolean; snapshot: firebase.database.DataSnapshot}>}
    */
   private async transaction(
+    // eslint-disable-next-line
     transactionUpdate: (current: any) => any,
     tag?: string
   ): Promise<{ committed: boolean; snapshot: firebase.database.DataSnapshot }> {

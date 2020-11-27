@@ -6,8 +6,9 @@ import Text from "../internal/Text";
 import { Ids } from "../../resources/string";
 
 class UsageTextArea extends Container {
-  private _text: Text;
-  private _roundedRectangle: Graphics;
+  readonly _text: Text;
+
+  readonly _roundedRectangle: Graphics;
 
   constructor() {
     super();

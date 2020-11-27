@@ -14,8 +14,9 @@ import { Ids as StringIds } from "../../../resources/string";
  * @class
  */
 export class TopTime extends Container {
-  private _label: Text;
-  private _value: Text;
+  readonly _label: Text;
+
+  readonly _value: Text;
 
   constructor(topTime: number) {
     super();

@@ -8,10 +8,7 @@ import {
   tweetByWebIntent,
 } from "@sokontokoro/mikan";
 
-import {
-  default as OverState,
-  EnterParams as AbstractEnterParams,
-} from "./OverState";
+import OverState, { EnterParams as AbstractEnterParams } from "./OverState";
 
 import TweetButton from "../../../../texture/sprite/button/TweetButton";
 import StraightWins from "../../../../texture/containers/GameResultPaper/StraightWins";
@@ -26,6 +23,7 @@ export interface EnterParams extends AbstractEnterParams {
 
 class SinglePlayOverState extends OverState {
   private _straightWins: StraightWins;
+
   private _tweetButton: TweetButton;
 
   protected get straightWins(): StraightWins {
@@ -38,6 +36,8 @@ class SinglePlayOverState extends OverState {
 
   onEnter(params: EnterParams): void {
     super.onEnter(params);
+
+    const { bestTime, straightWins, mode, round } = params;
 
     this._straightWins = new StraightWins(params.straightWins);
     this._straightWins.position.set(0, -1 * this.resultPaper.height * 0.3);
@@ -63,14 +63,12 @@ class SinglePlayOverState extends OverState {
       this.gameOverLogo
     );
 
-    const { bestTime, straightWins, mode, round } = params;
-
     // logging
     Playlog.save("oimo-no-mikiri", "hanamaru", bestTime, {
       mode,
       straightWins,
       round,
-    }).then(() => {});
+    });
   }
 
   private _onClickTweetButton = (bestTime: number, wins: number) => {

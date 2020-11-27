@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { Container, interaction } from "pixi.js";
 
 import { loadTexture, isSupportTouchEvent } from "@sokontokoro/mikan";
@@ -28,11 +29,17 @@ class MenuBoard extends Container {
   private _backGround: MenuBoardBackGround;
 
   private _homeButton: HomeButton;
+
   private _soundButton: SoundButton;
+
   private _onePlayerGameStartButton: Button;
+
   private _multiPlayerGameStartButton: Button;
+
   private _howToPlayButton: HowToPlayButton;
+
   private _creditButton: CreditButton;
+
   private _selectCharacterButton: SelectCharacterButton;
 
   public get soundButton(): SoundButton {
@@ -90,21 +97,21 @@ class MenuBoard extends Container {
 
   public setOnSelectHomeListener(
     fn: (event: interaction.InteractionEvent) => void
-  ) {
+  ): void {
     this._homeButton.interactive = true;
     this._homeButton.on(isSupportTouchEvent() ? "touchstart" : "click", fn);
   }
 
   public setOnSelectSoundListener(
     fn: (event: interaction.InteractionEvent) => void
-  ) {
+  ): void {
     this._soundButton.interactive = true;
     this._soundButton.on(isSupportTouchEvent() ? "touchstart" : "click", fn);
   }
 
   public setOnOnePlayerGameStartClickListener(
     fn: (event: interaction.InteractionEvent) => void
-  ) {
+  ): void {
     this._onePlayerGameStartButton.interactive = true;
     this._onePlayerGameStartButton.on(
       isSupportTouchEvent() ? "touchstart" : "click",
@@ -114,7 +121,7 @@ class MenuBoard extends Container {
 
   public setOnMultiPlayerGameStartClickListener(
     fn: (event: interaction.InteractionEvent) => void
-  ) {
+  ): void {
     this._multiPlayerGameStartButton.interactive = true;
     this._multiPlayerGameStartButton.on(
       isSupportTouchEvent() ? "touchstart" : "click",
@@ -124,7 +131,7 @@ class MenuBoard extends Container {
 
   public setOnSelectHowToPlayListener(
     fn: (event: interaction.InteractionEvent) => void
-  ) {
+  ): void {
     this._howToPlayButton.interactive = true;
     this._howToPlayButton.on(
       isSupportTouchEvent() ? "touchstart" : "click",
@@ -134,7 +141,7 @@ class MenuBoard extends Container {
 
   public setOnSelectCreditListener(
     fn: (event: interaction.InteractionEvent) => void
-  ) {
+  ): void {
     this._creditButton.interactive = true;
     this._creditButton.on(isSupportTouchEvent() ? "touchstart" : "click", fn);
   }

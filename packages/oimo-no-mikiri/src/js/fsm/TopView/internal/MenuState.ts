@@ -1,4 +1,4 @@
-import { default as AutoBind } from "autobind-decorator";
+import AutoBind from "autobind-decorator";
 
 import {
   Deliverable,
@@ -30,7 +30,9 @@ import { Ids as StringIds } from "../../../resources/string";
 @AutoBind
 class MenuState extends TopViewState {
   private _menuBoard: MenuBoard;
+
   private _selectLevelBoard: SelectLevelBoard;
+
   private _selectMultiPlayModeBoard: SelectMultiPlayModeBoard;
 
   /**

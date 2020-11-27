@@ -6,6 +6,7 @@ import {
   tracePage,
 } from "@sokontokoro/mikan";
 
+import { DisplayObject } from "pixi.js";
 import TopViewState from "./TopViewState";
 import { Events } from "../TopView";
 
@@ -18,13 +19,16 @@ import { Ids as SoundIds } from "../../../resources/sound";
 import { Ids as StringIds } from "../../../resources/string";
 
 import { URL } from "../../../Constants";
-import { DisplayObject } from "pixi.js";
 
 class CreditState extends TopViewState {
   private _t28Credit: CreditItem;
+
   private _sanzashiCredit: CreditItem;
+
   private _onjinCredit: CreditItem;
+
   private _loveliveCredit: CreditItem;
+
   private _kirbyCredit: CreditItem;
 
   private _backToMenuButton: BackToMenuButton;

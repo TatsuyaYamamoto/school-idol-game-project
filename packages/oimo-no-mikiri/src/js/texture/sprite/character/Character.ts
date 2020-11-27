@@ -15,10 +15,14 @@ export interface FrameStructureIndexes {
 }
 
 abstract class Character extends AnimatedSprite {
-  private _frameTextures: Texture[];
+  readonly _frameTextures: Texture[];
+
   private _frameStructureIndexes: FrameStructureIndexes;
 
-  constructor(frameTextures: Texture[], indexes: FrameStructureIndexes) {
+  protected constructor(
+    frameTextures: Texture[],
+    indexes: FrameStructureIndexes
+  ) {
     // initial animation state is wait.
     super(indexes.WAIT.map((i) => frameTextures[i]));
 

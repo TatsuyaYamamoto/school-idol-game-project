@@ -12,8 +12,11 @@ export enum BattleEvents {
 
 abstract class Battle extends EventEmitter {
   protected _winner: Actor;
+
   protected _winnerAttackTime: number;
+
   protected _signalTime: number;
+
   protected _falseStartMap: Map<Actor, boolean>;
 
   constructor() {

@@ -3,7 +3,7 @@ import { ViewContainer } from "@sokontokoro/mikan";
 import BackGround from "../../../texture/containers/BackGround";
 
 abstract class TopViewState extends ViewContainer {
-  private _background: BackGround;
+  readonly _background: BackGround;
 
   constructor() {
     super();

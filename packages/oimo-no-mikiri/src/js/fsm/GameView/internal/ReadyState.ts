@@ -26,13 +26,17 @@ const ANIMATION_TIME_LINE = {
 
 class ReadyState extends GameViewState {
   private _playerCharacterCloseup: PlayerCloseUp;
+
   private _opponentCharacterCloseup: OpponentCloseUp;
 
   private _brightnessFilter: filters.ColorMatrixFilter;
+
   private _contrastFilter: filters.ColorMatrixFilter;
 
   private _soundTimeLine;
+
   private _filterTimeLine;
+
   private _closeupTimeLine;
 
   /**
@@ -88,12 +92,15 @@ class ReadyState extends GameViewState {
     // Create animation promise.
     Promise.all([
       new Promise(
+        // eslint-disable-next-line no-return-assign
         (onfulfilled) => (this._soundTimeLine.complete = onfulfilled)
       ),
       new Promise(
+        // eslint-disable-next-line no-return-assign
         (onfulfilled) => (this._filterTimeLine.complete = onfulfilled)
       ),
       new Promise(
+        // eslint-disable-next-line no-return-assign
         (onfulfilled) => (this._closeupTimeLine.complete = onfulfilled)
       ),
     ]).then(() => {
@@ -133,7 +140,8 @@ class ReadyState extends GameViewState {
   private _getSoundTimeLine = () => {
     const { PLAY_READY_SOUND } = ANIMATION_TIME_LINE;
     const timeLine = anime.timeline({ autoplay: false });
-
+    // TODO
+    // eslint-disable-next-line
     // @ts-ignore
     timeLine.add({
       offset: PLAY_READY_SOUND,

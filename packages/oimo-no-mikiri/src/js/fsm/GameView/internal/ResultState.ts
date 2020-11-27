@@ -20,6 +20,7 @@ class ResultState extends GameViewState {
   private _battleResultLabelBoard: BattleResultLabel;
 
   protected _hueFilter: filters.ColorMatrixFilter;
+
   protected _brightnessFilter: filters.ColorMatrixFilter;
 
   /**
@@ -32,6 +33,7 @@ class ResultState extends GameViewState {
     this.opponent.position.set(this.viewWidth * 0.8, this.viewHeight * 0.6);
     this.oimo.position.set(this.viewWidth * 0.5, this.viewHeight * 0.6);
 
+    // eslint-disable-next-line no-nested-ternary
     const type = params.winner
       ? params.winner === Actor.PLAYER
         ? "playerWin"
@@ -39,6 +41,8 @@ class ResultState extends GameViewState {
       : params.falseStarter
       ? "falseStart"
       : "draw";
+
+    // eslint-disable-next-line no-nested-ternary
     const name = params.winner
       ? params.winner === Actor.PLAYER
         ? this.player.name
@@ -177,7 +181,10 @@ class ResultState extends GameViewState {
     return timeLine.finished;
   };
 
-  protected whiteOut = (onStartRefresh: () => void, onComplete: () => void) => {
+  protected whiteOut = (
+    onStartRefresh: () => void,
+    onComplete: () => void
+  ): void => {
     const timeLine = anime.timeline({});
 
     timeLine

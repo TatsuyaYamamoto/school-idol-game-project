@@ -1,4 +1,4 @@
-import { default as AutoBind } from "autobind-decorator";
+import AutoBind from "autobind-decorator";
 
 import {
   ViewContainer,
@@ -105,14 +105,14 @@ class TopViewState extends ViewContainer {
   /**
    *
    */
-  protected onTitleEventTap() {
+  protected onTitleEventTap(): void {
     this.to(InnerStates.MENU);
   }
 
   /**
    *
    */
-  protected onHowToPlayeRequested() {
+  protected onHowToPlayeRequested(): void {
     this.to(InnerStates.HOW_TO_PLAY);
   }
 
@@ -120,27 +120,31 @@ class TopViewState extends ViewContainer {
    *
    * @private
    */
-  protected onBackMenuRequested() {
+  protected onBackMenuRequested(): void {
     this.to(InnerStates.MENU);
   }
 
   /**
    *
    */
-  protected onCreditRequested() {
+  protected onCreditRequested(): void {
     this.to(InnerStates.CREDIT);
   }
 
   /**
    *
    */
-  protected onPlayModeFixed(e: CustomEvent) {
+  protected onPlayModeFixed(e: CustomEvent): void {
     const { mode, gameId } = e.detail;
     console.log("Fixed play mode: ", mode);
 
     switch (mode) {
       case Mode.MULTI_ONLINE:
-        gameId ? this.joinGame(gameId) : this.createGame();
+        if (gameId) {
+          this.joinGame(gameId);
+        } else {
+          this.createGame();
+        }
         break;
       default:
         dispatchEvent(AppEvents.REQUESTED_GAME_START, {
@@ -149,10 +153,8 @@ class TopViewState extends ViewContainer {
     }
   }
 
-  /**
-   *
-   */
-  private async createGame() {
+  // eslint-disable-next-line
+  private async createGame(): Promise<void> {
     showConnecting();
     const game = await OnlineGame.create();
     hideConnecting();

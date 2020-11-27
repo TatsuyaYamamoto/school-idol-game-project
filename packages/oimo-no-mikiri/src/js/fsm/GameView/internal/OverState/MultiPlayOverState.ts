@@ -6,10 +6,7 @@ import {
   tweetByWebIntent,
 } from "@sokontokoro/mikan";
 
-import {
-  default as OverState,
-  EnterParams as AbstractEnterParams,
-} from "./OverState";
+import OverState, { EnterParams as AbstractEnterParams } from "./OverState";
 
 import PlayerWins from "../../../../texture/containers/GameResultPaper/PlayerWins";
 import TweetButton from "../../../../texture/sprite/button/TweetButton";
