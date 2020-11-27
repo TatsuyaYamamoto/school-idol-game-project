@@ -20,7 +20,7 @@ env:
   NODE_VERSION: 12.x
 
 jobs:
-  setup:
+  lint:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
@@ -41,10 +41,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - run: yarn install
+      - run: yarn workspace @sokontokoro/mikan build
+      - run: yarn lint
 
   build-and-deploy-app:
     runs-on: macos-latest
-    needs: setup
+    needs: lint
     strategy:
       matrix:
         app:
@@ -95,7 +97,7 @@ jobs:
 
   build-and-deploy-firebase:
     runs-on: macos-latest
-    needs: setup
+    needs: lint
     if: ${{
       github.ref == 'refs/heads/develop' ||
       github.ref == 'refs/heads/develop-firebase'
