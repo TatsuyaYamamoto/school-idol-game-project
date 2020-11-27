@@ -79,21 +79,18 @@ export default class RankingSection extends React.Component<Props, State> {
     const metadataRef = firebaseDb.collection("metadata").doc(game);
     const metadata = (await metadataRef.get()).data() as MetadataDocument;
 
-    let scores: firebase.firestore.QuerySnapshot;
-    if (lastVisibleSnapshot) {
-      scores = await metadata.rankingRef
-        .collection("list")
-        .orderBy("point", "desc")
-        .startAfter(lastVisibleSnapshot)
-        .limit(limit)
-        .get();
-    } else {
-      scores = await metadata.rankingRef
-        .collection("list")
-        .orderBy("point", "desc")
-        .limit(limit)
-        .get();
-    }
+    let scores = lastVisibleSnapshot
+      ? await metadata.rankingRef
+          .collection("list")
+          .orderBy("point", "desc")
+          .startAfter(lastVisibleSnapshot)
+          .limit(limit)
+          .get()
+      : await metadata.rankingRef
+          .collection("list")
+          .orderBy("point", "desc")
+          .limit(limit)
+          .get();
 
     if (scores.size === 0) {
       logger.debug("no more scores");
@@ -128,7 +125,7 @@ export default class RankingSection extends React.Component<Props, State> {
         lastVisibleSnapshot: scores.docs[scores.size - 1]
       };
       if (metadata.updatedAt) {
-        newState.lastUpdatedAt = (metadata.updatedAt as firebase.firestore.Timestamp).toDate();
+        newState.lastUpdatedAt = (metadata.updatedAt as any).toDate();
       }
 
       return newState;
