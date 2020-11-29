@@ -13,7 +13,8 @@ export class IdleState implements State {
     // do nothing
   }
 
-  onExit(): void {
+  // eslint-disable-next-line
+  onExit({ context }): void {
     // do nothing
   }
 }

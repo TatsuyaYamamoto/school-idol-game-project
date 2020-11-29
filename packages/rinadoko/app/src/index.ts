@@ -1,7 +1,7 @@
 import { Application, TextMetrics } from "pixi.js";
 import { Machine, interpret, assign } from "xstate";
 
-import { initTracker } from "@sokontokoro/mikan";
+import { init as initTracker } from "@sokontokoro/mikan/dist/Tracker";
 
 import { IdleState } from "./state/IdleState";
 import { LoadingState } from "./state/LoadingState";

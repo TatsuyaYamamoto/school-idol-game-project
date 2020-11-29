@@ -28,7 +28,7 @@ abstract class ViewContainer extends Container implements State {
 
   private _elapsedTimeMillis = 0;
 
-  protected constructor() {
+  constructor() {
     super();
 
     this._stateMachine = new StateMachine<ViewContainer>();
