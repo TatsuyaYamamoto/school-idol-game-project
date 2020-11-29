@@ -1,6 +1,8 @@
 import * as functions from "firebase-functions";
 import { firestore } from "firebase-admin";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { RoomDocument } from "@sokontokoro/mikan";
+
 import { catchErrorWrapper } from "../utils";
 
 async function onLeftAllMember(roomRef: firestore.DocumentReference) {

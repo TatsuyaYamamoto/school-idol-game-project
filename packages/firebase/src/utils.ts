@@ -2,6 +2,8 @@ import { firestore as adminFirestore } from "firebase-admin";
 import { config, EventContext } from "firebase-functions";
 
 import { IncomingWebhook, IncomingWebhookResult } from "@slack/client";
+
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { MetadataDocument } from "@sokontokoro/mikan";
 
 const webhook = new IncomingWebhook(config().slack.webhook_url);

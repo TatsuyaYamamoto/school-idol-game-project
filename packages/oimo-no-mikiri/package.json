@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@firebase/app-types": "^0.3.2",
-    "@sokontokoro/mikan": "^0.0.1",
+    "@sokontokoro/mikan": "^*",
     "animejs": "^2.0.2",
     "autobind-decorator": "^2.1.0",
     "firebase": "^8.1.1",

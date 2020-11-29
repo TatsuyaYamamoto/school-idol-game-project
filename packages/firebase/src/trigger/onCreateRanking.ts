@@ -1,5 +1,5 @@
 import { firestore } from "firebase-functions";
-
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { RankingDocument } from "@sokontokoro/mikan";
 
 import { catchErrorWrapper, getDocUrl, sendToSlack, slackUrl } from "../utils";

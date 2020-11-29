@@ -1,6 +1,7 @@
 import { https } from "firebase-functions";
 
-import * as pkg from "../../package.json";
+// eslint-disable-next-line
+const pkg = require("../../package.json");
 
 export default https.onRequest((_request, response) => {
   response.send(

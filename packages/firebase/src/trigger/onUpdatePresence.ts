@@ -6,6 +6,7 @@
 /* eslint-disable camelcase */
 import * as functions from "firebase-functions";
 import { firestore, database } from "firebase-admin";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { PresenceDbJson, PresenceDocument } from "@sokontokoro/mikan";
 
 async function onChangeOnline(

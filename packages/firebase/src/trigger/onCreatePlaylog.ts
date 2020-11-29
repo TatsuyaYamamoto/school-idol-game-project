@@ -5,6 +5,7 @@ import {
   PlaylogDocument,
   HighscoreDocument,
   UserDocument,
+  // eslint-disable-next-line import/no-extraneous-dependencies
 } from "@sokontokoro/mikan";
 
 import {

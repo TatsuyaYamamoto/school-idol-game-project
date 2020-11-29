@@ -37,7 +37,7 @@
     }
   },
   "workspaces": [
-    "packages/**/*"
+    "packages/*"
   ],
   "dependencies": {
     "front-matter": "^3.0.1"

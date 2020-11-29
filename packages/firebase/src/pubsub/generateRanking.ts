@@ -8,6 +8,7 @@ import {
   RankItemDocument,
   UserDocument,
   Game,
+  // eslint-disable-next-line import/no-extraneous-dependencies
 } from "@sokontokoro/mikan";
 import {
   addDocWithBatch,

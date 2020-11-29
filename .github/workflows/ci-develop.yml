@@ -93,7 +93,7 @@ jobs:
 
       - name: Deploy to dev
         if: ${{ github.event_name == 'push' }}
-        run: yarn workspace ${{ matrix.app }} deploy:dev ${{ (matrix.app == 'firebase' && '--token ${{secrets.FIREBASE_TOKEN}}') || '' }}
+        run: yarn workspace ${{ matrix.app }} deploy:dev
 
   build-and-deploy-firebase:
     runs-on: macos-latest
@@ -123,11 +123,11 @@ jobs:
       - run: yarn install
       # todo: reuse as artifacts
       - run: yarn workspace @sokontokoro/mikan build
-      - run: yarn workspace firebase build:dev
+      - run: yarn workspace @sokontokoro/firebase build:dev
 
       - name: Deploy to dev
         if: ${{ github.event_name == 'push' }}
-        run: yarn workspace firebase deploy:dev --token ${{ secrets.FIREBASE_TOKEN }}
+        run: yarn workspace @sokontokoro/firebase deploy:dev --token ${{ secrets.FIREBASE_TOKEN }}
 
   notify:
     runs-on: macos-latest
