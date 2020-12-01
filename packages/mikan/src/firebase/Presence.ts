@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 
-import { firebaseDb } from "./index";
+import { FirebaseClient } from "./FirebaseClient";
 import { User } from "./User";
 import MikanError, { ErrorCode } from "../MikanError";
 
@@ -46,7 +46,7 @@ export class Presence {
   }
 
   public static getColRef(): CollectionReference {
-    return firebaseDb.collection("presences");
+    return FirebaseClient.firestore.collection("presences");
   }
 
   public static getDocRef(id: string): DocumentReference {

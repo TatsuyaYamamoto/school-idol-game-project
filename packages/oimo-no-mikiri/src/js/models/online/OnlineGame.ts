@@ -1,4 +1,5 @@
-import firebase from "firebase";
+import firebase from "firebase/app";
+import { FirebaseClient } from "@sokontokoro/mikan";
 
 import { isUndefined } from "util";
 import Mode from "../Mode";
@@ -28,22 +29,25 @@ class OnlineGame extends Game {
     this._id = id;
     this._members = new Map<string, boolean>();
 
-    this._gameRef = firebase.database().ref(`/games/${this._id}`);
+    this._gameRef = FirebaseClient.database.ref(
+      `/oimo-no-mikiri/games/${this._id}`
+    );
   }
 
   /** **********************************************************************************
    * Static methods
    */
   public static async create(): Promise<OnlineGame> {
-    const gameId = firebase.database().ref().child("games").push().key;
-    const ref = firebase.database().ref(`games/${gameId}`);
+    const gamesRef = FirebaseClient.database.ref(`/oimo-no-mikiri/games`);
+    const newGameId = gamesRef.push().key;
+    const newGameRef = gamesRef.child(newGameId);
 
-    await ref.set({
+    await newGameRef.set({
       createdAt: firebase.database.ServerValue.TIMESTAMP,
     });
-    ref.onDisconnect().set(null);
+    newGameRef.onDisconnect().set(null);
 
-    return new OnlineGame(gameId);
+    return new OnlineGame(newGameId);
   }
 
   /** **********************************************************************************
@@ -71,7 +75,7 @@ class OnlineGame extends Game {
   }
 
   public get ownId(): string {
-    return firebase.auth().currentUser.uid;
+    return FirebaseClient.auth.currentUser.uid;
   }
 
   public get opponentId(): string {
@@ -81,7 +85,7 @@ class OnlineGame extends Game {
 
     let opponentId = null;
     this.members.forEach((value, id) => {
-      if (id !== firebase.auth().currentUser.uid) {
+      if (id !== FirebaseClient.auth.currentUser.uid) {
         opponentId = id;
       }
     });
@@ -98,7 +102,7 @@ class OnlineGame extends Game {
    */
 
   public join(): Promise<void> {
-    const { uid } = firebase.auth().currentUser;
+    const { uid } = FirebaseClient.auth.currentUser;
 
     const checkGameExistPromise = (gameSnapshot) =>
       new Promise((resolve, reject) => {
@@ -153,7 +157,7 @@ class OnlineGame extends Game {
   }
 
   public async leave(): Promise<void> {
-    const { uid } = firebase.auth().currentUser;
+    const { uid } = FirebaseClient.auth.currentUser;
     await this._gameRef.child("members").update({
       [uid]: null,
     });
@@ -161,7 +165,7 @@ class OnlineGame extends Game {
   }
 
   public async requestReady(): Promise<void> {
-    const { uid } = firebase.auth().currentUser;
+    const { uid } = FirebaseClient.auth.currentUser;
     await this._gameRef.child("members").update({
       [uid]: true,
     });
@@ -212,7 +216,7 @@ class OnlineGame extends Game {
     // TODO replace member status update logic.
     if (isFixed) {
       console.log("Update user state to false. wait to request game restart.");
-      const { uid } = firebase.auth().currentUser;
+      const { uid } = FirebaseClient.auth.currentUser;
       this._gameRef.child("members").update({ [uid]: false });
       this._gameRef.child("currentRound").set(null);
     }
@@ -280,9 +284,9 @@ class OnlineGame extends Game {
       this._gameRef.onDisconnect().cancel();
 
       // Set disconnect event.
-      const opponentConnectingRef = firebase
-        .database()
-        .ref(`users/${this.opponentId}/isConnecting`);
+      const opponentConnectingRef = FirebaseClient.database.ref(
+        `/oimo-no-mikiri/users/${this.opponentId}/isConnecting`
+      );
       opponentConnectingRef.on(
         "value",
         (snap: firebase.database.DataSnapshot) => {

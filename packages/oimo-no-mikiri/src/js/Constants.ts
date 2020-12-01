@@ -131,24 +131,3 @@ export const URL = {
   LOVELIVE_TOP: "http://www.lovelive-anime.jp/",
   KIRBY_HOME: "https://www.nintendo.co.jp/n02/shvc/p_akfj/",
 };
-
-export const FIREBASE_OPTIONS =
-  process.env.NODE_ENV === "production"
-    ? {
-        // Production config
-        apiKey: "AIzaSyDvNopvc3Tr9WcfTUQK772aSmerv0UeRb0",
-        authDomain: "oimo-no-mikiri.firebaseapp.com",
-        databaseURL: "https://oimo-no-mikiri.firebaseio.com",
-        projectId: "oimo-no-mikiri",
-        storageBucket: "oimo-no-mikiri.appspot.com",
-        messagingSenderId: "379161325988",
-      }
-    : {
-        // Development config
-        apiKey: "AIzaSyB16fI2MRL411jYOCjW1eL7hTuwOvlq3w8",
-        databaseURL: "https://oimo-no-mikiri-development.firebaseio.com",
-        storageBucket: "oimo-no-mikiri-development.appspot.com",
-        authDomain: "oimo-no-mikiri-development.firebaseapp.com",
-        messagingSenderId: "888607734391",
-        projectId: "oimo-no-mikiri-development",
-      };

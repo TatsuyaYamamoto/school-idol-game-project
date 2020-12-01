@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 
-import { firebaseDb } from "./index";
+import { FirebaseClient } from "./FirebaseClient";
 import { Member } from "..";
 
 type CollectionReference = firebase.firestore.CollectionReference;
@@ -23,7 +23,7 @@ export interface RankingDocument /* extends firestore.DocumentData */ {
 
 export class Ranking {
   public static getColRef(): firebase.firestore.CollectionReference {
-    return firebaseDb.collection("ranking");
+    return FirebaseClient.firestore.collection("ranking");
   }
 
   public static getDocRef(id: string): firebase.firestore.DocumentReference {

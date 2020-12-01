@@ -1,3 +1,7 @@
+import "firebase/auth";
+import "firebase/database";
+import "firebase/firestore";
+
 /**
  * @fileOverview Entry point of the application.
  */

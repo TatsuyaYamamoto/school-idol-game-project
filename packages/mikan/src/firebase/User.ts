@@ -3,7 +3,7 @@ import firebase from "firebase/app";
 // eslint-disable-next-line
 import { Twitter } from "twit";
 
-import { firebaseAuth, firebaseDb } from "./index";
+import { FirebaseClient } from "./FirebaseClient";
 import { Credential, CredentialDocument } from "./Credential";
 import { getRandomAnonymousName } from "..";
 
@@ -61,7 +61,7 @@ export interface UserDocument /* extends firestore.DocumentData */ {
 
 export class User {
   public static getColRef(): firebase.firestore.CollectionReference {
-    return firebaseDb.collection("users");
+    return FirebaseClient.firestore.collection("users");
   }
 
   public static getDocRef(id: string): firebase.firestore.DocumentReference {
@@ -69,7 +69,7 @@ export class User {
   }
 
   public static getOwnRef(): DocumentReference {
-    const { currentUser } = firebaseAuth;
+    const { currentUser } = FirebaseClient.auth;
 
     if (!currentUser) {
       throw new Error("No firebase auth current user.");

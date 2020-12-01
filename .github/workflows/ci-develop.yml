@@ -44,6 +44,9 @@ jobs:
       - run: yarn workspace @sokontokoro/mikan build
       - run: yarn lint
 
+  # 本来はブランチ名(develop-:package)に従って実行するjobを制御するべきだが、
+  # if句でmatrixを使えないらしいので、とりあえず、毎回すべてのpackageで実行させる
+  # https://github.community/t/bug-trouble-with-if-conditional-expression-groupings/16563
   build-and-deploy-app:
     runs-on: macos-latest
     needs: lint
@@ -57,8 +60,7 @@ jobs:
           - "rinadoko"
           - "ranking"
     if: ${{
-      github.ref == 'refs/heads/develop' ||
-      github.ref == 'refs/heads/develop-${{ matrix.app }}'
+      startsWith(github.ref, 'refs/heads/develop')
       }}
     steps:
       - uses: actions/checkout@v2

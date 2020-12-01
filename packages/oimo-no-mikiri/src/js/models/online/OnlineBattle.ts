@@ -1,4 +1,5 @@
-import firebase from "firebase";
+import firebase from "firebase/app";
+import { FirebaseClient } from "@sokontokoro/mikan";
 
 import Battle, { BattleEvents } from "../Battle";
 import Actor from "../Actor";
@@ -35,9 +36,9 @@ class OnlineBattle extends Battle {
 
     this._attackTimeMap = new Map();
 
-    this._battleRef = firebase
-      .database()
-      .ref(`/games/${gameId}/battles/${round}`);
+    this._battleRef = FirebaseClient.database.ref(
+      `/oimo-no-mikiri/games/${gameId}/battles/${round}`
+    );
     this._battleRef.child("winner").on("value", this.onWinnerUpdated);
     this._battleRef.child("signalTime").on("value", this.onSignalTimeUpdated);
     this._battleRef

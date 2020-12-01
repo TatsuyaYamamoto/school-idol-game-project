@@ -3,7 +3,7 @@ import { IndexRange } from "react-virtualized";
 import AutoBind from "autobind-decorator";
 
 import {
-  firebaseDb,
+  FirebaseClient,
   MetadataDocument,
   RankItemDocument,
   getLogger,
@@ -76,7 +76,9 @@ export default class RankingSection extends React.Component<Props, State> {
     const { lastVisibleSnapshot, game } = this.state;
 
     const limit = stopIndex - startIndex + 1;
-    const metadataRef = firebaseDb.collection("metadata").doc(game);
+    const metadataRef = FirebaseClient.firestore
+      .collection("metadata")
+      .doc(game);
     const metadata = (await metadataRef.get()).data() as MetadataDocument;
 
     let scores = lastVisibleSnapshot
