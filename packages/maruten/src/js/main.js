@@ -1,3 +1,6 @@
+import "firebase/auth";
+import "firebase/firestore";
+
 import "alertify/themes/alertify.core.css";
 import "alertify/themes/alertify.default.css";
 import "createjs/builds/1.0.0/createjs.js";
