@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 
-import { firebaseDb } from "./index";
+import { FirebaseClient } from "./FirebaseClient";
 
 type FieldValue = firebase.firestore.FieldValue;
 type QuerySnapshot = firebase.firestore.QuerySnapshot;
@@ -28,7 +28,7 @@ export interface CredentialDocument /* extends firestore.DocumentData */ {
 
 export class Credential {
   public static getColRef(): CollectionReference {
-    return firebaseDb.collection("credentials");
+    return FirebaseClient.firestore.collection("credentials");
   }
 
   public static getDocRef(id: string): DocumentReference {

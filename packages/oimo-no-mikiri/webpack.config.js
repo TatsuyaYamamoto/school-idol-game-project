@@ -49,7 +49,7 @@ module.exports = {
     filename: "[name].bundle.js",
   },
 
-  devtool: isProduction ? "none" : "source-map",
+  devtool: isProduction ? "none" : "inline-source-map",
 
   resolve: {
     extensions: [".js", ".ts"],
@@ -66,17 +66,17 @@ module.exports = {
     ],
   },
 
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        commons: {
-          test: /[\\/]node_modules[\\/]/,
-          name: "vendor",
-          chunks: "all",
-        },
-      },
-    },
-  },
+  // optimization: {
+  //   splitChunks: {
+  //     cacheGroups: {
+  //       commons: {
+  //         test: /[\\/]node_modules[\\/]/,
+  //         name: "vendor",
+  //         chunks: "all",
+  //       },
+  //     },
+  //   },
+  // },
 
   // https://github.com/pixijs/pixi-sound/issues/28
   // Resolve node fs module for pixi-sound.

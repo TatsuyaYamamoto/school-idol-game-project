@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 
-import { firebaseDb } from "./index";
+import { FirebaseClient } from "./FirebaseClient";
 import { Presence } from "./Presence";
 import { Game } from "..";
 import MikanError, { ErrorCode } from "../MikanError";
@@ -75,7 +75,7 @@ export class Room implements RoomDocument {
   }
 
   public static getColRef(): firebase.firestore.CollectionReference {
-    return firebaseDb.collection("rooms");
+    return FirebaseClient.firestore.collection("rooms");
   }
 
   public static getDocRef(id: string): firebase.firestore.DocumentReference {

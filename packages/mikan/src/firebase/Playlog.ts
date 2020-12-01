@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 
-import { firebaseDb } from "./index";
+import { FirebaseClient } from "./FirebaseClient";
 import { User } from "./User";
 import { Member, Game } from "..";
 import { getLogger } from "../logger";
@@ -24,7 +24,7 @@ export interface PlaylogDocument /* extends firestore.DocumentData */ {
 
 export class Playlog {
   public static getColRef(): firebase.firestore.CollectionReference {
-    return firebaseDb.collection("playlogs");
+    return FirebaseClient.firestore.collection("playlogs");
   }
 
   public static getDocRef(id: string): firebase.firestore.DocumentReference {

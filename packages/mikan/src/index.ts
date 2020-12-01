@@ -93,7 +93,7 @@ export {
 } from "./Tracker";
 
 // firebase -----------------------------------------------------------------------
-export { firebaseDb, firebaseAuth } from "./firebase";
+export { FirebaseClient } from "./firebase/FirebaseClient";
 
 export {
   init as initAuth,
@@ -120,7 +120,10 @@ export { Ranking, RankingDocument, RankItemDocument } from "./firebase/Ranking";
 export { MetadataDocument } from "./firebase/Metadata";
 export { Room, RoomName, RoomDocument } from "./firebase/Room";
 
-export { devConfig as devFirebaseConfig } from "./firebase/config";
+export {
+  devConfig as devFirebaseConfig,
+  proConfig as proFirebaseConfig,
+} from "./firebase/config";
 
 // util -----------------------------------------------------------------------
 export { default as LimitedArray } from "./util/LimitedArray";
