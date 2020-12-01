@@ -24,7 +24,7 @@
     "animejs": "^2.2.0",
     "autobind-decorator": "^2.1.0",
     "eventemitter3": "^3.1.0",
-    "firebase": "^5.5.1",
+    "firebase": "^8.1.1",
     "i18next": "^11.6.0",
     "i18next-browser-languagedetector": "^2.2.3",
     "loglevel": "^1.6.1",

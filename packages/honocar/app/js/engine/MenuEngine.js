@@ -16,7 +16,7 @@ import {
   showIndicator,
   hideIndicator,
   RoomEvents,
-  NtpDate
+  NtpDate,
 } from "@sokontokoro/mikan";
 
 import globals from "../globals";
@@ -34,7 +34,7 @@ import { Ids } from "../resources/string";
 import {
   default as config,
   TRACK_ACTION,
-  TRACK_PAGES
+  TRACK_PAGES,
 } from "../resources/config";
 import OnlineGameEngine from "./OnlineGameEngine";
 import instance from "./TopEngine";
@@ -164,7 +164,7 @@ async function onClick2MultiPlay() {
   openModal({
     title: t(Ids.ONLINE_DIALOG_TRY_CONNECT_TITLE),
     text: t(Ids.ONLINE_DIALOG_TRY_CONNECT_TEXT),
-    actions: []
+    actions: [],
   });
 
   await initClient();
@@ -177,15 +177,15 @@ async function onClick2MultiPlay() {
   if (!room) {
     room = await client.createRoom("honocar");
 
-    client.on(RoomEvents.MEMBER_FULFILLED, function() {
+    client.on(RoomEvents.MEMBER_FULFILLED, function () {
       openModal({
         title: t(Ids.ONLINE_DIALOG_READY_ROOM_TITLE),
         text: t(Ids.ONLINE_DIALOG_READY_ROOM_TEXT),
-        actions: []
+        actions: [],
       });
     });
 
-    client.on(RoomEvents.ALL_CONNECTIONS_READY, function() {
+    client.on(RoomEvents.ALL_CONNECTIONS_READY, function () {
       logger.debug(
         "all room members' connection are ready. start online game."
       );
@@ -194,7 +194,7 @@ async function onClick2MultiPlay() {
       tryP2pConnect();
     });
 
-    client.on(RoomEvents.MEMBER_LEFT, id => {
+    client.on(RoomEvents.MEMBER_LEFT, (id) => {
       logger.debug("room member left. close online mode.", id);
       leaveOnlineGame();
     });
@@ -213,7 +213,7 @@ async function onClick2MultiPlay() {
         onClick: () => {
           const url = getCurrentUrl();
           copyTextToClipboard(`${url}?roomName=${room.name}`);
-        }
+        },
       },
       {
         text: "Twitter",
@@ -223,7 +223,7 @@ async function onClick2MultiPlay() {
           const utmQuery = createUrchinTrackingModuleQuery({
             campaign: `online-game-invite_${yyyymmdd}`,
             source: "twitter",
-            medium: "social"
+            medium: "social",
           });
           const url = `${config.link.game}?roomName=${
             room.name
@@ -232,12 +232,12 @@ async function onClick2MultiPlay() {
           tweetByWebIntent({
             text: t(Ids.ONLINE_INVITATION_TWEET_TEXT),
             url,
-            hashtags: ["ほのCar", "そこんところ工房"]
+            hashtags: ["ほのCar", "そこんところ工房"],
           });
-        }
+        },
       },
-      { text: "Close", type: "cancel" }
-    ]
+      { text: "Close", type: "cancel" },
+    ],
   });
 }
 
@@ -246,16 +246,16 @@ function tryP2pConnect() {
 
   getClient()
     .trySyncStartTime()
-    .then(startTime => {
+    .then((startTime) => {
       const now = NtpDate.now();
       const timeLeft = now < startTime ? startTime - now : 0;
 
       openModal({
         title: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TITLE),
         text: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TEXT, {
-          timeLeft: unixtimeToRoundSeconds(timeLeft)
+          timeLeft: unixtimeToRoundSeconds(timeLeft),
         }),
-        actions: []
+        actions: [],
       });
 
       setTimeout(() => {
@@ -273,7 +273,7 @@ function leaveOnlineGame() {
   openModal({
     title: t(Ids.ONLINE_DIALOG_DISCONNECTED_TITLE),
     text: t(Ids.ONLINE_DIALOG_DISCONNECTED_TEXT),
-    actions: []
+    actions: [],
   });
 
   setTimeout(() => {
@@ -304,7 +304,7 @@ function onClick2Ranking() {
 
           trackEvent(TRACK_ACTION.CLICK, { label: "ranking" });
           openExternalSite(config.link.ranking, false);
-        }
+        },
       },
       {
         text: "CANCEL",
@@ -312,9 +312,9 @@ function onClick2Ranking() {
         onClick: () => {
           globals.soundObj.SOUND_BACK.stop();
           globals.soundObj.SOUND_BACK.play();
-        }
-      }
-    ]
+        },
+      },
+    ],
   });
 }
 
@@ -384,7 +384,7 @@ function onClickHome() {
 
           trackEvent(TRACK_ACTION.CLICK, { label: "home" });
           openExternalSite(config.link.homepage, false);
-        }
+        },
       },
       {
         text: "CANCEL",
@@ -392,9 +392,9 @@ function onClickHome() {
         onClick: () => {
           globals.soundObj.SOUND_BACK.stop();
           globals.soundObj.SOUND_BACK.play();
-        }
-      }
-    ]
+        },
+      },
+    ],
   });
 }
 

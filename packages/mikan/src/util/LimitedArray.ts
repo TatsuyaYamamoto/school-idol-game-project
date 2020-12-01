@@ -1,10 +1,10 @@
 class LimitedArray<T> {
-  private _items: T[];
+  readonly _items: T[];
 
   constructor(readonly maxSize: number, initValues: T[] = []) {
     this._items = initValues;
 
-    if (!(Number.isInteger(maxSize) && 0 < maxSize)) {
+    if (!(Number.isInteger(maxSize) && maxSize > 0)) {
       throw new Error("max size should be natural number.");
     }
 
@@ -64,13 +64,15 @@ class LimitedArray<T> {
 
   public forEach(
     callbackfn: (value: T, index: number, array: T[]) => void,
+    // eslint-disable-next-line
     thisArg?: any
-  ) {
+  ): void {
     this._items.forEach(callbackfn, thisArg);
   }
 
   public map<U>(
     callbackfn: (value: T, index: number, array: T[]) => U,
+    // eslint-disable-next-line
     thisArg?: any
   ): U[] {
     return this._items.map(callbackfn, thisArg);

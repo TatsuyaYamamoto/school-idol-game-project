@@ -16,7 +16,7 @@ import { Events as ApplicationEvents } from "../ApplicationState";
 import {
   dispatchEvent,
   addEvents,
-  removeEvents
+  removeEvents,
 } from "../../framework/EventUtils";
 
 export enum Events {
@@ -24,7 +24,7 @@ export enum Events {
   REQUEST_GO_TO_MENU = "GameViewState@REQUEST_GO_TO_MENU",
   REQUEST_GO_TO_USAGE = "GameViewState@REQUEST_GO_TO_USAGE",
   REQUEST_GO_TO_CREDIT = "GameViewState@REQUEST_GO_TO_CREDIT",
-  REQUEST_BACK_TO_TOP = "TopViewState@REQUEST_BACK_TO_TOP"
+  REQUEST_BACK_TO_TOP = "TopViewState@REQUEST_BACK_TO_TOP",
 }
 
 class TopViewState extends ViewContainer {
@@ -62,7 +62,7 @@ class TopViewState extends ViewContainer {
       [TitleTopState.TAG]: this._titleTopState,
       [MenuTopState.TAG]: this._menuTopState,
       [CreditTopState.TAG]: this._creditTopState,
-      [UsageTopState.TAG]: this._usageTopState
+      [UsageTopState.TAG]: this._usageTopState,
     });
 
     addEvents({
@@ -70,7 +70,7 @@ class TopViewState extends ViewContainer {
       [Events.REQUEST_GAME_START]: this._requestGameStart,
       [Events.REQUEST_GO_TO_USAGE]: this._changeToUsageState,
       [Events.REQUEST_GO_TO_CREDIT]: this._changeToCredit,
-      [Events.REQUEST_BACK_TO_TOP]: this._changeToMenuTopState
+      [Events.REQUEST_BACK_TO_TOP]: this._changeToMenuTopState,
     });
 
     this._zenkaiSound = loadSound(Ids.SOUND_ZENKAI);
@@ -96,7 +96,7 @@ class TopViewState extends ViewContainer {
       Events.REQUEST_GAME_START,
       Events.REQUEST_GO_TO_USAGE,
       Events.REQUEST_GO_TO_CREDIT,
-      Events.REQUEST_BACK_TO_TOP
+      Events.REQUEST_BACK_TO_TOP,
     ]);
   }
 

@@ -8,7 +8,7 @@ import {
   tracePage,
   trackEvent,
   createUrchinTrackingModuleQuery,
-  convertYyyyMmDd
+  convertYyyyMmDd,
 } from "@sokontokoro/mikan";
 
 import globals from "../globals";
@@ -22,7 +22,7 @@ import { Ids } from "../resources/string";
 import {
   TRACK_ACTION,
   TRACK_PAGES,
-  default as config
+  default as config,
 } from "../resources/config";
 
 const logger = getLogger("gameover");
@@ -42,14 +42,14 @@ class GameOverEngine extends Engine {
     tracePage(TRACK_PAGES.GAMEOVER);
     trackEvent(TRACK_ACTION.GAMEOVER, {
       label: "single",
-      value: this.passCarCount
+      value: this.passCarCount,
     });
 
     const {
       BUTTON_BACK_TOP,
       BUTTON_RESTART,
       GAME_BACKGROUND,
-      GAMEOVER
+      GAMEOVER,
     } = globals.imageObj;
     const { BUTTON_TWITTER_GAMEOVER_SS } = globals.ssObj;
     const { TEXT_GAME_COUNT } = globals.textObj;
@@ -147,16 +147,16 @@ class GameOverEngine extends Engine {
             const utmQuery = createUrchinTrackingModuleQuery({
               campaign: `result-share_${yyyymmdd}`,
               source: "twitter",
-              medium: "social"
+              medium: "social",
             });
             const url = `${config.link.game}?${utmQuery.join("&")}`;
 
             tweetByWebIntent({
               text: getTweetText(count, chara),
               url,
-              hashtags: ["ほのCar", "そこんところ工房"]
+              hashtags: ["ほのCar", "そこんところ工房"],
             });
-          }
+          },
         },
         {
           text: "CANCEL",
@@ -164,9 +164,9 @@ class GameOverEngine extends Engine {
           onClick: () => {
             globals.soundObj.SOUND_BACK.stop();
             globals.soundObj.SOUND_BACK.play();
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
   }
 }

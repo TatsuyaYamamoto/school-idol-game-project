@@ -5,16 +5,16 @@ export const mainOrange = `#f57c00`;
 
 const theme = createMuiTheme({
   typography: {
-    useNextVariants: true
+    useNextVariants: true,
   },
   palette: {
     primary: {
-      main: mainOrange
+      main: mainOrange,
     },
     secondary: {
-      main: mainOrange
-    }
-  }
+      main: mainOrange,
+    },
+  },
 });
 
 export default theme;

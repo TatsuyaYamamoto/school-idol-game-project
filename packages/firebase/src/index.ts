@@ -2,7 +2,6 @@ import { initializeApp, firestore } from "firebase-admin";
 
 import version from "./https/version";
 import p2pCredential from "./https/p2pCredential";
-import uploadImageToTwitter from "./https/uploadImageToTwitter";
 
 import onCreatePlaylog from "./trigger/onCreatePlaylog";
 import onCreateRanking from "./trigger/onCreateRanking";
@@ -15,11 +14,11 @@ import cloudFunctionsWarnLog from "./pubsub/cloudFunctionsWarnLog";
 
 initializeApp();
 firestore().settings({
-  timestampsInSnapshots: true
+  timestampsInSnapshots: true,
 });
 
 // https
-export { version, p2pCredential, uploadImageToTwitter };
+export { version, p2pCredential };
 
 // Trigger
 export {
@@ -27,7 +26,7 @@ export {
   onCreateRanking,
   onWriteUser,
   onUpdatePresence,
-  onUpdateRoom
+  onUpdateRoom,
 };
 
 // pubsub

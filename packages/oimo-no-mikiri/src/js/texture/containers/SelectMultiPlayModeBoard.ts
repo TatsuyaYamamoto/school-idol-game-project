@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { Container, interaction } from "pixi.js";
 
 import { loadTexture, isSupportTouchEvent } from "@sokontokoro/mikan";
@@ -20,10 +21,13 @@ class MenuBoardBackGround extends Sprite {
 }
 
 class SelectMultiPlayModeBoard extends Container {
-  private background: MenuBoardBackGround;
-  private offlineButton: Button;
-  private onlineButton: Button;
-  private backButton: Button;
+  readonly background: MenuBoardBackGround;
+
+  readonly offlineButton: Button;
+
+  readonly onlineButton: Button;
+
+  readonly backButton: Button;
 
   constructor(width: number, height: number) {
     super();
@@ -51,30 +55,30 @@ class SelectMultiPlayModeBoard extends Container {
   public onClick(
     event: ClickEventType,
     fn: (event: interaction.InteractionEvent, mode?: Mode) => void
-  ) {
+  ): void {
     const type = isSupportTouchEvent() ? "touchstart" : "click";
 
     switch (event) {
       case "online":
         this.onlineButton.interactive = true;
-        this.onlineButton.on(type, (event: interaction.InteractionEvent) =>
-          fn(event, Mode.MULTI_ONLINE)
+        this.onlineButton.on(type, (e: interaction.InteractionEvent) =>
+          fn(e, Mode.MULTI_ONLINE)
         );
         break;
 
       case "offline":
         this.offlineButton.interactive = true;
-        this.offlineButton.on(type, (event: interaction.InteractionEvent) =>
-          fn(event, Mode.MULTI_LOCAL)
+        this.offlineButton.on(type, (e: interaction.InteractionEvent) =>
+          fn(e, Mode.MULTI_LOCAL)
         );
         break;
 
       case "back":
         this.backButton.interactive = true;
-        this.backButton.on(type, (event: interaction.InteractionEvent) =>
-          fn(event)
-        );
+        this.backButton.on(type, (e: interaction.InteractionEvent) => fn(e));
         break;
+      default:
+      // do nothing
     }
   }
 }

@@ -22,7 +22,7 @@ const SPINNER_OPTS = {
   // zIndex: 2e9, // The z-index (defaults to 2000000000)
   // className: 'spinner', // The CSS class to assign to the spinner
   top: "50%", // Top position relative to parent
-  left: "15%" // Left position relative to parent
+  left: "15%", // Left position relative to parent
   // shadow: "none", // Box-shadow for the lines
   // position: 'relative' // Element positioning
 };
@@ -61,12 +61,27 @@ export interface IndicatorParams {
 }
 
 /**
+ *
+ */
+export function hideIndicator(): void {
+  // remove all child nodes.
+  // @see https://developer.mozilla.org/en-US/docs/Web/API/Node/childNodes#Remove_all_children_from_a_node
+  while (indicatorNode.firstChild) {
+    indicatorNode.removeChild(indicatorNode.firstChild);
+  }
+
+  if (document.body.contains(indicatorNode)) {
+    document.body.removeChild(indicatorNode);
+  }
+}
+
+/**
  * Create with provided params and show indicator.
  *
  * @param text
  * @param icon
  */
-export function showIndicator({ text, icon }: IndicatorParams) {
+export function showIndicator({ text, icon }: IndicatorParams): void {
   hideIndicator();
 
   textNode.innerText = text;
@@ -87,19 +102,4 @@ export function showIndicator({ text, icon }: IndicatorParams) {
   }
 
   document.body.appendChild(indicatorNode);
-}
-
-/**
- *
- */
-export function hideIndicator() {
-  // remove all child nodes.
-  // @see https://developer.mozilla.org/en-US/docs/Web/API/Node/childNodes#Remove_all_children_from_a_node
-  while (indicatorNode.firstChild) {
-    indicatorNode.removeChild(indicatorNode.firstChild);
-  }
-
-  if (document.body.contains(indicatorNode)) {
-    document.body.removeChild(indicatorNode);
-  }
 }

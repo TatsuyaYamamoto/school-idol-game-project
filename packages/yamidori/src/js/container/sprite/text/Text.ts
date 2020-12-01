@@ -4,7 +4,7 @@ export const basicTextStyle = {
   fontFamily: "Arial",
   fontSize: 36,
   stroke: "#4a1850",
-  strokeThickness: 1
+  strokeThickness: 1,
 };
 
 class Text extends PixiText {

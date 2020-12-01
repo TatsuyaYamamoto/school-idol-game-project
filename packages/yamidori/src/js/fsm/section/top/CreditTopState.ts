@@ -16,6 +16,7 @@ import { Ids as SoundIds } from "../../../resources/sound";
 import { Ids } from "../../../resources/string";
 import { URL } from "../../../Constants";
 import { TRACK_PAGES } from "../../../resources/tracker";
+import { DisplayObject } from "pixi.js";
 
 class CreditTopState extends ViewContainer {
   public static TAG = "CreditTopState";
@@ -81,7 +82,7 @@ class CreditTopState extends ViewContainer {
     );
     this._backToMenuButton.setOnClickListener(this.onBackToMenuButtonClick);
 
-    this.applicationLayer.addChild(
+    this.applicationLayer.addChild<DisplayObject>(
       this._creditBackground,
       this._backToMenuButton,
       this._t28Credit,

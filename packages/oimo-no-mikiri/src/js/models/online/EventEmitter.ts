@@ -1,8 +1,11 @@
 abstract class EventEmitter {
-  private _callbacks: { [eventType: string]: Function[] } = {};
+  // eslint-disable-next-line
+  private _callbacks: { [eventType: string]: ((params: any) => void)[] } = {};
 
-  public once(eventType: string, callback) {
-    const onceCallback = params => {
+  // eslint-disable-next-line
+  public once(eventType: string, callback: (params: any) => void): void {
+    // eslint-disable-next-line
+    const onceCallback = (params: any): void => {
       this.off(eventType, onceCallback);
 
       callback(params);
@@ -11,19 +14,21 @@ abstract class EventEmitter {
     this.on(eventType, onceCallback);
   }
 
-  public on(eventType: string, callback) {
+  // eslint-disable-next-line
+  public on(eventType: string, callback: (params: any) => void): void {
     console.log(`${this.constructor.name}@Add event.`, eventType);
 
     this._callbacks[eventType] = this._callbacks[eventType] || [];
     this._callbacks[eventType].push(callback);
   }
 
-  public off(eventType?: string, callback?) {
+  // eslint-disable-next-line
+  public off(eventType?: string, callback?: (params: any) => void): void {
     console.log(`${this.constructor.name}@Remove event.`, eventType);
 
     if (!eventType) {
-      Object.keys(this._callbacks).forEach(eventType => {
-        delete this._callbacks[eventType];
+      Object.keys(this._callbacks).forEach((key) => {
+        delete this._callbacks[key];
       });
       return;
     }
@@ -34,7 +39,7 @@ abstract class EventEmitter {
 
     if (callback) {
       const targetIndex = this._callbacks[eventType].findIndex(
-        registered => registered === callback
+        (registered) => registered === callback
       );
       this._callbacks[eventType].splice(targetIndex, 1);
     } else {
@@ -42,14 +47,15 @@ abstract class EventEmitter {
     }
   }
 
-  public dispatch(eventType: string, params?: any) {
+  // eslint-disable-next-line
+  public dispatch(eventType: string, params?: any): void {
     console.log(`${this.constructor.name}@Dispatch event.`, eventType, params);
 
     if (!this._callbacks[eventType]) {
       return;
     }
 
-    this._callbacks[eventType].forEach(callback => {
+    this._callbacks[eventType].forEach((callback) => {
       callback(params);
     });
   }

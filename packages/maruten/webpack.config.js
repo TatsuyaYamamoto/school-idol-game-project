@@ -15,45 +15,45 @@ const htmlParams = {
     "ラブライブ！サンシャイン!!,LoveLive！,国木田花丸, はなまる, 津島善子, よしこ, ヨハネ,ゲーム,フリゲ,フリーゲーム",
   ogUrl: "https://games.sokontokoro-factory.net/maruten/",
   ogImage:
-    "https://games.sokontokoro-factory.net/maruten/img/TITLE_LOGO_HANAMARU.png"
+    "https://games.sokontokoro-factory.net/maruten/img/TITLE_LOGO_HANAMARU.png",
 };
 
 isProduction &&
   Object.assign(htmlParams, {
     title: "まるてん！ver.1.1 -そこんところ工房-",
     trackingCode: config.trackingCode.pro,
-    noIndex: false
+    noIndex: false,
   });
 
 const plugins = [
   new HtmlWebpackPlugin({
     templateParameters: htmlParams,
     template: "src/index.ejs",
-    hash: true
+    hash: true,
   }),
   new CopyWebpackPlugin([
     { context: "src/fonts", from: "**/*", to: "fonts" },
     { context: "src/img", from: "**/*", to: "img" },
-    { context: "src/sound", from: "**/*", to: "sound" }
-  ])
+    { context: "src/sound", from: "**/*", to: "sound" },
+  ]),
 ];
 
 module.exports = {
   mode: isProduction ? "production" : "development",
 
   entry: {
-    app: path.resolve(__dirname, "src/js/main.js")
+    app: path.resolve(__dirname, "src/js/main.js"),
   },
 
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "[name].bundle.js"
+    filename: "[name].bundle.js",
   },
 
   devtool: isProduction ? "none" : "source-map",
 
   resolve: {
-    extensions: [".js", ".jsx", ".json"]
+    extensions: [".js", ".jsx", ".json"],
   },
 
   module: {
@@ -64,14 +64,14 @@ module.exports = {
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["@babel/preset-env"]
-          }
-        }
+            presets: ["@babel/preset-env"],
+          },
+        },
       },
       {
         // Inject "window" to this called in create.js
         test: require.resolve("createjs/builds/1.0.0/createjs.js"),
-        use: "imports-loader?this=>window"
+        use: "imports-loader?this=>window",
       },
       { test: /\.css$/, loader: "style-loader!css-loader" },
       { test: /\.svg$/, loader: "url-loader?mimetype=image/svg+xml" },
@@ -82,9 +82,9 @@ module.exports = {
       {
         // Inject "window" to this called in alertify.js
         test: require.resolve("alertify/lib/alertify"),
-        use: "imports-loader?this=>window"
-      }
-    ]
+        use: "imports-loader?this=>window",
+      },
+    ],
   },
 
   optimization: {
@@ -93,15 +93,15 @@ module.exports = {
         commons: {
           test: /[\\/]node_modules[\\/]/,
           name: "vendor",
-          chunks: "all"
-        }
-      }
-    }
+          chunks: "all",
+        },
+      },
+    },
   },
 
   plugins,
 
   // https://github.com/pixijs/pixi-sound/issues/28
   // Resolve node fs module for pixi-sound.
-  node: { fs: "empty" }
+  node: { fs: "empty" },
 };

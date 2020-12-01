@@ -21,18 +21,22 @@ const ANIMATION_TIME_LINE = {
   END_MOVING_CLOSING_LINE_IMAGES: 3000,
   HIDE_CLOSEUP_LINE_IMAGES: 4000,
   START_DECREASING_BRIGHTNESS: 4000,
-  END_DECREASING_BRIGHTNESS: 5000
+  END_DECREASING_BRIGHTNESS: 5000,
 };
 
 class ReadyState extends GameViewState {
   private _playerCharacterCloseup: PlayerCloseUp;
+
   private _opponentCharacterCloseup: OpponentCloseUp;
 
   private _brightnessFilter: filters.ColorMatrixFilter;
+
   private _contrastFilter: filters.ColorMatrixFilter;
 
   private _soundTimeLine;
+
   private _filterTimeLine;
+
   private _closeupTimeLine;
 
   /**
@@ -77,7 +81,7 @@ class ReadyState extends GameViewState {
 
     this.backGroundLayer.filters = [
       this._brightnessFilter,
-      this._contrastFilter
+      this._contrastFilter,
     ];
 
     // Setup animation time lines
@@ -87,9 +91,18 @@ class ReadyState extends GameViewState {
 
     // Create animation promise.
     Promise.all([
-      new Promise(onfulfilled => (this._soundTimeLine.complete = onfulfilled)),
-      new Promise(onfulfilled => (this._filterTimeLine.complete = onfulfilled)),
-      new Promise(onfulfilled => (this._closeupTimeLine.complete = onfulfilled))
+      new Promise(
+        // eslint-disable-next-line no-return-assign
+        (onfulfilled) => (this._soundTimeLine.complete = onfulfilled)
+      ),
+      new Promise(
+        // eslint-disable-next-line no-return-assign
+        (onfulfilled) => (this._filterTimeLine.complete = onfulfilled)
+      ),
+      new Promise(
+        // eslint-disable-next-line no-return-assign
+        (onfulfilled) => (this._closeupTimeLine.complete = onfulfilled)
+      ),
     ]).then(() => {
       dispatchEvent(Events.IS_READY);
     });
@@ -127,11 +140,12 @@ class ReadyState extends GameViewState {
   private _getSoundTimeLine = () => {
     const { PLAY_READY_SOUND } = ANIMATION_TIME_LINE;
     const timeLine = anime.timeline({ autoplay: false });
-
+    // TODO
+    // eslint-disable-next-line
     // @ts-ignore
     timeLine.add({
       offset: PLAY_READY_SOUND,
-      begin: () => play(SoundIds.SOUND_READY)
+      begin: () => play(SoundIds.SOUND_READY),
     });
 
     return timeLine;
@@ -145,43 +159,43 @@ class ReadyState extends GameViewState {
   private _getFilterAnimeTimeLine = () => {
     const values = {
       brightness: 1,
-      contrast: 0
+      contrast: 0,
     };
 
     const {
       START_INCREASING_BRIGHTNESS,
       END_INCREASING_BRIGHTNESS,
       START_DECREASING_BRIGHTNESS,
-      END_DECREASING_BRIGHTNESS
+      END_DECREASING_BRIGHTNESS,
     } = ANIMATION_TIME_LINE;
 
     const timeLine = anime.timeline({
-      // @ts-ignore
-      targets: values,
-      easing: "linear",
       autoplay: false,
       update: () => {
         this._brightnessFilter.contrast(values.contrast);
         this._contrastFilter.brightness(values.brightness);
-      }
+      },
     });
 
     timeLine
       // black out
-      // @ts-ignore
       .add({
+        targets: values,
         brightness: 0.2,
         contrast: 0.8,
         offset: START_INCREASING_BRIGHTNESS,
-        duration: END_INCREASING_BRIGHTNESS - START_INCREASING_BRIGHTNESS
+        duration: END_INCREASING_BRIGHTNESS - START_INCREASING_BRIGHTNESS,
+        easing: "linear",
       })
 
       // white out
       .add({
+        targets: values,
         brightness: 1,
         contrast: 0,
         offset: START_DECREASING_BRIGHTNESS,
-        duration: END_DECREASING_BRIGHTNESS - START_DECREASING_BRIGHTNESS
+        duration: END_DECREASING_BRIGHTNESS - START_DECREASING_BRIGHTNESS,
+        easing: "linear",
       });
 
     return timeLine;
@@ -195,52 +209,54 @@ class ReadyState extends GameViewState {
   private _getCloseupTimeline = () => {
     const values = {
       playerX: this.viewWidth * 1,
-      opponentX: this.viewWidth * 0
+      opponentX: this.viewWidth * 0,
     };
 
     const {
       SHOW_CLOSEUP_LINE_IMAGES,
       START_MOVING_CLOSEUP_LINE_IMAGES,
       END_MOVING_CLOSING_LINE_IMAGES,
-      HIDE_CLOSEUP_LINE_IMAGES
+      HIDE_CLOSEUP_LINE_IMAGES,
     } = ANIMATION_TIME_LINE;
 
     const timeLine = anime.timeline({
-      // @ts-ignore
-      easing: "linear",
-      targets: values,
       autoplay: false,
       update: () => {
         this._playerCharacterCloseup.x = values.playerX;
         this._opponentCharacterCloseup.x = values.opponentX;
-      }
+      },
     });
 
     timeLine
       // show
-      // @ts-ignore
       .add({
+        targets: values,
         offset: SHOW_CLOSEUP_LINE_IMAGES,
         begin: () => {
           this._playerCharacterCloseup.visible = true;
           this._opponentCharacterCloseup.visible = true;
-        }
+        },
+        easing: "linear",
       })
       // move
       .add({
+        targets: values,
         offset: START_MOVING_CLOSEUP_LINE_IMAGES,
         duration:
           END_MOVING_CLOSING_LINE_IMAGES - START_MOVING_CLOSEUP_LINE_IMAGES,
         playerX: this.viewWidth * 2,
-        opponentX: -1 * this.viewWidth * 1
+        opponentX: -1 * this.viewWidth * 1,
+        easing: "linear",
       })
       // hide
       .add({
+        targets: values,
         offset: HIDE_CLOSEUP_LINE_IMAGES,
         begin: () => {
           this._playerCharacterCloseup.visible = false;
           this._opponentCharacterCloseup.visible = false;
-        }
+        },
+        easing: "linear",
       });
 
     return timeLine;

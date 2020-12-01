@@ -3,9 +3,10 @@ import {
   dispatchEvent,
   t,
   play,
-  tracePage
+  tracePage,
 } from "@sokontokoro/mikan";
 
+import { DisplayObject } from "pixi.js";
 import TopViewState from "./TopViewState";
 import { Events } from "../TopView";
 
@@ -21,9 +22,13 @@ import { URL } from "../../../Constants";
 
 class CreditState extends TopViewState {
   private _t28Credit: CreditItem;
+
   private _sanzashiCredit: CreditItem;
+
   private _onjinCredit: CreditItem;
+
   private _loveliveCredit: CreditItem;
+
   private _kirbyCredit: CreditItem;
 
   private _backToMenuButton: BackToMenuButton;
@@ -90,7 +95,7 @@ class CreditState extends TopViewState {
 
     this.backGroundLayer.addChild(this.background);
 
-    this.applicationLayer.addChild(
+    this.applicationLayer.addChild<DisplayObject>(
       this._backToMenuButton,
       this._t28Credit,
       this._sanzashiCredit,

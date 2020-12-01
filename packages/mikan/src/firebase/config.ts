@@ -4,7 +4,7 @@ export const devConfig = {
   databaseURL: "https://school-idol-game-development.firebaseio.com",
   projectId: "school-idol-game-development",
   storageBucket: "school-idol-game-development.appspot.com",
-  messagingSenderId: "121430316162"
+  messagingSenderId: "121430316162",
 };
 
 export const proConfig = {
@@ -13,5 +13,5 @@ export const proConfig = {
   databaseURL: "https://school-idol-game-production.firebaseio.com",
   projectId: "school-idol-game-production",
   storageBucket: "school-idol-game-production.appspot.com",
-  messagingSenderId: "1018493283718"
+  messagingSenderId: "1018493283718",
 };

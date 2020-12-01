@@ -41,22 +41,29 @@ const TIMELINE = {
   CHARACTER_EXTEND: 100,
   HAMMER_MOVING: 600,
   CHARACTER_BOU_WAITING: 600,
-  CHARACTER_BOU_ROTATION: 100
+  CHARACTER_BOU_ROTATION: 100,
 };
 const DURATION_SCALE = 1;
 
 class BrandLogoAnimation extends Container {
-  private _width: number;
-  private _height: number;
-  private _timeoutAfterComplete: number;
+  readonly _width: number;
 
-  private _hammer: HammerSprite;
-  private _characters: BrandLogoText[];
+  readonly _height: number;
 
+  readonly _timeoutAfterComplete: number;
+
+  readonly _hammer: HammerSprite;
+
+  readonly _characters: BrandLogoText[];
+
+  // eslint-disable-next-line
   private _hammerTimeLine: any;
+
+  // eslint-disable-next-line
   private _charTimeLine: any;
 
-  private _promise: Promise<any>;
+  // eslint-disable-next-line
+  readonly _promise: Promise<any>;
 
   constructor(width?: number, height?: number) {
     super();
@@ -66,8 +73,8 @@ class BrandLogoAnimation extends Container {
     this._timeoutAfterComplete = 500;
 
     // setup sprites
-    this._characters = BRAND_CHARACTERS.map(char => new BrandLogoText(char));
-    this._characters.forEach(c => this.addChild(c));
+    this._characters = BRAND_CHARACTERS.map((char) => new BrandLogoText(char));
+    this._characters.forEach((c) => this.addChild(c));
 
     this._hammer = new HammerSprite();
     this._hammer.position.set(
@@ -82,8 +89,8 @@ class BrandLogoAnimation extends Container {
 
     // set promise that fire on complete all animation.
     this._promise = Promise.all([
-      new Promise(resolve => this.defineHammerTimeLineItems(resolve)),
-      new Promise(resolve => this.defineCharacterTimeLineItems(resolve))
+      new Promise((resolve) => this.defineHammerTimeLineItems(resolve)),
+      new Promise((resolve) => this.defineCharacterTimeLineItems(resolve)),
     ]);
   }
 
@@ -92,51 +99,52 @@ class BrandLogoAnimation extends Container {
    *
    * @return {Promise.<*>|*}
    */
-  start() {
+  // eslint-disable-next-line
+  start(): Promise<any> {
     this._hammerTimeLine.play();
     this._charTimeLine.play();
 
     return this._promise;
   }
 
-  private defineHammerTimeLineItems(onComplete: Function) {
+  private defineHammerTimeLineItems(onComplete: () => void) {
     this._hammerTimeLine
       .add({
         targets: this._hammer,
         rotation: [
           {
             value: (-90 * Math.PI) / 180,
-            duration: TIMELINE.EXPANSION * DURATION_SCALE
+            duration: TIMELINE.EXPANSION * DURATION_SCALE,
           },
           { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE },
           {
             value: (-90 * Math.PI) / 180,
-            duration: TIMELINE.EXPANSION * DURATION_SCALE
+            duration: TIMELINE.EXPANSION * DURATION_SCALE,
           },
           { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE },
           {
             value: (-90 * Math.PI) / 180,
-            duration: TIMELINE.EXPANSION * DURATION_SCALE
+            duration: TIMELINE.EXPANSION * DURATION_SCALE,
           },
           { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE },
           {
             value: (-90 * Math.PI) / 180,
-            duration: TIMELINE.EXPANSION * DURATION_SCALE
+            duration: TIMELINE.EXPANSION * DURATION_SCALE,
           },
           { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE },
           {
             value: (-90 * Math.PI) / 180,
-            duration: TIMELINE.EXPANSION * DURATION_SCALE
+            duration: TIMELINE.EXPANSION * DURATION_SCALE,
           },
           { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE },
           {
             value: (-90 * Math.PI) / 180,
-            duration: TIMELINE.EXPANSION * DURATION_SCALE
+            duration: TIMELINE.EXPANSION * DURATION_SCALE,
           },
-          { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE }
+          { value: 0, duration: TIMELINE.SHRINK * DURATION_SCALE },
         ],
         easing: "easeOutQuad",
-        delay: TIMELINE.HAMMER_DELAY * DURATION_SCALE
+        delay: TIMELINE.HAMMER_DELAY * DURATION_SCALE,
       })
       .add({
         targets: this._hammer,
@@ -144,33 +152,35 @@ class BrandLogoAnimation extends Container {
           {
             value: this.x + this._width * 0.36,
             easing: "linear",
-            duration: TIMELINE.HAMMER_MOVING
-          }
+            duration: TIMELINE.HAMMER_MOVING,
+          },
         ],
         y: [
           {
             value: this.y - this._height * 0.18,
             easing: "easeOutQuad",
-            duration: TIMELINE.HAMMER_MOVING / 2
+            duration: TIMELINE.HAMMER_MOVING / 2,
           },
           {
             value: this.y - this._height * 0.05,
             easing: "easeOutQuad",
-            duration: TIMELINE.HAMMER_MOVING / 2
-          }
+            duration: TIMELINE.HAMMER_MOVING / 2,
+          },
         ],
         rotation: {
           value: 2 * Math.PI * 5 - Math.PI / 4,
           duration: TIMELINE.HAMMER_MOVING,
-          easing: "linear"
+          easing: "linear",
         },
         complete: () => {
-          onComplete && onComplete();
-        }
+          if (onComplete) {
+            onComplete();
+          }
+        },
       });
   }
 
-  private defineCharacterTimeLineItems(onComplete: Function) {
+  private defineCharacterTimeLineItems(onComplete: () => void) {
     // 各文字の最終的なx方向の位置を計算
     const positions = this._characters.map((_, index, array) => {
       const cellTotal = array.length + 5;
@@ -178,7 +188,8 @@ class BrandLogoAnimation extends Container {
       return (cellIndex - cellTotal / 2) / cellTotal;
     });
 
-    this._characters.forEach(c => (c.scale.y = 0));
+    // eslint-disable-next-line
+    this._characters.forEach((c) => (c.scale.y = 0));
 
     this._charTimeLine
       /**
@@ -187,8 +198,9 @@ class BrandLogoAnimation extends Container {
        */
       .add({
         targets: this._characters // 'そこんところ' only
-          .filter(c => c.text !== "工" && c.text !== "房")
-          .map(c => c.scale),
+          .filter((c) => c.text !== "工" && c.text !== "房")
+          .map((c) => c.scale),
+        // eslint-disable-next-line
         delay: (_el: any, i: number, _l: any) => {
           return (
             ((TIMELINE.EXPANSION + TIMELINE.SHRINK) * i + 50) * DURATION_SCALE
@@ -198,44 +210,48 @@ class BrandLogoAnimation extends Container {
           {
             value: 1,
             duration: TIMELINE.EXPANSION * DURATION_SCALE,
-            easing: "easeInOutExpo"
+            easing: "easeInOutExpo",
           },
           {
             value: 0,
             duration: TIMELINE.SHRINK * DURATION_SCALE,
-            easing: "easeInQuart"
-          }
+            easing: "easeInQuart",
+          },
         ],
         complete: () => {
-          this._characters.forEach(c => {
+          this._characters.forEach((c) => {
+            // eslint-disable-next-line
             c.scale.x = 0;
+            // eslint-disable-next-line
             c.scale.y = 1;
           });
-        }
+        },
       })
       /**
        * 2-a. Move to each last position.
        */
       .add({
         targets: this._characters,
+        // eslint-disable-next-line
         x: (_el: any, i: number, _l: any) =>
           this.x + this._width * positions[i],
         duration: TIMELINE.CHARACTER_EXTEND * DURATION_SCALE,
+        // eslint-disable-next-line
         delay: (_el: any, _i: number, _l: any) => {
           return TIMELINE.CHARACTER_WAITING * DURATION_SCALE;
         },
-        easing: "linear"
+        easing: "linear",
       })
       /**
        * 2-b. Reset each scale.
        * Arrange offset time to fire at the same time of 2-a moving.
        */
       .add({
-        targets: this._characters.map(c => c.scale),
+        targets: this._characters.map((c) => c.scale),
         x: 1,
         duration: TIMELINE.CHARACTER_EXTEND * DURATION_SCALE,
         offset: `-=${TIMELINE.CHARACTER_EXTEND * DURATION_SCALE}`, // Starts before the previous animation ends
-        easing: "linear"
+        easing: "linear",
       })
       /**
        * 3. Rotate '房'
@@ -252,7 +268,7 @@ class BrandLogoAnimation extends Container {
             () => onComplete && onComplete(),
             this._timeoutAfterComplete
           );
-        }
+        },
       });
   }
 }

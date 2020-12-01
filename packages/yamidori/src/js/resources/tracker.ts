@@ -8,11 +8,11 @@ export const TRACK_PAGES = {
   CREDIT: `${basePath}#/credit`,
   CHARA_SELECT: `${basePath}/#/chara_select`,
   GAME: `${basePath}/#/game`,
-  GAMEOVER: `${basePath}/#/gameover`
+  GAMEOVER: `${basePath}/#/gameover`,
 };
 
 export const TRACK_ACTION = {
   CLICK: "click",
   SELECT_CHARA: "select_chara",
-  GAMEOVER: "gameover"
+  GAMEOVER: "gameover",
 };

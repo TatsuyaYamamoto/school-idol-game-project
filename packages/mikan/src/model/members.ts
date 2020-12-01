@@ -21,10 +21,6 @@ export type Member =
   | "mari"
   | "ruby";
 
-export function getMemberIcon(member: Member): string {
-  return MEMBERS[member].icon;
-}
-
 export interface MemberDetail {
   icon: string;
   name: {
@@ -39,64 +35,64 @@ export const MEMBERS: { [K in Member]: MemberDetail } = {
     icon: `ほ`,
     name: {
       ja: "ほのかちゃん",
-      en: "Honoka-chan"
-    }
+      en: "Honoka-chan",
+    },
   },
   eri: {
     icon: `Я`,
     name: {
       ja: "えりちか",
-      en: "Eri-chika"
-    }
+      en: "Eri-chika",
+    },
   },
   kotori: {
     icon: "🐤",
     name: {
       ja: "ことりちゃん",
-      en: "Kotori-chan"
-    }
+      en: "Kotori-chan",
+    },
   },
   umi: {
     icon: `🎯`,
     name: {
       ja: "うみちゃん",
-      en: "Umi-chan"
-    }
+      en: "Umi-chan",
+    },
   },
   rin: {
     icon: `🐱`,
     name: {
       ja: "りんちゃん",
-      en: "Rin-chan"
-    }
+      en: "Rin-chan",
+    },
   },
   maki: {
     icon: `⭐`,
     name: {
       ja: "まきちゃん",
-      en: "Maki-chan"
-    }
+      en: "Maki-chan",
+    },
   },
   nozomi: {
     icon: `🌙`,
     name: {
       ja: "のぞみちゃん",
-      en: "Nozomi-chan"
-    }
+      en: "Nozomi-chan",
+    },
   },
   hanayo: {
     icon: `🍚`,
     name: {
       ja: "かよちん",
-      en: "Koyo-chin"
-    }
+      en: "Koyo-chin",
+    },
   },
   nico: {
     icon: `😊︎`,
     name: {
       ja: "にこにー",
-      en: "Niconi"
-    }
+      en: "Niconi",
+    },
   },
 
   // Aqours
@@ -104,63 +100,67 @@ export const MEMBERS: { [K in Member]: MemberDetail } = {
     icon: `🍊`,
     name: {
       ja: "ちかちゃん",
-      en: "Chika-chan"
-    }
+      en: "Chika-chan",
+    },
   },
   riko: {
     icon: `🎹`,
     name: {
       ja: "りこちゃん",
-      en: "Riko-chan"
-    }
+      en: "Riko-chan",
+    },
   },
   kanan: {
     icon: `🐬`,
     name: {
       ja: "かなんちゃん",
-      en: "Kanan-chan"
-    }
+      en: "Kanan-chan",
+    },
   },
   dia: {
     icon: `🌺`,
     name: {
       ja: "ダイヤちゃん",
-      en: "Dia-chan"
-    }
+      en: "Dia-chan",
+    },
   },
   you: {
     icon: `🚢`,
     name: {
       ja: "ようちゃん",
-      en: "You-chan"
-    }
+      en: "You-chan",
+    },
   },
   yoshiko: {
     icon: `👿`,
     name: {
       ja: "<s>よしこ</s>ヨハネ",
-      en: "<s>Yoshiko</s>Yohane"
-    }
+      en: "<s>Yoshiko</s>Yohane",
+    },
   },
   hanamaru: {
     icon: `💮`,
     name: {
       ja: "はなまるちゃん",
-      en: "Hanamaru-chan"
-    }
+      en: "Hanamaru-chan",
+    },
   },
   mari: {
     icon: `✨`,
     name: {
       ja: "マリちゃん",
-      en: "Mari-chan"
-    }
+      en: "Mari-chan",
+    },
   },
   ruby: {
     icon: `🍭`,
     name: {
       ja: "ルビィちゃん",
-      en: "Ruby-chan"
-    }
-  }
+      en: "Ruby-chan",
+    },
+  },
 };
+
+export function getMemberIcon(member: Member): string {
+  return MEMBERS[member].icon;
+}

@@ -1,3 +1,5 @@
+// TODO
+/* eslint-disable max-classes-per-file */
 import { t, loadTexture, loadFrames } from "@sokontokoro/mikan";
 
 import { FrameStructureIndexes } from "./Character";
@@ -14,7 +16,7 @@ const FRAMES: FrameStructureIndexes = {
   LOSE: [4, 5],
   WIN: [6, 7],
   LOSE_TEXTURE: 4,
-  WIN_TEXTURE: 6
+  WIN_TEXTURE: 6,
 };
 
 /**
@@ -30,12 +32,10 @@ class ShitakeCloseUp extends OpponentCloseUp {
  * @class
  */
 class Shitake extends Opponent {
+  readonly name = t(StringIds[StringIds.CHARA_NAME_SHITAKE]);
+
   public constructor() {
     super(loadFrames(Ids.CHARACTER_SHITAKE), FRAMES, new ShitakeCloseUp());
-  }
-
-  public get name(): string {
-    return t(StringIds[StringIds.CHARA_NAME_SHITAKE]);
   }
 }
 

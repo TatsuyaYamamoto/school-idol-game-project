@@ -60,7 +60,7 @@ export default class GameEngine {
         Util.addChildren([
           State.object.image.BACKGROUND,
           State.object.text.GAMESTART_COUNT,
-          this.player.img
+          this.player.img,
         ]);
         State.gameStage.update();
         break;
@@ -92,7 +92,7 @@ export default class GameEngine {
           State.object.image.BUTTON_TOP,
           State.object.image.BUTTON_BOTTOM,
           this.player.img,
-          State.object.text.SCORE_COUNT
+          State.object.text.SCORE_COUNT,
         ]);
         // frameを初期化
         this.gameFrame = 0;
@@ -232,7 +232,7 @@ export default class GameEngine {
       },
       remove: () => {
         window.removeEventListener("keyup", this.keyDownEvent);
-      }
+      },
     };
   }
 
@@ -295,7 +295,7 @@ export default class GameEngine {
         State.object.image.BUTTON_RIGHT.removeAllEventListeners("mousedown");
         State.object.image.BUTTON_TOP.removeAllEventListeners("mousedown");
         State.object.image.BUTTON_BOTTOM.removeAllEventListeners("mousedown");
-      }
+      },
     };
   }
 }

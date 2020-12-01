@@ -21,7 +21,7 @@ interface Props {
   onNotGotIt: () => void;
 }
 
-const HelpPanel: React.SFC<Props> = props => {
+const HelpPanel: React.SFC<Props> = (props) => {
   const {
     title,
     body,
@@ -29,7 +29,7 @@ const HelpPanel: React.SFC<Props> = props => {
     language,
     onChange,
     onGotIt,
-    onNotGotIt
+    onNotGotIt,
   } = props;
   const gotIt = language === "ja" ? "分かった！" : "Got it!";
   const notGotIt = language === "ja" ? "解決しない..." : "Not solved...";

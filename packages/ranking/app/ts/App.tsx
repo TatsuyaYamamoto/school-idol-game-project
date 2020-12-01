@@ -3,7 +3,7 @@ import {
   HashRouter as Router,
   Redirect,
   Route,
-  Switch
+  Switch,
 } from "react-router-dom";
 
 import "react-virtualized/styles.css";
@@ -47,7 +47,7 @@ const App = () => (
           <Route
             exact
             path={`/ranking/:game(${gameIds.join("|")})`}
-            render={props => {
+            render={(props) => {
               tracePage();
               const language = getLanguage(props.location.search);
               return <Index language={language} {...props} />;
@@ -55,7 +55,7 @@ const App = () => (
           />
           <Route
             path={`/help/`}
-            render={props => {
+            render={(props) => {
               tracePage();
               const language = getLanguage(props.location.search);
               return <Help language={language} {...props} />;

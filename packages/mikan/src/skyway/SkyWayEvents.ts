@@ -11,7 +11,7 @@ export enum SkyWayEvents {
   PEER_ERROR = "skyway:peer-error",
   CONNECTION_OPENED = "skyway:connection-opened",
   DATA = "skyway:data",
-  CONNECTION_CLOSED = "skyway:connection-closed"
+  CONNECTION_CLOSED = "skyway:connection-closed",
 }
 
 /**
@@ -21,5 +21,5 @@ export enum RoomEvents {
   MEMBER_LOCK = "room:member-lock",
   MEMBER_FULFILLED = "room:member-fulfilled",
   MEMBER_LEFT = "room:member-left",
-  ALL_CONNECTIONS_READY = "room:all-connections-ready"
+  ALL_CONNECTIONS_READY = "room:all-connections-ready",
 }

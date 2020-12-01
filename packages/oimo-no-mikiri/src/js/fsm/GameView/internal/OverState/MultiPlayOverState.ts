@@ -3,13 +3,10 @@ import {
   createUrchinTrackingModuleQuery,
   t,
   trackEvent,
-  tweetByWebIntent
+  tweetByWebIntent,
 } from "@sokontokoro/mikan";
 
-import {
-  default as OverState,
-  EnterParams as AbstractEnterParams
-} from "./OverState";
+import OverState, { EnterParams as AbstractEnterParams } from "./OverState";
 
 import PlayerWins from "../../../../texture/containers/GameResultPaper/PlayerWins";
 import TweetButton from "../../../../texture/sprite/button/TweetButton";
@@ -69,21 +66,21 @@ class MultiPlayOverState extends OverState {
   private _onClickTweetButton = (winner: Actor, winnerWins, loserWins) => {
     trackEvent(Action.TAP, {
       category: Category.BUTTON,
-      label: "result_tweet"
+      label: "result_tweet",
     });
 
     let tweetText;
     if (winner === Actor.PLAYER) {
       tweetText = t(StringIds[StringIds.MULTI_GAME_RESULT_TWEET_HANAMARU_WIN], {
         winnerWins,
-        loserWins
+        loserWins,
       });
     }
 
     if (winner === Actor.OPPONENT) {
       tweetText = t(StringIds[StringIds.MULTI_GAME_RESULT_TWEET_RUBY_WIN], {
         winnerWins,
-        loserWins
+        loserWins,
       });
     }
 
@@ -91,7 +88,7 @@ class MultiPlayOverState extends OverState {
     const utmQuery = createUrchinTrackingModuleQuery({
       campaign: `result-share_${yyyymmdd}`,
       source: "twitter",
-      medium: "social"
+      medium: "social",
     });
     const url = `${URL.OIMO_NO_MIKIRI}?${utmQuery.join("&")}`;
     const hashtags = ["おいものみきり", "そこんところ工房"];
@@ -99,7 +96,7 @@ class MultiPlayOverState extends OverState {
     tweetByWebIntent({
       text: tweetText,
       url,
-      hashtags
+      hashtags,
     });
   };
 }

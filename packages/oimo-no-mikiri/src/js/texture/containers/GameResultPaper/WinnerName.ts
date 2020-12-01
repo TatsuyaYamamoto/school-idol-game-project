@@ -11,7 +11,7 @@ export class WinnerName extends Text {
       fill: "#ff504d",
       stroke: "#ed514e",
       strokeThickness: 2,
-      padding: 5 // prevent to cut off words.
+      padding: 5, // prevent to cut off words.
     });
   }
 }

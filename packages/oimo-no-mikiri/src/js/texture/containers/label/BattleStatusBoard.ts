@@ -1,4 +1,4 @@
-import { Container, TextStyleOptions } from "pixi.js";
+import { Container } from "pixi.js";
 
 import { t } from "@sokontokoro/mikan";
 
@@ -8,31 +8,36 @@ import { Ids as StringIds } from "../../../resources/string";
 
 const winsLabelStyle = {
   fontFamily: "g_brushtappitsu_freeH",
-  fontSize: 35
+  fontSize: 35,
 };
 
 const winsStyle = {
   fontFamily: "g_brushtappitsu_freeH",
-  fontSize: 60
+  fontSize: 60,
 };
 
 const battleLeftLabelStyle = {
   fontFamily: "g_brushtappitsu_freeH",
-  fontSize: 35
+  fontSize: 35,
 };
 
 const battleLeftStyle = {
   fontFamily: "g_brushtappitsu_freeH",
-  fontSize: 60
+  fontSize: 60,
 };
 
 class BattleStatusBoard extends Container {
-  private _onePlayerWinsLabel: Text;
-  private _onePlayerWins: Text;
-  private _twoPlayerWinsLabel: Text;
-  private _twoPlayerWins: Text;
-  private _battleLeftLabel: Text;
-  private _battleLeft: Text;
+  readonly _onePlayerWinsLabel: Text;
+
+  readonly _onePlayerWins: Text;
+
+  readonly _twoPlayerWinsLabel: Text;
+
+  readonly _twoPlayerWins: Text;
+
+  readonly _battleLeftLabel: Text;
+
+  readonly _battleLeft: Text;
 
   constructor(width: number, height: number) {
     super();

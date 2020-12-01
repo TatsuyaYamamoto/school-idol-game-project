@@ -3,10 +3,10 @@ import { IndexRange } from "react-virtualized";
 import AutoBind from "autobind-decorator";
 
 import {
-  firebaseDb,
+  FirebaseClient,
   MetadataDocument,
   RankItemDocument,
-  getLogger
+  getLogger,
 } from "@sokontokoro/mikan";
 
 import RankingList from "../molecules/RankingList";
@@ -38,7 +38,7 @@ export default class RankingSection extends React.Component<Props, State> {
       hasMoreItem: true,
       rankingList: [],
       lastVisibleSnapshot: null,
-      lastUpdatedAt: new Date()
+      lastUpdatedAt: new Date(),
     };
   }
 
@@ -50,7 +50,7 @@ export default class RankingSection extends React.Component<Props, State> {
         game: nextProps.game,
         hasMoreItem: true,
         rankingList: [],
-        lastVisibleSnapshot: null
+        lastVisibleSnapshot: null,
       };
     }
 
@@ -76,24 +76,23 @@ export default class RankingSection extends React.Component<Props, State> {
     const { lastVisibleSnapshot, game } = this.state;
 
     const limit = stopIndex - startIndex + 1;
-    const metadataRef = firebaseDb.collection("metadata").doc(game);
+    const metadataRef = FirebaseClient.firestore
+      .collection("metadata")
+      .doc(game);
     const metadata = (await metadataRef.get()).data() as MetadataDocument;
 
-    let scores: firebase.firestore.QuerySnapshot;
-    if (lastVisibleSnapshot) {
-      scores = await metadata.rankingRef
-        .collection("list")
-        .orderBy("point", "desc")
-        .startAfter(lastVisibleSnapshot)
-        .limit(limit)
-        .get();
-    } else {
-      scores = await metadata.rankingRef
-        .collection("list")
-        .orderBy("point", "desc")
-        .limit(limit)
-        .get();
-    }
+    let scores = lastVisibleSnapshot
+      ? await metadata.rankingRef
+          .collection("list")
+          .orderBy("point", "desc")
+          .startAfter(lastVisibleSnapshot)
+          .limit(limit)
+          .get()
+      : await metadata.rankingRef
+          .collection("list")
+          .orderBy("point", "desc")
+          .limit(limit)
+          .get();
 
     if (scores.size === 0) {
       logger.debug("no more scores");
@@ -101,7 +100,7 @@ export default class RankingSection extends React.Component<Props, State> {
       return;
     }
 
-    this.setState(state => {
+    this.setState((state) => {
       if (state.game !== game) {
         logger.debug(
           `active game; ${game} is changed. ignore this game ranking list push.`
@@ -110,7 +109,7 @@ export default class RankingSection extends React.Component<Props, State> {
       }
 
       const pushedItems = state.rankingList;
-      scores.forEach(r => {
+      scores.forEach((r) => {
         const doc = r.data() as RankItemDocument;
         pushedItems.push(
           <RankItem
@@ -125,10 +124,10 @@ export default class RankingSection extends React.Component<Props, State> {
       const newState = {
         ...state,
         rankingList: pushedItems,
-        lastVisibleSnapshot: scores.docs[scores.size - 1]
+        lastVisibleSnapshot: scores.docs[scores.size - 1],
       };
       if (metadata.updatedAt) {
-        newState.lastUpdatedAt = (metadata.updatedAt as firebase.firestore.Timestamp).toDate();
+        newState.lastUpdatedAt = (metadata.updatedAt as any).toDate();
       }
 
       return newState;

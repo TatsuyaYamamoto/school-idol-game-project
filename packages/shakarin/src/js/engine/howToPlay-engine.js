@@ -29,7 +29,7 @@ export default class HowToPlayEngine extends GameEngine {
       State.object.image.BUTTON_BOTTOM,
       State.object.image.BUTTON_BACK_MENU_FROM_HOW,
       State.object.text.HOW_TO_PLAY,
-      this.player.img
+      this.player.img,
     ]);
 
     // HowToPlayアニメーション開始
@@ -82,7 +82,7 @@ export default class HowToPlayEngine extends GameEngine {
         State.object.image.BUTTON_BACK_MENU_FROM_HOW.removeAllEventListeners(
           "mousedown"
         );
-      }
+      },
     };
   }
 }

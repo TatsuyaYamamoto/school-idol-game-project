@@ -1,10 +1,11 @@
-import { database, auth } from "firebase";
+import firebase from "firebase/app";
+import { FirebaseClient } from "@sokontokoro/mikan";
 
+import { isUndefined } from "util";
 import Mode from "../Mode";
 import Game from "../Game";
 import Actor from "../Actor";
 import OnlineBattle from "./OnlineBattle";
-import { isUndefined } from "util";
 
 export enum GameEvents {
   REQUESTED_START = "requested_start",
@@ -13,41 +14,43 @@ export enum GameEvents {
   MEMBER_JOINED = "member_joined",
   FULFILLED_MEMBERS = "fulfilled_members",
   MEMBER_LEFT = "member_left",
-  ROUND_PROCEED = "round_proceed"
+  ROUND_PROCEED = "round_proceed",
 }
 
 class OnlineGame extends Game {
-  private _id: string;
-  private _members: Map<string, boolean>;
-  private _gameRef: database.Reference;
+  readonly _id: string;
+
+  readonly _members: Map<string, boolean>;
+
+  private _gameRef: firebase.database.Reference;
 
   constructor(id: string) {
     super(Mode.MULTI_ONLINE);
     this._id = id;
     this._members = new Map<string, boolean>();
 
-    this._gameRef = database().ref(`/games/${this._id}`);
+    this._gameRef = FirebaseClient.database.ref(
+      `/oimo-no-mikiri/games/${this._id}`
+    );
   }
 
-  /************************************************************************************
+  /** **********************************************************************************
    * Static methods
    */
-  public static async create() {
-    const gameId = database()
-      .ref()
-      .child("games")
-      .push().key;
-    const ref = database().ref(`games/${gameId}`);
+  public static async create(): Promise<OnlineGame> {
+    const gamesRef = FirebaseClient.database.ref(`/oimo-no-mikiri/games`);
+    const newGameId = gamesRef.push().key;
+    const newGameRef = gamesRef.child(newGameId);
 
-    await ref.set({
-      createdAt: database.ServerValue.TIMESTAMP
+    await newGameRef.set({
+      createdAt: firebase.database.ServerValue.TIMESTAMP,
     });
-    ref.onDisconnect().set(null);
+    newGameRef.onDisconnect().set(null);
 
-    return new OnlineGame(gameId);
+    return new OnlineGame(newGameId);
   }
 
-  /************************************************************************************
+  /** **********************************************************************************
    * Accessor
    */
 
@@ -72,7 +75,7 @@ class OnlineGame extends Game {
   }
 
   public get ownId(): string {
-    return auth().currentUser.uid;
+    return FirebaseClient.auth.currentUser.uid;
   }
 
   public get opponentId(): string {
@@ -82,7 +85,7 @@ class OnlineGame extends Game {
 
     let opponentId = null;
     this.members.forEach((value, id) => {
-      if (id !== auth().currentUser.uid) {
+      if (id !== FirebaseClient.auth.currentUser.uid) {
         opponentId = id;
       }
     });
@@ -94,43 +97,42 @@ class OnlineGame extends Game {
     return opponentId;
   }
 
-  /************************************************************************************
+  /** **********************************************************************************
    * Status change methods
    */
 
-  public join() {
-    const { uid } = auth().currentUser;
+  public join(): Promise<void> {
+    const { uid } = FirebaseClient.auth.currentUser;
 
-    const checkGameExistPromise = gameSnapshot =>
+    const checkGameExistPromise = (gameSnapshot) =>
       new Promise((resolve, reject) => {
         if (gameSnapshot.exists()) {
           resolve();
         } else {
-          reject("no_game");
+          reject(new Error("no_game"));
         }
       });
 
     const joinInTransaction = () =>
-      this.transaction(current => {
+      this.transaction((current) => {
         if (!current) {
           return current;
         }
 
         if (!current.members || Object.keys(current.members).length < 2) {
-          current.members = Object.assign({}, current.members, {
-            [uid]: false
-          });
+          // eslint-disable-next-line no-param-reassign
+          current.members = { ...current.members, [uid]: false };
         }
 
         return current;
       }, "join_game");
 
-    const checkFulfilledMemberPromise = ({ committed, snapshot }) =>
+    const checkFulfilledMemberPromise = ({ snapshot }) =>
       new Promise((resolve, reject) => {
         if (snapshot.hasChild(`members/${uid}`)) {
           resolve();
         } else {
-          reject("already_fulfilled");
+          reject(new Error("already_fulfilled"));
         }
       });
 
@@ -145,46 +147,40 @@ class OnlineGame extends Game {
         this._gameRef
           .child("currentRound")
           .on("value", this.onCurrentRoundUpdated);
-        this._gameRef
-          .child(`members/${uid}`)
-          .onDisconnect()
-          .set(null);
+        this._gameRef.child(`members/${uid}`).onDisconnect().set(null);
       });
   }
 
-  public async remove() {
+  public async remove(): Promise<void> {
     await this.release();
     await this._gameRef.set(null);
   }
 
-  public async leave() {
-    const { uid } = auth().currentUser;
+  public async leave(): Promise<void> {
+    const { uid } = FirebaseClient.auth.currentUser;
     await this._gameRef.child("members").update({
-      [uid]: null
+      [uid]: null,
     });
-    await this._gameRef
-      .child(`members/${uid}`)
-      .onDisconnect()
-      .cancel();
+    await this._gameRef.child(`members/${uid}`).onDisconnect().cancel();
   }
 
-  public async requestReady() {
-    const { uid } = auth().currentUser;
+  public async requestReady(): Promise<void> {
+    const { uid } = FirebaseClient.auth.currentUser;
     await this._gameRef.child("members").update({
-      [uid]: true
+      [uid]: true,
     });
   }
 
   public async start(): Promise<void> {
-    const now = database.ServerValue.TIMESTAMP;
+    const now = firebase.database.ServerValue.TIMESTAMP;
     const members = (await this._gameRef.child("members").once("value")).val();
-    await this.transaction(current => {
+    await this.transaction((current) => {
       if (current && current.currentRound !== 1) {
         Object.assign(current, {
           members,
           currentRound: 1,
           battles: {},
-          updatedAt: now
+          updatedAt: now,
         });
       }
       return current;
@@ -198,11 +194,13 @@ class OnlineGame extends Game {
     }
 
     const nextRound = this.currentRound + 1;
-    const now = database.ServerValue.TIMESTAMP;
+    const now = firebase.database.ServerValue.TIMESTAMP;
 
-    await this.transaction(current => {
+    await this.transaction((current) => {
       if (current && current.currentRound !== nextRound) {
+        // eslint-disable-next-line no-param-reassign
         current.currentRound = nextRound;
+        // eslint-disable-next-line no-param-reassign
         current.updatedAt = now;
       }
       return current;
@@ -218,7 +216,7 @@ class OnlineGame extends Game {
     // TODO replace member status update logic.
     if (isFixed) {
       console.log("Update user state to false. wait to request game restart.");
-      const { uid } = auth().currentUser;
+      const { uid } = FirebaseClient.auth.currentUser;
       this._gameRef.child("members").update({ [uid]: false });
       this._gameRef.child("currentRound").set(null);
     }
@@ -226,7 +224,7 @@ class OnlineGame extends Game {
     return isFixed;
   }
 
-  public async release() {
+  public async release(): Promise<void> {
     this.off();
 
     this._gameRef.child("members").off();
@@ -238,7 +236,7 @@ class OnlineGame extends Game {
     this._battles.clear();
   }
 
-  /************************************************************************************
+  /** **********************************************************************************
    * Callback methods
    */
 
@@ -246,7 +244,9 @@ class OnlineGame extends Game {
    *
    * @param {firebase.database.DataSnapshot} snapshot
    */
-  protected onMemberUpdated = (snapshot: database.DataSnapshot) => {
+  protected onMemberUpdated = (
+    snapshot: firebase.database.DataSnapshot
+  ): void => {
     if (!snapshot.exists()) {
       return;
     }
@@ -255,7 +255,7 @@ class OnlineGame extends Game {
 
     // Update local members status.
     this.members.clear();
-    snapshot.forEach(child => {
+    snapshot.forEach((child) => {
       this.members.set(child.key, child.val());
       return false; // Keep enumeration
     });
@@ -284,14 +284,17 @@ class OnlineGame extends Game {
       this._gameRef.onDisconnect().cancel();
 
       // Set disconnect event.
-      const opponentConnectingRef = database().ref(
-        `users/${this.opponentId}/isConnecting`
+      const opponentConnectingRef = FirebaseClient.database.ref(
+        `/oimo-no-mikiri/users/${this.opponentId}/isConnecting`
       );
-      opponentConnectingRef.on("value", (snapshot: database.DataSnapshot) => {
-        if (snapshot.exists() && !snapshot.val()) {
-          this.dispatch(GameEvents.MEMBER_LEFT);
+      opponentConnectingRef.on(
+        "value",
+        (snap: firebase.database.DataSnapshot) => {
+          if (snap.exists() && !snap.val()) {
+            this.dispatch(GameEvents.MEMBER_LEFT);
+          }
         }
-      });
+      );
     }
 
     // Received to request game start?
@@ -310,13 +313,15 @@ class OnlineGame extends Game {
     // Is every member ready?
     if (
       currentMembers.size === 2 &&
-      Array.from(currentMembers.values()).every(isReady => isReady)
+      Array.from(currentMembers.values()).every((isReady) => isReady)
     ) {
       this.dispatch(GameEvents.IS_READY);
     }
   };
 
-  protected onCurrentRoundUpdated = async (snapshot: database.DataSnapshot) => {
+  protected onCurrentRoundUpdated = async (
+    snapshot: firebase.database.DataSnapshot
+  ): Promise<void> => {
     if (!snapshot.exists()) {
       return;
     }
@@ -327,7 +332,7 @@ class OnlineGame extends Game {
       gameId: this._id,
       round: nextRound,
       playerId: this.ownId,
-      opponentId: this.opponentId
+      opponentId: this.opponentId,
     });
 
     if (nextRound === 1) {
@@ -345,21 +350,18 @@ class OnlineGame extends Game {
     this.dispatch(GameEvents.ROUND_PROCEED, { nextRound });
   };
 
-  /************************************************************************************
+  /** **********************************************************************************
    * Private methods
    */
 
   /**
    *
-   *
-   * @param {(current: any) => any} transactionUpdate
-   * @param {string} tag
-   * @return {Promise<{committed: boolean; snapshot: firebase.database.DataSnapshot}>}
    */
   private async transaction(
+    // eslint-disable-next-line
     transactionUpdate: (current: any) => any,
     tag?: string
-  ): Promise<{ committed: boolean; snapshot: database.DataSnapshot }> {
+  ): Promise<{ committed: boolean; snapshot: firebase.database.DataSnapshot }> {
     console.log(`Start transaction. TAG: ${tag}`);
     const { committed, snapshot } = await this._gameRef.transaction(
       transactionUpdate

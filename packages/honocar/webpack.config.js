@@ -21,7 +21,7 @@ const htmlParams = {
   ogpImageUrl:
     "https://games.sokontokoro-factory.net/honocar/img/TITLE_LOGO_HONOKA.png",
   helpUrlJa: "http://games-dev.sokontokoro-factory.net/#/help?language=ja",
-  helpUrlEn: "http://games-dev.sokontokoro-factory.net/#/help?language=en"
+  helpUrlEn: "http://games-dev.sokontokoro-factory.net/#/help?language=en",
 };
 
 isProduction &&
@@ -30,41 +30,41 @@ isProduction &&
     trackingCode: config.trackingCode.pro,
     noIndex: false,
     helpUrlJa: "http://games.sokontokoro-factory.net/#/help?language=ja",
-    helpUrlEn: "http://games.sokontokoro-factory.net/#/help?language=en"
+    helpUrlEn: "http://games.sokontokoro-factory.net/#/help?language=en",
   });
 
 const plugins = [
   new HtmlWebpackPlugin({
     templateParameters: htmlParams,
     template: "app/index.ejs",
-    hash: true
+    hash: true,
   }),
   new CopyWebpackPlugin([
     { from: "app/main.css", to: "main.css" },
     { context: "app/img", from: "**/*", to: "img" },
-    { context: "app/sound", from: "**/*", to: "sound" }
+    { context: "app/sound", from: "**/*", to: "sound" },
   ]),
   new webpack.DefinePlugin({
-    "process.env": JSON.stringify(process.env)
-  })
+    "process.env": JSON.stringify(process.env),
+  }),
 ];
 
 const webpackConfig = {
   mode: isProduction ? "production" : "development",
 
   entry: {
-    app: resolve(__dirname, "app/js/main.js")
+    app: resolve(__dirname, "app/js/main.js"),
   },
 
   output: {
     path: resolve(__dirname, "dist/"),
-    filename: "[name].bundle.js"
+    filename: "[name].bundle.js",
   },
 
   devtool: isProduction ? "none" : "source-map",
 
   resolve: {
-    extensions: [".js", ".ts"]
+    extensions: [".js", ".ts"],
   },
 
   module: {
@@ -80,29 +80,32 @@ const webpackConfig = {
                 "@babel/preset-env",
                 {
                   targets: {
-                    node: "current"
-                  }
-                }
-              ]
-            ]
-          }
-        }
+                    node: "current",
+                  },
+                },
+              ],
+            ],
+          },
+        },
       },
       {
         test: /\.css/,
-        use: ["style-loader", { loader: "css-loader", options: { url: false } }]
+        use: [
+          "style-loader",
+          { loader: "css-loader", options: { url: false } },
+        ],
       },
       {
         // Inject "window" to this called in create.js
         test: require.resolve("createjs/builds/1.0.0/createjs.js"),
-        use: "imports-loader?this=>window"
+        use: "imports-loader?this=>window",
       },
       {
         // Inject "window" to this called in alertify.js
         test: require.resolve("alertify/lib/alertify"),
-        use: "imports-loader?this=>window"
-      }
-    ]
+        use: "imports-loader?this=>window",
+      },
+    ],
   },
 
   optimization: {
@@ -111,17 +114,17 @@ const webpackConfig = {
         commons: {
           test: /[\\/]node_modules[\\/]/,
           name: "vendor",
-          chunks: "all"
-        }
-      }
-    }
+          chunks: "all",
+        },
+      },
+    },
   },
 
   plugins: plugins,
 
   // https://github.com/pixijs/pixi-sound/issues/28
   // Resolve node fs module for pixi-sound.
-  node: { fs: "empty" }
+  node: { fs: "empty" },
 };
 
 module.exports = webpackConfig;

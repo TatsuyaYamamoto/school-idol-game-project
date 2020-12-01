@@ -51,7 +51,7 @@ export enum Ids {
   MENU_BOARD,
   SELECT_LEVEL_BOARD,
   SELECT_MULTI_MODE_BOARD,
-  SIGNAL
+  SIGNAL,
 }
 
 const manifest: ImageManifest = {
@@ -105,9 +105,9 @@ const manifest: ImageManifest = {
     [Ids.MENU_BOARD]: "image_menu_board.png",
     [Ids.SELECT_LEVEL_BOARD]: "image_select_level_board.png",
     [Ids.SELECT_MULTI_MODE_BOARD]: "image_select_multi_mode_board.png",
-    [Ids.SIGNAL]: "image_signal.png"
+    [Ids.SIGNAL]: "image_signal.png",
   },
-  ja: {}
+  ja: {},
 };
 
 export default manifest;

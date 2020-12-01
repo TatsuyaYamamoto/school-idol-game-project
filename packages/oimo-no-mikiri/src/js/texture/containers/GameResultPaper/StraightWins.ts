@@ -7,21 +7,22 @@ import Text from "../../internal/Text";
 import { Ids as StringIds } from "../../../resources/string";
 
 class StraightWins extends Container {
-  private _label: Text;
-  private _value: Text;
+  readonly _label: Text;
+
+  readonly _value: Text;
 
   constructor(wins: number) {
     super();
     this._label = new Text(t(StringIds[StringIds.LABEL_STRAIGHT_WINS]), {
       fontFamily: "g_brushtappitsu_freeH",
       fontSize: 50,
-      padding: 5 // prevent to cut off words.
+      padding: 5, // prevent to cut off words.
     });
 
     this._value = new Text(`${wins}`, {
       fontFamily: "g_brushtappitsu_freeH",
       fontSize: 60,
-      padding: 5 // prevent to cut off words.
+      padding: 5, // prevent to cut off words.
     });
 
     // Set position to be set center as anchor.

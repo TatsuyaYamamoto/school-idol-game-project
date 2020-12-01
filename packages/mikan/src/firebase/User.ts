@@ -1,17 +1,19 @@
-import { User as FirebaseUser, firestore } from "firebase/app";
+import firebase from "firebase/app";
 
-import FieldValue = firestore.FieldValue;
-import UserCredential = firebase.auth.UserCredential;
-import DocumentReference = firestore.DocumentReference;
-import AdditionalUserInfo = firebase.auth.AdditionalUserInfo;
-import AuthCredential = firebase.auth.AuthCredential;
-
+// eslint-disable-next-line
 import { Twitter } from "twit";
-import TwitterUser = Twitter.User;
 
-import { firebaseAuth, firebaseDb } from "./index";
+import { FirebaseClient } from "./FirebaseClient";
 import { Credential, CredentialDocument } from "./Credential";
-import { getRandomAnonymousName } from "../model/anonymous";
+import { getRandomAnonymousName } from "..";
+
+type FirebaseUser = firebase.User;
+type FieldValue = firebase.firestore.FieldValue;
+type UserCredential = firebase.auth.UserCredential;
+type DocumentReference = firebase.firestore.DocumentReference;
+type AdditionalUserInfo = firebase.auth.AdditionalUserInfo;
+type AuthCredential = firebase.auth.AuthCredential;
+import TwitterUser = Twitter.User;
 
 export interface ProviderData {
   /**
@@ -58,16 +60,16 @@ export interface UserDocument /* extends firestore.DocumentData */ {
 }
 
 export class User {
-  public static getColRef() {
-    return firebaseDb.collection("users");
+  public static getColRef(): firebase.firestore.CollectionReference {
+    return FirebaseClient.firestore.collection("users");
   }
 
-  public static getDocRef(id: string) {
+  public static getDocRef(id: string): firebase.firestore.DocumentReference {
     return User.getColRef().doc(id);
   }
 
   public static getOwnRef(): DocumentReference {
-    const { currentUser } = firebaseAuth;
+    const { currentUser } = FirebaseClient.auth;
 
     if (!currentUser) {
       throw new Error("No firebase auth current user.");
@@ -86,10 +88,10 @@ export class User {
       photoURL: null,
       highscoreRefs: {},
       providers: {},
-      createdAt: FieldValue.serverTimestamp(),
-      updatedAt: FieldValue.serverTimestamp(),
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
       duplicatedRefsByLink: [],
-      presenceRefs: {}
+      presenceRefs: {},
     };
 
     /**
@@ -117,7 +119,7 @@ export class User {
     const {
       user,
       additionalUserInfo,
-      credential
+      credential,
     } = User.shouldFulfilledCredential(newCredential);
 
     const { providerId } = credential;
@@ -138,21 +140,23 @@ export class User {
     if (providerId === "twitter.com") {
       const profile = additionalUserInfo.profile as TwitterUser;
 
-      const batch = firestore().batch();
+      const batch = firebase.firestore().batch();
 
       // create batch of creation or updating credential
       const newCredentialDoc: Partial<CredentialDocument> = {
         data: {
+          // eslint-disable-next-line
           accessToken: (<any>credential).accessToken,
-          secret: (<any>credential).secret
+          // eslint-disable-next-line
+          secret: (<any>credential).secret,
         },
-        updatedAt: FieldValue.serverTimestamp()
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
       };
 
       if (isNewCredentialForIdp) {
         newCredentialDoc.userRef = userRef;
         newCredentialDoc.providerId = providerId;
-        newCredentialDoc.createdAt = FieldValue.serverTimestamp();
+        newCredentialDoc.createdAt = firebase.firestore.FieldValue.serverTimestamp();
 
         batch.set(credentialRef, newCredentialDoc);
       } else {
@@ -161,16 +165,16 @@ export class User {
 
       // create batch of updating user
       const newUserDoc: Partial<UserDocument> = {
-        isAnonymous: false
+        isAnonymous: false,
       };
 
       newUserDoc.providers = {
         ...newUserDoc.providers,
         [providerId]: {
           userId: profile.id_str,
-          linkedAt: FieldValue.serverTimestamp(),
-          credentialRef
-        }
+          linkedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          credentialRef,
+        },
       };
 
       if (isFirstLinkForUser) {
@@ -182,12 +186,13 @@ export class User {
       }
 
       if (userDoc.debug) {
-        userDoc.debug = firestore.FieldValue.delete() as any;
+        // eslint-disable-next-line
+        userDoc.debug = firebase.firestore.FieldValue.delete() as any;
       }
 
       if (duplicatedUser) {
         newUserDoc.duplicatedRefsByLink = userDoc.duplicatedRefsByLink.concat([
-          User.getDocRef(duplicatedUser.uid)
+          User.getDocRef(duplicatedUser.uid),
         ]);
       }
 
@@ -220,7 +225,7 @@ export class User {
     return {
       user,
       additionalUserInfo,
-      credential
+      credential,
     };
   }
 }

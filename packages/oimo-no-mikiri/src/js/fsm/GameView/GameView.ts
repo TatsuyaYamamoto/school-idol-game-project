@@ -5,7 +5,7 @@ import {
   playOnLoop,
   stop,
   dispatchEvent,
-  tracePage
+  tracePage,
 } from "@sokontokoro/mikan";
 
 import Player from "../../texture/sprite/character/Player";
@@ -33,7 +33,7 @@ export enum Events {
   ATTACK = "GameView@ATTACK",
   FIXED_RESULT = "GameView@FIXED_RESULT",
   RESTART_GAME = "GameView@RESTART_GAME",
-  BACK_TO_TOP = "GameView@BACK_TO_TOP"
+  BACK_TO_TOP = "GameView@BACK_TO_TOP",
 }
 
 export interface EnterParams extends Deliverable {
@@ -44,13 +44,14 @@ export enum InnerStates {
   READY = "ready",
   ACTION = "action",
   RESULT = "result",
-  OVER = "over"
+  OVER = "over",
 }
 
 abstract class GameView extends ViewContainer {
   private _game: Game;
 
   private _player: Player;
+
   /**
    * 2Player's character for multi play mode.
    */
@@ -120,13 +121,13 @@ abstract class GameView extends ViewContainer {
     stop(SoundIds.SOUND_WAVE_LOOP);
   }
 
-  protected onAttacked(e: CustomEvent) {
+  protected onAttacked(e: CustomEvent): void {
     const { attacker, attackTime } = e.detail;
 
     this.game.currentBattle.attack(attacker, attackTime);
   }
 
-  protected onBackToTopRequested() {
+  protected onBackToTopRequested(): void {
     // prevent to propagate to invoke tap event on title view.
     setTimeout(() => dispatchEvent(AppEvents.REQUESTED_BACK_TO_TOP), 1);
 

@@ -13,7 +13,7 @@ export const Ids = {
   SOUND_TOGGLE_SOUND: "SOUND_TOGGLE_SOUND",
   SOUND_COUNT_HIGH: "SOUND_COUNT_HIGH",
   SOUND_COUNT_LOW: "SOUND_COUNT_LOW",
-  SOUND_TAP_KOTORI: "SOUND_TAP_KOTORI"
+  SOUND_TAP_KOTORI: "SOUND_TAP_KOTORI",
 };
 
 const manifest: SoundManifest = {
@@ -25,7 +25,7 @@ const manifest: SoundManifest = {
   [Ids.SOUND_TOGGLE_SOUND]: "toggle_sound.mp3",
   [Ids.SOUND_COUNT_HIGH]: "count_high.mp3",
   [Ids.SOUND_COUNT_LOW]: "count_low.mp3",
-  [Ids.SOUND_TAP_KOTORI]: "tap_kotori.mp3"
+  [Ids.SOUND_TAP_KOTORI]: "tap_kotori.mp3",
 };
 
 export default manifest;

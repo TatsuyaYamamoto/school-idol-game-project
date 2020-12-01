@@ -20,10 +20,10 @@ const windowHeight = window.innerHeight;
 let canvasWidth;
 let canvasHeight;
 
-if (windowWidth * canvasWindowAspectRatio < windowHeight /*portrait*/) {
+if (windowWidth * canvasWindowAspectRatio < windowHeight /* portrait */) {
   canvasWidth = windowWidth;
   canvasHeight = canvasWidth * canvasWindowAspectRatio;
-} /* landscape*/ else {
+} /* landscape */ else {
   canvasHeight = windowHeight;
   canvasWidth = canvasHeight / canvasWindowAspectRatio;
 }
@@ -37,7 +37,7 @@ export const app = new Application({
   view: document.getElementById("pixi") as HTMLCanvasElement,
   width: canvasWidth,
   height: canvasHeight,
-  transparent: true
+  transparent: true,
   // backgroundColor: 0xeeeeee
 });
 
@@ -53,23 +53,23 @@ const appMachine = Machine(
       candidateNumber: 3,
       moveDuration: MAX_MOVE_DURATION,
       currentNodeKey: IdleState.nodeKey,
-      rinaCandidates: []
+      rinaCandidates: [],
     },
     states: {
       [IdleState.nodeKey]: {
         entry: ["handleStateEntry"],
         exit: ["handleStateExit"],
         on: {
-          LAUNCH: LoadingState.nodeKey
-        }
+          LAUNCH: LoadingState.nodeKey,
+        },
       },
       [LoadingState.nodeKey]: {
         entry: ["handleStateEntry"],
         exit: ["handleStateExit"],
         on: {
           LOADED: "",
-          SHOW_TITLE: GameTitle.nodeKey
-        }
+          SHOW_TITLE: GameTitle.nodeKey,
+        },
       },
       [GameTitle.nodeKey]: {
         entry: ["handleStateEntry"],
@@ -80,25 +80,25 @@ const appMachine = Machine(
             actions: [
               assign({
                 correctSelectCount: () => 0,
-                moveDuration: () => MAX_MOVE_DURATION
-              })
-            ]
-          }
-        }
+                moveDuration: () => MAX_MOVE_DURATION,
+              }),
+            ],
+          },
+        },
       },
       [GameCoverBoxState.nodeKey]: {
         entry: ["handleStateEntry"],
         exit: ["handleStateExit"],
         on: {
-          COVER_BOX_COMPLETED: GameShuffleState.nodeKey
-        }
+          COVER_BOX_COMPLETED: GameShuffleState.nodeKey,
+        },
       },
       [GameShuffleState.nodeKey]: {
         entry: ["handleStateEntry"],
         exit: ["handleStateExit"],
         on: {
-          SHUFFLE_COMPLETED: GameSelectBoxState.nodeKey
-        }
+          SHUFFLE_COMPLETED: GameSelectBoxState.nodeKey,
+        },
       },
       [GameSelectBoxState.nodeKey]: {
         entry: ["handleStateEntry"],
@@ -108,66 +108,75 @@ const appMachine = Machine(
             target: GameShuffleState.nodeKey,
             actions: [
               assign({
+                // TODO
+                // eslint-disable-next-line
                 // @ts-ignore
-                correctSelectCount: context => context.correctSelectCount + 1,
+                correctSelectCount: (context) => context.correctSelectCount + 1,
 
-                moveDuration: context => {
+                moveDuration: (context) => {
+                  // TODO
+                  // eslint-disable-next-line
                   // @ts-ignore
                   if (context.moveDuration <= MIN_MOVE_DURATION) {
                     return MIN_MOVE_DURATION;
-                  } else {
-                    // @ts-ignore
-                    return context.moveDuration - 0.02;
                   }
-                }
-              })
-            ]
+                  // TODO
+                  // eslint-disable-next-line
+                  // @ts-ignore
+                  return context.moveDuration - 0.02;
+                },
+              }),
+            ],
           },
-          BOX_SELECTED_NG: GameResultState.nodeKey
-        }
+          BOX_SELECTED_NG: GameResultState.nodeKey,
+        },
       },
       [GameResultState.nodeKey]: {
         entry: ["handleStateEntry"],
         exit: ["handleStateExit"],
         on: {
-          RESTART: GameTitle.nodeKey
-        }
-      }
+          RESTART: GameTitle.nodeKey,
+        },
+      },
     },
     on: {
       "rinaCandidates.UPDATE": {
         actions: assign({
+          // TODO
+          // eslint-disable-next-line
           // @ts-ignore
-          rinaCandidates: (_, event) => event.rinaCandidates
-        })
-      }
-    }
+          rinaCandidates: (_, event) => event.rinaCandidates,
+        }),
+      },
+    },
   },
   {
     actions: {
       handleStateEntry: (context, event) => {
+        // eslint-disable-next-line
         const currentNodeKey = stateMachineService.state.value as string;
 
         context.currentNodeKey = currentNodeKey;
         console.log(`entry - ${currentNodeKey}`, context, event);
 
+        // eslint-disable-next-line
         const currentState = stateInstances[currentNodeKey];
         currentState.onEnter({ context });
       },
       handleStateExit: (context, event) => {
-        const currentNodeKey = context.currentNodeKey;
+        const { currentNodeKey } = context;
         console.log(`exit  - ${currentNodeKey}`, context, event);
 
+        // eslint-disable-next-line
         const currentState = stateInstances[currentNodeKey];
         currentState.onExit({ context });
-      }
-    }
+      },
+    },
   }
 );
 
-export type StateMachineContext = typeof appMachine["context"];
-
 const context = { app, scale };
+export type StateContext = typeof context;
 const stateInstances = {
   [IdleState.nodeKey]: new IdleState(context),
   [LoadingState.nodeKey]: new LoadingState(context),
@@ -176,10 +185,12 @@ const stateInstances = {
   [GameCoverBoxState.nodeKey]: new GameCoverBoxState(context),
   [GameShuffleState.nodeKey]: new GameShuffleState(context),
   [GameSelectBoxState.nodeKey]: new GameSelectBoxState(context),
-  [GameResultState.nodeKey]: new GameResultState(context)
+  [GameResultState.nodeKey]: new GameResultState(context),
 };
 
 export const stateMachineService = interpret(appMachine);
+
+export type StateMachineContext = typeof appMachine["context"];
 
 export type StateEnterParams = {
   context: StateMachineContext;

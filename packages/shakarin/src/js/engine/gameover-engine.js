@@ -7,7 +7,7 @@ import {
   tracePage,
   trackEvent,
   tweetByWebIntent,
-  convertYyyyMmDd
+  convertYyyyMmDd,
 } from "@sokontokoro/mikan";
 
 import State from "../state.js";
@@ -28,7 +28,7 @@ export default class GameoverEngine {
     tracePage(TRACK_PAGES.GAMEOVER);
 
     trackEvent(TRACK_ACTION.GAMEOVER, {
-      value: State.gameScore
+      value: State.gameScore,
     });
 
     Playlog.save("shakarin", "rin", State.gameScore).then(() => {
@@ -46,7 +46,7 @@ export default class GameoverEngine {
       State.object.image.BUTTON_BACK_MENU_FROM_GAME,
       State.object.image.BUTTON_RESTART,
       State.object.text.SCORE_COUNT,
-      State.object.image.GAMEOVER
+      State.object.image.GAMEOVER,
     ]);
     switch (State.playCharacter) {
       case "rin":
@@ -106,16 +106,16 @@ export default class GameoverEngine {
               const utmQuery = createUrchinTrackingModuleQuery({
                 campaign: `result-share_${yyyymmdd}`,
                 source: "twitter",
-                medium: "social"
+                medium: "social",
               });
               const url = `${config.link.game}?${utmQuery.join("&")}`;
 
               tweetByWebIntent({
                 text: this.getTweetText(),
                 url,
-                hashtags: ["しゃかりん", "そこんところ工房"]
+                hashtags: ["しゃかりん", "そこんところ工房"],
               });
-            }
+            },
           },
           {
             text: "CANCEL",
@@ -123,9 +123,9 @@ export default class GameoverEngine {
             onClick: () => {
               State.object.sound.BACK.stop();
               State.object.sound.BACK.play();
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
     };
 
@@ -157,7 +157,7 @@ export default class GameoverEngine {
           "mousedown",
           tweet
         );
-      }
+      },
     };
   }
 
@@ -174,17 +174,11 @@ export default class GameoverEngine {
 
         switch (Math.floor(Math.random() * 4)) {
           case 0:
-            return `凛「ちいさなマラカス♪しゃかしゃか${
-              State.gameScore
-            }しゃかー！」`;
+            return `凛「ちいさなマラカス♪しゃかしゃか${State.gameScore}しゃかー！」`;
           case 1:
-            return `凛「それより今日こそ先輩のところに行って"しゃかりんやります！"って言わなきゃ！」${
-              State.gameScore
-            }しゃか！`;
+            return `凛「それより今日こそ先輩のところに行って"しゃかりんやります！"って言わなきゃ！」${State.gameScore}しゃか！`;
           case 2:
-            return `凛「待って！しゃかしゃかするなら凛が！凛が！ 凛が${
-              State.gameScore
-            }しゃかするの！！」`;
+            return `凛「待って！しゃかしゃかするなら凛が！凛が！ 凛が${State.gameScore}しゃかするの！！」`;
           case 3:
             return `エリチカ？「${State.gameScore}しゃかァ？認められないわァ」`;
         }

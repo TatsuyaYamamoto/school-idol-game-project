@@ -14,16 +14,19 @@ import StateMachine from "./StateMachine";
  * @class
  */
 abstract class ViewContainer extends Container implements State {
-  private _stateMachine: StateMachine<ViewContainer>;
+  readonly _stateMachine: StateMachine<ViewContainer>;
 
-  private _backGroundLayer: Container;
-  private _applicationLayer: Container;
-  private _informationLayer: Container;
+  readonly _backGroundLayer: Container;
 
-  private _viewWidth: number;
-  private _viewHeight: number;
+  readonly _applicationLayer: Container;
 
-  private _elapsedTimeMillis: number = 0;
+  readonly _informationLayer: Container;
+
+  readonly _viewWidth: number;
+
+  readonly _viewHeight: number;
+
+  private _elapsedTimeMillis = 0;
 
   constructor() {
     super();
@@ -97,7 +100,9 @@ abstract class ViewContainer extends Container implements State {
   onExit(): void | Deliverable {
     console.log(`${this.constructor.name}@onExit`);
 
-    this.stateMachine.current && this.stateMachine.current.onExit();
+    if (this.stateMachine.current) {
+      this.stateMachine.current.onExit();
+    }
 
     this.backGroundLayer.removeChildren();
     this.applicationLayer.removeChildren();
@@ -110,13 +115,12 @@ abstract class ViewContainer extends Container implements State {
    *
    * @param {(ev: WindowEventMap[K]) => any} listener
    */
-  protected addClickWindowEventListener<K extends keyof WindowEventMap>(
-    listener: (this: Window, ev: WindowEventMap[K]) => any
+  protected addClickWindowEventListener(
+    listener: (this: Window, ev: WindowEventMap["touchstart" | "click"]) => void
   ): void {
-    window.addEventListener(
-      isSupportTouchEvent() ? "touchstart" : "click",
-      listener
-    );
+    const type = isSupportTouchEvent() ? "touchstart" : "click";
+
+    window.addEventListener(type, listener);
   }
 
   /**
@@ -145,11 +149,8 @@ abstract class ViewContainer extends Container implements State {
    *
    * @override
    */
-  public addChild<T extends DisplayObject>(
-    child: T,
-    ...additionalChildren: DisplayObject[]
-  ): T {
-    return super.addChild(child, ...additionalChildren);
+  public addChild<T extends DisplayObject = Container>(...children: T[]): T {
+    return super.addChild(...children);
   }
 
   /**
@@ -168,7 +169,9 @@ abstract class ViewContainer extends Container implements State {
    * @see this#addChild
    * @override
    */
-  public removeChild(child: DisplayObject): DisplayObject {
+  public removeChild<T extends DisplayObject = Container>(
+    child: DisplayObject
+  ): T {
     return super.removeChild(child);
   }
 
@@ -178,7 +181,7 @@ abstract class ViewContainer extends Container implements State {
    * @see this#addChild
    * @override
    */
-  public removeChildAt(index: number): DisplayObject {
+  public removeChildAt<T extends DisplayObject = Container>(index: number): T {
     return super.removeChildAt(index);
   }
 
@@ -188,10 +191,10 @@ abstract class ViewContainer extends Container implements State {
    * @see this#addChild
    * @override
    */
-  public removeChildren(
+  public removeChildren<T extends DisplayObject = Container>(
     beginIndex?: number,
     endIndex?: number
-  ): DisplayObject[] {
+  ): T[] {
     return super.removeChildren(beginIndex, endIndex);
   }
 

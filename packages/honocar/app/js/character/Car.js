@@ -5,7 +5,7 @@ function Car(number) {
   this.init(number);
 }
 
-Car.prototype.init = function(number) {
+Car.prototype.init = function (number) {
   const { queue, gameStage, gameScrean, gameScreenScale } = globals;
 
   switch (number) {
@@ -55,7 +55,7 @@ Car.prototype.init = function(number) {
 
   this.move();
 };
-Car.prototype.move = function() {
+Car.prototype.move = function () {
   const { gameScrean } = globals;
   var target = this;
 
@@ -63,14 +63,14 @@ Car.prototype.move = function() {
     case 0:
       createjs.Tween.get(target.img)
         .to({ y: -config.system.car.height }, config.system.car.slowerSpeed)
-        .call(function() {
+        .call(function () {
           target.passed = true;
         });
       break;
     case 1:
       createjs.Tween.get(target.img)
         .to({ y: -config.system.car.height }, config.system.car.fasterSpeed)
-        .call(function() {
+        .call(function () {
           target.passed = true;
         });
       break;
@@ -80,7 +80,7 @@ Car.prototype.move = function() {
           { y: gameScrean.height + config.system.car.height },
           config.system.car.fasterSpeed
         )
-        .call(function() {
+        .call(function () {
           target.passed = true;
         });
       break;
@@ -90,7 +90,7 @@ Car.prototype.move = function() {
           { y: gameScrean.height + config.system.car.height },
           config.system.car.slowerSpeed
         )
-        .call(function() {
+        .call(function () {
           target.passed = true;
         });
       break;

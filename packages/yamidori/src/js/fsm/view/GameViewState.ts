@@ -14,7 +14,7 @@ export enum Events {
   COUNT_START = "GameViewState@COUNT_START",
   GAME_START = "GameViewState@GAME_START",
   GAME_OVER = "GameViewState@GAME_OVER",
-  TAP_KOTORI = "GameViewState@TAP_KOTORI"
+  TAP_KOTORI = "GameViewState@TAP_KOTORI",
 }
 
 class GameViewState extends ViewContainer {
@@ -45,14 +45,14 @@ class GameViewState extends ViewContainer {
     this._gameStateMachine = new StateMachine({
       [CountGameState.TAG]: this._countGameState,
       [OverGameState.TAG]: this._overGameState,
-      [PlayingGameState.TAG]: this._playingGameState
+      [PlayingGameState.TAG]: this._playingGameState,
     });
 
     addEvents({
       [Events.COUNT_START]: this._changeToCountState,
       [Events.GAME_START]: this._changeToPlayingGameState,
       [Events.GAME_OVER]: this._changeToOverGameState,
-      [Events.TAP_KOTORI]: this._incrementGamePoint
+      [Events.TAP_KOTORI]: this._incrementGamePoint,
     });
 
     this._gameStateMachine.init(CountGameState.TAG);
@@ -76,7 +76,7 @@ class GameViewState extends ViewContainer {
       Events.COUNT_START,
       Events.GAME_START,
       Events.GAME_OVER,
-      Events.TAP_KOTORI
+      Events.TAP_KOTORI,
     ]);
   }
 

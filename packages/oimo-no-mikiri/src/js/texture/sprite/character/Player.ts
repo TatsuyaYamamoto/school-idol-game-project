@@ -6,7 +6,7 @@ import PlayerCloseUp from "./PlayerCloseUp";
 abstract class Player extends Character {
   protected _closeUpTexture: PlayerCloseUp;
 
-  constructor(
+  protected constructor(
     frameTextures: Texture[],
     indexed: FrameStructureIndexes,
     closeUpTexture: PlayerCloseUp

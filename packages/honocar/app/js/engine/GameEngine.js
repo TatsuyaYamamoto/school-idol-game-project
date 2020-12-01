@@ -49,7 +49,7 @@ class GameEngine extends Engine {
       soundObj.SOUND_SUSUME_LOOP.play({
         interrupt: "late",
         loop: -1,
-        volume: 0.6
+        volume: 0.6,
       });
     });
   }
@@ -122,7 +122,7 @@ async function gameReady() {
   soundObj.SOUND_SUSUME_LOOP.play({
     interrupt: "late",
     loop: -1,
-    volume: 0.6
+    volume: 0.6,
   });
 }
 
@@ -138,7 +138,7 @@ function processGame() {
     enemyAppeare();
   }
 
-  cars.forEach(function(target, index) {
+  cars.forEach(function (target, index) {
     if (target.passed) {
       cars.splice(index, 1);
       passCarCount++;
@@ -274,7 +274,7 @@ function crash() {
   globals.soundObj.SOUND_SUSUME_END.play({ interrupt: "late", volume: 0.6 });
 
   to(GameOverEngine, {
-    passCarCount: passCarCount
+    passCarCount: passCarCount,
   });
 }
 

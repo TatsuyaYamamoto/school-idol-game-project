@@ -1,13 +1,3 @@
-export function getRandomAnonymousName() {
-  const min = 0;
-  const max = candidates.length - 1;
-  const index = Math.floor(Math.random() * (max + 1 - min)) + min;
-
-  const prefix = candidates[index];
-
-  return `${prefix}学園生`;
-}
-
 const candidates = [
   // honoka
   "パン好きな",
@@ -136,5 +126,15 @@ const candidates = [
   "お芋好きな",
   "がんばル",
   "ふんばル",
-  "アメにつられる"
+  "アメにつられる",
 ];
+
+export function getRandomAnonymousName(): string {
+  const min = 0;
+  const max = candidates.length - 1;
+  const index = Math.floor(Math.random() * (max + 1 - min)) + min;
+
+  const prefix = candidates[index];
+
+  return `${prefix}学園生`;
+}

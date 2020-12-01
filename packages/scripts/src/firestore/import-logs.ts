@@ -6,7 +6,7 @@ import { longToDate, query, splitList } from "./import";
 
 export const MIGRATION_TMP_VALUE_USER_REF = "ANONYMOUS_IN_OLD_SYSTEM";
 
-export default async function(database: string, options: any) {
+export default async function (database: string, options: any) {
   const { user, password, host, limitUserCount } = options;
 
   console.log(`start import play logs.
@@ -21,7 +21,7 @@ export default async function(database: string, options: any) {
     password,
     database,
     supportBigNumbers: true,
-    bigNumberStrings: true
+    bigNumberStrings: true,
   });
 
   connection.connect();
@@ -76,15 +76,15 @@ export default async function(database: string, options: any) {
       const member = l[`member`]
         ? l[`member`].toLowerCase()
         : game === "honocar"
-          ? "honoka"
-          : game === "shakarin"
-            ? "rin"
-            : game === "maruten"
-              ? "hanamaru"
-              : game === "yamidori"
-                ? "kotori"
-                : // game === "oimo"
-                  "hanamaru";
+        ? "honoka"
+        : game === "shakarin"
+        ? "rin"
+        : game === "maruten"
+        ? "hanamaru"
+        : game === "yamidori"
+        ? "kotori"
+        : // game === "oimo"
+          "hanamaru";
 
       userPlaylogs.push({
         ref: newLogRef,
@@ -97,8 +97,8 @@ export default async function(database: string, options: any) {
           userAgent: l[`USER_AGENT`],
           language: l[`LOCALE`],
           languages: l[`LOCALE`],
-          createdAt: longToDate(parseInt(l[`PLAY_DATE`]))
-        } as PlaylogDocument
+          createdAt: longToDate(parseInt(l[`PLAY_DATE`])),
+        } as PlaylogDocument,
       });
     }
   }
@@ -109,7 +109,7 @@ export default async function(database: string, options: any) {
   for (const batchTarget of splitList(userPlaylogs, 400)) {
     const batch = firestore().batch();
 
-    batchTarget.forEach(item => batch.set(item.ref, item.doc));
+    batchTarget.forEach((item) => batch.set(item.ref, item.doc));
 
     await batch.commit();
     console.log(`exec playlog batch`);
@@ -140,15 +140,15 @@ export default async function(database: string, options: any) {
       const member = l[`member`]
         ? l[`member`].toLowerCase()
         : game === "honocar"
-          ? "honoka"
-          : game === "shakarin"
-            ? "rin"
-            : game === "maruten"
-              ? "hanamaru"
-              : game === "yamidori"
-                ? "kotori"
-                : // game === "oimo"
-                  "hanamaru";
+        ? "honoka"
+        : game === "shakarin"
+        ? "rin"
+        : game === "maruten"
+        ? "hanamaru"
+        : game === "yamidori"
+        ? "kotori"
+        : // game === "oimo"
+          "hanamaru";
 
       batch.set(newLogRef, {
         userRef: MIGRATION_TMP_VALUE_USER_REF as any,
@@ -159,7 +159,7 @@ export default async function(database: string, options: any) {
         userAgent: l[`USER_AGENT`],
         language: l[`LOCALE`],
         languages: l[`LOCALE`],
-        createdAt: longToDate(parseInt(l[`PLAY_DATE`]))
+        createdAt: longToDate(parseInt(l[`PLAY_DATE`])),
       } as PlaylogDocument);
     }
 

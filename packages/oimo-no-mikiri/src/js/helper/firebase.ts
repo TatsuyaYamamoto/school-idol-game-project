@@ -1,29 +1,26 @@
-import { initializeApp, auth, database, User } from "firebase";
+import firebase from "firebase/app";
+import { FirebaseClient } from "@sokontokoro/mikan";
 
-import { FIREBASE_OPTIONS } from "../Constants";
+export function init(): Promise<firebase.User> {
+  FirebaseClient.database.ref(".info/connected").on("value", (snapshot) => {
+    const user = FirebaseClient.auth.currentUser;
+    if (!user) {
+      return;
+    }
 
-export function init() {
-  initializeApp(FIREBASE_OPTIONS);
+    if (snapshot.exists()) {
+      const ownRef = FirebaseClient.database.ref(
+        `/oimo-no-mikiri/users/${user.uid}/isConnecting`
+      );
+      ownRef.set(true);
+      ownRef.onDisconnect().set(false);
+    }
+  });
 
-  database()
-    .ref(".info/connected")
-    .on("value", snapshot => {
-      const user = auth().currentUser;
-      if (!user) {
-        return;
-      }
+  FirebaseClient.auth.signInAnonymously();
 
-      if (snapshot.exists()) {
-        const ownRef = database().ref(`/users/${user.uid}/isConnecting`);
-        ownRef.set(true);
-        ownRef.onDisconnect().set(false);
-      }
-    });
-
-  auth().signInAnonymously();
-
-  return new Promise<User>(resolve => {
-    const unsubscribe = auth().onAuthStateChanged(function(user) {
+  return new Promise<firebase.User>((resolve) => {
+    const unsubscribe = FirebaseClient.auth.onAuthStateChanged((user) => {
       if (user) {
         console.log("logged-in", user.uid);
         unsubscribe();

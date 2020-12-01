@@ -1,10 +1,10 @@
-import { Texture, Sprite, Container } from "pixi.js";
+import { Texture, Sprite, Container, DisplayObject } from "pixi.js";
 
 import {
   Deliverable,
   dispatchEvent,
   play,
-  trackEvent
+  trackEvent,
 } from "@sokontokoro/mikan";
 
 import GameViewState from "../GameViewState";
@@ -34,7 +34,9 @@ export interface EnterParams extends Deliverable {
 
 abstract class OverState extends GameViewState {
   private _gameOverLogo: GameOverLogo;
+
   private _restartButton: RestartButton;
+
   private _backToTopButton: BackToTopButton;
 
   // TODO: implements once method
@@ -120,7 +122,7 @@ abstract class OverState extends GameViewState {
         : this._from(this.opponent.winTexture);
     opponentSprite.position.set(paperWidth * 0.2, paperHeight * 0.3);
 
-    this._resultPaper.addChild(
+    this._resultPaper.addChild<DisplayObject>(
       calligraphyPaper,
       topTime,
       playerName,
@@ -155,7 +157,7 @@ abstract class OverState extends GameViewState {
 
     trackEvent(Action.TAP, {
       category: Category.BUTTON,
-      label: "restart_game"
+      label: "restart_game",
     });
   };
 
@@ -163,7 +165,7 @@ abstract class OverState extends GameViewState {
    *
    * @private
    */
-  protected _onClickBackToTopButton = () => {
+  protected _onClickBackToTopButton = (): void => {
     dispatchEvent(Events.BACK_TO_TOP);
   };
 
@@ -171,7 +173,7 @@ abstract class OverState extends GameViewState {
     trackEvent(Action.GAMEOVER, {
       category: Category.ACHIEVEMENT,
       label: `Fixed_${mode}`,
-      value: round
+      value: round,
     });
   };
 

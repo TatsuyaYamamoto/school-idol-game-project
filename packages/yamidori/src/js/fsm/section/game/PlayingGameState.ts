@@ -5,7 +5,7 @@ import State from "../../../framework/State";
 import ViewContainer from "../../../framework/ViewContainer";
 import Kotori, {
   Direction,
-  Speed
+  Speed,
 } from "../../../container/sprite/character/Kotori";
 import GamePointCount from "../../../container/components/GamePointCount";
 
@@ -18,7 +18,7 @@ import { loadSound } from "../../../framework/AssetLoader";
 import {
   clearGamePoint,
   getGamePoint,
-  saveGamePoint
+  saveGamePoint,
 } from "../../../helper/GlobalState";
 
 import { Ids } from "../../../resources/sound";
@@ -106,7 +106,7 @@ class PlayingGameState extends ViewContainer implements State {
   private createKotori(): Kotori {
     const params = {
       direction: this.getKotoriDirectionRandomly(),
-      speed: this.getKotoriSpeedRandomly()
+      speed: this.getKotoriSpeedRandomly(),
     };
 
     const kotori = new Kotori(params);

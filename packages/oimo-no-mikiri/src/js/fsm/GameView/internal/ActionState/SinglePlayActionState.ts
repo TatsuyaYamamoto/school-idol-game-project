@@ -1,5 +1,6 @@
 import * as Mousetrap from "mousetrap";
 
+import { DisplayObject } from "pixi.js";
 import ActionState, { EnterParams as ActionEnterParams } from "./ActionState";
 
 import Actor from "../../../../models/Actor";
@@ -21,9 +22,13 @@ class SinglePlayActionState extends ActionState {
   update(elapsedMS: number): void {
     super.update(elapsedMS);
 
-    this.shouldSign() && this.onSignaled();
+    if (this.shouldSign()) {
+      this.onSignaled();
+    }
 
-    this.shouldAutoAttack() && this.onAttacked(Actor.OPPONENT);
+    if (this.shouldAutoAttack()) {
+      this.onAttacked(Actor.OPPONENT);
+    }
   }
 
   /**
@@ -38,7 +43,7 @@ class SinglePlayActionState extends ActionState {
       this.signalTime + params.autoOpponentAttackInterval;
 
     this.backGroundLayer.addChild(this.background);
-    this.applicationLayer.addChild(
+    this.applicationLayer.addChild<DisplayObject>(
       this.oimo,
       this.player,
       this.opponent,
@@ -64,7 +69,7 @@ class SinglePlayActionState extends ActionState {
   /**
    * @override
    */
-  bindKeyboardEvents() {
+  bindKeyboardEvents(): void {
     Mousetrap.bind("a", () => {
       this.onAttacked(Actor.PLAYER);
     });
@@ -73,16 +78,15 @@ class SinglePlayActionState extends ActionState {
   /**
    * @override
    */
-  unbindKeyboardEvents() {
+  unbindKeyboardEvents(): void {
     Mousetrap.unbind("a");
   }
 
   /**
    *
-   * @param e
    * @override
    */
-  onWindowTaped(e: MouseEvent) {
+  onWindowTaped(): void {
     this.onAttacked(Actor.PLAYER);
   }
 }

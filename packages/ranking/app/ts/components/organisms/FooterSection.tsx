@@ -30,9 +30,9 @@ const SiteName = styled.a`
 
   &::before {
     content: "${`© 2014-${currentYear} Sokontokoro Factory, All rights reserved.`}";
-    
-    @media (max-width:480px) {
-      content: "${`© Sokontokoro Factory`}"
+
+    @media (max-width: 480px) {
+      content: "${`© Sokontokoro Factory`}";
     }
   }
 `;
@@ -41,11 +41,10 @@ const SiteVersion = styled.a`
   color: #ffffff;
   text-decoration: none;
   float: right;
-   
-  
+
   &::before {
     content: "${`Currently v${version}`}";
-    @media (max-width:480px) {
+    @media (max-width: 480px) {
       content: "${`v${version}`}";
     }
   }

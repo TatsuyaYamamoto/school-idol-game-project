@@ -7,7 +7,9 @@ import Sprite from "./Sprite";
  * @class
  */
 abstract class ClickableSprite extends Sprite {
-  public setOnClickListener(fn: (event: interaction.InteractionEvent) => void) {
+  public setOnClickListener(
+    fn: (event: interaction.InteractionEvent) => void
+  ): void {
     this.interactive = true;
     this.on(isSupportTouchEvent() ? "touchstart" : "click", fn);
   }

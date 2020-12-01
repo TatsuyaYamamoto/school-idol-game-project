@@ -5,7 +5,7 @@ const style: TextStyleOptions = {
   fontFamily: "PixelMplus10-Regular",
   fontSize: 30,
   textBaseline: "middle",
-  lineHeight: 35 // prevent to cut off words with PixelMplus10-Regular font.
+  lineHeight: 35, // prevent to cut off words with PixelMplus10-Regular font.
 };
 
 class BrandLogoText extends Text {

@@ -1,22 +1,55 @@
-import { auth } from "firebase/app";
+import firebase from "firebase/app";
 
-import UserCredential = auth.UserCredential;
-
-import { firebaseAuth } from "./index";
+import { FirebaseClient } from "./FirebaseClient";
 
 import { getLogger } from "../logger";
 import { User, UserDocument } from "./User";
 
+type UserCredential = firebase.auth.UserCredential;
+
 const logger = getLogger("mikan/firebase/auth");
-const twitterAuthProvider = new auth.TwitterAuthProvider();
 let isInitRequested = false;
 
 /**
  * @see https://firebase.google.com/docs/reference/js/firebase.auth.Auth#getRedirectResult
  */
-interface AuthCredentialAlreadyInUseError extends auth.Error {
+interface AuthCredentialAlreadyInUseError extends firebase.auth.Error {
   email: string;
-  credential: auth.AuthCredential;
+  credential: firebase.auth.AuthCredential;
+}
+
+function throwErrorAsUndefinedRedirectOperation(
+  userCredential: UserCredential
+) {
+  const { operationType, credential, user } = userCredential;
+
+  let message = `unexpected redirect result is received.`;
+
+  if (user) {
+    message += ` user id: ${user.uid}`;
+  } else {
+    message += ` user is null`;
+  }
+
+  message += `, operationType: ${operationType}`;
+
+  if (credential) {
+    const { providerId, signInMethod } = credential;
+    message += `, providerId: ${providerId}, signInMethod: ${signInMethod}`;
+  } else {
+    message += `, credential is null`;
+  }
+
+  throw new Error(message);
+}
+
+/**
+ * Sign in to firebase auth as anonymous user.
+ *
+ * @return Promise<auth.UserCredential>
+ */
+export function signInAsAnonymous(): Promise<firebase.auth.UserCredential> {
+  return FirebaseClient.auth.signInAnonymously();
 }
 
 /**
@@ -33,12 +66,12 @@ export function init(): Promise<UserDocument> {
 
   isInitRequested = true;
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     /**
      * First state change event will fire after getting redirect result; {@link auth#getRedirectResult}.
      */
-    const unsubscribe = firebaseAuth.onAuthStateChanged(
-      async authUser => {
+    const unsubscribe = FirebaseClient.auth.onAuthStateChanged(
+      async (authUser) => {
         if (authUser) {
           /**
            * Received firebase auth user data.
@@ -69,7 +102,7 @@ export function init(): Promise<UserDocument> {
         logger.debug("signed-out. try signing-in anonymously");
         signInAsAnonymous();
       },
-      e => {
+      (e) => {
         logger.error(e);
       },
       () => {
@@ -77,7 +110,7 @@ export function init(): Promise<UserDocument> {
       }
     );
 
-    firebaseAuth
+    FirebaseClient.auth
       .getRedirectResult()
       .then(async (userCredential: UserCredential) => {
         const { operationType, credential } = userCredential;
@@ -114,7 +147,7 @@ export function init(): Promise<UserDocument> {
          */
         throwErrorAsUndefinedRedirectOperation(userCredential);
       })
-      .catch(async (error: auth.Error) => {
+      .catch(async (error: firebase.auth.Error) => {
         if (error.code === "auth/credential-already-in-use") {
           /**
            * User accepted to link between anonymous firebase user and twitter ID.
@@ -123,7 +156,7 @@ export function init(): Promise<UserDocument> {
           logger.debug("received credential is already in use.", error);
 
           const e = error as AuthCredentialAlreadyInUseError;
-          const newerAnonymousUser = firebaseAuth.currentUser;
+          const newerAnonymousUser = FirebaseClient.auth.currentUser;
 
           if (!newerAnonymousUser) {
             throw new Error(
@@ -136,7 +169,8 @@ export function init(): Promise<UserDocument> {
           /**
            * Sign-in as a firebase user to be linked with twitter ID.
            */
-          const newCredential = await firebaseAuth.signInAndRetrieveDataWithCredential(
+          // TODO @deprecated
+          const newCredential = await FirebaseClient.auth.signInAndRetrieveDataWithCredential(
             e.credential
           );
           const alreadyLinkedFirebaseUser = newCredential.user;
@@ -176,8 +210,8 @@ export function init(): Promise<UserDocument> {
  * @param forceRefresh if false, try get from local storage.
  * @return Promise<string>
  */
-export function getIdToken(forceRefresh: boolean = true): Promise<string> {
-  const user = firebaseAuth.currentUser;
+export function getIdToken(forceRefresh = true): Promise<string> {
+  const user = FirebaseClient.auth.currentUser;
 
   if (!user) {
     throw new Error("No firebase authed user.");
@@ -190,7 +224,7 @@ export function getIdToken(forceRefresh: boolean = true): Promise<string> {
  * Return UID
  */
 export function getUid(): string {
-  const user = firebaseAuth.currentUser;
+  const user = FirebaseClient.auth.currentUser;
 
   if (!user) {
     throw new Error("No firebase authed user.");
@@ -200,57 +234,23 @@ export function getUid(): string {
 }
 
 /**
- * Sign in to firebase auth as anonymous user.
- *
- * @return Promise<auth.UserCredential>
- */
-export function signInAsAnonymous(): Promise<auth.UserCredential> {
-  return firebaseAuth.signInAnonymously();
-}
-
-/**
  * Sign in firebase auth as Twitter User.
  *
  * @return Promise<void>
  */
 export function signInAsTwitterUser(): Promise<void> {
-  const user = firebaseAuth.currentUser;
+  const user = FirebaseClient.auth.currentUser;
 
   if (!user) {
     throw new Error("No firebase authed user.");
   }
 
-  return user.linkWithRedirect(twitterAuthProvider);
+  return user.linkWithRedirect(new firebase.auth.TwitterAuthProvider());
 }
 
 /**
  * Sing out
  */
 export function signOut(): Promise<void> {
-  return firebaseAuth.signOut();
-}
-
-function throwErrorAsUndefinedRedirectOperation(
-  userCredential: UserCredential
-) {
-  const { operationType, credential, user } = userCredential;
-
-  let message = `unexpected redirect result is received.`;
-
-  if (user) {
-    message += ` user id: ${user.uid}`;
-  } else {
-    message += ` user is null`;
-  }
-
-  message += `, operationType: ${operationType}`;
-
-  if (credential) {
-    const { providerId, signInMethod } = credential;
-    message += `, providerId: ${providerId}, signInMethod: ${signInMethod}`;
-  } else {
-    message += `, credential is null`;
-  }
-
-  throw new Error(message);
+  return FirebaseClient.auth.signOut();
 }

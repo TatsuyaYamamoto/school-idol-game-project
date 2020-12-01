@@ -5,19 +5,17 @@ import {
   ViewContainer,
   Deliverable,
   AssetLoader,
-  isIOS,
   resumeContext,
   tracePage,
-  trackTiming
+  trackTiming,
 } from "@sokontokoro/mikan";
 
 import { Events as ApplicationEvents } from "./ApplicationState";
 
 import LoadingAnimationContainer from "../texture/containers/LoadingAnimationContainer";
-import Text from "../texture/internal/Text";
 
-import { default as imageManifest } from "../resources/image";
-import { default as soundManifest } from "../resources/sound";
+import imageManifest from "../resources/image";
+import soundManifest from "../resources/sound";
 
 import { SKIP_BRAND_LOGO_ANIMATION } from "../Constants";
 
@@ -25,16 +23,16 @@ import { VirtualPageViews } from "../helper/tracker";
 
 export enum Events {
   COMPLETE_PRELOAD = "InitialViewState@COMPLETE_LOAD",
-  COMPLETE_LOGO_ANIMATION = "InitialViewState@COMPLETE_LOGO_ANIMATION"
+  COMPLETE_LOGO_ANIMATION = "InitialViewState@COMPLETE_LOGO_ANIMATION",
 }
 
 class InitialViewState extends ViewContainer {
   private _loader: AssetLoader;
 
   private _loadingAnimation: LoadingAnimationContainer;
-  private _tapInfoText: Text;
 
   private _isLoadComplete: boolean;
+
   private _isLogoAnimationComplete: boolean;
 
   /**
@@ -48,7 +46,7 @@ class InitialViewState extends ViewContainer {
 
     addEvents({
       [Events.COMPLETE_PRELOAD]: this._handleLoadCompleteEvent,
-      [Events.COMPLETE_LOGO_ANIMATION]: this._handleLogoAnimCompleteEvent
+      [Events.COMPLETE_LOGO_ANIMATION]: this._handleLogoAnimCompleteEvent,
     });
 
     // TODO: check logged-in.
@@ -93,7 +91,7 @@ class InitialViewState extends ViewContainer {
 
   private _startPreload = () => {
     this._isLoadComplete = false;
-    this._isLogoAnimationComplete = SKIP_BRAND_LOGO_ANIMATION ? true : false;
+    this._isLogoAnimationComplete = !!SKIP_BRAND_LOGO_ANIMATION;
 
     this._loadingAnimation = new LoadingAnimationContainer(
       this.viewWidth,

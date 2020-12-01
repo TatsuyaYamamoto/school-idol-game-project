@@ -6,7 +6,7 @@ function preloadStart(callback) {
   q.setMaxConnections(6);
 
   q.loadManifest(manifest.load);
-  q.addEventListener("complete", function() {
+  q.addEventListener("complete", function () {
     var bitmap = new createjs.Bitmap(q.getResult("LOAD_IMG"));
     bitmap.scaleY = bitmap.scaleX = _screenScale;
     bitmap.x = _gameScrean.width * 0.5;
@@ -19,7 +19,7 @@ function preloadStart(callback) {
     _gameStage.removeAllChildren();
     _gameStage.addChild(bitmap);
 
-    _tickListener = createjs.Ticker.addEventListener("tick", function() {
+    _tickListener = createjs.Ticker.addEventListener("tick", function () {
       _gameStage.update();
     });
     load();
@@ -35,7 +35,7 @@ function preloadStart(callback) {
     _queue.loadManifest(manifest.ss);
     _queue.loadManifest(manifest.sound);
 
-    _queue.addEventListener("complete", function() {
+    _queue.addEventListener("complete", function () {
       // すべてのコンテンツに設定を付与する
       for (var key in properties.ss) {
         var property = properties.ss[key];
@@ -50,14 +50,14 @@ function preloadStart(callback) {
         _textObj[key] = getTextContent(property);
       }
       _deferredCheckLogin
-        .done(function() {
+        .done(function () {
           for (var key in properties.asyncImage) {
             var property = properties.asyncImage[key];
             _imageObj[key] = getAsyncImageContent(property);
           }
         })
-        .fail(function() {})
-        .always(function() {
+        .fail(function () {})
+        .always(function () {
           for (var key in properties.image) {
             var property = properties.image[key];
             _imageObj[key] = getImageContent(property);
@@ -101,7 +101,7 @@ function preloadStart(callback) {
     var spriteSheet = new createjs.SpriteSheet({
       images: [_queue.getResult(property.id)],
       frames: property.frames,
-      animations: property.animations
+      animations: property.animations,
     });
     var ss = new createjs.Sprite(spriteSheet, property.firstAnimation);
     ss.x = _gameScrean.width * property.ratioX;

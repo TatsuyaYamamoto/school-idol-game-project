@@ -1,15 +1,16 @@
-import { Container } from "pixi.js";
+/* eslint-disable max-classes-per-file */
+import { Container, DisplayObject } from "pixi.js";
 
 import { BrandLogoAnimation } from "@sokontokoro/mikan";
 
-import Text from "../../texture/internal/Text";
+import Text from "../internal/Text";
 import KotoriImage from "../sprite/KotoriImage";
 
 class LoadProgressText extends Text {
   constructor() {
     super(`Now loading... 0%`, {
       fontSize: 30,
-      fontFamily: "PixelMplus10-Regular"
+      fontFamily: "PixelMplus10-Regular",
     });
   }
 
@@ -19,7 +20,7 @@ class LoadProgressText extends Text {
 }
 
 class LoadProgressKotoriImage extends KotoriImage {
-  private _distance: number;
+  readonly _distance: number;
 
   constructor(distance) {
     super();
@@ -34,9 +35,11 @@ class LoadProgressKotoriImage extends KotoriImage {
 }
 
 class LoadingAnimationContainer extends Container {
-  private _loadProgressText: LoadProgressText;
-  private _brandLogoAnimation: BrandLogoAnimation;
-  private _kotoriImage: LoadProgressKotoriImage;
+  readonly _loadProgressText: LoadProgressText;
+
+  readonly _brandLogoAnimation: BrandLogoAnimation;
+
+  readonly _kotoriImage: LoadProgressKotoriImage;
 
   private _max: number;
 
@@ -56,7 +59,7 @@ class LoadingAnimationContainer extends Container {
     this._kotoriImage.scale.set(0.2);
     this._kotoriImage.progress(0);
 
-    this.addChild(
+    this.addChild<DisplayObject>(
       this._brandLogoAnimation,
       this._kotoriImage,
       this._loadProgressText
@@ -67,6 +70,7 @@ class LoadingAnimationContainer extends Container {
    *
    * @returns {Promise<any>}
    */
+  // eslint-disable-next-line
   start(): Promise<any> {
     return this._brandLogoAnimation.start();
   }
@@ -75,7 +79,7 @@ class LoadingAnimationContainer extends Container {
    *
    * @param percentage
    */
-  progress(percentage): void {
+  progress(percentage: number): void {
     this._kotoriImage.progress(percentage);
     this._loadProgressText.progress(percentage);
   }

@@ -1,4 +1,5 @@
-import { Container, Graphics, TextStyleOptions } from "pixi.js";
+/* eslint-disable max-classes-per-file */
+import { Container, DisplayObject, Graphics, TextStyleOptions } from "pixi.js";
 
 import { getCurrentLanguage, t } from "@sokontokoro/mikan";
 
@@ -11,12 +12,13 @@ const VERTICAL_SUPPORT_LANGUAGES = ["ja"];
 
 const labelTextStyle: TextStyleOptions = {
   fontFamily: "g_brushtappitsu_freeH",
-  fontSize: 35
+  fontSize: 35,
 };
 
 class BattleResultLabel extends Container {
-  private _text: VerticalText;
-  private _rectangle: Graphics;
+  readonly _text: VerticalText;
+
+  readonly _rectangle: Graphics;
 
   constructor(text: string, isVertical = true) {
     super();
@@ -41,7 +43,7 @@ class BattleResultLabel extends Container {
     );
     this._rectangle.endFill();
 
-    this.addChild(this._rectangle, this._text);
+    this.addChild<DisplayObject>(this._rectangle, this._text);
   }
 
   set text(text: string) {
@@ -51,7 +53,9 @@ class BattleResultLabel extends Container {
 
 class BattleResultLabelBoard extends Container {
   protected _resultLabel: BattleResultLabel;
+
   protected _playerLabel: BattleResultLabel;
+
   protected _opponentLabel: BattleResultLabel;
 
   constructor(
@@ -73,39 +77,49 @@ class BattleResultLabelBoard extends Container {
     const characterLabelPositionX = width * 0.3;
 
     this._resultLabel = new BattleResultLabel(resultLabel, isVertical);
-    isVertical
-      ? this._resultLabel.position.set(0, labelPositionY)
-      : this._resultLabel.position.set(0, labelPositionY);
+    if (isVertical) {
+      this._resultLabel.position.set(0, labelPositionY);
+    } else {
+      this._resultLabel.position.set(0, labelPositionY);
+    }
 
     if (type === "playerWin") {
       this._playerLabel = new BattleResultLabel(winnerName, isVertical);
-      isVertical
-        ? this._playerLabel.position.set(
-            -1 * characterLabelPositionX,
-            labelPositionY
-          )
-        : this._playerLabel.position.set(
-            -1 * characterLabelPositionX,
-            labelPositionY
-          );
+      if (isVertical) {
+        this._playerLabel.position.set(
+          -1 * characterLabelPositionX,
+          labelPositionY
+        );
+      } else {
+        this._playerLabel.position.set(
+          -1 * characterLabelPositionX,
+          labelPositionY
+        );
+      }
     }
 
     if (type === "opponentWin") {
       this._opponentLabel = new BattleResultLabel(winnerName, isVertical);
-      isVertical
-        ? this._opponentLabel.position.set(
-            characterLabelPositionX,
-            labelPositionY
-          )
-        : this._opponentLabel.position.set(
-            characterLabelPositionX,
-            labelPositionY
-          );
+      if (isVertical) {
+        this._opponentLabel.position.set(
+          characterLabelPositionX,
+          labelPositionY
+        );
+      } else {
+        this._opponentLabel.position.set(
+          characterLabelPositionX,
+          labelPositionY
+        );
+      }
     }
 
     this.addChild(this._resultLabel);
-    type === "playerWin" && this.addChild(this._playerLabel);
-    type === "opponentWin" && this.addChild(this._opponentLabel);
+    if (type === "playerWin") {
+      this.addChild(this._playerLabel);
+    }
+    if (type === "opponentWin") {
+      this.addChild(this._opponentLabel);
+    }
   }
 }
 

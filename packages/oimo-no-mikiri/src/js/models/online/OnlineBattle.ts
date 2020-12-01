@@ -1,4 +1,5 @@
-import { database } from "firebase";
+import firebase from "firebase/app";
+import { FirebaseClient } from "@sokontokoro/mikan";
 
 import Battle, { BattleEvents } from "../Battle";
 import Actor from "../Actor";
@@ -13,9 +14,12 @@ export interface OnlineBattleParams {
 
 class OnlineBattle extends Battle {
   private _idActorMap: Map<string, Actor>;
+
   private _actorIdMap: Map<Actor, string>;
+
   private _attackTimeMap: Map<Actor, number>;
-  private _battleRef: database.Reference;
+
+  private _battleRef: firebase.database.Reference;
 
   constructor(params: OnlineBattleParams) {
     super();
@@ -32,7 +36,9 @@ class OnlineBattle extends Battle {
 
     this._attackTimeMap = new Map();
 
-    this._battleRef = database().ref(`/games/${gameId}/battles/${round}`);
+    this._battleRef = FirebaseClient.database.ref(
+      `/oimo-no-mikiri/games/${gameId}/battles/${round}`
+    );
     this._battleRef.child("winner").on("value", this.onWinnerUpdated);
     this._battleRef.child("signalTime").on("value", this.onSignalTimeUpdated);
     this._battleRef
@@ -43,17 +49,17 @@ class OnlineBattle extends Battle {
       .on("child_added", this.onFalseStartAdded);
   }
 
-  /************************************************************************************
+  /** **********************************************************************************
    * Status change methods
    */
-  public start() {
-    return this.transaction(current => {
+  public start(): Promise<void> {
+    return this.transaction((current) => {
       const time = this.createSignalTime();
 
       return (
         current || {
           signalTime: time,
-          createdAt: database.ServerValue.TIMESTAMP
+          createdAt: firebase.database.ServerValue.TIMESTAMP,
         }
       );
     }, "initial_battle");
@@ -80,7 +86,7 @@ class OnlineBattle extends Battle {
     this._battleRef.child("attackTime").update(updates);
   }
 
-  public release() {
+  public release(): void {
     this.off();
 
     this._battleRef.child("winner").off();
@@ -89,11 +95,13 @@ class OnlineBattle extends Battle {
     this._battleRef.child("falseStart").off();
   }
 
-  /************************************************************************************
+  /** **********************************************************************************
    * Callback methods
    */
 
-  protected onWinnerUpdated = (snapshot: database.DataSnapshot) => {
+  protected onWinnerUpdated = (
+    snapshot: firebase.database.DataSnapshot
+  ): void => {
     if (!snapshot.exists() || this._winner) {
       return;
     }
@@ -103,13 +111,13 @@ class OnlineBattle extends Battle {
     this._winnerAttackTime = winner.attackTime;
 
     console.log(
-      `winner was decided. actor: ${this._winner}, time: ${
-        this._winnerAttackTime
-      }`
+      `winner was decided. actor: ${this._winner}, time: ${this._winnerAttackTime}`
     );
   };
 
-  protected onSignalTimeUpdated = (snapshot: database.DataSnapshot) => {
+  protected onSignalTimeUpdated = (
+    snapshot: firebase.database.DataSnapshot
+  ): void => {
     if (!snapshot.exists()) {
       return;
     }
@@ -118,7 +126,9 @@ class OnlineBattle extends Battle {
     console.log("signal time was updated.", this._signalTime);
   };
 
-  protected onAttackTimeAdded = (snapshot: database.DataSnapshot) => {
+  protected onAttackTimeAdded = (
+    snapshot: firebase.database.DataSnapshot
+  ): void => {
     if (!snapshot.exists()) {
       return;
     }
@@ -144,7 +154,7 @@ class OnlineBattle extends Battle {
       const playerAttackTime = this._attackTimeMap.get(Actor.PLAYER);
       const opponentAttackTime = this._attackTimeMap.get(Actor.OPPONENT);
 
-      if (0 <= playerAttackTime && 0 <= opponentAttackTime) {
+      if (playerAttackTime >= 0 && opponentAttackTime >= 0) {
         if (
           Math.abs(playerAttackTime - opponentAttackTime) <
           GAME_PARAMETERS.acceptable_attack_time_distance
@@ -172,54 +182,52 @@ class OnlineBattle extends Battle {
 
           this.dispatch(BattleEvents.SUCCEED_ATTACK, winner);
         }
-      } else {
-        if (playerAttackTime === opponentAttackTime) {
-          console.log("This battle is drew. then it will be reset.");
-          this.draw();
+      } else if (playerAttackTime === opponentAttackTime) {
+        console.log("This battle is drew. then it will be reset.");
+        this.draw();
 
-          this.dispatch(BattleEvents.DRAW, {});
-        } else if (playerAttackTime < opponentAttackTime) {
-          console.log(`False-started by ${Actor.PLAYER}.`);
+        this.dispatch(BattleEvents.DRAW, {});
+      } else if (playerAttackTime < opponentAttackTime) {
+        console.log(`False-started by ${Actor.PLAYER}.`);
 
-          if (this.isFalseStarted(Actor.PLAYER)) {
-            console.log(
-              `This battle is fixed with false-start. winner: ${
-                Actor.OPPONENT
-              }.`
-            );
-            this.fix(this.toId(Actor.OPPONENT));
+        if (this.isFalseStarted(Actor.PLAYER)) {
+          console.log(
+            `This battle is fixed with false-start. winner: ${Actor.OPPONENT}.`
+          );
+          this.fix(this.toId(Actor.OPPONENT));
 
-            this.dispatch(BattleEvents.FALSE_STARTED, {
-              winner: Actor.OPPONENT,
-              attacker: actor
-            });
-          } else {
-            this.falseStart(Actor.PLAYER);
-            this.dispatch(BattleEvents.FALSE_STARTED, { attacker: actor });
-          }
+          this.dispatch(BattleEvents.FALSE_STARTED, {
+            winner: Actor.OPPONENT,
+            attacker: actor,
+          });
         } else {
-          console.log(`False-started by ${Actor.OPPONENT}.`);
+          this.falseStart(Actor.PLAYER);
+          this.dispatch(BattleEvents.FALSE_STARTED, { attacker: actor });
+        }
+      } else {
+        console.log(`False-started by ${Actor.OPPONENT}.`);
 
-          if (this.isFalseStarted(Actor.OPPONENT)) {
-            console.log(
-              `This battle is fixed with false-start. winner: ${Actor.PLAYER}.`
-            );
+        if (this.isFalseStarted(Actor.OPPONENT)) {
+          console.log(
+            `This battle is fixed with false-start. winner: ${Actor.PLAYER}.`
+          );
 
-            this.fix(this.toId(Actor.PLAYER));
-            this.dispatch(BattleEvents.FALSE_STARTED, {
-              winner: Actor.PLAYER,
-              attacker: actor
-            });
-          } else {
-            this.falseStart(Actor.OPPONENT);
-            this.dispatch(BattleEvents.FALSE_STARTED, { attacker: actor });
-          }
+          this.fix(this.toId(Actor.PLAYER));
+          this.dispatch(BattleEvents.FALSE_STARTED, {
+            winner: Actor.PLAYER,
+            attacker: actor,
+          });
+        } else {
+          this.falseStart(Actor.OPPONENT);
+          this.dispatch(BattleEvents.FALSE_STARTED, { attacker: actor });
         }
       }
     }
   };
 
-  protected onFalseStartAdded = (snapshot: database.DataSnapshot) => {
+  protected onFalseStartAdded = (
+    snapshot: firebase.database.DataSnapshot
+  ): void => {
     if (!snapshot.exists()) {
       return;
     }
@@ -230,7 +238,7 @@ class OnlineBattle extends Battle {
     this._falseStartMap.set(actor, true);
   };
 
-  protected draw = () => {
+  protected draw = (): void => {
     this.reset();
   };
 
@@ -255,11 +263,13 @@ class OnlineBattle extends Battle {
   protected reset(): void {
     this._attackTimeMap.clear();
 
-    this.transaction(current => {
+    this.transaction((current) => {
       const time = this.createSignalTime();
       if (current && current.attackTime) {
+        /* eslint-disable */
         current.attackTime = null;
         current.signalTime = time;
+        /* eslint-enable */
       }
 
       return current;
@@ -273,6 +283,7 @@ class OnlineBattle extends Battle {
    * @return {Promise<void>}
    */
   private async transaction(
+    // eslint-disable-next-line
     transactionUpdate: (current: any) => any,
     tag?: string
   ) {

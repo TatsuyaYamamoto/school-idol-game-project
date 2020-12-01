@@ -9,7 +9,7 @@ import {
   tracePage,
   ErrorCode,
   RoomEvents,
-  NtpDate
+  NtpDate,
 } from "@sokontokoro/mikan";
 import { parse } from "query-string";
 
@@ -21,7 +21,7 @@ import OnlineGameEngine from "./OnlineGameEngine";
 import {
   initClient as initSkyWayClient,
   getClient as getSkyWayClient,
-  unixtimeToRoundSeconds
+  unixtimeToRoundSeconds,
 } from "../common";
 
 import { Ids } from "../resources/string";
@@ -49,14 +49,14 @@ class TopEngine extends Engine {
       gameScrean,
       imageObj,
       textObj,
-      soundObj
+      soundObj,
     } = globals;
 
     const {
       TITLE_LOGO_HONOKA,
       TITLE_LOGO_ERI,
       TITLE_LOGO_KOTORI,
-      GAME_BACKGROUND
+      GAME_BACKGROUND,
     } = imageObj;
     const { TEXT_APP_VERSION, TEXT_START } = textObj;
     const { SOUND_ZENKAI } = soundObj;
@@ -100,7 +100,7 @@ class TopEngine extends Engine {
       openModal({
         title: t(Ids.ONLINE_DIALOG_TRY_CONNECT_TITLE),
         text: t(Ids.ONLINE_DIALOG_TRY_CONNECT_TEXT),
-        actions: []
+        actions: [],
       });
 
       history.replaceState(null, null, getCurrentUrl());
@@ -117,7 +117,7 @@ class TopEngine extends Engine {
             openModal({
               title: t(Ids.ONLINE_DIALOG_READY_ROOM_TITLE),
               text: t(Ids.ONLINE_DIALOG_READY_ROOM_TEXT),
-              actions: []
+              actions: [],
             });
           });
 
@@ -128,13 +128,13 @@ class TopEngine extends Engine {
             this.tryP2pConnect();
           });
 
-          client.on(RoomEvents.MEMBER_LEFT, id => {
+          client.on(RoomEvents.MEMBER_LEFT, (id) => {
             logger.debug("room member left. close online mode.", id);
             this.leaveOnlineMode();
           });
         })
         .then(() => client.joinRoom(roomName))
-        .catch(e => {
+        .catch((e) => {
           // fail to join room, then top page tap action is acceptable.
           window.addEventListener(pointerdown, this.onClickTop);
 
@@ -144,7 +144,7 @@ class TopEngine extends Engine {
             openModal({
               title: t(Ids.ONLINE_DIALOG_ERROR_TITLE),
               text: t(Ids.ONLINE_DIALOG_ERROR_NO_ROOM_TEXT, { roomName }),
-              actions: [{ text: "OK" }]
+              actions: [{ text: "OK" }],
             });
 
             return;
@@ -154,7 +154,7 @@ class TopEngine extends Engine {
             openModal({
               title: t(Ids.ONLINE_DIALOG_ERROR_TITLE),
               text: t(Ids.ONLINE_DIALOG_ERROR_CAPACITY_OVER_TEXT, { roomName }),
-              actions: [{ text: "OK" }]
+              actions: [{ text: "OK" }],
             });
 
             return;
@@ -184,7 +184,7 @@ class TopEngine extends Engine {
     openModal({
       title: t(Ids.ONLINE_DIALOG_DISCONNECTED_TITLE),
       text: t(Ids.ONLINE_DIALOG_DISCONNECTED_TEXT),
-      actions: []
+      actions: [],
     });
 
     setTimeout(() => {
@@ -196,16 +196,16 @@ class TopEngine extends Engine {
   tryP2pConnect() {
     getSkyWayClient()
       .trySyncStartTime()
-      .then(startTime => {
+      .then((startTime) => {
         const now = NtpDate.now();
         const timeLeft = now < startTime ? startTime - now : 0;
 
         openModal({
           title: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TITLE),
           text: t(Ids.ONLINE_DIALOG_READY_ONLINE_GAME_TEXT, {
-            timeLeft: unixtimeToRoundSeconds(timeLeft)
+            timeLeft: unixtimeToRoundSeconds(timeLeft),
           }),
-          actions: []
+          actions: [],
         });
 
         setTimeout(() => {

@@ -1,11 +1,12 @@
 import { firestore } from "firebase-functions";
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { UserDocument } from "@sokontokoro/mikan";
 
 import { catchErrorWrapper, getDocUrl, sendToSlack, slackUrl } from "../utils";
 
 export default firestore.document("users/{userId}").onWrite(
-  catchErrorWrapper(async (change, _context) => {
+  catchErrorWrapper(async (change) => {
     const afterUser = change.after.data() as UserDocument;
 
     if (!change.before.exists) {
@@ -15,7 +16,7 @@ export default firestore.document("users/{userId}").onWrite(
 
       await sendToSlack({
         title: `new user joined! ${consoleUrl}`,
-        text: `UID: ${afterUser.uid}`
+        text: `UID: ${afterUser.uid}`,
       });
       return;
     }
@@ -29,7 +30,7 @@ export default firestore.document("users/{userId}").onWrite(
 
       await sendToSlack({
         title: `user linked! ${consoleUrl}`,
-        text: `UID: ${afterUser.uid}\nName: ${afterUser.displayName}`
+        text: `UID: ${afterUser.uid}\nName: ${afterUser.displayName}`,
       });
       return;
     }

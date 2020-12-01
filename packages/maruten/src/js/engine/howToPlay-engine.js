@@ -22,7 +22,7 @@ export default class HowToPlayEngine extends GameEngine {
       State.object.image.BACKGROUND,
       State.object.image.ITEM_MICAN,
       State.object.text.INTRODUCTION_ITEM,
-      this.player.img
+      this.player.img,
     ];
 
     switch (State.playCharacter) {
@@ -72,7 +72,7 @@ export default class HowToPlayEngine extends GameEngine {
   // @Override
   checkHit() {
     if (this.enemy != null) {
-      this.feathers.forEach(feather => {
+      this.feathers.forEach((feather) => {
         if (this.enemy.doseColideWithFeather(feather)) {
           this.enemy.hit();
 
@@ -155,7 +155,7 @@ export default class HowToPlayEngine extends GameEngine {
             );
             break;
         }
-      }
+      },
     };
   }
 }

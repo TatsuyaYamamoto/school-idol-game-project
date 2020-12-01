@@ -26,7 +26,7 @@ export const Ids = {
   BUTTON_GO_TWITTER_HOME: "BUTTON_GO_TWITTER_HOME",
   BUTTON_RESULT_TWEET: "BUTTON_RESULT_TWEET",
   BUTTON_SOUND: "BUTTON_SOUND",
-  BUTTON_CHANGE_LANGUAGE: "BUTTON_CHANGE_LANGUAGE"
+  BUTTON_CHANGE_LANGUAGE: "BUTTON_CHANGE_LANGUAGE",
 };
 
 const manifest: ImageManifest = {
@@ -52,7 +52,7 @@ const manifest: ImageManifest = {
     [Ids.BUTTON_GO_TWITTER_HOME]: "button_go_twitter_home.png",
     [Ids.BUTTON_RESULT_TWEET]: "button_result_tweet.png",
     [Ids.BUTTON_SOUND]: "button_sound.png",
-    [Ids.BUTTON_CHANGE_LANGUAGE]: "button_change_language.png"
+    [Ids.BUTTON_CHANGE_LANGUAGE]: "button_change_language.png",
   },
   ja: {
     [Ids.LOGO_TITLE]: "logo_title.ja.png",
@@ -63,8 +63,8 @@ const manifest: ImageManifest = {
     [Ids.BUTTON_GO_BACK_MENU]: "button_go_back_menu.ja.png",
     [Ids.BUTTON_GO_CREDIT]: "button_go_credit.ja.png",
     [Ids.BUTTON_GO_HOW_TO_PLAY]: "button_go_how_to_play.ja.png",
-    [Ids.BUTTON_RESULT_TWEET]: "button_result_tweet.ja.png"
-  }
+    [Ids.BUTTON_RESULT_TWEET]: "button_result_tweet.ja.png",
+  },
 };
 
 export default manifest;

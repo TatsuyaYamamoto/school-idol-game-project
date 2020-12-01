@@ -1,7 +1,7 @@
 import { Deliverable, vibrate, play, dispatchEvent } from "@sokontokoro/mikan";
 
 import GameViewState from "../GameViewState";
-import { Events } from "../../GameView";
+import GameView, { Events } from "../../GameView";
 
 import Signal from "../../../../texture/sprite/Signal";
 import FalseStartCheck from "../../../../texture/sprite/text/FalseStartCheck";
@@ -19,19 +19,23 @@ export interface EnterParams extends Deliverable {
 
 abstract class ActionState extends GameViewState {
   private _signalTime: number;
+
   private _isSignaled: boolean;
+
   private _attackTimeMap: Map<Actor, number>;
 
   private _signalSprite: Signal;
+
   private _playerFalseStartCheck: FalseStartCheck;
+
   private _opponentFalseStartCheck: FalseStartCheck;
 
   protected get signalTime(): number {
     return this._signalTime;
   }
 
-  constructor(params) {
-    super(params);
+  constructor(gameView: GameView) {
+    super(gameView);
 
     // Bind this instance to class' abstract methods that can't define as bind property.
     this.bindKeyboardEvents = this.bindKeyboardEvents.bind(this);
@@ -121,7 +125,7 @@ abstract class ActionState extends GameViewState {
   /**
    * Fired when attack of the battle is available.
    */
-  protected onSignaled = () => {
+  protected onSignaled = (): void => {
     console.log("Signaled!");
 
     this._isSignaled = true;
@@ -146,7 +150,7 @@ abstract class ActionState extends GameViewState {
 
     dispatchEvent(Events.ATTACK, {
       attackTime,
-      attacker: actor
+      attacker: actor,
     });
   };
 

@@ -1,30 +1,38 @@
 import { TimelineMax } from "gsap";
-import { Application } from "pixi.js";
 import PIXISound from "pixi-sound";
 
-import { State, StateEnterParams, stateMachineService } from "../index";
+import {
+  State,
+  StateContext,
+  StateEnterParams,
+  stateMachineService,
+} from "../index";
 import { generateShuffleData } from "../utils";
 import { RinaCandidate } from "../model/RinaCandidate";
 
 export class GameShuffleState implements State {
   public static nodeKey = "@game-shuffle";
 
+  private stateContext: StateContext;
+
   private rinaCandidates: RinaCandidate[];
 
-  constructor(private context: { app: Application; scale: number }) {}
+  constructor(context: StateContext) {
+    this.stateContext = context;
+  }
 
-  onEnter({ context }: StateEnterParams) {
-    const { candidateNumber, rinaCandidates, moveDuration } = context;
+  onEnter({ context }: StateEnterParams): void {
+    const { rinaCandidates, moveDuration } = context;
     const moveSound = PIXISound.Sound.from(
-      this.context.app.loader.resources["sound_move1"]
+      this.stateContext.app.loader.resources.sound_move1
     );
 
     this.rinaCandidates = rinaCandidates;
     const shuffleData = generateShuffleData(
       [
-        this.context.app.screen.width * 0.2,
-        this.context.app.screen.width * 0.5,
-        this.context.app.screen.width * 0.8
+        this.stateContext.app.screen.width * 0.2,
+        this.stateContext.app.screen.width * 0.5,
+        this.stateContext.app.screen.width * 0.8,
       ],
       5
     );
@@ -33,8 +41,8 @@ export class GameShuffleState implements State {
       return new TimelineMax({});
     });
 
-    const timelinePromises = timelines.map(t => {
-      return new Promise(resolve => {
+    const timelinePromises = timelines.map((t) => {
+      return new Promise((resolve) => {
         t.eventCallback("onComplete", () => {
           resolve();
         });
@@ -56,17 +64,19 @@ export class GameShuffleState implements State {
             if (candidateIndex === 0) {
               moveSound.play();
             }
-          }
+          },
         });
       });
     });
 
-    timelines.forEach(t => t.play());
+    timelines.forEach((t) => t.play());
   }
 
-  onExit({ context }) {}
+  onExit(): void {
+    // do nothing
+  }
 
-  onStartSelect() {
+  onStartSelect(): void {
     stateMachineService.send("SHUFFLE_COMPLETED");
   }
 }

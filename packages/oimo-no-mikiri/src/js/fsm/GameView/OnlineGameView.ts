@@ -1,4 +1,4 @@
-import { default as AutoBind } from "autobind-decorator";
+import AutoBind from "autobind-decorator";
 
 import {
   Deliverable,
@@ -9,25 +9,22 @@ import {
   show as showConnecting,
   hide as hideConnecting,
   removeEvents,
-  trackEvent
+  trackEvent,
 } from "@sokontokoro/mikan";
 
 import GameView, { EnterParams, Events, InnerStates } from "./GameView";
 import ReadyState from "./internal/ReadyState";
 import ResultState, {
-  EnterParams as ResultStateEnterParams
+  EnterParams as ResultStateEnterParams,
 } from "./internal/ResultState";
 import OnlineActionState, {
-  EnterParams as ActionEnterParams
+  EnterParams as ActionEnterParams,
 } from "./internal/ActionState/OnlineActionState";
 import OnlineOverState, {
-  EnterParams as OnlineEnterParams
+  EnterParams as OnlineEnterParams,
 } from "./internal/OverState/OnlineOverState";
 
-import {
-  GameEvents,
-  default as OnlineGame
-} from "../../models/online/OnlineGame";
+import OnlineGame, { GameEvents } from "../../models/online/OnlineGame";
 import Actor from "../../models/Actor";
 import { Events as AppEvents } from "../ApplicationState";
 
@@ -36,7 +33,7 @@ import {
   closeModal,
   openMemberLeftModal,
   openRestartConfirmModal,
-  openWaitingRestartModal
+  openWaitingRestartModal,
 } from "../../helper/modals";
 import { Ids as SoundIds } from "../../resources/sound";
 import { BattleEvents } from "../../models/Battle";
@@ -51,7 +48,7 @@ class OnlineGameView extends GameView {
       [InnerStates.READY]: new ReadyState(this),
       [InnerStates.ACTION]: new OnlineActionState(this),
       [InnerStates.RESULT]: new ResultState(this),
-      [InnerStates.OVER]: new OnlineOverState(this)
+      [InnerStates.OVER]: new OnlineOverState(this),
     });
     addEvents({
       [Events.REQUEST_READY]: this._onRequestedReady,
@@ -59,12 +56,12 @@ class OnlineGameView extends GameView {
       [Events.ATTACK]: this.onAttacked,
       [Events.FIXED_RESULT]: this.onResultFixed,
       [Events.RESTART_GAME]: this.onRestartRequested,
-      [Events.BACK_TO_TOP]: this.onBackToTopRequested
+      [Events.BACK_TO_TOP]: this.onBackToTopRequested,
     });
 
     this.game.on(GameEvents.MEMBER_LEFT, () => {
       // Left myself?
-      const ownId = (<OnlineGame>this.game).ownId;
+      const { ownId } = <OnlineGame>this.game;
       if (!(<OnlineGame>this.game).members.has(ownId)) {
         return;
       }
@@ -98,7 +95,7 @@ class OnlineGameView extends GameView {
       Events.ATTACK,
       Events.FIXED_RESULT,
       Events.RESTART_GAME,
-      Events.BACK_TO_TOP
+      Events.BACK_TO_TOP,
     ]);
   }
 
@@ -125,16 +122,16 @@ class OnlineGameView extends GameView {
    * @private
    */
   private _onReady = () => {
-    const signalTime = this.game.currentBattle.signalTime;
+    const { signalTime } = this.game.currentBattle;
     const isFalseStarted = {
       player: this.game.currentBattle.isFalseStarted(Actor.PLAYER),
-      opponent: this.game.currentBattle.isFalseStarted(Actor.OPPONENT)
+      opponent: this.game.currentBattle.isFalseStarted(Actor.OPPONENT),
     };
 
-    const battleLeft = this.game.battleLeft;
+    const { battleLeft } = this.game;
     const wins = {
       onePlayer: this.game.getWins(Actor.PLAYER),
-      twoPlayer: this.game.getWins(Actor.OPPONENT)
+      twoPlayer: this.game.getWins(Actor.OPPONENT),
     };
 
     const showResult = (params: { winner?: Actor; falseStarter?: Actor }) => {
@@ -147,7 +144,7 @@ class OnlineGameView extends GameView {
       this.to<ResultStateEnterParams>(InnerStates.RESULT, params);
     };
 
-    this.game.currentBattle.on(BattleEvents.SUCCEED_ATTACK, winner => {
+    this.game.currentBattle.on(BattleEvents.SUCCEED_ATTACK, (winner) => {
       play(SoundIds.SOUND_ATTACK);
       vibrate(VIBRATE_TIME.ATTACK);
       showResult({ winner });
@@ -171,7 +168,7 @@ class OnlineGameView extends GameView {
       signalTime,
       isFalseStarted,
       battleLeft,
-      wins
+      wins,
     });
   };
 
@@ -184,7 +181,7 @@ class OnlineGameView extends GameView {
       `Fixed the game! player win: ${onePlayerWins}, opponent wins: ${twoPlayerWins}.`
     );
 
-    this.game.once(GameEvents.REQUESTED_START, async requestedUserId => {
+    this.game.once(GameEvents.REQUESTED_START, async (requestedUserId) => {
       if ((<OnlineGame>this.game).ownId === requestedUserId) {
         // Ignore own request.
         return;
@@ -214,7 +211,7 @@ class OnlineGameView extends GameView {
       mode,
       round: currentRound,
       onePlayerWins,
-      twoPlayerWins
+      twoPlayerWins,
     });
   };
 
@@ -237,7 +234,7 @@ class OnlineGameView extends GameView {
    * @param {CustomEvent} e
    * @override
    */
-  protected onAttacked(e: CustomEvent) {
+  protected onAttacked(e: CustomEvent): void {
     showConnecting();
 
     super.onAttacked(e);
@@ -251,14 +248,14 @@ class OnlineGameView extends GameView {
   /**
    * @override
    */
-  protected onBackToTopRequested() {
+  protected onBackToTopRequested(): void {
     super.onBackToTopRequested();
 
     (<OnlineGame>this.game).leave();
 
     trackEvent(Action.TAP, {
       category: Category.BUTTON,
-      label: "back_to_menu"
+      label: "back_to_menu",
     });
   }
 }

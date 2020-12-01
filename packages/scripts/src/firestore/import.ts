@@ -4,12 +4,12 @@ import * as mysql from "mysql";
 import {
   HighscoreDocument,
   UserDocument,
-  CredentialDocument
+  CredentialDocument,
 } from "@sokontokoro/mikan";
 
 export const MIGRATION_TMP_VALUE_USER_REF = "ANONYMOUS_IN_OLD_SYSTEM";
 
-export default async function(database: string, options: any) {
+export default async function (database: string, options: any) {
   const { user, password, host, limitUserCount } = options;
 
   console.log(`start migration.
@@ -25,7 +25,7 @@ export default async function(database: string, options: any) {
     password,
     database,
     supportBigNumbers: true,
-    bigNumberStrings: true
+    bigNumberStrings: true,
   });
 
   connection.connect();
@@ -68,7 +68,7 @@ export default async function(database: string, options: any) {
     savedUsers.push({
       oldSystemUid: user[`ID`],
       newSystemUid: newUserRef.id,
-      newSystemUserRef: newUserRef
+      newSystemUserRef: newUserRef,
     });
 
     userDocs.push({
@@ -83,14 +83,14 @@ export default async function(database: string, options: any) {
         [`twitter.com`]: {
           userId: user[`ID`],
           credentialRef: newCredentialRef as any,
-          linkedAt: longToDate(parseInt(user[`CREATE_DATE`]))
-        }
+          linkedAt: longToDate(parseInt(user[`CREATE_DATE`])),
+        },
       },
       createdAt: longToDate(parseInt(user[`CREATE_DATE`])),
       updatedAt: longToDate(
         parseInt(user[`UPDATE_DATE`] || user[`CREATE_DATE`])
       ),
-      duplicatedRefsByLink: []
+      duplicatedRefsByLink: [],
     });
 
     importCredentials.push({
@@ -99,9 +99,9 @@ export default async function(database: string, options: any) {
         providerId: `twitter.com`,
         data: {},
         createdAt: longToDate(parseInt(user[`CREATE_DATE`])),
-        updatedAt: longToDate(parseInt(user[`CREATE_DATE`]))
+        updatedAt: longToDate(parseInt(user[`CREATE_DATE`])),
       },
-      ref: newCredentialRef
+      ref: newCredentialRef,
     });
   }
 
@@ -113,7 +113,7 @@ export default async function(database: string, options: any) {
   for (const batchTargetUsers of splitList(userDocs, 100)) {
     const batch = admin.firestore().batch();
 
-    batchTargetUsers.forEach(user => {
+    batchTargetUsers.forEach((user) => {
       batch.set(userColRef.doc(user.uid), user);
       userCount++;
     });
@@ -128,7 +128,7 @@ export default async function(database: string, options: any) {
   for (const batchTargetCredentials of splitList(importCredentials, 100)) {
     const batch = admin.firestore().batch();
 
-    batchTargetCredentials.forEach(credential => {
+    batchTargetCredentials.forEach((credential) => {
       batch.set(credential.ref, credential.doc);
     });
 
@@ -143,18 +143,18 @@ export default async function(database: string, options: any) {
    */
 
   const result = await admin.auth().importUsers(
-    userDocs.map(userDoc => {
-      const providerData = Object.keys(userDoc.providers).map(providerId => {
+    userDocs.map((userDoc) => {
+      const providerData = Object.keys(userDoc.providers).map((providerId) => {
         const provider = userDoc.providers[providerId];
         return {
           uid: provider.userId,
-          providerId
+          providerId,
         };
       });
 
       return {
         uid: userDoc.uid,
-        providerData
+        providerData,
       };
     })
   );
@@ -191,7 +191,7 @@ export default async function(database: string, options: any) {
 
     console.log(
       `load gamelog. user: ${user.oldSystemUid}, game: ${scores
-        .map(s => s[`GAME`].toLowerCase())
+        .map((s) => s[`GAME`].toLowerCase())
         .join(", ")}`
     );
 
@@ -213,8 +213,8 @@ export default async function(database: string, options: any) {
           createdAt: longToDate(parseInt(s[`CREATE_DATE`])),
           updatedAt: longToDate(parseInt(s[`FINAL_DATE`] || s[`CREATE_DATE`])),
           brokenAt: longToDate(parseInt(s[`UPDATE_DATE`] || s[`CREATE_DATE`])),
-          testUserId: s[`USER_ID`]
-        } as HighscoreDocument
+          testUserId: s[`USER_ID`],
+        } as HighscoreDocument,
       });
 
       highscoreRefs[game] = highscoreRef;
@@ -222,9 +222,9 @@ export default async function(database: string, options: any) {
 
     updateUsers.push({
       doc: {
-        highscoreRefs
+        highscoreRefs,
       },
-      ref: user.newSystemUserRef
+      ref: user.newSystemUserRef,
     });
   }
 
@@ -236,7 +236,7 @@ export default async function(database: string, options: any) {
   let highscoreCount = 0;
   for (const batchTargetScoreDocs of splitList(importScores, 100)) {
     const batch = admin.firestore().batch();
-    batchTargetScoreDocs.forEach(score => {
+    batchTargetScoreDocs.forEach((score) => {
       highscoreCount++;
       batch.set(score.ref, score.doc);
     });
@@ -249,7 +249,7 @@ export default async function(database: string, options: any) {
    */
   for (const batchTargetUsers of splitList(updateUsers, 100)) {
     const batch = admin.firestore().batch();
-    batchTargetUsers.forEach(user => {
+    batchTargetUsers.forEach((user) => {
       batch.update(user.ref, user.doc);
     });
     await batch.commit();
@@ -289,16 +289,15 @@ export function longToDate(longValue: number) {
 
 export async function query(connection: mysql.Connection, sql: string) {
   return new Promise<any[]>((resolve, reject) => {
-    connection.query(sql, function(
-      error: Error,
-      result: any | any[],
-      _fields: any
-    ) {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(result);
+    connection.query(
+      sql,
+      function (error: Error, result: any | any[], _fields: any) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
       }
-    });
+    );
   });
 }

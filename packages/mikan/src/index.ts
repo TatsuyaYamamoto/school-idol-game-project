@@ -16,7 +16,7 @@ export {
   SoundManifest,
   loadTexture,
   loadFrames,
-  loadSound
+  loadSound,
 } from "./AssetLoader";
 
 export { default as config } from "./config";
@@ -37,7 +37,7 @@ export {
   stop,
   toggleSound,
   isMute,
-  resumeContext
+  resumeContext,
 } from "./MusicPlayer";
 
 export { default as State } from "./State";
@@ -59,7 +59,7 @@ export {
   getCurrentUrl,
   tweetByWebIntent,
   openExternalSite,
-  convertYyyyMmDd
+  convertYyyyMmDd,
 } from "./utils";
 
 export { default as ViewContainer } from "./ViewContainer";
@@ -75,7 +75,7 @@ export {
   PeerID,
   DataConnection,
   MediaConnection,
-  Destination
+  Destination,
 } from "./skyway/SkyWayClient";
 export { SkyWayEvents, RoomEvents } from "./skyway/SkyWayEvents";
 export { default as NtpDate } from "./NtpDate";
@@ -89,38 +89,41 @@ export {
   tracePage,
   trackEvent,
   trackTiming,
-  createUrchinTrackingModuleQuery
+  createUrchinTrackingModuleQuery,
 } from "./Tracker";
 
 // firebase -----------------------------------------------------------------------
-export { firebaseDb, firebaseAuth, callHttpsCallable } from "./firebase";
+export { FirebaseClient } from "./firebase/FirebaseClient";
 
 export {
   init as initAuth,
   getIdToken,
   signInAsAnonymous,
   signInAsTwitterUser,
-  signOut
+  signOut,
 } from "./firebase/auth";
 
 export { User, UserDocument } from "./firebase/User";
 export {
   Presence,
   PresenceDocument,
-  PresenceDbJson
+  PresenceDbJson,
 } from "./firebase/Presence";
 export { Playlog, PlaylogDocument } from "./firebase/Playlog";
 export { Highscore, HighscoreDocument } from "./firebase/Highscore";
 export {
   Credential,
   CredentialDocument,
-  ProviderId
+  ProviderId,
 } from "./firebase/Credential";
 export { Ranking, RankingDocument, RankItemDocument } from "./firebase/Ranking";
 export { MetadataDocument } from "./firebase/Metadata";
 export { Room, RoomName, RoomDocument } from "./firebase/Room";
 
-export { devConfig as devFirebaseConfig } from "./firebase/config";
+export {
+  devConfig as devFirebaseConfig,
+  proConfig as proFirebaseConfig,
+} from "./firebase/config";
 
 // util -----------------------------------------------------------------------
 export { default as LimitedArray } from "./util/LimitedArray";

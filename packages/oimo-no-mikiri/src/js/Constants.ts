@@ -22,28 +22,28 @@ export const GAME_PARAMETERS = {
       2: 49 / 60,
       3: 20 / 60,
       4: 15 / 60,
-      5: 10 / 60
+      5: 10 / 60,
     },
     [Mode.SINGLE_NOVICE]: {
       1: 62 / 60,
       2: 40 / 60,
       3: 16 / 60,
       4: 12 / 60,
-      5: 9 / 60
+      5: 9 / 60,
     },
     [Mode.SINGLE_EXPERT]: {
       1: 17 / 60,
       2: 13 / 60,
       3: 11 / 60,
       4: 9 / 60,
-      5: 7 / 60
-    }
+      5: 7 / 60,
+    },
   },
 
   /**
    * Attack time distance time[ms] of player and opponent as draw.
    */
-  acceptable_attack_time_distance: 17
+  acceptable_attack_time_distance: 17,
 };
 
 /**
@@ -82,7 +82,7 @@ export const VIBRATE_TIME = {
   TRY_TO_ATTACK: 20,
   ATTACK: 100,
   FALSE_START: 20,
-  DRAW: 100
+  DRAW: 100,
 };
 
 /**
@@ -104,7 +104,7 @@ export const SKIP_BRAND_LOGO_ANIMATION = false;
  */
 export const SUPPORTED_LANGUAGES = {
   EN: "en",
-  JA: "ja"
+  JA: "ja",
 };
 
 export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES.EN;
@@ -129,26 +129,5 @@ export const URL = {
   TWITTER_TWEET_PAGE: "https://twitter.com/intent/tweet",
   ONJIN_TOP: "https://on-jin.com/",
   LOVELIVE_TOP: "http://www.lovelive-anime.jp/",
-  KIRBY_HOME: "https://www.nintendo.co.jp/n02/shvc/p_akfj/"
+  KIRBY_HOME: "https://www.nintendo.co.jp/n02/shvc/p_akfj/",
 };
-
-export const FIREBASE_OPTIONS =
-  process.env.NODE_ENV === "production"
-    ? {
-        // Production config
-        apiKey: "AIzaSyDvNopvc3Tr9WcfTUQK772aSmerv0UeRb0",
-        authDomain: "oimo-no-mikiri.firebaseapp.com",
-        databaseURL: "https://oimo-no-mikiri.firebaseio.com",
-        projectId: "oimo-no-mikiri",
-        storageBucket: "oimo-no-mikiri.appspot.com",
-        messagingSenderId: "379161325988"
-      }
-    : {
-        // Development config
-        apiKey: "AIzaSyB16fI2MRL411jYOCjW1eL7hTuwOvlq3w8",
-        databaseURL: "https://oimo-no-mikiri-development.firebaseio.com",
-        storageBucket: "oimo-no-mikiri-development.appspot.com",
-        authDomain: "oimo-no-mikiri-development.firebaseapp.com",
-        messagingSenderId: "888607734391",
-        projectId: "oimo-no-mikiri-development"
-      };

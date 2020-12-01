@@ -13,11 +13,11 @@ class CreditComponent extends Container {
     super();
 
     this._name = new Text(nameAndRole, {
-      fontSize: 20
+      fontSize: 20,
     });
     this._name.y -= this._name.height * 0.5;
     this._url = new Text(url, {
-      fontSize: 20
+      fontSize: 20,
     });
     this._url.y += this._url.height * 0.5;
 

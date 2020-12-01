@@ -5,7 +5,7 @@ import {
   dispatchEvent,
   t,
   play,
-  tracePage
+  tracePage,
 } from "@sokontokoro/mikan";
 
 import TopViewState from "./TopViewState";
@@ -21,11 +21,13 @@ import Mode from "../../../models/Mode";
 import { Ids as SoundIds } from "../../../resources/sound";
 import { Ids as StringIds } from "../../../resources/string";
 
-const { version } = require("../../../../../package.json");
+import { version } from "../../../../../package.json";
 
 class TitleState extends TopViewState {
   private _titleLogo: TitleLogo;
+
   private _appVersion: Text;
+
   private _tapInfoText: Text;
 
   /**
@@ -51,14 +53,14 @@ class TitleState extends TopViewState {
     this._appVersion = new Text(`v${version}`, {
       fontSize: 20,
       stroke: "#ffffff",
-      strokeThickness: 1
+      strokeThickness: 1,
     });
     this._appVersion.position.set(this.viewWidth * 0.9, this.viewHeight * 0.95);
 
     this._tapInfoText = new Text(t(StringIds[StringIds.TAP_DISPLAY_INFO]), {
       fontSize: 40,
       stroke: "#ffffff",
-      strokeThickness: 2
+      strokeThickness: 2,
     });
     this._tapInfoText.position.set(this.viewWidth * 0.5, this.viewHeight * 0.9);
 
@@ -95,8 +97,9 @@ class TitleState extends TopViewState {
   };
 
   private clearQueryString = () => {
-    const url = `${location.protocol}//${location.host}${location.pathname}`;
-    history.replaceState(null, null, url);
+    const { protocol, host, pathname } = window.location;
+    const url = `${protocol}//${host}${pathname}`;
+    window.history.replaceState(null, null, url);
   };
 }
 

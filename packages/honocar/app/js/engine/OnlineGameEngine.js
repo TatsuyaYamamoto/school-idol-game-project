@@ -6,7 +6,7 @@ import {
   getRandomInteger,
   NtpDate,
   LimitedArray,
-  mean
+  mean,
 } from "@sokontokoro/mikan";
 
 import Player from "../character/Player";
@@ -77,7 +77,7 @@ class OnlineGameEngine extends Engine {
       soundObj.SOUND_SUSUME_LOOP.play({
         interrupt: "late",
         loop: -1,
-        volume: 0.6
+        volume: 0.6,
       });
     });
   }
@@ -168,7 +168,7 @@ function processGame({ delta }) {
   }
 
   if (!isPlayerCrashed()) {
-    cars.forEach(function(target, index) {
+    cars.forEach(function (target, index) {
       if (target.passed) {
         cars.splice(index, 1);
         passCarCount++;
@@ -384,8 +384,9 @@ function judge(allowableTimeDiff) {
   }
 
   logger.debug(
-    `judge. game is ${result}.  player crash time: ${pTime}, opponent: ${oTime}, player - opponent = ${pTime -
-      oTime}ms`
+    `judge. game is ${result}.  player crash time: ${pTime}, opponent: ${oTime}, player - opponent = ${
+      pTime - oTime
+    }ms`
   );
 
   goGameOverState(result);
@@ -397,7 +398,7 @@ function onDataReceived(data) {
   const f = {
     [P2PEvents.CHANGE_LANE]: onOpponentChangedLane,
     [P2PEvents.PUSH_CAR]: onOpponentPushedCar,
-    [P2PEvents.CRASHED]: onOpponentCrashed
+    [P2PEvents.CRASHED]: onOpponentCrashed,
   };
 
   f[message.type] && f[message.type](message);
@@ -448,8 +449,8 @@ function sendChangeLaneEvent() {
   const message = {
     type: P2PEvents.CHANGE_LANE,
     detail: {
-      lane: globals.player.lane
-    }
+      lane: globals.player.lane,
+    },
   };
 
   getSkyWayClient().send(message);
@@ -461,8 +462,8 @@ function sendPushCarEvent(enemyNumber, pushTime) {
     detail: {
       nextEnemyNumber: enemyNumber,
       nextPusher: getSkyWayClient().remotePeerIds[0],
-      pushTime
-    }
+      pushTime,
+    },
   };
 
   getSkyWayClient().send(message);
@@ -474,8 +475,8 @@ function sendCrashEvent(crashedTime, judgeTime, fps) {
     detail: {
       crashedTime: crashedTime,
       judgeTime: judgeTime,
-      fps: fps
-    }
+      fps: fps,
+    },
   };
 
   getSkyWayClient().send(message);
@@ -501,7 +502,7 @@ function goGameOverState(result) {
   globals.soundObj.SOUND_CRASH.play();
   globals.soundObj.SOUND_SUSUME_END.play({
     interrupt: "late",
-    volume: 0.6
+    volume: 0.6,
   });
 
   //stateマシン内、ゲームオーバー状態に遷移

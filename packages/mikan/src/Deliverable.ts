@@ -3,6 +3,9 @@
  * @see {State}
  * @interface
  */
-interface Deliverable {}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface Deliverable {
+  // do nothing
+}
 
 export default Deliverable;

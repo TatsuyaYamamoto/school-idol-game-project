@@ -1,12 +1,13 @@
-import { Texture, interaction } from "pixi.js";
+import { Texture } from "pixi.js";
 import { loadFrames, isMute } from "@sokontokoro/mikan";
 
 import Button from "../../internal/Button";
 import { Ids } from "../../../resources/image";
 
 class SoundButton extends Button {
-  private _onTexture: Texture;
-  private _offTexture: Texture;
+  readonly _onTexture: Texture;
+
+  readonly _offTexture: Texture;
 
   constructor() {
     const frames = loadFrames(Ids.BUTTON_SOUND);
@@ -19,11 +20,14 @@ class SoundButton extends Button {
     this._onTexture = onTexture;
     this._offTexture = offTexture;
 
-    isMute() ? this.turnOff() : this.turnOn();
-    this.setOnClickListener(
-      (event: interaction.InteractionEvent) =>
-        isMute() ? this.turnOn() : this.turnOff()
-    );
+    const mute = isMute();
+    if (mute) {
+      this.turnOff();
+    } else {
+      this.turnOn();
+    }
+
+    this.setOnClickListener(() => (mute ? this.turnOn() : this.turnOff()));
   }
 
   public turnOn(): void {

@@ -17,7 +17,7 @@ export default class TopEngine {
     Util.addChildren([
       State.object.image.BACKGROUND,
       TopEngine.getTitleLogChild(State.playCharacter),
-      State.object.text.START
+      State.object.text.START,
     ]);
     State.gameStage.update();
 
@@ -53,7 +53,7 @@ export default class TopEngine {
       },
       remove: () => {
         State.object.image.BACKGROUND.removeAllEventListeners("mousedown");
-      }
+      },
     };
   }
 }

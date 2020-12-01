@@ -1,12 +1,13 @@
-import { firestore, database } from "firebase/app";
-import FieldValue = firestore.FieldValue;
-import Timestamp = firestore.Timestamp;
-import DocumentReference = firestore.DocumentReference;
-import CollectionReference = firestore.CollectionReference;
+import firebase from "firebase/app";
 
-import { firebaseDb } from "./index";
+import { FirebaseClient } from "./FirebaseClient";
 import { User } from "./User";
 import MikanError, { ErrorCode } from "../MikanError";
+
+type FieldValue = firebase.firestore.FieldValue;
+type Timestamp = firebase.firestore.Timestamp;
+type DocumentReference = firebase.firestore.DocumentReference;
+type CollectionReference = firebase.firestore.CollectionReference;
 
 /**
  * Schema for Realtime Database
@@ -18,6 +19,7 @@ export interface PresenceDbJson {
   uid: string;
   online: true;
   userAgent: string;
+  // eslint-disable-next-line
   createdAt: /* read */ number | /* write */ Object;
 }
 
@@ -31,6 +33,7 @@ export class Presence {
   private static _id: string | null = null;
 
   public static get id(): string {
+    // eslint-disable-next-line
     if (!Presence._id) {
       throw new MikanError(
         ErrorCode.FIREBASE_NO_PRESENCE,
@@ -38,11 +41,12 @@ export class Presence {
       );
     }
 
+    // eslint-disable-next-line
     return Presence._id;
   }
 
   public static getColRef(): CollectionReference {
-    return firebaseDb.collection("presences");
+    return FirebaseClient.firestore.collection("presences");
   }
 
   public static getDocRef(id: string): DocumentReference {
@@ -57,8 +61,8 @@ export class Presence {
    */
   public static initWatch(): string {
     const uid = User.getOwnRef().id;
-    const infoConnectedRef = database().ref(".info/connected");
-    const presencesRef = database().ref(`presences`);
+    const infoConnectedRef = firebase.database().ref(".info/connected");
+    const presencesRef = firebase.database().ref(`presences`);
     const newPresenceRef = presencesRef.push();
     const newPresenceId = newPresenceRef.key;
 
@@ -66,7 +70,7 @@ export class Presence {
       uid,
       online: true,
       userAgent: navigator.userAgent,
-      createdAt: database.ServerValue.TIMESTAMP
+      createdAt: firebase.database.ServerValue.TIMESTAMP,
     };
 
     // since I can connect from multiple devices or browser tabs, we store each connection instance separately
@@ -75,14 +79,14 @@ export class Presence {
 
     // stores the timestamp of my last disconnect (the last time I was seen online)
 
-    infoConnectedRef.on("value", async function(snapshot) {
+    infoConnectedRef.on("value", async (snapshot) => {
       if (snapshot && snapshot.val() === true) {
         // We're connected (or reconnected)! Do anything here that should happen only if online (or on reconnect)
         // var con = ownPresenceRef.push();
 
         // When I disconnect, remove this device
         newPresenceRef.onDisconnect().update({
-          online: false
+          online: false,
         });
 
         // Add this device to my connections list
@@ -95,6 +99,9 @@ export class Presence {
       throw new Error("fail to issue new presence ID.");
     }
 
-    return (Presence._id = newPresenceId);
+    // eslint-disable-next-line
+    Presence._id = newPresenceId;
+
+    return newPresenceId;
   }
 }

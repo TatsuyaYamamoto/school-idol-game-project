@@ -1,11 +1,11 @@
 import { firestore } from "firebase-functions";
-
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { RankingDocument } from "@sokontokoro/mikan";
 
 import { catchErrorWrapper, getDocUrl, sendToSlack, slackUrl } from "../utils";
 
 export default firestore.document("ranking/{rankingId}").onCreate(
-  catchErrorWrapper(async (snapshot, _context) => {
+  catchErrorWrapper(async (snapshot) => {
     const newRanking = snapshot.data() as RankingDocument;
     const { game } = newRanking;
     const consoleUrl = slackUrl(
@@ -14,7 +14,7 @@ export default firestore.document("ranking/{rankingId}").onCreate(
     );
 
     await sendToSlack({
-      text: `generated ranking of ${game}. ${consoleUrl}`
+      text: `generated ranking of ${game}. ${consoleUrl}`,
     });
   })
 );

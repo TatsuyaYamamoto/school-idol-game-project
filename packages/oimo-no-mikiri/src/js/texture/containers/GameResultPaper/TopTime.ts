@@ -14,8 +14,9 @@ import { Ids as StringIds } from "../../../resources/string";
  * @class
  */
 export class TopTime extends Container {
-  private _label: Text;
-  private _value: Text;
+  readonly _label: Text;
+
+  readonly _value: Text;
 
   constructor(topTime: number) {
     super();
@@ -24,12 +25,12 @@ export class TopTime extends Container {
       fontFamily: "g_brushtappitsu_freeH",
       fontSize: 20,
       // textBaseline: 'middle',
-      padding: 5 // prevent to cut off words.
+      padding: 5, // prevent to cut off words.
     });
     this._value = new Text(`${topTime}`, {
       fontFamily: "g_brushtappitsu_freeH",
       fontSize: 30,
-      padding: 5 // prevent to cut off words.
+      padding: 5, // prevent to cut off words.
     });
 
     // Set position to be set right end as anchor.

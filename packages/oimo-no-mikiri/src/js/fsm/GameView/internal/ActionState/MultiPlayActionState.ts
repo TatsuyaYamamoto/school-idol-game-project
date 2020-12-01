@@ -1,5 +1,6 @@
 import * as Mousetrap from "mousetrap";
 
+import { DisplayObject } from "pixi.js";
 import ActionState, { EnterParams as ActionEnterParams } from "./ActionState";
 
 import Actor from "../../../../models/Actor";
@@ -13,6 +14,7 @@ export interface EnterParams extends ActionEnterParams {
 
 class MultiPlayActionState extends ActionState {
   private _battleStatusBoard: BattleStatusBoard;
+
   private _playerAttachAreaRange: number;
 
   protected get battleStatusBoard(): BattleStatusBoard {
@@ -29,7 +31,9 @@ class MultiPlayActionState extends ActionState {
   update(elapsedMS: number): void {
     super.update(elapsedMS);
 
-    this.shouldSign() && this.onSignaled();
+    if (this.shouldSign()) {
+      this.onSignaled();
+    }
   }
 
   /**
@@ -54,7 +58,7 @@ class MultiPlayActionState extends ActionState {
     this._battleStatusBoard.twoPlayerWins = params.wins.twoPlayer;
 
     this.backGroundLayer.addChild(this.background);
-    this.applicationLayer.addChild(
+    this.applicationLayer.addChild<DisplayObject>(
       this.oimo,
       this.player,
       this.opponent,
@@ -75,7 +79,7 @@ class MultiPlayActionState extends ActionState {
   /**
    * @override
    */
-  bindKeyboardEvents() {
+  bindKeyboardEvents(): void {
     Mousetrap.bind("a", () => {
       this.onAttacked(Actor.PLAYER);
     });
@@ -87,7 +91,8 @@ class MultiPlayActionState extends ActionState {
   /**
    * @override
    */
-  unbindKeyboardEvents() {
+  // eslint-disable-next-line
+  unbindKeyboardEvents(): void {
     Mousetrap.unbind("a");
     Mousetrap.unbind("l");
   }

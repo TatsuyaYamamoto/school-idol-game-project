@@ -7,35 +7,38 @@ export default pubsub
   .onPublish(async (message, context) => {
     console.log({
       message: `subscribe "cloud-functions-warn-log" topic.`,
-      detail: [message, context]
+      detail: [message, context],
     });
 
     try {
-      const data = JSON.parse(new Buffer(message.data, "base64").toString());
-      const { function_name, project_id } = data.resource.labels;
+      const data = JSON.parse(Buffer.from(message.data, "base64").toString());
+      const {
+        function_name: functionName,
+        project_id: projectId,
+      } = data.resource.labels;
       const executionId = context.eventId;
 
       const logUrl =
         `https://console.cloud.google.com/logs/viewer` +
-        `?project=${project_id}` +
+        `?project=${projectId}` +
         `&advancedFilter=labels."execution_id"%3D"${executionId}"`;
 
-      const title = `Catch unhandled error! *${function_name}* <${logUrl}|Open log>`;
+      const title = `Catch unhandled error! *${functionName}* <${logUrl}|Open log>`;
       const text = JSON.stringify(data, null, "\t");
       const result = await sendToSlack({
         title,
         text,
-        color: "danger"
+        color: "danger",
       });
 
       console.log({
         message: "slack nitif is success.",
-        detail: result
+        detail: result,
       });
     } catch (e) {
       console.log({
         message: "FATAL ERROR! Could not send slack webhook!",
-        detail: e
+        detail: e,
       });
     }
   });

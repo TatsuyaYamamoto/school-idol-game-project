@@ -27,7 +27,7 @@ export const GAME_PARAMETERS = {
   /**
    * @see GAME_PARAMETERS.KOTORI_APPEARANCE_INTERVAL_MIN
    */
-  KOTORI_APPEARANCE_INTERVAL_MAX: 2000
+  KOTORI_APPEARANCE_INTERVAL_MAX: 2000,
 };
 
 /**
@@ -73,7 +73,7 @@ export const SKIP_BRAND_LOGO_ANIMATION = false;
  */
 export const SUPPORTED_LANGUAGES = {
   EN: "en",
-  JA: "ja"
+  JA: "ja",
 };
 
 export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES.EN;
@@ -98,5 +98,5 @@ export const URL = {
   TWITTER_HOME_SANZASHI: "https://twitter.com/xxsanzashixx",
   TWITTER_TWEET_PAGE: "https://twitter.com/intent/tweet",
   ONJIN_TOP: "https://on-jin.com/",
-  LOVELIVE_TOP: "http://www.lovelive-anime.jp/"
+  LOVELIVE_TOP: "http://www.lovelive-anime.jp/",
 };

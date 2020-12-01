@@ -7,9 +7,11 @@ import Text from "../../internal/Text";
 import { Ids as StringIds } from "../../../resources/string";
 
 class PlayerWins extends Container {
-  private _playerNumberLabel: Text;
-  private _winsLabel: Text;
-  private _winsValue: Text;
+  readonly _playerNumberLabel: Text;
+
+  readonly _winsLabel: Text;
+
+  readonly _winsValue: Text;
 
   constructor(playerNumber: number, wins: number) {
     super();
@@ -17,19 +19,19 @@ class PlayerWins extends Container {
     this._playerNumberLabel = new Text(`${playerNumber}P`, {
       fontFamily: "g_brushtappitsu_freeH",
       fontSize: 40,
-      padding: 5 // prevent to cut off words.
+      padding: 5, // prevent to cut off words.
     });
 
     this._winsLabel = new Text(t(StringIds[StringIds.LABEL_WINS]), {
       fontFamily: "g_brushtappitsu_freeH",
       fontSize: 30,
-      padding: 5 // prevent to cut off words.
+      padding: 5, // prevent to cut off words.
     });
 
     this._winsValue = new Text(`${wins}`, {
       fontFamily: "g_brushtappitsu_freeH",
       fontSize: 60,
-      padding: 5 // prevent to cut off words.
+      padding: 5, // prevent to cut off words.
     });
 
     this._playerNumberLabel.position.set(

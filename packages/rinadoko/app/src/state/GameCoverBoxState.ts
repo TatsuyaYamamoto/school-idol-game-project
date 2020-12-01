@@ -1,17 +1,25 @@
-import { Application } from "pixi.js";
-import { State, StateEnterParams, stateMachineService } from "../index";
+import {
+  State,
+  StateContext,
+  StateEnterParams,
+  stateMachineService,
+} from "../index";
 import { RinaCandidate } from "../model/RinaCandidate";
 
 export class GameCoverBoxState implements State {
   public static nodeKey = "@game-cover-box";
 
+  private stateContext: StateContext;
+
   private rinaCandidates: RinaCandidate[];
 
-  constructor(private context: { app: Application; scale: number }) {}
+  constructor(context: StateContext) {
+    this.stateContext = context;
+  }
 
-  onEnter({ context }: StateEnterParams) {
+  onEnter({ context }: StateEnterParams): void {
     this.rinaCandidates = context.rinaCandidates;
-    const coverAnimePromise = this.rinaCandidates.map((rina, index) =>
+    const coverAnimePromise = this.rinaCandidates.map((rina) =>
       rina.showCoverBoxAnime()
     );
 
@@ -19,9 +27,12 @@ export class GameCoverBoxState implements State {
       this.onStartShuffle();
     });
   }
-  onExit({ context }) {}
 
-  onStartShuffle() {
+  onExit(): void {
+    // do nothing
+  }
+
+  onStartShuffle(): void {
     stateMachineService.send("COVER_BOX_COMPLETED");
   }
 }

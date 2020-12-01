@@ -1,11 +1,11 @@
-import { firestore } from "firebase/app";
+import firebase from "firebase/app";
 
-import FieldValue = firestore.FieldValue;
-import QuerySnapshot = firestore.QuerySnapshot;
-import DocumentReference = firestore.DocumentReference;
-import CollectionReference = firestore.CollectionReference;
+import { FirebaseClient } from "./FirebaseClient";
 
-import { firebaseDb } from "./index";
+type FieldValue = firebase.firestore.FieldValue;
+type QuerySnapshot = firebase.firestore.QuerySnapshot;
+type DocumentReference = firebase.firestore.DocumentReference;
+type CollectionReference = firebase.firestore.CollectionReference;
 
 /**
  * @link https://github.com/firebase/firebase-js-sdk/blob/master/packages/auth/src/idp.js#L34
@@ -21,14 +21,14 @@ export interface CredentialDocument /* extends firestore.DocumentData */ {
         accessToken: string;
         secret: string;
       }
-    | {};
+    | Record<string, never> /* empty object */;
   createdAt: FieldValue | Date;
   updatedAt: FieldValue | Date;
 }
 
 export class Credential {
   public static getColRef(): CollectionReference {
-    return firebaseDb.collection("credentials");
+    return FirebaseClient.firestore.collection("credentials");
   }
 
   public static getDocRef(id: string): DocumentReference {
@@ -36,8 +36,6 @@ export class Credential {
   }
 
   public static get(userRef: DocumentReference): Promise<QuerySnapshot> {
-    return Credential.getColRef()
-      .where("userRef", "==", userRef)
-      .get();
+    return Credential.getColRef().where("userRef", "==", userRef).get();
   }
 }

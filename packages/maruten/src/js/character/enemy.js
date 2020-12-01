@@ -70,6 +70,6 @@ export default class Enemy {
     createjs.Tween.get(this.img)
       .wait(200)
       .to({ alpha: 0 }, 200)
-      .call(function() {});
+      .call(function () {});
   }
 }

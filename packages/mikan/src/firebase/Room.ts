@@ -1,11 +1,12 @@
-import { firestore } from "firebase/app";
-import DocumentReference = firestore.DocumentReference;
-import FieldValue = firestore.FieldValue;
+import firebase from "firebase/app";
 
-import { firebaseDb } from "./index";
+import { FirebaseClient } from "./FirebaseClient";
 import { Presence } from "./Presence";
-import { Game } from "../model/games";
+import { Game } from "..";
 import MikanError, { ErrorCode } from "../MikanError";
+
+type DocumentReference = firebase.firestore.DocumentReference;
+type FieldValue = firebase.firestore.FieldValue;
 
 const ROOM_LIFETIEM = 1; // 1day
 
@@ -28,6 +29,7 @@ export interface RoomDocument /* extends firestore.DocumentData */ {
 }
 
 export class Room implements RoomDocument {
+  // eslint-disable-next-line no-useless-constructor
   public constructor(
     readonly name: RoomName,
     readonly userPresenceRefs: {
@@ -41,7 +43,7 @@ export class Room implements RoomDocument {
     readonly expiredAt: FieldValue | Date
   ) {}
 
-  /****************************************************************
+  /** **************************************************************
    * members
    */
   public get memberIds(): string[] {
@@ -56,7 +58,7 @@ export class Room implements RoomDocument {
     return this.memberCount === this.maxUserCount;
   }
 
-  /****************************************************************
+  /** **************************************************************
    * methods
    */
   public static fromData(snapshotData: RoomDocument): Room {
@@ -72,18 +74,16 @@ export class Room implements RoomDocument {
     );
   }
 
-  public static getColRef() {
-    return firebaseDb.collection("rooms");
+  public static getColRef(): firebase.firestore.CollectionReference {
+    return FirebaseClient.firestore.collection("rooms");
   }
 
-  public static getDocRef(id: string) {
+  public static getDocRef(id: string): firebase.firestore.DocumentReference {
     return Room.getColRef().doc(id);
   }
 
   public static async duplicateName(roomName: string): Promise<boolean> {
-    const snapshot = await Room.getColRef()
-      .where("name", "==", roomName)
-      .get();
+    const snapshot = await Room.getColRef().where("name", "==", roomName).get();
 
     return !snapshot.empty;
   }
@@ -101,14 +101,14 @@ export class Room implements RoomDocument {
     const newRoomDoc: RoomDocument = {
       name,
       userPresenceRefs: {
-        [createUserRef.id]: presenceRef
+        [createUserRef.id]: presenceRef,
       },
       game,
       maxUserCount,
       lock: false,
       createdBy: createUserRef,
-      createdAt: firestore.FieldValue.serverTimestamp(),
-      expiredAt: firestore.Timestamp.fromDate(expiredDate)
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      expiredAt: firebase.firestore.Timestamp.fromDate(expiredDate),
     };
 
     const newRoomRef = Room.getColRef().doc();
@@ -117,7 +117,7 @@ export class Room implements RoomDocument {
 
     return {
       doc: newRoomDoc,
-      ref: newRoomRef
+      ref: newRoomRef,
     };
   }
 
@@ -126,9 +126,7 @@ export class Room implements RoomDocument {
     joinUserId: string
   ): Promise<{ doc: RoomDocument; ref: DocumentReference } | null> {
     const presenceRef = Presence.getDocRef(Presence.id);
-    const snapshot = await Room.getColRef()
-      .where("name", "==", roomName)
-      .get();
+    const snapshot = await Room.getColRef().where("name", "==", roomName).get();
 
     if (snapshot.empty) {
       throw new MikanError(
@@ -139,8 +137,9 @@ export class Room implements RoomDocument {
 
     const roomRef = snapshot.docs[0].ref;
 
-    const updatedRoomDoc = await firestore().runTransaction(
-      async transaction => {
+    const updatedRoomDoc = await firebase
+      .firestore()
+      .runTransaction(async (transaction) => {
         const roomSnapshot = await transaction.get(roomRef);
 
         if (!roomSnapshot.exists) {
@@ -161,27 +160,25 @@ export class Room implements RoomDocument {
         const newRoomDoc: Partial<RoomDocument> = {
           userPresenceRefs: {
             ...roomDoc.userPresenceRefs,
-            [joinUserId]: presenceRef
-          }
+            [joinUserId]: presenceRef,
+          },
         };
 
         transaction.update(roomRef, newRoomDoc);
 
         return roomDoc;
-      }
-    );
+      });
 
     if (updatedRoomDoc) {
       return {
         doc: updatedRoomDoc,
-        ref: roomRef
+        ref: roomRef,
       };
-    } else {
-      return null;
     }
+    return null;
   }
 
-  public async leave(leaveUserId: string) {
+  public async leave(leaveUserId: string): Promise<void> {
     const snapshot = await Room.getColRef()
       .where("name", "==", this.name)
       .get();
@@ -195,7 +192,7 @@ export class Room implements RoomDocument {
 
     const roomRef = snapshot.docs[0].ref;
 
-    await firestore().runTransaction(async transaction => {
+    await firebase.firestore().runTransaction(async (transaction) => {
       const roomSnapshot = await transaction.get(roomRef);
 
       if (!roomSnapshot.exists) {
@@ -205,17 +202,18 @@ export class Room implements RoomDocument {
       const roomDoc = roomSnapshot.data() as RoomDocument;
 
       const leftMemberPresenceRefs = {
-        ...roomDoc.userPresenceRefs
+        ...roomDoc.userPresenceRefs,
       };
 
       delete leftMemberPresenceRefs[leaveUserId];
 
       const newRoomDoc: Partial<RoomDocument> = {
-        userPresenceRefs: leftMemberPresenceRefs
+        userPresenceRefs: leftMemberPresenceRefs,
       };
 
       transaction.update(roomRef, newRoomDoc);
 
+      // eslint-disable-next-line
       return roomDoc;
     });
   }

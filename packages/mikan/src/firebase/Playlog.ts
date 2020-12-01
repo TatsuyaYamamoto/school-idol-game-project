@@ -1,12 +1,12 @@
-import { firestore } from "firebase/app";
-import DocumentReference = firestore.DocumentReference;
-import FieldValue = firestore.FieldValue;
+import firebase from "firebase/app";
 
-import { firebaseDb } from "./index";
+import { FirebaseClient } from "./FirebaseClient";
 import { User } from "./User";
-import { Member } from "../model/members";
-import { Game } from "../model/games";
+import { Member, Game } from "..";
 import { getLogger } from "../logger";
+
+type DocumentReference = firebase.firestore.DocumentReference;
+type FieldValue = firebase.firestore.FieldValue;
 
 const logger = getLogger("mikan/firebase/playlog");
 
@@ -15,7 +15,7 @@ export interface PlaylogDocument /* extends firestore.DocumentData */ {
   game: Game;
   member: Member;
   point: number;
-  label: object;
+  label: Record<string, unknown>;
   userAgent: string;
   language: string;
   languages: string;
@@ -23,11 +23,11 @@ export interface PlaylogDocument /* extends firestore.DocumentData */ {
 }
 
 export class Playlog {
-  public static getColRef() {
-    return firebaseDb.collection("playlogs");
+  public static getColRef(): firebase.firestore.CollectionReference {
+    return FirebaseClient.firestore.collection("playlogs");
   }
 
-  public static getDocRef(id: string) {
+  public static getDocRef(id: string): firebase.firestore.DocumentReference {
     return Playlog.getColRef().doc(id);
   }
 
@@ -35,8 +35,8 @@ export class Playlog {
     game: Game,
     member: Member,
     point: number,
-    label: object = {}
-  ) {
+    label: Record<string, unknown> = {}
+  ): Promise<firebase.firestore.DocumentReference> {
     const userRef = User.getOwnRef();
 
     logger.debug(`post playlog of user; ${userRef.id}`);
@@ -50,7 +50,7 @@ export class Playlog {
       userAgent: navigator.userAgent,
       language: navigator.languages[0],
       languages: navigator.languages.join(";"),
-      createdAt: FieldValue.serverTimestamp()
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     };
 
     return Playlog.getColRef().add(doc);

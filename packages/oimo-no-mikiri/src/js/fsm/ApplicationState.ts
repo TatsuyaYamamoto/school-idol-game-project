@@ -1,4 +1,4 @@
-import { default as AutoBind } from "autobind-decorator";
+import AutoBind from "autobind-decorator";
 
 import {
   Application,
@@ -6,35 +6,35 @@ import {
   getScale,
   addEvents,
   removeEvents,
-  toggleSound
+  toggleSound,
 } from "@sokontokoro/mikan";
 
-import { default as InitialViewState } from "./InitialView";
+import InitialViewState from "./InitialView";
 import { EnterParams as GameViewEnterParams } from "./GameView/GameView";
 import LocalGameView from "./GameView/LocalGameView";
 import OnlineGameView from "./GameView/OnlineGameView";
-import { default as TopViewState } from "./TopView";
+import TopViewState from "./TopView";
 
 import { isOnlineMode } from "../models/Game";
 
 export enum Events {
   INITIALIZED = "ApplicationState@INITIALIZED",
   REQUESTED_GAME_START = "ApplicationState@REQUESTED_GAME_START",
-  REQUESTED_BACK_TO_TOP = "ApplicationState@REQUESTED_BACK_TO_TOP"
+  REQUESTED_BACK_TO_TOP = "ApplicationState@REQUESTED_BACK_TO_TOP",
 }
 
 enum InnerStates {
   INITIAL = "initial",
   TOP = "top",
   GAME = "game",
-  ONLINE_GAME = "online_game"
+  ONLINE_GAME = "online_game",
 }
 
 @AutoBind
 class ApplicationState extends Application {
   constructor() {
     const params = {
-      ...getCurrentViewSize()
+      ...getCurrentViewSize(),
     };
     super(params);
   }
@@ -58,13 +58,13 @@ class ApplicationState extends Application {
       [InnerStates.INITIAL]: new InitialViewState(),
       [InnerStates.TOP]: new TopViewState(),
       [InnerStates.GAME]: new LocalGameView(),
-      [InnerStates.ONLINE_GAME]: new OnlineGameView()
+      [InnerStates.ONLINE_GAME]: new OnlineGameView(),
     });
 
     addEvents({
       [Events.INITIALIZED]: this.handleInitializedEvent,
       [Events.REQUESTED_GAME_START]: this.handleRequestedGameStartEvent,
-      [Events.REQUESTED_BACK_TO_TOP]: this.handleRequestedBackToTopEvent
+      [Events.REQUESTED_BACK_TO_TOP]: this.handleRequestedBackToTopEvent,
     });
 
     window.addEventListener("resize", this.onResize);
@@ -104,7 +104,9 @@ class ApplicationState extends Application {
    *
    */
   private updateStageScale() {
-    this.stage.scale.x = this.stage.scale.y = getScale();
+    const scale = getScale();
+    this.stage.scale.x = scale;
+    this.stage.scale.y = scale;
   }
 
   /**
@@ -134,10 +136,12 @@ class ApplicationState extends Application {
     this.to(InnerStates.TOP);
   }
 
+  // eslint-disable-next-line
   private turnSoundOn() {
     toggleSound("on");
   }
 
+  // eslint-disable-next-line
   private turnSoundOff() {
     toggleSound("off");
   }

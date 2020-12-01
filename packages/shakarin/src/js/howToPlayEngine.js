@@ -26,7 +26,7 @@ function howToPlayInit() {
     _imageObj.BUTTON_BOTTOM,
     _imageObj.BUTTON_BACK_MENU_FROM_HOW,
     _textObj.HOW_TO_PLAY,
-    _player.img
+    _player.img,
   ]);
 
   // HowToPlayアニメーション開始

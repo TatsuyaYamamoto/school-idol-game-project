@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { Container, interaction } from "pixi.js";
 
 import { loadTexture, isSupportTouchEvent } from "@sokontokoro/mikan";
@@ -24,11 +25,15 @@ class SelectLevelBoardBackGround extends Sprite {
 }
 
 class SelectLevelBoard extends Container {
-  private _background: SelectLevelBoardBackGround;
-  private _beginnerButton: BeginnerLevelButton;
-  private _noviceButton: NoviceLevelButton;
-  private _expertButton: ExpertLevelButton;
-  private backButton: Button;
+  readonly _background: SelectLevelBoardBackGround;
+
+  readonly _beginnerButton: BeginnerLevelButton;
+
+  readonly _noviceButton: NoviceLevelButton;
+
+  readonly _expertButton: ExpertLevelButton;
+
+  readonly backButton: Button;
 
   constructor(width: number, height: number) {
     super();
@@ -64,7 +69,7 @@ class SelectLevelBoard extends Container {
    */
   public setOnSelectLevelListener(
     fn: (event: interaction.InteractionEvent, mode?: Mode) => void
-  ) {
+  ): void {
     const type = isSupportTouchEvent() ? "touchstart" : "click";
 
     this._beginnerButton.interactive = true;
@@ -86,16 +91,12 @@ class SelectLevelBoard extends Container {
   public onClick(
     event: ClickEventType,
     fn: (event: interaction.InteractionEvent, mode?: Mode) => void
-  ) {
+  ): void {
     const type = isSupportTouchEvent() ? "touchstart" : "click";
 
-    switch (event) {
-      case "back":
-        this.backButton.interactive = true;
-        this.backButton.on(type, (event: interaction.InteractionEvent) =>
-          fn(event)
-        );
-        break;
+    if (event === "back") {
+      this.backButton.interactive = true;
+      this.backButton.on(type, (e: interaction.InteractionEvent) => fn(e));
     }
   }
 }

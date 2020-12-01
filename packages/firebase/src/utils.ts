@@ -1,19 +1,19 @@
 import { firestore as adminFirestore } from "firebase-admin";
 import { config, EventContext } from "firebase-functions";
 
-import { IncomingWebhook } from "@slack/client";
+import { IncomingWebhook, IncomingWebhookResult } from "@slack/client";
+
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { MetadataDocument } from "@sokontokoro/mikan";
 
 const webhook = new IncomingWebhook(config().slack.webhook_url);
 
-export function getHighscoreColRef() {
+export function getHighscoreColRef(): adminFirestore.CollectionReference {
   return adminFirestore().collection("highscores");
 }
 
 export function getMetadataRef(game: string): adminFirestore.DocumentReference {
-  return adminFirestore()
-    .collection("metadata")
-    .doc(game);
+  return adminFirestore().collection("metadata").doc(game);
 }
 
 export async function loadedMetadata(game: string): Promise<MetadataDocument> {
@@ -52,20 +52,23 @@ export function getCompare(compareType: "desc" | "asc"): compare {
  */
 // TODO fix poor efficiency
 export async function addDocWithBatch(
+  // eslint-disable-next-line
   listRef: /* firestore.CollectionReference */ any,
   docList: adminFirestore.DocumentData[],
-  maxSize: number = 100
-) {
+  maxSize = 100
+): Promise<void> {
   for (let i = 0; i < docList.length; i += maxSize) {
     const start = i;
     const end = i + maxSize;
 
     const batch = adminFirestore().batch();
+    // eslint-disable-next-line
     for (const doc of docList.slice(start, end)) {
       if (doc) {
         batch.set(listRef.doc(), doc);
       }
     }
+    // eslint-disable-next-line
     await batch.commit();
   }
 }
@@ -73,6 +76,7 @@ export async function addDocWithBatch(
 /**
  * @see catchErrorWrapper
  */
+// eslint-disable-next-line
 type Handler<T> = (value: T, context: EventContext) => PromiseLike<any>;
 
 /**
@@ -81,44 +85,42 @@ type Handler<T> = (value: T, context: EventContext) => PromiseLike<any>;
  * @param fn
  */
 export function catchErrorWrapper<T>(fn: Handler<T>): Handler<T> {
-  return async function(change, context) {
+  return async (change, context) => {
     try {
       await fn(change, context);
     } catch (e) {
       console.error({
         message: "FATAL ERROR! catch unhandled error.",
-        detail: e
+        detail: e,
       });
     }
   };
 }
 
-export function getDocUrl(collection: string, id: string) {
-  return `https://console.firebase.google.com/u/0/project/${
-    process.env.GCLOUD_PROJECT
-  }/database/firestore/data~2F${collection}~2F${id}`;
+export function getDocUrl(collection: string, id: string): string {
+  return `https://console.firebase.google.com/u/0/project/${process.env.GCLOUD_PROJECT}/database/firestore/data~2F${collection}~2F${id}`;
 }
 
-export function slackUrl(url: string, text: string) {
+export function slackUrl(url: string, text: string): string {
   return `<${url}|${text}>`;
 }
 
 export function sendToSlack({
   title,
   text,
-  color = "good"
+  color = "good",
 }: {
   title?: string;
   text: string;
   color?: "good" | "warning" | "danger";
-}) {
+}): Promise<IncomingWebhookResult> {
   return webhook.send({
     attachments: [
       {
         title,
         text,
-        color
-      }
-    ]
+        color,
+      },
+    ],
   });
 }

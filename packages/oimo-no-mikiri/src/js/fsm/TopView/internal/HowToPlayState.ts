@@ -2,9 +2,10 @@ import {
   Deliverable,
   dispatchEvent,
   play,
-  tracePage
+  tracePage,
 } from "@sokontokoro/mikan";
 
+import { DisplayObject } from "pixi.js";
 import TopViewState from "./TopViewState";
 import { Events } from "../TopView";
 
@@ -25,7 +26,9 @@ class HowToPlayState extends TopViewState {
   private _usageTextArea: UsageTextArea;
 
   private _oimo: Oimo;
+
   private _player: Player;
+
   private _opponent: Opponent;
 
   private _backToMenuButton: BackToMenuButton;
@@ -71,7 +74,7 @@ class HowToPlayState extends TopViewState {
 
     this.backGroundLayer.addChild(this.background);
 
-    this.applicationLayer.addChild(
+    this.applicationLayer.addChild<DisplayObject>(
       this._usageTextArea,
       this._oimo,
       this._player,

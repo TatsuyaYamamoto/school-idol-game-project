@@ -1,5 +1,5 @@
-import { Texture } from "pixi.js";
-
+// TODO
+/* eslint-disable max-classes-per-file */
 import { t, loadTexture, loadFrames } from "@sokontokoro/mikan";
 
 import { FrameStructureIndexes } from "./Character";
@@ -16,7 +16,7 @@ const FRAMES: FrameStructureIndexes = {
   LOSE: [5, 6, 7, 8, 9, 10, 9, 8, 7, 6, 5],
   WIN: [11, 12],
   LOSE_TEXTURE: 5,
-  WIN_TEXTURE: 12
+  WIN_TEXTURE: 12,
 };
 
 /**
@@ -32,12 +32,10 @@ class HanamaruCloseUp extends PlayerCloseUp {
  * @class
  */
 class Hanamaru extends Player {
+  readonly name = t(StringIds[StringIds.CHARA_NAME_HANAMARU]);
+
   public constructor() {
     super(loadFrames(Ids.CHARACTER_HANAMARU), FRAMES, new HanamaruCloseUp());
-  }
-
-  public get name(): string {
-    return t(StringIds[StringIds.CHARA_NAME_HANAMARU]);
   }
 }
 

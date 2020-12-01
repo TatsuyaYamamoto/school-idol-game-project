@@ -59,7 +59,7 @@ export enum Ids {
   MODAL_CONFIRM_CLOSE_GAME_BUTTON_CONFIRM,
   MODAL_CONFIRM_CLOSE_GAME_BUTTON_CANCEL,
   MODAL_CANCEL,
-  MODAL_ERROR_UNEXPECTED
+  MODAL_ERROR_UNEXPECTED,
 }
 
 export default {
@@ -164,8 +164,8 @@ In multi play mode,
       [Ids[Ids.MODAL_CONFIRM_CLOSE_GAME_BUTTON_CANCEL]]: `OK, I cancel.`,
 
       [Ids[Ids.MODAL_CANCEL]]: `Cancel`,
-      [Ids[Ids.MODAL_ERROR_UNEXPECTED]]: `Unexpected error occurred.`
-    }
+      [Ids[Ids.MODAL_ERROR_UNEXPECTED]]: `Unexpected error occurred.`,
+    },
   },
   ja: {
     translation: {
@@ -242,7 +242,7 @@ In multi play mode,
       [Ids[Ids.MODAL_CANCEL]]: `キャンセル`,
       [Ids[
         Ids.MODAL_ERROR_UNEXPECTED
-      ]]: `予期しないエラーが発生してしまいました。`
-    }
-  }
+      ]]: `予期しないエラーが発生してしまいました。`,
+    },
+  },
 };

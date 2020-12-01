@@ -13,7 +13,7 @@ export enum Events {
   INITIALIZED = "ApplicationState@INITIALIZED",
   PRELOAD_COMPLETE = "ApplicationState@PRELOAD_COMPLETE",
   GAME_START_REQUEST = "ApplicationState@GAME_START_REQUEST",
-  BACK_TO_TOP_REQUEST = "ApplicationState@BACK_TO_TOP_REQUEST"
+  BACK_TO_TOP_REQUEST = "ApplicationState@BACK_TO_TOP_REQUEST",
 }
 
 class ApplicationState extends Application {
@@ -52,14 +52,14 @@ class ApplicationState extends Application {
       [InitialViewState.TAG]: this._initialViewState,
       [LoadViewState.TAG]: this._loadViewState,
       [TopViewState.TAG]: this._topViewState,
-      [GameViewState.TAG]: this._gameViewState
+      [GameViewState.TAG]: this._gameViewState,
     });
 
     addEvents({
       [Events.INITIALIZED]: this._changeToLoadViewState,
       [Events.PRELOAD_COMPLETE]: this._changeToTopViewState,
       [Events.GAME_START_REQUEST]: this._changeToGameViewState,
-      [Events.BACK_TO_TOP_REQUEST]: this._changeToTopViewState
+      [Events.BACK_TO_TOP_REQUEST]: this._changeToTopViewState,
     });
 
     window.addEventListener("resize", this.onResize);
@@ -78,7 +78,7 @@ class ApplicationState extends Application {
       Events.INITIALIZED,
       Events.PRELOAD_COMPLETE,
       Events.GAME_START_REQUEST,
-      Events.BACK_TO_TOP_REQUEST
+      Events.BACK_TO_TOP_REQUEST,
     ]);
     window.removeEventListener("resize", this.onResize);
     window.removeEventListener("blur", toggleMute);

@@ -9,7 +9,7 @@ class LocalBattle extends Battle {
   /**
    * @override
    */
-  public start() {
+  public start(): void {
     this._signalTime = this.createSignalTime();
     this._isJudging = false;
   }

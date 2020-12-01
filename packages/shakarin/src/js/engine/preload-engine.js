@@ -24,7 +24,7 @@ export default class PreloadState {
       y: (State.gameScrean.height * 1) / 2,
       width: State.gameScrean.width,
       height: State.gameScrean.height,
-      scale: State.screenScale
+      scale: State.screenScale,
     });
 
     State.gameStage.removeAllChildren();
@@ -42,7 +42,7 @@ export default class PreloadState {
     /**
      * ロードプロセスイベント
      */
-    this.queue.on("progress", event => {
+    this.queue.on("progress", (event) => {
       // ロード情報
       loadText.text = `loading...${Math.floor(event.loaded * 100)}%`;
 
@@ -57,7 +57,7 @@ export default class PreloadState {
       trackTiming("load", Date.now() - start, { category: "assets" });
 
       // すべてのコンテンツに設定を付与する
-      Object.keys(properties.ss).forEach(key => {
+      Object.keys(properties.ss).forEach((key) => {
         const prop = properties.ss[key];
         const preloadResult = this.queue.getResult(prop.id);
         State.object.ss[key] = PreloadState.getSpriteSheetContents(
@@ -65,17 +65,17 @@ export default class PreloadState {
           prop
         );
       });
-      Object.keys(properties.sound).forEach(key => {
+      Object.keys(properties.sound).forEach((key) => {
         State.object.sound[key] = PreloadState.getSoundContent(
           properties.sound[key]
         );
       });
-      Object.keys(properties.text).forEach(key => {
+      Object.keys(properties.text).forEach((key) => {
         State.object.text[key] = PreloadState.getTextContent(
           properties.text[key]
         );
       });
-      Object.keys(properties.image).forEach(key => {
+      Object.keys(properties.image).forEach((key) => {
         const prop = properties.image[key];
         const preloadResult = this.queue.getResult(prop.id);
         State.object.image[key] = PreloadState.getImageContent(
@@ -98,7 +98,7 @@ export default class PreloadState {
 
           State.object.image["TWITTER_ICON"] = image;
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e);
         })
         .then(() => {
@@ -132,7 +132,7 @@ export default class PreloadState {
     var spriteSheet = new createjs.SpriteSheet({
       images: [preloadResult],
       frames: property.frames,
-      animations: property.animations
+      animations: property.animations,
     });
     var ss = new createjs.Sprite(spriteSheet, property.firstAnimation);
     ss.x = State.gameScrean.width * property.ratioX;

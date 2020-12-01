@@ -11,7 +11,7 @@ class OnlineOverState extends OverState {
   onEnter(params: EnterParams): void {
     super.onEnter(params);
 
-    const { winner, onePlayerWins, twoPlayerWins } = params;
+    const { onePlayerWins, twoPlayerWins } = params;
 
     const onePlayerWinsText = new PlayerWins(1, onePlayerWins);
     onePlayerWinsText.position.set(

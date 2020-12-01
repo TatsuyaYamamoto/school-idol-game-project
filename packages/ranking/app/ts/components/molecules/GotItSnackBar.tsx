@@ -9,7 +9,7 @@ interface Props {
   language: "ja" | "en";
 }
 
-const GotItSnackBar: React.SFC<Props> = props => {
+const GotItSnackBar: React.SFC<Props> = (props) => {
   const { open, language } = props;
   const message =
     language === "ja" ? "やったー！（・８・）" : "Yeah! （・８・）";
@@ -18,7 +18,7 @@ const GotItSnackBar: React.SFC<Props> = props => {
     <Snackbar
       anchorOrigin={{
         vertical: "bottom",
-        horizontal: "center"
+        horizontal: "center",
       }}
       open={open}
     >

@@ -14,14 +14,55 @@ const ENGLISH_KEY = "en";
 
 const helpMap = {
   [JAPANESE_KEY]: [],
-  [ENGLISH_KEY]: []
+  [ENGLISH_KEY]: [],
 };
+
+// eslint-disable-next-line
+function readDir(path) {
+  return new Promise((resolve, reject) => {
+    fs.readdir(path, (err, fileNames) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(fileNames);
+      }
+    });
+  });
+}
+
+// eslint-disable-next-line
+function readFile(path) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, "utf8", (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+}
+
+// eslint-disable-next-line
+function writeFile(path, content) {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(path, content, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
 
 async function main() {
   const fileNames = await readDir(HELP_MARKDOWNS_DIR_PATH);
 
+  // eslint-disable-next-line
   for (const fileName of fileNames) {
     if (fileName === ".DS_Store") {
+      // eslint-disable-next-line
       continue;
     }
 
@@ -47,6 +88,7 @@ async function main() {
       );
     }
 
+    // eslint-disable-next-line
     const content = await readFile(
       path.resolve(HELP_MARKDOWNS_DIR_PATH, fileName)
     );
@@ -62,15 +104,15 @@ async function main() {
       id: basename,
       title: attributes.title,
       tags: attributes.tags,
-      body
+      body,
     });
   }
 
   const eachLanguageDocSizes = Object.keys(helpMap).map(
-    language => helpMap[language].length
+    (language) => helpMap[language].length
   );
 
-  if (!eachLanguageDocSizes.every(size => size)) {
+  if (!eachLanguageDocSizes.every((size) => size)) {
     console.warn("😈each language doc sizes are different.");
   }
 
@@ -79,42 +121,7 @@ async function main() {
   console.log("🍊 create help.json successfully 🍊");
 }
 
-function readDir(path) {
-  return new Promise((resolve, reject) => {
-    fs.readdir(path, function(err, fileNames) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(fileNames);
-      }
-    });
-  });
-}
-
-function readFile(path) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path, "utf8", function(err, data) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
-      }
-    });
-  });
-}
-function writeFile(path, content) {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(path, content, err => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
-}
-
-main().catch(e => {
+main().catch((e) => {
   console.error(e);
   process.exit(1);
 });

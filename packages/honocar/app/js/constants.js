@@ -4,5 +4,5 @@ export const P2PEvents = {
   PUSH_CAR: "push_car",
   CRASHED: "crashed",
   RESTART: "restart",
-  RESTART_ACCEPT: "restart_accept"
+  RESTART_ACCEPT: "restart_accept",
 };

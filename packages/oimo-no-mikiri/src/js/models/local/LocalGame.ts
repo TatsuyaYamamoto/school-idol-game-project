@@ -1,5 +1,5 @@
 import Game, { isSingleMode } from "../Game";
-import { default as LocalBattle } from "./LocalBattle";
+import LocalBattle from "./LocalBattle";
 import Actor from "../Actor";
 import Mode from "../Mode";
 
@@ -19,26 +19,24 @@ class LocalGame extends Game {
    */
   public get npcAttackIntervalMillis(): number {
     if (!isSingleMode(this.mode)) {
-      console.error(
+      throw new Error(
         "The game is not one player mode, then an opponent won't attack automatically."
       );
-      return;
     }
 
-    const { reaction_rate, reaction_rate_tuning } = GAME_PARAMETERS;
+    const rate = GAME_PARAMETERS.reaction_rate[this.mode][this.currentRound];
+    const tuning = GAME_PARAMETERS.reaction_rate_tuning;
 
-    return (
-      reaction_rate[this.mode][this.currentRound] * reaction_rate_tuning * 1000
-    );
+    return rate * tuning * 1000;
   }
 
   public getWins(actor: Actor): number {
     let wins = 0;
 
-    this._battles.forEach(b => {
+    this._battles.forEach((b) => {
       if (b.winner === actor) {
         // tslint:disable-next-line:no-increment-decrement
-        wins++;
+        wins += 1;
       }
     });
 
@@ -48,15 +46,13 @@ class LocalGame extends Game {
   public get bestTime(): number {
     let time = 99999;
 
-    this._battles.forEach(b => {
+    this._battles.forEach((b) => {
       if (isSingleMode(this.mode)) {
         if (b.winnerAttackTime < time && b.winner === Actor.PLAYER) {
           time = b.winnerAttackTime;
         }
-      } else {
-        if (b.winnerAttackTime < time) {
-          time = b.winnerAttackTime;
-        }
+      } else if (b.winnerAttackTime < time) {
+        time = b.winnerAttackTime;
       }
     });
     return Math.round(time);
@@ -64,17 +60,16 @@ class LocalGame extends Game {
 
   public get straightWins(): number {
     if (!isSingleMode(this.mode)) {
-      console.error(
+      throw new Error(
         "This variable is not supported outside of one player mode."
       );
-      return;
     }
 
     let wins = 0;
-    this._battles.forEach(b => {
+    this._battles.forEach((b) => {
       if (b.winner === Actor.PLAYER) {
         // tslint:disable-next-line:no-increment-decrement
-        wins++;
+        wins += 1;
       }
     });
     return wins;
@@ -97,7 +92,7 @@ class LocalGame extends Game {
     if (isSingleMode(this.mode)) {
       let isFixed = false;
 
-      this._battles.forEach(b => {
+      this._battles.forEach((b) => {
         if (b.winner === Actor.OPPONENT) {
           isFixed = true;
         }
@@ -108,10 +103,10 @@ class LocalGame extends Game {
       }
 
       let fixedBattleCount = 0;
-      this._battles.forEach(b => {
+      this._battles.forEach((b) => {
         if (b.isFixed()) {
           // tslint:disable-next-line:no-increment-decrement
-          fixedBattleCount++;
+          fixedBattleCount += 1;
         }
       });
 
@@ -126,7 +121,7 @@ class LocalGame extends Game {
     );
   }
 
-  public release() {
+  public release(): void {
     this.off();
 
     this._battles.forEach((battle: OnlineBattle) => {

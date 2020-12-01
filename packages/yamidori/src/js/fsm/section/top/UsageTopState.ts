@@ -14,6 +14,7 @@ import BackToMenuButton from "../../../container/sprite/button/BackToMenuButton"
 import { loadSound } from "../../../framework/AssetLoader";
 import { Ids } from "../../../resources/sound";
 import { TRACK_PAGES } from "../../../resources/tracker";
+import { DisplayObject } from "pixi.js";
 
 class UsageTopState extends ViewContainer implements State {
   public static TAG = "UsageTopState";
@@ -75,7 +76,10 @@ class UsageTopState extends ViewContainer implements State {
     );
     this._backToMenuButton.setOnClickListener(this.onBackToMenuButtonClick);
 
-    this.applicationLayer.addChild(this._backToMenuButton, this._usageTextArea);
+    this.applicationLayer.addChild<DisplayObject>(
+      this._backToMenuButton,
+      this._usageTextArea
+    );
 
     this._tapKotoriSound = loadSound(Ids.SOUND_TAP_KOTORI);
     this._cancelSound = loadSound(Ids.SOUND_CANCEL);

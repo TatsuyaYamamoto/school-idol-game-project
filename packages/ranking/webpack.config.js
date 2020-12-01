@@ -11,40 +11,40 @@ const htmlParams = {
   keyword:
     "ラブライブ！,LoveLive！,ラブライブ！サンシャイン!!,スクールアイドル,μ’s,ミューズ,Aqours,アクア,ゲーム,ミニゲーム,ランキング",
   ogUrl: "https://games.sokontokoro-factory.net/ranking/",
-  ogImage: "https://games.sokontokoro-factory.net/rankig/img/ogp.png"
+  ogImage: "https://games.sokontokoro-factory.net/rankig/img/ogp.png",
 };
 
 isProduction &&
   Object.assign(htmlParams, {
     title: "スコアランキング -そこんところ工房-",
     trackingCode: config.trackingCode.pro,
-    noIndex: false
+    noIndex: false,
   });
 
 const plugins = [
   new HtmlWebpackPlugin({
     template: "app/index.ejs",
     templateParameters: htmlParams,
-    hash: true
-  })
+    hash: true,
+  }),
 ];
 
 module.exports = {
   mode: isProduction ? "production" : "development",
 
   entry: {
-    app: "./app/ts/index.tsx"
+    app: "./app/ts/index.tsx",
   },
 
   output: {
     path: __dirname + "/dist",
-    filename: "[name].bundle.js"
+    filename: "[name].bundle.js",
   },
 
   devtool: isProduction ? "none" : "source-map",
 
   resolve: {
-    extensions: [".ts", ".tsx", ".js", ".json"]
+    extensions: [".ts", ".tsx", ".js", ".json"],
   },
 
   module: {
@@ -52,9 +52,9 @@ module.exports = {
       { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
       {
         test: /\.css$/,
-        use: [{ loader: "style-loader" }, { loader: "css-loader" }]
-      }
-    ]
+        use: [{ loader: "style-loader" }, { loader: "css-loader" }],
+      },
+    ],
   },
 
   optimization: {
@@ -63,15 +63,15 @@ module.exports = {
         commons: {
           test: /[\\/]node_modules[\\/]/,
           name: "vendor",
-          chunks: "all"
-        }
-      }
-    }
+          chunks: "all",
+        },
+      },
+    },
   },
 
   plugins,
 
   // https://github.com/pixijs/pixi-sound/issues/28
   // Resolve node fs module for pixi-sound.
-  node: { fs: "empty" }
+  node: { fs: "empty" },
 };

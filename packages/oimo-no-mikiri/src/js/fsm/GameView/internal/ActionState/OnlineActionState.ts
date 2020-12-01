@@ -1,7 +1,8 @@
 import * as anime from "animejs";
 
-import ActionState, { EnterParams as ActionEnterParams } from "./ActionState";
 import * as Mousetrap from "mousetrap";
+import { DisplayObject } from "pixi.js";
+import ActionState, { EnterParams as ActionEnterParams } from "./ActionState";
 import BattleStatusBoard from "../../../../texture/containers/label/BattleStatusBoard";
 import Actor from "../../../../models/Actor";
 import PlayCharaIndicateLabel from "../../../../texture/containers/PlayCharaIndicateLabel";
@@ -14,8 +15,11 @@ export interface EnterParams extends ActionEnterParams {
 
 class OnlineActionState extends ActionState {
   private battleStatusBoard: BattleStatusBoard;
+
   private playerCharaIndicateLabel: PlayCharaIndicateLabel;
+
   private opponentCharaIndicateLabel: PlayCharaIndicateLabel;
+
   private playerAttachAreaRange: number;
 
   /**
@@ -24,7 +28,9 @@ class OnlineActionState extends ActionState {
   update(elapsedMS: number): void {
     super.update(elapsedMS);
 
-    this.shouldSign() && this.onSignaled();
+    if (this.shouldSign()) {
+      this.onSignaled();
+    }
   }
 
   /**
@@ -61,7 +67,7 @@ class OnlineActionState extends ActionState {
     );
 
     this.backGroundLayer.addChild(this.background);
-    this.applicationLayer.addChild(
+    this.applicationLayer.addChild<DisplayObject>(
       this.oimo,
       this.player,
       this.opponent,
@@ -80,7 +86,7 @@ class OnlineActionState extends ActionState {
     // Fade out player and opponent indicate label.
     const values = {
       playerAlpha: 1,
-      opponentAlpha: 1
+      opponentAlpha: 1,
     };
 
     anime({
@@ -93,14 +99,14 @@ class OnlineActionState extends ActionState {
       update: () => {
         this.playerCharaIndicateLabel.alpha = values.playerAlpha;
         this.opponentCharaIndicateLabel.alpha = values.opponentAlpha;
-      }
+      },
     });
   }
 
   /**
    * @override
    */
-  bindKeyboardEvents() {
+  bindKeyboardEvents(): void {
     Mousetrap.bind("a", () => {
       this.onAttacked(Actor.PLAYER);
     });
@@ -109,16 +115,16 @@ class OnlineActionState extends ActionState {
   /**
    * @override
    */
-  unbindKeyboardEvents() {
+  // eslint-disable-next-line
+  unbindKeyboardEvents(): void {
     Mousetrap.unbind("a");
   }
 
   /**
    *
-   * @param e
    * @override
    */
-  onWindowTaped(e: MouseEvent | TouchEvent): void {
+  onWindowTaped(): void {
     this.onAttacked(Actor.PLAYER);
   }
 }

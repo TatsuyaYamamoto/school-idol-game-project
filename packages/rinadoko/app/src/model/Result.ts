@@ -1,12 +1,17 @@
 import { Container, Texture, Text, TextStyle, Sprite } from "pixi.js";
 
 export class Result {
-  private _container: Container;
-  private _text: Text;
-  private _result0: Sprite;
-  private _result1: Sprite;
-  private _result2: Sprite;
-  private _point: number = 0;
+  readonly _container: Container;
+
+  readonly _text: Text;
+
+  readonly _result0: Sprite;
+
+  readonly _result1: Sprite;
+
+  readonly _result2: Sprite;
+
+  private _point = 0;
 
   public constructor(
     private context: {
@@ -28,7 +33,7 @@ export class Result {
       new TextStyle({
         fontFamily: "PixelMplus12-Bold",
         fontSize: 300 * this.context.scale,
-        lineHeight: 400 * this.context.scale
+        lineHeight: 400 * this.context.scale,
       })
     );
     this._text.anchor.set(0.5);
@@ -48,7 +53,7 @@ export class Result {
     this._result2.scale.set(this.context.scale * imageScaleTuning);
   }
 
-  public get container() {
+  public get container(): Container {
     return this._container;
   }
 

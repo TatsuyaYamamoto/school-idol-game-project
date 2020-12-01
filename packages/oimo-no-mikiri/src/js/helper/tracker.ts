@@ -14,7 +14,7 @@ export const VirtualPageViews = {
   HOW_TO_USE: `${basePath}/#/how-to-use`,
   CREDIT: `${basePath}/#/credit`,
   GAME: `${basePath}/#/#game`,
-  GAMEOVER: `${basePath}/#/gameover`
+  GAMEOVER: `${basePath}/#/gameover`,
 };
 
 /**
@@ -27,7 +27,7 @@ export enum Category {
   ACHIEVEMENT = "achievement",
   BUTTON = "button",
   PERFORMANCE = "performance",
-  JS_ERROR = "js_error"
+  JS_ERROR = "js_error",
 }
 
 /**
@@ -40,5 +40,5 @@ export enum Action {
   SUCCESS_ATTACK = "success_attack",
   FALSE_START = "false_start",
   GAMEOVER = "gameover",
-  LOSE = "lose"
+  LOSE = "lose",
 }

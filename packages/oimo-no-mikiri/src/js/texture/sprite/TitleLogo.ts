@@ -1,6 +1,5 @@
-import Sprite from "../internal/Sprite";
-
 import { loadTexture } from "@sokontokoro/mikan";
+import Sprite from "../internal/Sprite";
 
 import { Ids } from "../../resources/image";
 

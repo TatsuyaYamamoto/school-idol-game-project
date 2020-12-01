@@ -15,11 +15,11 @@ interface State {
 
 class Initialize extends React.Component<Props, State> {
   state: State = {
-    completed: false
+    completed: false,
   };
 
   public componentDidMount() {
-    initAuth().then(user => {
+    initAuth().then((user) => {
       initTracker(user.uid);
       this.setState({ completed: true });
     });

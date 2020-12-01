@@ -45,7 +45,7 @@ class Help extends React.Component<
   private onTabChanged(page: "ranking" | "help") {
     const { search } = this.props.location;
     this.props.history.push(`/${page}`, {
-      search
+      search,
     });
   }
 
@@ -61,14 +61,14 @@ class Help extends React.Component<
 
     this.props.history.replace({
       ...this.props.location,
-      search
+      search,
     });
   }
 
   private onChangeOpenedHelpDoc(id: string | undefined) {
     this.props.history.replace({
       ...this.props.location,
-      hash: id ? id : undefined
+      hash: id ? id : undefined,
     });
   }
 }

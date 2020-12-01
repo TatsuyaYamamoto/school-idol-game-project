@@ -4,9 +4,9 @@ import Character, { FrameStructureIndexes } from "./Character";
 import OpponentCloseUp from "./OpponentCloseUp";
 
 abstract class Opponent extends Character {
-  private _closeUpTexture: OpponentCloseUp;
+  readonly _closeUpTexture: OpponentCloseUp;
 
-  constructor(
+  protected constructor(
     frameTextures: Texture[],
     indexed: FrameStructureIndexes,
     closeUpTexture: OpponentCloseUp

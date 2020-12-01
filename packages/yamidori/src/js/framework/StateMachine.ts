@@ -10,7 +10,7 @@ class StateMachine {
   private _states: Map<String, State> = new Map();
 
   constructor(states: { [key: string]: State }) {
-    Object.keys(states).forEach(key => {
+    Object.keys(states).forEach((key) => {
       this._states.set(key, states[key]);
     });
   }

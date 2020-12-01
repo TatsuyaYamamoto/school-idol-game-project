@@ -41,7 +41,7 @@ export default class HelpList extends React.Component<Props, State> {
 
     this.state = {
       gotItSnackBarOpen: false,
-      notGotItDialogOpen: false
+      notGotItDialogOpen: false,
     };
   }
 
@@ -83,8 +83,8 @@ export default class HelpList extends React.Component<Props, State> {
   }
 
   private handleNotGotItDialog() {
-    this.setState(state => ({
-      notGotItDialogOpen: !state.notGotItDialogOpen
+    this.setState((state) => ({
+      notGotItDialogOpen: !state.notGotItDialogOpen,
     }));
   }
 

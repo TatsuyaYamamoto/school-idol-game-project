@@ -12,7 +12,7 @@ interface Props {
   handleClose: () => void;
 }
 
-const NotGotItDialog: React.SFC<Props> = props => {
+const NotGotItDialog: React.SFC<Props> = (props) => {
   const { open, handleClose, language } = props;
   const text =
     language === "ja"

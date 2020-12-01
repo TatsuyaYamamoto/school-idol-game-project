@@ -5,7 +5,7 @@ import {
   Playlog,
   tweetByWebIntent,
   convertYyyyMmDd,
-  createUrchinTrackingModuleQuery
+  createUrchinTrackingModuleQuery,
 } from "@sokontokoro/mikan";
 
 import { Events as ApplicationEvents } from "../../ApplicationState";
@@ -50,7 +50,7 @@ class OverGameState extends ViewContainer {
 
     trackEvent(TRACK_ACTION.GAMEOVER, {
       label: "single",
-      value: point
+      value: point,
     });
 
     Playlog.save("yamidori", "kotori", point);
@@ -153,14 +153,14 @@ class OverGameState extends ViewContainer {
     const utmQuery = createUrchinTrackingModuleQuery({
       campaign: `result-share_${yyyymmdd}`,
       source: "twitter",
-      medium: "social"
+      medium: "social",
     });
     const url = `${URL.YAMIDORI}?${utmQuery.join("&")}`;
 
     tweetByWebIntent({
       text,
       url,
-      hashtags: ["やみどり", "そこんところ工房"]
+      hashtags: ["やみどり", "そこんところ工房"],
     });
   };
 }

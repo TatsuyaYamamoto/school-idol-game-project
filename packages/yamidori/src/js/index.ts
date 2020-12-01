@@ -19,7 +19,7 @@ import {
   SUPPORTED_LANGUAGES,
   DEFAULT_LANGUAGE,
   BASIC_IMAGE_WIDTH,
-  BASIC_IMAGE_HEIGHT
+  BASIC_IMAGE_HEIGHT,
 } from "./Constants";
 import { TRACK_PAGES } from "./resources/tracker";
 
@@ -40,7 +40,7 @@ const mainElement: HTMLElement = document.getElementById("app");
  */
 const app = new ApplicationState();
 
-initAuth().then(user => {
+initAuth().then((user) => {
   initTracker(user.uid);
 });
 
@@ -54,7 +54,7 @@ function init() {
 
   // set framework configuration
   config.supportedLanguages = Object.keys(SUPPORTED_LANGUAGES).map(
-    key => SUPPORTED_LANGUAGES[key]
+    (key) => SUPPORTED_LANGUAGES[key]
   );
   config.defaultLanguage = DEFAULT_LANGUAGE;
   config.basicImageWidth = BASIC_IMAGE_WIDTH;

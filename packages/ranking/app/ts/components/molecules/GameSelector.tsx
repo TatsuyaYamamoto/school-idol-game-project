@@ -13,7 +13,7 @@ const Root = styled.div`
   padding: 30px;
 `;
 
-const NextArrow: React.SFC<CustomArrowProps> = props => {
+const NextArrow: React.SFC<CustomArrowProps> = (props) => {
   return (
     <Arrow
       className={props.className}
@@ -23,7 +23,7 @@ const NextArrow: React.SFC<CustomArrowProps> = props => {
   );
 };
 
-const PrevArrow: React.SFC<CustomArrowProps> = props => {
+const PrevArrow: React.SFC<CustomArrowProps> = (props) => {
   return (
     <Arrow
       className={props.className}
@@ -62,7 +62,7 @@ class GameSelector extends React.Component<Props, State> {
 
     this.state = {
       games,
-      initialSelectorIndex: Object.keys(GAMES).findIndex(id => id === game)
+      initialSelectorIndex: Object.keys(GAMES).findIndex((id) => id === game),
     };
   }
 
@@ -78,7 +78,7 @@ class GameSelector extends React.Component<Props, State> {
       beforeChange: this.beforeChange,
       nextArrow: <NextArrow />,
       prevArrow: <PrevArrow />,
-      ...slickSettings
+      ...slickSettings,
     };
 
     // TODO support ranking system yamidori, oimo!
@@ -87,7 +87,7 @@ class GameSelector extends React.Component<Props, State> {
     return (
       <Root>
         <Slider ref={this.slickRef} {...settings}>
-          {games.map(game => (
+          {games.map((game) => (
             <GameSelectorItem
               key={GAMES[game].url}
               title={GAMES[game].name.ja} // TODO support multi language.
