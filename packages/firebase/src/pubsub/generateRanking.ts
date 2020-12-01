@@ -1,5 +1,5 @@
 import { firestore } from "firebase-admin";
-import { pubsub } from "firebase-functions";
+import * as functions from "firebase-functions";
 
 import {
   MetadataDocument,
@@ -26,8 +26,9 @@ const TARGET_GAMES: Game[] = [
   "oimo-no-mikiri",
 ];
 
-export default pubsub
-  .schedule("00 09 * * *")
+export default functions
+  .runWith({ timeoutSeconds: 60 * 5 })
+  .pubsub.schedule("00 09 * * *")
   .timeZone("Asia/Tokyo")
   .onRun(async (context) => {
     console.log(`run scheduled "generate-ranking" job. ID: ${context.eventId}`);
