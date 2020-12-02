@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["es6", "dom", "esnext.asynciterable"],
+    "lib": ["es6", "dom", "esnext.asynciterable", "esnext.array"],
     "module": "commonjs",
     "outDir": "dist",
     "sourceMap": true,

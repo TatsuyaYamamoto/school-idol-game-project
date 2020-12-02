@@ -19,12 +19,11 @@
     "confirm": "../../production-confirm.js"
   },
   "dependencies": {
-    "@slack/client": "^4.8.0",
+    "@slack/webhook": "^5.0.3",
     "crypto-js": "^3.1.9-1",
-    "firebase-admin": "^8.13.0",
+    "firebase-admin": "^9.4.1",
     "firebase-functions": "^3.11.0",
-    "firebase-tools": "^8.16.2",
-    "twitter": "^1.7.1"
+    "firebase-tools": "^8.16.2"
   },
   "devDependencies": {
     "@types/crypto-js": "^3.1.43",
