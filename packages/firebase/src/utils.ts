@@ -1,12 +1,12 @@
 import { firestore as adminFirestore } from "firebase-admin";
 import { config, EventContext } from "firebase-functions";
 
-import { IncomingWebhook, IncomingWebhookResult } from "@slack/client";
+import { IncomingWebhook } from "@slack/webhook";
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { MetadataDocument } from "@sokontokoro/mikan";
 
-const webhook = new IncomingWebhook(config().slack.webhook_url);
+export const slackWebhook = new IncomingWebhook(config().slack.webhook_url);
 
 export function getHighscoreColRef(): adminFirestore.CollectionReference {
   return adminFirestore().collection("highscores");
@@ -99,28 +99,4 @@ export function catchErrorWrapper<T>(fn: Handler<T>): Handler<T> {
 
 export function getDocUrl(collection: string, id: string): string {
   return `https://console.firebase.google.com/u/0/project/${process.env.GCLOUD_PROJECT}/database/firestore/data~2F${collection}~2F${id}`;
-}
-
-export function slackUrl(url: string, text: string): string {
-  return `<${url}|${text}>`;
-}
-
-export function sendToSlack({
-  title,
-  text,
-  color = "good",
-}: {
-  title?: string;
-  text: string;
-  color?: "good" | "warning" | "danger";
-}): Promise<IncomingWebhookResult> {
-  return webhook.send({
-    attachments: [
-      {
-        title,
-        text,
-        color,
-      },
-    ],
-  });
 }

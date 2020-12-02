@@ -1,6 +1,6 @@
 import { pubsub } from "firebase-functions";
 
-import { sendToSlack } from "../utils";
+import { slackWebhook } from "../utils";
 
 export default pubsub
   .topic("cloud-functions-warn-log")
@@ -25,10 +25,14 @@ export default pubsub
 
       const title = `Catch unhandled error! *${functionName}* <${logUrl}|Open log>`;
       const text = JSON.stringify(data, null, "\t");
-      const result = await sendToSlack({
-        title,
-        text,
-        color: "danger",
+      const result = await slackWebhook.send({
+        attachments: [
+          {
+            title,
+            text,
+            color: "danger",
+          },
+        ],
       });
 
       console.log({

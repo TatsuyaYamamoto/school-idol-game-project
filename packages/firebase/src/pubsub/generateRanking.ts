@@ -16,15 +16,94 @@ import {
   getHighscoreColRef,
   getMetadataRef,
   loadedMetadata,
+  slackWebhook,
 } from "../utils";
 
-const TARGET_GAMES: Game[] = [
-  "honocar",
-  "shakarin",
-  "maruten",
-  "yamidori",
-  "oimo-no-mikiri",
+const TARGET_GAMES: {
+  name: Game;
+  icon: string;
+}[] = [
+  { name: "honocar", icon: "ほ🚗" },
+  { name: "shakarin", icon: "😺🎵" },
+  { name: "maruten", icon: "💮👿" },
+  { name: "yamidori", icon: "🐣🍲" },
+  { name: "oimo-no-mikiri", icon: "🍠🍂" },
 ];
+
+const sendToSlack = (params: {
+  totalExecutionTimeMs: number;
+  games: {
+    name: string;
+    icon: string;
+    executionTimeMs: number;
+    recordCount: number;
+  }[];
+}) => {
+  const text = `:white_check_mark: generated ranking.`;
+
+  return slackWebhook.send({
+    text,
+    blocks: [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text,
+        },
+        fields: [
+          {
+            type: "mrkdwn",
+            text: "*Total Execution time*",
+          },
+          {
+            type: "mrkdwn",
+            text: "\n",
+          },
+          {
+            type: "mrkdwn",
+            text: `${params.totalExecutionTimeMs} ms`,
+          },
+        ],
+      },
+      ...params.games
+        .map((game) => [
+          {
+            type: "divider",
+          },
+          {
+            type: "section",
+            fields: [
+              {
+                type: "mrkdwn",
+                text: `${game.name} ${game.icon}`,
+              },
+              {
+                type: "mrkdwn",
+                text: "\n",
+              },
+              {
+                type: "mrkdwn",
+                text: "Execution time",
+              },
+              {
+                type: "mrkdwn",
+                text: `${game.executionTimeMs} ms`,
+              },
+              {
+                type: "mrkdwn",
+                text: "Record count",
+              },
+              {
+                type: "mrkdwn",
+                text: `${game.recordCount}`,
+              },
+            ],
+          },
+        ])
+        .flat(),
+    ],
+  });
+};
 
 export default functions
   .runWith({ timeoutSeconds: 60 * 5 })
@@ -34,11 +113,19 @@ export default functions
     console.log(`run scheduled "generate-ranking" job. ID: ${context.eventId}`);
 
     try {
-      // eslint-disable-next-line
-      for (const game of TARGET_GAMES) {
-        console.log(`start creation. game: ${game}`);
+      const resultData: {
+        name: string;
+        icon: string;
+        executionTimeMs: number;
+        recordCount: number;
+      }[] = [];
 
-        const metadataRef = getMetadataRef(game);
+      // eslint-disable-next-line
+      for (const { name, icon } of TARGET_GAMES) {
+        const generatingStartTimeMs = Date.now();
+        console.log(`start creation. game: ${name}`);
+
+        const metadataRef = getMetadataRef(name);
         const newRankingRef = firestore().collection("ranking").doc();
         const newRankingListRef = newRankingRef.collection("list");
 
@@ -47,10 +134,10 @@ export default functions
          * Load all highscore resources and calculate ranking list.
          */
         // eslint-disable-next-line
-        const rankingList = await createRankingList(game);
+        const rankingList = await createRankingList(name);
 
         console.log(
-          `create ranking item docs. game: ${game}, size: ${rankingList.length}`
+          `create ranking item docs. game: ${name}, size: ${rankingList.length}`
         );
 
         /**
@@ -70,7 +157,7 @@ export default functions
          */
         const metadataBatch = firestore().batch();
         const newRanking: Partial<RankingDocument> = {
-          game,
+          game: name,
           totalCount: rankingList.length,
           createdAt: firestore.FieldValue.serverTimestamp(),
         };
@@ -86,12 +173,27 @@ export default functions
         // eslint-disable-next-line
         await metadataBatch.commit();
 
-        console.log(`success! game: ${game}`);
+        console.log(`success! game: ${name}`);
+        const generatingEndTimeMs = Date.now();
+
+        resultData.push({
+          name,
+          icon,
+          executionTimeMs: generatingEndTimeMs - generatingStartTimeMs,
+          recordCount: rankingList.length,
+        });
       }
 
       console.log(
         `It's completed to create ranking; ${TARGET_GAMES.join(", ")}.`
       );
+
+      await sendToSlack({
+        totalExecutionTimeMs: resultData
+          .map((datum) => datum.executionTimeMs)
+          .reduce((prev, current) => prev + current),
+        games: resultData,
+      });
     } catch (e) {
       console.error({
         message: "FATAL ERROR! catch unhandled error.",
