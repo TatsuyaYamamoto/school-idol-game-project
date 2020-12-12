@@ -1,13 +1,14 @@
 import {
-  addEvents,
   dispatchEvent,
-  removeEvents,
   ViewContainer,
   Deliverable,
   AssetLoader,
   resumeContext,
   tracePage,
   trackTiming,
+  initAuth,
+  initTracker,
+  getLogger,
 } from "@sokontokoro/mikan";
 
 import { Events as ApplicationEvents } from "./ApplicationState";
@@ -20,20 +21,14 @@ import soundManifest from "../resources/sound";
 import { SKIP_BRAND_LOGO_ANIMATION } from "../Constants";
 
 import { VirtualPageViews } from "../helper/tracker";
+import { init as initFirebase } from "../helper/firebase";
 
-export enum Events {
-  COMPLETE_PRELOAD = "InitialViewState@COMPLETE_LOAD",
-  COMPLETE_LOGO_ANIMATION = "InitialViewState@COMPLETE_LOGO_ANIMATION",
-}
+const logger = getLogger("initial-view");
 
 class InitialViewState extends ViewContainer {
   private _loader: AssetLoader;
 
   private _loadingAnimation: LoadingAnimationContainer;
-
-  private _isLoadComplete: boolean;
-
-  private _isLogoAnimationComplete: boolean;
 
   /**
    * @override
@@ -44,18 +39,22 @@ class InitialViewState extends ViewContainer {
     // Tracking
     tracePage(VirtualPageViews.INITIAL);
 
-    addEvents({
-      [Events.COMPLETE_PRELOAD]: this._handleLoadCompleteEvent,
-      [Events.COMPLETE_LOGO_ANIMATION]: this._handleLogoAnimCompleteEvent,
+    logger.debug("start initializing.");
+
+    Promise.all([
+      this._startPreload(),
+      this._startLoadAnimation(),
+      this._login(),
+      (async () => {
+        // Resume AudioContext because Pixi-sound module starts before user's gesture.
+        // @see https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#webaudio
+        await resumeContext();
+        logger.debug("resume audio context");
+      })(),
+    ]).then(() => {
+      logger.debug("end initializing.");
+      dispatchEvent(ApplicationEvents.INITIALIZED);
     });
-
-    // TODO: check logged-in.
-
-    // Resume AudioContext because Pixi-sound module starts before user's gesture.
-    // @see https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#webaudio
-    resumeContext();
-
-    this._startPreload();
   }
 
   /**
@@ -63,8 +62,6 @@ class InitialViewState extends ViewContainer {
    */
   onExit(): void {
     super.onExit();
-
-    removeEvents([Events.COMPLETE_PRELOAD, Events.COMPLETE_LOGO_ANIMATION]);
   }
 
   /**
@@ -77,22 +74,24 @@ class InitialViewState extends ViewContainer {
     this._loadingAnimation.progress(percentage);
   };
 
-  /**
-   *
-   * @private
-   */
-  private _handleLoadCompleteEvent = () => {
-    this._isLoadComplete = true;
+  private _startPreload = (): Promise<void> => {
+    this._loader = new AssetLoader();
+    this._loader.setImageManifest(imageManifest);
+    this._loader.setSoundManifest(soundManifest);
+    this._loader.onProgress.add(this._onLoadProgress);
+    const loadStartTime = Date.now();
 
-    if (this._isLoadComplete && this._isLogoAnimationComplete) {
-      dispatchEvent(ApplicationEvents.INITIALIZED);
-    }
+    return new Promise((resolve) => {
+      this._loader.load(() => {
+        this._trackPreloadPerformance(Date.now() - loadStartTime);
+
+        logger.debug(`end preload`);
+        resolve();
+      });
+    });
   };
 
-  private _startPreload = () => {
-    this._isLoadComplete = false;
-    this._isLogoAnimationComplete = !!SKIP_BRAND_LOGO_ANIMATION;
-
+  private _startLoadAnimation = async (): Promise<void> => {
     this._loadingAnimation = new LoadingAnimationContainer(
       this.viewWidth,
       this.viewHeight
@@ -104,35 +103,20 @@ class InitialViewState extends ViewContainer {
 
     this.applicationLayer.addChild(this._loadingAnimation);
 
-    this._loader = new AssetLoader();
-    this._loader.setImageManifest(imageManifest);
-    this._loader.setSoundManifest(soundManifest);
-    this._loader.onProgress.add(this._onLoadProgress);
-    const loadStartTime = Date.now();
-    this._loader.load(() => {
-      this._trackPreloadPerformance(Date.now() - loadStartTime);
-      dispatchEvent(Events.COMPLETE_PRELOAD);
-    });
+    if (!SKIP_BRAND_LOGO_ANIMATION) {
+      await this._loadingAnimation.start();
+    }
 
-    this._loadingAnimation
-      .start()
-      .then(
-        () =>
-          !SKIP_BRAND_LOGO_ANIMATION &&
-          dispatchEvent(Events.COMPLETE_LOGO_ANIMATION)
-      );
+    logger.debug(`end preload animation`);
   };
 
-  /**
-   *
-   * @private
-   */
-  private _handleLogoAnimCompleteEvent = () => {
-    this._isLogoAnimationComplete = true;
+  private _login = async () => {
+    // initialize firebase modules
+    initFirebase();
+    const user = await initAuth();
+    initTracker(user.uid);
 
-    if (this._isLoadComplete && this._isLogoAnimationComplete) {
-      dispatchEvent(ApplicationEvents.INITIALIZED);
-    }
+    logger.debug(`logged-in as ${user.uid}`);
   };
 
   private _trackPreloadPerformance = (timeMillis: number) => {

@@ -5,18 +5,10 @@ import "firebase/firestore";
 /**
  * @fileOverview Entry point of the application.
  */
-import {
-  config,
-  initI18n,
-  isSupportTouchEvent,
-  initTracker,
-  tracePage,
-  initAuth,
-} from "@sokontokoro/mikan";
+import { config, initI18n, isSupportTouchEvent } from "@sokontokoro/mikan";
 
 import ApplicationState from "./fsm/ApplicationState";
 import resources from "./resources/string";
-import { init as initFirebase } from "./helper/firebase";
 import {
   SUPPORTED_LANGUAGES,
   DEFAULT_LANGUAGE,
@@ -29,12 +21,6 @@ import { VirtualPageViews } from "./helper/tracker";
 // Brand logo text font
 require("../fonts/PixelMplus10-Regular.css");
 require("../fonts/g_brushtappitsu_freeH.css");
-
-// initialize firebase modules
-initFirebase();
-initAuth().then((user) => {
-  initTracker(user.uid);
-});
 
 /**
  * Game rendering target on html.
@@ -64,8 +50,6 @@ const app = new ApplicationState();
  * Initialize the application.
  */
 function init() {
-  tracePage(VirtualPageViews.INITIAL);
-
   mainElement.style.display = "block";
   firstGestureGuideElement.style.display = "none";
 
