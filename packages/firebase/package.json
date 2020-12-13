@@ -19,11 +19,20 @@
     "confirm": "../../production-confirm.js"
   },
   "dependencies": {
+    "@nestjs/common": "^7.5.5",
+    "@nestjs/core": "^7.5.5",
+    "@nestjs/platform-express": "^7.6.0",
     "@slack/webhook": "^5.0.3",
+    "class-transformer": "^0.3.1",
+    "class-validator": "^0.12.2",
     "crypto-js": "^3.1.9-1",
+    "express": "^4.17.1",
     "firebase-admin": "^9.4.1",
     "firebase-functions": "^3.11.0",
-    "firebase-tools": "^8.16.2"
+    "firebase-tools": "^8.16.2",
+    "helmet": "^4.2.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^6.6.3"
   },
   "devDependencies": {
     "@types/crypto-js": "^3.1.43",

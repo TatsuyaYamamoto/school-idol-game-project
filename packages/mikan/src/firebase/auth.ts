@@ -79,17 +79,19 @@ export function init(): Promise<UserDocument> {
            */
           logger.debug("signed-in.", authUser.uid);
 
-          let snapshot = await User.getDocRef(authUser.uid).get();
+          const snapshot = await User.getDocRef(authUser.uid).get();
+          let user: UserDocument;
 
-          if (!snapshot.exists) {
-            logger.debug("new user. try create a user doc");
-            await User.create(authUser);
-            snapshot = await User.getDocRef(authUser.uid).get();
-            logger.debug("success to create");
+          if (snapshot.exists) {
+            user = snapshot.data() as UserDocument;
+          } else {
+            logger.debug("user is not in DB.");
+            user = await User.create(authUser);
+            logger.debug(`created as new user, uid: ${authUser.uid}`);
           }
 
           unsubscribe();
-          resolve(snapshot.data() as UserDocument);
+          resolve(user);
 
           return;
         }

@@ -5,7 +5,6 @@ import { Twitter } from "twit";
 
 import { FirebaseClient } from "./FirebaseClient";
 import { Credential, CredentialDocument } from "./Credential";
-import { getRandomAnonymousName } from "..";
 
 type FirebaseUser = firebase.User;
 type FieldValue = firebase.firestore.FieldValue;
@@ -56,6 +55,10 @@ export interface UserDocument /* extends firestore.DocumentData */ {
   presenceRefs: {
     [presenceId: string]: DocumentReference;
   };
+  /**
+   * DEBUG用ユーザー
+   * {@link linkIdp}時に deleteされるフラグ
+   */
   debug?: boolean;
 }
 
@@ -78,31 +81,21 @@ export class User {
     return User.getDocRef(currentUser.uid);
   }
 
-  public static async create(user: FirebaseUser): Promise<void> {
-    const newDocRef = User.getColRef().doc(user.uid);
-
-    const doc: UserDocument = {
-      uid: user.uid,
-      isAnonymous: true,
-      displayName: getRandomAnonymousName(),
-      photoURL: null,
-      highscoreRefs: {},
-      providers: {},
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      duplicatedRefsByLink: [],
-      presenceRefs: {},
-    };
-
-    /**
-     * DEBUG用ユーザー
-     * {@link linkIdp}時に deleteされるフラグ
-     */
-    if (localStorage.getItem("sokontokoro-factory:auth:debug") === "true") {
-      doc.debug = true;
+  public static async create(user: FirebaseUser): Promise<UserDocument> {
+    const res = await FirebaseClient.post({
+      path: `/api/users/new`,
+      body: {
+        uid: user.uid,
+        debug:
+          localStorage.getItem("sokontokoro-factory:auth:debug") === "true",
+      },
+    });
+    const json = await res.json();
+    if (!res.ok) {
+      throw new Error(JSON.stringify(json));
     }
 
-    await newDocRef.set(doc);
+    return json;
   }
 
   /**
