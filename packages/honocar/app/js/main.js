@@ -3,6 +3,10 @@ import "alertify/themes/alertify.default.css";
 
 import "createjs/builds/1.0.0/createjs.js";
 
+import "firebase/auth";
+import "firebase/firestore";
+import "firebase/database";
+
 import * as alertify from "alertify/lib/alertify";
 import {
   config as mikanConfig,

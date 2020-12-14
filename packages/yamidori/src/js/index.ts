@@ -8,6 +8,9 @@
  *
  * @author Tatsuya Yamamoto
  */
+import "firebase/auth";
+import "firebase/firestore";
+
 import { initAuth, initTracker, tracePage } from "@sokontokoro/mikan";
 
 import { initI18n } from "./framework/i18n";
