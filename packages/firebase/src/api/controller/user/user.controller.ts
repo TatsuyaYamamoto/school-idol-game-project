@@ -13,6 +13,8 @@ import {
 import { UserService } from "../../service/user.service";
 import { AuthService } from "../../service/auth.service";
 import { NewUserForm } from "./form/NewUserForm";
+import { sendToSlackAsNewUserNotif } from "../../../helper/slack";
+import { getDocUrl } from "../../../utils";
 
 @Controller("users")
 export class UserController {
@@ -35,6 +37,7 @@ export class UserController {
   @Post("new")
   async newUser(
     @Headers("authorization") authorizationHeader: string,
+    @Headers("referer") referer: string,
     @Body() form: NewUserForm
   ): Promise<any> {
     const { uid, debug } = form;
@@ -55,6 +58,15 @@ export class UserController {
       throw new BadRequestException();
     }
 
-    return this.userService.create(uid, debug);
+    const created = await this.userService.create(uid, debug);
+    const userDocUrl = getDocUrl("users", uid);
+
+    sendToSlackAsNewUserNotif({
+      uid,
+      userDocUrl,
+      referer,
+    });
+
+    return created;
   }
 }
