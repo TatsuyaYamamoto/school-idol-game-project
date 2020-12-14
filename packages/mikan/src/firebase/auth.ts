@@ -170,8 +170,7 @@ export function init(): Promise<UserDocument> {
           /**
            * Sign-in as a firebase user to be linked with twitter ID.
            */
-          // TODO @deprecated
-          const newCredential = await FirebaseClient.auth.signInAndRetrieveDataWithCredential(
+          const newCredential = await FirebaseClient.auth.signInWithCredential(
             e.credential
           );
           const alreadyLinkedFirebaseUser = newCredential.user;
