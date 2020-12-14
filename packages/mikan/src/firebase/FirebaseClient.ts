@@ -50,6 +50,7 @@ export class FirebaseClient {
       headers: {
         [`Authorization`]: `Bearer ${idToken}`,
         [`Content-Type`]: `application/json`,
+        [`X-Skntkr-Source`]: `${window.origin}${window.location.pathname}`,
       },
       body: JSON.stringify(params.body),
     });

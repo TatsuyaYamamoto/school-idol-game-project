@@ -36,7 +36,6 @@
   },
   "devDependencies": {
     "@types/crypto-js": "^3.1.43",
-    "@types/twitter": "^1.7.0",
     "typescript": "^3.5.2"
   }
 }

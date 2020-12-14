@@ -13,7 +13,6 @@ import version from "./https/version";
 import p2pCredential from "./https/p2pCredential";
 
 import onCreatePlaylog from "./trigger/onCreatePlaylog";
-import onWriteUser from "./trigger/onWriteUser";
 import onUpdatePresence from "./trigger/onUpdatePresence";
 import onUpdateRoom from "./trigger/onUpdateRoom";
 
@@ -33,7 +32,7 @@ export const api = functions
 export { version, p2pCredential };
 
 // Trigger
-export { onCreatePlaylog, onWriteUser, onUpdatePresence, onUpdateRoom };
+export { onCreatePlaylog, onUpdatePresence, onUpdateRoom };
 
 // pubsub
 export { cloudFunctionsWarnLog, generateRanking };

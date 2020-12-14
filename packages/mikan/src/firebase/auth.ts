@@ -136,11 +136,10 @@ export function init(): Promise<UserDocument> {
 
           unsubscribe();
 
-          const firebaseUser = await User.linkIdp(userCredential);
+          const linkedUser = await User.linkIdp(userCredential);
           logger.debug("success update linked firebase user.");
 
-          const snapshot = await User.getDocRef(firebaseUser.uid).get();
-          resolve(snapshot.data() as UserDocument);
+          resolve(linkedUser);
           return;
         }
 
@@ -187,11 +186,9 @@ export function init(): Promise<UserDocument> {
             newCredential,
             newerAnonymousUser
           );
-
           logger.debug("success to re-link firebase user.");
 
-          const snapshot = await User.getDocRef(reLinkedUser.uid).get();
-          resolve(snapshot.data() as UserDocument);
+          resolve(reLinkedUser);
           return;
         }
 
