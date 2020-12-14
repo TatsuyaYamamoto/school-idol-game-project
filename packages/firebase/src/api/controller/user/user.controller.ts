@@ -112,6 +112,9 @@ export class UserController {
         secret: form.provider.secret,
       },
     });
+    if (form.duplicatedUid) {
+      await this.authService.deleteUser(form.duplicatedUid);
+    }
 
     const userDocUrl = getDocUrl("users", uid);
     sendToSlackAsLinkedUserNotif({

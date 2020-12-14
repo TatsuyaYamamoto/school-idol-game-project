@@ -8,4 +8,8 @@ export class AuthService {
   verifyIdToken(idToken: string): Promise<DecodedIdToken> {
     return auth().verifyIdToken(idToken);
   }
+
+  deleteUser(uid: string): Promise<void> {
+    return auth().deleteUser(uid);
+  }
 }
