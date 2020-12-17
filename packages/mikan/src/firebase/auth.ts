@@ -79,17 +79,19 @@ export function init(): Promise<UserDocument> {
            */
           logger.debug("signed-in.", authUser.uid);
 
-          let snapshot = await User.getDocRef(authUser.uid).get();
+          const snapshot = await User.getDocRef(authUser.uid).get();
+          let user: UserDocument;
 
-          if (!snapshot.exists) {
-            logger.debug("new user. try create a user doc");
-            await User.create(authUser);
-            snapshot = await User.getDocRef(authUser.uid).get();
-            logger.debug("success to create");
+          if (snapshot.exists) {
+            user = snapshot.data() as UserDocument;
+          } else {
+            logger.debug("user is not in DB.");
+            user = await User.create(authUser);
+            logger.debug(`created as new user, uid: ${authUser.uid}`);
           }
 
           unsubscribe();
-          resolve(snapshot.data() as UserDocument);
+          resolve(user);
 
           return;
         }
@@ -134,11 +136,10 @@ export function init(): Promise<UserDocument> {
 
           unsubscribe();
 
-          const firebaseUser = await User.linkIdp(userCredential);
+          const linkedUser = await User.linkIdp(userCredential);
           logger.debug("success update linked firebase user.");
 
-          const snapshot = await User.getDocRef(firebaseUser.uid).get();
-          resolve(snapshot.data() as UserDocument);
+          resolve(linkedUser);
           return;
         }
 
@@ -169,8 +170,7 @@ export function init(): Promise<UserDocument> {
           /**
            * Sign-in as a firebase user to be linked with twitter ID.
            */
-          // TODO @deprecated
-          const newCredential = await FirebaseClient.auth.signInAndRetrieveDataWithCredential(
+          const newCredential = await FirebaseClient.auth.signInWithCredential(
             e.credential
           );
           const alreadyLinkedFirebaseUser = newCredential.user;
@@ -185,11 +185,9 @@ export function init(): Promise<UserDocument> {
             newCredential,
             newerAnonymousUser
           );
-
           logger.debug("success to re-link firebase user.");
 
-          const snapshot = await User.getDocRef(reLinkedUser.uid).get();
-          resolve(snapshot.data() as UserDocument);
+          resolve(reLinkedUser);
           return;
         }
 

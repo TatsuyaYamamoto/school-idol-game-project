@@ -12,8 +12,10 @@ type CollectionReference = firebase.firestore.CollectionReference;
  */
 export type ProviderId = "twitter.com";
 
-export interface CredentialDocument /* extends firestore.DocumentData */ {
-  userRef: DocumentReference;
+export interface CredentialDocument<
+  Ref = DocumentReference
+> /* extends firestore.DocumentData */ {
+  userRef: Ref;
   providerId: ProviderId;
   data:
     | {

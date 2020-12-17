@@ -15,3 +15,5 @@ export const proConfig = {
   storageBucket: "school-idol-game-production.appspot.com",
   messagingSenderId: "1018493283718",
 };
+
+export type Config = typeof proConfig | typeof devConfig;

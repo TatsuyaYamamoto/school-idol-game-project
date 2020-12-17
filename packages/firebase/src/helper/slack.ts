@@ -1,15 +1,13 @@
-import { firestore } from "firebase-functions";
+import { config } from "firebase-functions";
+import { IncomingWebhook, IncomingWebhookResult } from "@slack/webhook";
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { UserDocument } from "@sokontokoro/mikan";
+export const slackWebhook = new IncomingWebhook(config().slack.webhook_url);
 
-import { catchErrorWrapper, getDocUrl, slackWebhook } from "../utils";
-
-const sendToSlackAsNewUserNotif = (params: {
+export const sendToSlackAsNewUserNotif = (params: {
   uid: string;
   userDocUrl: string;
-  game: string;
-}) => {
+  xSkntkrSource: string;
+}): Promise<IncomingWebhookResult> => {
   const text = `:raised_hands: new user joined!`;
   const uidLink = `<${params.userDocUrl}|${params.uid}>`;
 
@@ -29,7 +27,7 @@ const sendToSlackAsNewUserNotif = (params: {
           },
           {
             type: "mrkdwn",
-            text: "*Game*",
+            text: "*Source*",
           },
           {
             type: "mrkdwn",
@@ -37,7 +35,7 @@ const sendToSlackAsNewUserNotif = (params: {
           },
           {
             type: "mrkdwn",
-            text: `${params.game}`,
+            text: `${params.xSkntkrSource}`,
           },
         ],
       },
@@ -45,11 +43,11 @@ const sendToSlackAsNewUserNotif = (params: {
   });
 };
 
-const sendToSlackAsLinkedUserNotif = (params: {
+export const sendToSlackAsLinkedUserNotif = (params: {
   uid: string;
   displayName: string;
   userDocUrl: string;
-  game: string;
+  xSkntkrSource: string;
 }) => {
   const text = `:victory_hand: user linked!`;
   const uidLink = `<${params.userDocUrl}|${params.uid}>`;
@@ -82,7 +80,7 @@ const sendToSlackAsLinkedUserNotif = (params: {
           },
           {
             type: "mrkdwn",
-            text: "*Game*",
+            text: "*Source*",
           },
           {
             type: "mrkdwn",
@@ -90,47 +88,10 @@ const sendToSlackAsLinkedUserNotif = (params: {
           },
           {
             type: "mrkdwn",
-            text: `${params.game}`,
+            text: `${params.xSkntkrSource}`,
           },
         ],
       },
     ],
   });
 };
-
-export default firestore.document("users/{userId}").onWrite(
-  catchErrorWrapper(async (change) => {
-    const afterUser = change.after.data() as UserDocument;
-
-    if (!change.before.exists) {
-      console.log("received event of creation.");
-
-      const userDocUrl = await getDocUrl("users", afterUser.uid);
-      await sendToSlackAsNewUserNotif({
-        uid: afterUser.uid,
-        userDocUrl,
-        game: "TODO",
-      });
-      return;
-    }
-
-    const beforeUser = change.before.data() as UserDocument;
-
-    if (Object.keys(beforeUser.providers) < Object.keys(afterUser.providers)) {
-      console.log("received event of link updating.");
-
-      const userDocUrl = getDocUrl("users", afterUser.uid);
-      const { displayName } = afterUser;
-
-      await sendToSlackAsLinkedUserNotif({
-        uid: afterUser.uid,
-        userDocUrl,
-        displayName,
-        game: "TODO",
-      });
-      return;
-    }
-
-    console.log("received undefined event.", beforeUser, afterUser);
-  })
-);

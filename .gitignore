@@ -3,6 +3,7 @@ packages/ranking/app/assets/helps.json
 packages/appengine/env-variables.yaml
 packages/appengine/env-variables-production.yaml
 
+.runtimeconfig*
 
 # Created by https://www.gitignore.io/api/node,macos,windows,intellij+all,firebase
 

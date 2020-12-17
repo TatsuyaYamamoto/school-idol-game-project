@@ -17,7 +17,7 @@ type CollectionReference = firebase.firestore.CollectionReference;
  */
 export interface PresenceDbJson {
   uid: string;
-  online: true;
+  online: boolean;
   userAgent: string;
   // eslint-disable-next-line
   createdAt: /* read */ number | /* write */ Object;
@@ -54,17 +54,14 @@ export class Presence {
   }
 
   /**
-   * @return generated ID of presence
    *
    * TODO consider multi device connection by the same user.
    * NOTE: 全てRealtimeDatabaseのAPI
    */
-  public static initWatch(): string {
+  public static async initWatch(): Promise<void> {
     const uid = User.getOwnRef().id;
     const infoConnectedRef = firebase.database().ref(".info/connected");
     const presencesRef = firebase.database().ref(`presences`);
-    const newPresenceRef = presencesRef.push();
-    const newPresenceId = newPresenceRef.key;
 
     const onlineState: PresenceDbJson = {
       uid,
@@ -73,35 +70,25 @@ export class Presence {
       createdAt: firebase.database.ServerValue.TIMESTAMP,
     };
 
-    // since I can connect from multiple devices or browser tabs, we store each connection instance separately
-    // any time that connectionsRef's value is null (i.e. has no children) I am offline
-    // var myConnectionsRef = firebase.database().ref("users/joe/connections");
+    const offlinePartialState: Partial<PresenceDbJson> = {
+      online: false,
+    };
 
-    // stores the timestamp of my last disconnect (the last time I was seen online)
+    return new Promise((resolve) => {
+      infoConnectedRef.on("value", async (snapshot) => {
+        const connected = snapshot.val();
 
-    infoConnectedRef.on("value", async (snapshot) => {
-      if (snapshot && snapshot.val() === true) {
-        // We're connected (or reconnected)! Do anything here that should happen only if online (or on reconnect)
-        // var con = ownPresenceRef.push();
+        if (connected) {
+          const newPresenceRef = presencesRef.push();
+          // eslint-disable-next-line
+          Presence._id = newPresenceRef.key;
 
-        // When I disconnect, remove this device
-        newPresenceRef.onDisconnect().update({
-          online: false,
-        });
-
-        // Add this device to my connections list
-        // this value could contain info about the device or a timestamp too
-        newPresenceRef.set(onlineState);
-      }
+          await newPresenceRef.set(onlineState);
+          await newPresenceRef.onDisconnect().update(offlinePartialState);
+          infoConnectedRef.off("value");
+          resolve();
+        }
+      });
     });
-
-    if (!newPresenceId) {
-      throw new Error("fail to issue new presence ID.");
-    }
-
-    // eslint-disable-next-line
-    Presence._id = newPresenceId;
-
-    return newPresenceId;
   }
 }

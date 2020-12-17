@@ -1,6 +1,23 @@
 {
   "rules": {
-    ".read": "auth != null",
-    ".write": "auth != null"
+    "oimo-no-mikiri": {
+      "games": {
+        "$gameId": {
+          ".read": "auth != null",
+          ".write": "auth != null"
+        }
+      },
+      "users": {
+        "$uid": {
+          ".read": "auth != null",
+          ".write": "$uid === auth.uid"
+        }
+      }
+    },
+    "presences": {
+      "$presenceId": {
+        ".write": "data.child('uid').val() == auth.uid || newData.child('uid').val() == auth.uid"
+      }
+    }
   }
 }

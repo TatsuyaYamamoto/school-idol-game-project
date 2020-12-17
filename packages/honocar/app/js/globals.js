@@ -4,7 +4,6 @@ export default {
   gameStage: null,
   gameScrean: null,
   gameScreenScale: null,
-  loginPromise: null,
   queue: null,
   playCharacter: getCharacter(),
   player: null,
