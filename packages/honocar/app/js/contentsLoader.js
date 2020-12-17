@@ -38,53 +38,51 @@ export function loadContent() {
     globals.queue.addEventListener("complete", function () {
       logger.debug(`loading progress is completed.`);
 
-      globals.loginPromise.then(() => {
-        const failItemIds = validateLoadedResult();
-        if (failItemIds.length !== 0) {
-          logger.debug(`fail loading assets. try again. IDs: ${failItemIds}`);
+      const failItemIds = validateLoadedResult();
+      if (failItemIds.length !== 0) {
+        logger.debug(`fail loading assets. try again. IDs: ${failItemIds}`);
 
-          currentRetryCount++;
-          if (MAX_RETRY_COUNT < currentRetryCount) {
-            alert(
-              "コンテンツのロードに失敗しました。リロードしてください。// Fail to load assets. Please reload."
-            );
-          }
-
-          const retryTarget = [];
-          for (const id of failItemIds) {
-            for (const sound of manifest.sound) {
-              if (sound.id === id) {
-                retryTarget.push(sound);
-              }
-            }
-            for (const image of manifest.image) {
-              if (image.id === id) {
-                retryTarget.push(image);
-              }
-            }
-            for (const spriteImage of manifest.spriteImage) {
-              if (spriteImage.id === id) {
-                retryTarget.push(spriteImage);
-              }
-            }
-          }
-
-          globals.queue.loadManifest(retryTarget);
-          return;
-        } else {
-          logger.debug(`success to load all assets.`);
+        currentRetryCount++;
+        if (MAX_RETRY_COUNT < currentRetryCount) {
+          alert(
+            "コンテンツのロードに失敗しました。リロードしてください。// Fail to load assets. Please reload."
+          );
         }
 
-        setImageContent();
-        setSpriteSheetContents();
-        setSoundContent();
-        setTextContent();
+        const retryTarget = [];
+        for (const id of failItemIds) {
+          for (const sound of manifest.sound) {
+            if (sound.id === id) {
+              retryTarget.push(sound);
+            }
+          }
+          for (const image of manifest.image) {
+            if (image.id === id) {
+              retryTarget.push(image);
+            }
+          }
+          for (const spriteImage of manifest.spriteImage) {
+            if (spriteImage.id === id) {
+              retryTarget.push(spriteImage);
+            }
+          }
+        }
 
-        createjs.Ticker.removeEventListener("tick", update);
+        globals.queue.loadManifest(retryTarget);
+        return;
+      } else {
+        logger.debug(`success to load all assets.`);
+      }
 
-        trackTiming("load", Date.now() - start, { category: "assets" });
-        resolve();
-      });
+      setImageContent();
+      setSpriteSheetContents();
+      setSoundContent();
+      setTextContent();
+
+      createjs.Ticker.removeEventListener("tick", update);
+
+      trackTiming("load", Date.now() - start, { category: "assets" });
+      resolve();
     });
     globals.queue.addEventListener("progress", (event) => {
       // ロード情報

@@ -6,6 +6,7 @@ import "createjs/builds/1.0.0/createjs.js";
 import "firebase/auth";
 import "firebase/firestore";
 import "firebase/database";
+import "firebase/functions";
 
 import * as alertify from "alertify/lib/alertify";
 import {
@@ -40,7 +41,7 @@ window.__debug__ = {
   preventSoundToggle: false,
 };
 
-function init() {
+async function init() {
   gameLaunchButtonElement.removeEventListener("click", init);
 
   // replace visible element
@@ -49,19 +50,6 @@ function init() {
     appElement.style.display = "block";
     launchBeforeGuideElement.style.display = "none";
   }, 150);
-
-  /*---------- ログインチェック ----------*/
-  globals.loginPromise = initAuth().then((user) => {
-    if (!user.isAnonymous) {
-      alertify.log(t(Ids.LOGIN_SUCCESS), "success", 3000);
-    }
-    globals.loginUser = user;
-
-    initTracker(user.uid);
-    tracePage(TRACK_PAGES.INDEX);
-
-    Presence.initWatch();
-  });
 
   //ゲーム画面の初期
   appElement.appendChild(rendererCanvas);
@@ -97,7 +85,23 @@ function init() {
   mikanConfig.defaultLanguage = "ja";
   initI18n({ resources: stringResources });
 
-  loadContent().then(() => to(TopEngine));
+  const [, user] = await Promise.all([
+    loadContent(),
+    (async () => {
+      const user = await initAuth();
+      await Presence.initWatch();
+      return user;
+    })(),
+  ]);
+  if (!user.isAnonymous) {
+    alertify.log(t(Ids.LOGIN_SUCCESS), "success", 3000);
+  }
+  globals.loginUser = user;
+
+  initTracker(user.uid);
+  tracePage(TRACK_PAGES.INDEX);
+
+  to(TopEngine);
 }
 
 gameLaunchButtonElement.addEventListener("click", init);
