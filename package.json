@@ -7,19 +7,18 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "node": "12"
+    "node": "12",
+    "npm": "7"
   },
   "scripts": {
     "precommit": "pretty-quick --staged",
     "commit": "git-cz",
     "lint": "run-p --print-label lint:*",
-    "lint:eslint": "eslint .",
+    "lint:eslint": "  eslint   .",
     "lint:prettier": "prettier . --check",
     "fix": "run-s --print-label fix:*",
-    "fix:eslint": "  yarn lint:eslint --fix",
-    "fix:prettier": "yarn lint:prettier --write",
-    "ws": " yarn workspace ",
-    "wss": "yarn workspaces"
+    "fix:eslint": "  eslint   . --fix",
+    "fix:prettier": "prettier . --write"
   },
   "config": {
     "commitizen": {
