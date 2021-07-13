@@ -10,6 +10,7 @@ import AppBar from "../src/components/organisms/AppBar";
 
 const RankingPage: NextPage = () => {
   const router = useRouter();
+  const locale = (router.locale ?? "ja") as "ja" | "en";
   const game = "honocar";
 
   const onTabChanged = (page: "ranking" | "help") => {
@@ -32,7 +33,7 @@ const RankingPage: NextPage = () => {
   return (
     <div>
       <AppBar
-        locale={router.locale ?? null}
+        locale={locale}
         onTabChanged={onTabChanged}
         onTranslate={onTranslate}
       />

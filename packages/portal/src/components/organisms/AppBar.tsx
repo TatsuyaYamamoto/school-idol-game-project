@@ -28,7 +28,7 @@ const styles = {
 };
 
 interface AppBarProps {
-  locale: string;
+  locale: "ja" | "en";
   onTabChanged: (tab: "ranking" | "help") => void;
   onTranslate: (locale: "ja" | "en") => void;
 }
