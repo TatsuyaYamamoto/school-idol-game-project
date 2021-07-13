@@ -1,4 +1,4 @@
-import * as React from "react";
+import { FC } from "react";
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -6,20 +6,20 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 
-interface Props {
+interface NotGotItDialogProps {
   open: boolean;
-  language: "ja" | "en";
+  locale: "ja" | "en";
   handleClose: () => void;
 }
 
-const NotGotItDialog: React.SFC<Props> = (props) => {
-  const { open, handleClose, language } = props;
+const NotGotItDialog: FC<NotGotItDialogProps> = (props) => {
+  const { open, handleClose, locale } = props;
   const text =
-    language === "ja"
+    locale === "ja"
       ? "解決できず、すいません、、、。もしよろしければ、フォームからお問い合わせください。可能な限り対応させていただきます。"
       : "I'm sorry I couldn't be your help. Please contact us if you are OK.";
-  const close = language === "ja" ? "とじる" : "Close";
-  const form = language === "ja" ? "問い合わせる" : "Inquire";
+  const close = locale === "ja" ? "とじる" : "Close";
+  const form = locale === "ja" ? "問い合わせる" : "Inquire";
 
   const goForm = () => {
     location.href =

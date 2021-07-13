@@ -1,4 +1,5 @@
 import { FC, useState } from "react";
+import { useRouter } from "next/router";
 import styled from "styled-components";
 
 import MuiAppBar from "@material-ui/core/AppBar";
@@ -16,12 +17,6 @@ const StyledMuiAppBar = styled(MuiAppBar)`
   background-color: #ffffff;
 `;
 
-interface AppBarProps {
-  currentPath: string;
-  onTabChanged: (page: "ranking" | "help") => void;
-  onTranslate: () => void;
-}
-
 const HeaderSpace = styled.div`
   flex-grow: 1;
 `;
@@ -32,16 +27,26 @@ const styles = {
   },
 };
 
-const AppBar: FC<AppBarProps> = (props) => {
-  const [tabIndex] = useState(0);
+interface AppBarProps {
+  locale: string;
+  onTabChanged: (tab: "ranking" | "help") => void;
+  onTranslate: (locale: "ja" | "en") => void;
+}
 
-  const handleTab = (_event: any, tabIndex: any) => {
-    this.setState({ tabIndex });
-    this.props.onTabChanged(tabIndex === 0 ? "ranking" : "help");
+const AppBar: FC<AppBarProps> = (props) => {
+  const [tabIndex, handleTabIndex] = useState(0);
+
+  const handleTab = (_event: any, newTabIndex: any) => {
+    handleTabIndex(newTabIndex);
+    props.onTabChanged(newTabIndex === 0 ? "ranking" : "help");
   };
 
   const handleTranslate = (_event: any) => {
-    this.props.onTranslate();
+    if (props.locale === "ja") {
+      props.onTranslate("en");
+      return;
+    }
+    props.onTranslate("ja");
   };
 
   return (

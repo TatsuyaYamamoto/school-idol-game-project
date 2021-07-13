@@ -1,18 +1,17 @@
-import * as React from "react";
+import { FC } from "react";
 
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import Snackbar from "@material-ui/core/Snackbar";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 
-interface Props {
+interface GotItSnackBarProps {
   open: boolean;
-  language: "ja" | "en";
+  locale: "ja" | "en";
 }
 
-const GotItSnackBar: React.SFC<Props> = (props) => {
-  const { open, language } = props;
-  const message =
-    language === "ja" ? "やったー！（・８・）" : "Yeah! （・８・）";
+const GotItSnackBar: FC<GotItSnackBarProps> = (props) => {
+  const { open, locale } = props;
+  const message = locale === "ja" ? "やったー！（・８・）" : "Yeah! （・８・）";
 
   return (
     <Snackbar

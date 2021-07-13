@@ -5,10 +5,7 @@ const path = require("path");
 const fm = require("front-matter");
 
 const HELP_MARKDOWNS_DIR_PATH = path.resolve(__dirname, "docs/help/");
-const OUTPUT_JSON_PATH = path.resolve(
-  __dirname,
-  "./packages/ranking/app/assets/helps.json"
-);
+const OUTPUT_JSON_PATH = path.resolve(__dirname, "./packages/help/helps.json");
 const JAPANESE_KEY = "ja";
 const ENGLISH_KEY = "en";
 

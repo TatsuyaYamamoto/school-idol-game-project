@@ -1,4 +1,4 @@
-import React from "react";
+import { FC, useState } from "react";
 import styled from "styled-components";
 
 import HelpPanel from "../molecules/HelpPanel";
@@ -20,84 +20,60 @@ interface HelpDoc {
 const helpsJson: {
   ja: HelpDoc[];
   en: HelpDoc[];
-} = require("../../../assets/helps.json");
+} = require("../../../../help/helps.json");
 
-interface Props {
-  language: "ja" | "en";
-  showHelpDocId?: string;
-  onChangeOpenedHelpDoc: (id: string | undefined) => void;
+interface HelpListProps {
+  locale: "ja" | "en";
 }
 
-interface State {
-  gotItSnackBarOpen: boolean;
-  notGotItDialogOpen: boolean;
-}
+const HelpList: FC<HelpListProps> = (props) => {
+  const [showHelpDocId, setShowHelpDocId] = useState<string | null>(null);
+  const [gotItSnackBarOpen, handleGotItSnackbar] = useState(false);
+  const [notGotItDialogOpen, handleNotGotItDialog] = useState(false);
 
-export default class HelpList extends React.Component<Props, State> {
-  public constructor(props: any) {
-    super(props);
+  const { locale } = props;
+  const helps = helpsJson[locale];
 
-    this.state = {
-      gotItSnackBarOpen: false,
-      notGotItDialogOpen: false,
-    };
-  }
-
-  public render() {
-    const { language, showHelpDocId } = this.props;
-    const { gotItSnackBarOpen, notGotItDialogOpen } = this.state;
-    const helps = helpsJson[language];
-
-    return (
-      <Root>
-        {helps.map(({ id, title, body }) => (
-          <HelpPanel
-            key={id}
-            title={title}
-            body={body}
-            language={language}
-            expanded={id === showHelpDocId}
-            onChange={(event, expanded) =>
-              this.onPanelExpansionChanged(id, expanded)
-            }
-            onGotIt={() => this.onGotIt(id)}
-            onNotGotIt={() => this.onNotGotIt(id)}
-          />
-        ))}
-
-        <GotItSnackBar open={gotItSnackBarOpen} language={language} />
-
-        <NotGotItDialog
-          open={notGotItDialogOpen}
-          handleClose={this.handleNotGotItDialog}
-          language={language}
-        />
-      </Root>
-    );
-  }
-
-  private onPanelExpansionChanged = (
-    helpPanelId: string,
-    expanded: boolean
-  ) => {
-    this.props.onChangeOpenedHelpDoc(expanded ? helpPanelId : undefined);
+  const onPanelExpansionChanged = (helpPanelId: string, expanded: boolean) => {
+    setShowHelpDocId(expanded ? helpPanelId : null);
   };
 
-  private handleNotGotItDialog = () => {
-    this.setState((state) => ({
-      notGotItDialogOpen: !state.notGotItDialogOpen,
-    }));
-  };
-
-  private onGotIt = (id: string) => {
-    this.setState({ gotItSnackBarOpen: true });
+  const onGotIt = (id: string) => {
+    handleGotItSnackbar(true);
 
     setTimeout(() => {
-      this.setState({ gotItSnackBarOpen: false });
+      handleGotItSnackbar(false);
     }, 3000);
   };
 
-  private onNotGotIt = (id: string) => {
-    this.handleNotGotItDialog();
+  const onNotGotIt = (id: string) => {
+    handleNotGotItDialog(true);
   };
-}
+
+  return (
+    <Root>
+      {helps.map(({ id, title, body }) => (
+        <HelpPanel
+          key={id}
+          title={title}
+          body={body}
+          locale={locale}
+          expanded={id === showHelpDocId}
+          onChange={(_, expanded) => onPanelExpansionChanged(id, expanded)}
+          onGotIt={() => onGotIt(id)}
+          onNotGotIt={() => onNotGotIt(id)}
+        />
+      ))}
+
+      <GotItSnackBar open={gotItSnackBarOpen} locale={locale} />
+
+      <NotGotItDialog
+        open={notGotItDialogOpen}
+        handleClose={() => handleNotGotItDialog(false)}
+        locale={locale}
+      />
+    </Root>
+  );
+};
+
+export default HelpList;
