@@ -1,7 +1,6 @@
-import * as React from "react";
-import AutoBind from "autobind-decorator";
+import { FC } from "react";
 import styled from "styled-components";
-import { Game } from "@sokontokoro/mikan";
+import { Game } from "../../utils/tmp_mikan";
 
 import GameSelector from "../molecules/GameSelector";
 import JumpGameButton from "../atoms/JumpGameButton";
@@ -10,29 +9,26 @@ const Root = styled.div`
   margin: 50px 0;
 `;
 
-interface Props {
+interface ControlSectionProps {
   game: Game;
   onGameSelected: (index: number) => void;
   onJumpGame: (e: any) => void;
 }
 
-interface State {}
+const ControlSection: FC<ControlSectionProps> = (props) => {
+  const { game, onGameSelected, onJumpGame } = props;
 
-@AutoBind
-export default class ControlSection extends React.Component<Props, State> {
-  public render() {
-    const { game, onGameSelected, onJumpGame } = this.props;
+  return (
+    <Root>
+      <GameSelector
+        game={game}
+        slickSettings={{}}
+        onSelected={onGameSelected}
+      />
 
-    return (
-      <Root>
-        <GameSelector
-          game={game}
-          slickSettings={{}}
-          onSelected={onGameSelected}
-        />
+      <JumpGameButton onClick={onJumpGame} />
+    </Root>
+  );
+};
 
-        <JumpGameButton onClick={onJumpGame} />
-      </Root>
-    );
-  }
-}
+export default ControlSection;

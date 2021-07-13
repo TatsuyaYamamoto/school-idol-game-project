@@ -1,20 +1,13 @@
-import * as React from "react";
+import React from "react";
 import { IndexRange } from "react-virtualized";
-import AutoBind from "autobind-decorator";
 
-import {
-  FirebaseClient,
-  MetadataDocument,
-  RankItemDocument,
-  getLogger,
-} from "@sokontokoro/mikan";
+import type { MetadataDocument, RankItemDocument } from "@sokontokoro/mikan";
 
 import RankingList from "../molecules/RankingList";
 import RankItem from "../molecules/RankItem";
-
 import LastUpdateTime from "../molecules/LastUpdateTime";
 
-const logger = getLogger("RankingSection");
+import { firebaseApp } from "../../utils/firebase";
 
 interface Props {
   game: string;
@@ -28,7 +21,6 @@ interface State {
   lastUpdatedAt: Date;
 }
 
-@AutoBind
 export default class RankingSection extends React.Component<Props, State> {
   public constructor(props: any) {
     super(props);
@@ -44,7 +36,7 @@ export default class RankingSection extends React.Component<Props, State> {
 
   public static getDerivedStateFromProps(nextProps: Props, prevState: State) {
     if (nextProps.game !== prevState.game) {
-      logger.debug(`change game. ${prevState.game} -> ${nextProps.game}`);
+      console.log(`change game. ${prevState.game} -> ${nextProps.game}`);
 
       return {
         game: nextProps.game,
@@ -72,11 +64,12 @@ export default class RankingSection extends React.Component<Props, State> {
     );
   }
 
-  private async loadMoreItem({ startIndex, stopIndex }: IndexRange) {
+  private loadMoreItem = async ({ startIndex, stopIndex }: IndexRange) => {
     const { lastVisibleSnapshot, game } = this.state;
 
     const limit = stopIndex - startIndex + 1;
-    const metadataRef = FirebaseClient.firestore
+    const metadataRef = firebaseApp
+      .firestore()
       .collection("metadata")
       .doc(game);
     const metadata = (await metadataRef.get()).data() as MetadataDocument;
@@ -95,14 +88,14 @@ export default class RankingSection extends React.Component<Props, State> {
           .get();
 
     if (scores.size === 0) {
-      logger.debug("no more scores");
+      console.log("no more scores");
       this.setState({ hasMoreItem: false });
       return;
     }
 
     this.setState((state) => {
       if (state.game !== game) {
-        logger.debug(
+        console.log(
           `active game; ${game} is changed. ignore this game ranking list push.`
         );
         return null;
@@ -132,5 +125,5 @@ export default class RankingSection extends React.Component<Props, State> {
 
       return newState;
     });
-  }
+  };
 }

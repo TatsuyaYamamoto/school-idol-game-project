@@ -1,5 +1,4 @@
-import * as React from "react";
-import AutoBind from "autobind-decorator";
+import React from "react";
 import styled from "styled-components";
 
 import HelpPanel from "../molecules/HelpPanel";
@@ -34,7 +33,6 @@ interface State {
   notGotItDialogOpen: boolean;
 }
 
-@AutoBind
 export default class HelpList extends React.Component<Props, State> {
   public constructor(props: any) {
     super(props);
@@ -78,25 +76,28 @@ export default class HelpList extends React.Component<Props, State> {
     );
   }
 
-  private onPanelExpansionChanged(helpPanelId: string, expanded: boolean) {
+  private onPanelExpansionChanged = (
+    helpPanelId: string,
+    expanded: boolean
+  ) => {
     this.props.onChangeOpenedHelpDoc(expanded ? helpPanelId : undefined);
-  }
+  };
 
-  private handleNotGotItDialog() {
+  private handleNotGotItDialog = () => {
     this.setState((state) => ({
       notGotItDialogOpen: !state.notGotItDialogOpen,
     }));
-  }
+  };
 
-  private onGotIt(id: string) {
+  private onGotIt = (id: string) => {
     this.setState({ gotItSnackBarOpen: true });
 
     setTimeout(() => {
       this.setState({ gotItSnackBarOpen: false });
     }, 3000);
-  }
+  };
 
-  private onNotGotIt(id: string) {
+  private onNotGotIt = (id: string) => {
     this.handleNotGotItDialog();
-  }
+  };
 }

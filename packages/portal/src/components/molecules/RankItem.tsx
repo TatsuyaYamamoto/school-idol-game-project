@@ -1,8 +1,8 @@
 import * as React from "react";
 import styled from "styled-components";
-import { MEMBERS, Member, getMemberIcon } from "@sokontokoro/mikan";
-// @ts-ignore
-import Tippy from "@tippy.js/react";
+import Tippy from "@tippyjs/react";
+
+import { MEMBERS, Member, getMemberIcon } from "../../utils/tmp_mikan";
 
 interface Props {
   rank: number;
@@ -48,7 +48,7 @@ const ScoreValue = styled.span``;
 
 const memberBudgeSize = 30;
 
-const Member = styled.div`
+const MemberIcon = styled.div`
   font-size: ${memberBudgeSize}px;
 
   padding: 0.2em 0.5em;
@@ -83,7 +83,7 @@ const RankItem: React.SFC<Props> = (props) => {
         </Score>
       </UserDetail>
       <Tippy content={tooltip} arrow={true} duration={500} delay={[100, 50]}>
-        <Member>{`${getMemberIcon(member)}`}</Member>
+        <MemberIcon>{`${getMemberIcon(member)}`}</MemberIcon>
       </Tippy>
     </Root>
   );

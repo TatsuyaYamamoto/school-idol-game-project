@@ -1,12 +1,7 @@
-import * as React from "react";
-import AutoBind from "autobind-decorator";
+import { FC } from "react";
 import styled from "styled-components";
 
-const { version } = require("../../../../package.json");
-
-interface Props {}
-
-interface State {}
+const { version } = require("../../../package.json");
 
 const currentYear = new Date().getFullYear();
 const sokontokoroUrl = "https://www.sokontokoro-factory.net/";
@@ -50,14 +45,13 @@ const SiteVersion = styled.a`
   }
 `;
 
-@AutoBind
-export default class FooterSection extends React.Component<Props, State> {
-  public render() {
-    return (
-      <Root>
-        <SiteName href={sokontokoroUrl} />
-        <SiteVersion href={repoUrl} />
-      </Root>
-    );
-  }
-}
+const FooterSection: FC = () => {
+  return (
+    <Root>
+      <SiteName href={sokontokoroUrl} />
+      <SiteVersion href={repoUrl} />
+    </Root>
+  );
+};
+
+export default FooterSection;

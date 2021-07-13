@@ -1,9 +1,9 @@
 import * as React from "react";
-import { default as Slider, Settings, CustomArrowProps } from "react-slick";
-import AutoBind from "autobind-decorator";
-import { GAMES, Game, gameIds } from "@sokontokoro/mikan";
-
+import Slider, { Settings, CustomArrowProps } from "react-slick";
 import styled from "styled-components";
+
+import { GAMES, Game } from "../../utils/tmp_mikan";
+
 import Arrow from "../atoms/GameSelectArrow";
 import GameSelectorItem from "./GameSelectorItem";
 
@@ -44,7 +44,6 @@ interface State {
   games: Game[];
 }
 
-@AutoBind
 class GameSelector extends React.Component<Props, State> {
   private slickRef = React.createRef<Slider>();
   private pendingIdOfOnSelected: any = null;
@@ -99,7 +98,7 @@ class GameSelector extends React.Component<Props, State> {
     );
   }
 
-  private beforeChange(current: number, next: number) {
+  private beforeChange = (current: number, next: number) => {
     if (this.beforeIndex === next) {
       return;
     }
@@ -113,7 +112,7 @@ class GameSelector extends React.Component<Props, State> {
     this.pendingIdOfOnSelected = setTimeout(() => {
       this.props.onSelected(next);
     }, 500);
-  }
+  };
 }
 
 export default GameSelector;

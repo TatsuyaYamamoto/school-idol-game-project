@@ -1,11 +1,10 @@
-import * as React from "react";
-import { default as Slider, Settings, CustomArrowProps } from "react-slick";
+import { FC } from "react";
 import styled from "styled-components";
-import Arrow from "../atoms/GameSelectArrow";
+
 import Title from "../atoms/GameTitle";
 import GameImage from "../atoms/GameImage";
 
-interface Props {
+interface GameSelectorItemProps {
   title: string;
   imageUrl: string;
 }
@@ -14,7 +13,7 @@ const Root = styled.div`
   text-align: center;
 `;
 
-const GameSelectorItem: React.SFC<Props> = (props) => {
+const GameSelectorItem: FC<GameSelectorItemProps> = (props) => {
   const { title, imageUrl } = props;
 
   return (
