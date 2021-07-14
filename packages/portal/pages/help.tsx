@@ -15,7 +15,7 @@ const HelpPage: NextPage = (props) => {
   const language = hostLanguageQueryValue || "ja";
 
   const onTabChanged = (page: "ranking" | "help") => {
-    router.push(`/${page}`, { query: router.query });
+    router.push({ pathname: `/${page}`, query: router.query });
   };
 
   const onTranslate = () => {};
