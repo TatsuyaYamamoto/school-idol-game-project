@@ -62,7 +62,8 @@ export const GAMES: { [K in Game]: GameDetail } = {
   },
 };
 
-export const gameIds = Object.keys(GAMES) as Game[];
+type GameIds = ReadonlyArray<keyof typeof GAMES>;
+export const gameIds = Object.keys(GAMES) as GameIds;
 
 export type Member =
   // μ's

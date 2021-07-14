@@ -7,11 +7,18 @@ import ControlSection from "../src/components/organisms/ControlSection";
 import RankingSection from "../src/components/organisms/RankingSection";
 import FooterSection from "../src/components/organisms/FooterSection";
 import AppBar from "../src/components/organisms/AppBar";
+import useQuery from "../src/components/hooks/useQuery";
 
 const RankingPage: NextPage = () => {
   const router = useRouter();
-  const locale = (router.locale ?? "ja") as "ja" | "en";
-  const game = "honocar";
+  const { value: gameQueryValue } = useQuery("game", gameIds);
+  const { value: hostLanguageQueryValue } = useQuery("hl", [
+    "ja",
+    "en",
+  ] as const);
+
+  const game = gameQueryValue || "honocar";
+  const language = hostLanguageQueryValue || "ja";
 
   const onTabChanged = (page: "ranking" | "help") => {
     router.push(`/${page}`, { query: router.query });
@@ -22,8 +29,8 @@ const RankingPage: NextPage = () => {
   };
 
   const onGameSelected = (index: number) => {
-    const game = gameIds[index];
-    router.replace(`/ranking`, { query: { game } });
+    const newGame = gameIds[index];
+    router.replace(`/ranking`, { query: { game: newGame } });
   };
 
   const onJumpGame = () => {
@@ -33,7 +40,7 @@ const RankingPage: NextPage = () => {
   return (
     <div>
       <AppBar
-        locale={locale}
+        language={language}
         onTabChanged={onTabChanged}
         onTranslate={onTranslate}
       />

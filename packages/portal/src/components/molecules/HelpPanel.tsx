@@ -18,7 +18,7 @@ interface HelpPanelProps {
   title: string;
   body: string;
   expanded: boolean;
-  locale: "ja" | "en";
+  language: "ja" | "en";
   onChange: (event: React.ChangeEvent<{}>, expanded: boolean) => void;
   onGotIt: () => void;
   onNotGotIt: () => void;
@@ -29,13 +29,13 @@ const HelpPanel: FC<HelpPanelProps> = (props) => {
     title,
     body,
     expanded,
-    locale,
+    language,
     onChange,
     onGotIt,
     onNotGotIt,
   } = props;
-  const gotIt = locale === "ja" ? "分かった！" : "Got it!";
-  const notGotIt = locale === "ja" ? "解決しない..." : "Not solved...";
+  const gotIt = language === "ja" ? "分かった！" : "Got it!";
+  const notGotIt = language === "ja" ? "解決しない..." : "Not solved...";
 
   return (
     <Accordion expanded={expanded} onChange={onChange}>

@@ -6,12 +6,13 @@ import SnackbarContent from "@material-ui/core/SnackbarContent";
 
 interface GotItSnackBarProps {
   open: boolean;
-  locale: "ja" | "en";
+  language: "ja" | "en";
 }
 
 const GotItSnackBar: FC<GotItSnackBarProps> = (props) => {
-  const { open, locale } = props;
-  const message = locale === "ja" ? "やったー！（・８・）" : "Yeah! （・８・）";
+  const { open, language } = props;
+  const message =
+    language === "ja" ? "やったー！（・８・）" : "Yeah! （・８・）";
 
   return (
     <Snackbar

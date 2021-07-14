@@ -1,5 +1,4 @@
 import { FC, useState } from "react";
-import { useRouter } from "next/router";
 import styled from "styled-components";
 
 import MuiAppBar from "@material-ui/core/AppBar";
@@ -28,7 +27,7 @@ const styles = {
 };
 
 interface AppBarProps {
-  locale: "ja" | "en";
+  language: "ja" | "en";
   onTabChanged: (tab: "ranking" | "help") => void;
   onTranslate: (locale: "ja" | "en") => void;
 }
@@ -42,7 +41,7 @@ const AppBar: FC<AppBarProps> = (props) => {
   };
 
   const handleTranslate = (_event: any) => {
-    if (props.locale === "ja") {
+    if (props.language === "ja") {
       props.onTranslate("en");
       return;
     }

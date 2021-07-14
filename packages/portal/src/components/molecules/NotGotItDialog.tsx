@@ -8,18 +8,18 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 
 interface NotGotItDialogProps {
   open: boolean;
-  locale: "ja" | "en";
+  language: "ja" | "en";
   handleClose: () => void;
 }
 
 const NotGotItDialog: FC<NotGotItDialogProps> = (props) => {
-  const { open, handleClose, locale } = props;
+  const { open, handleClose, language } = props;
   const text =
-    locale === "ja"
+    language === "ja"
       ? "解決できず、すいません、、、。もしよろしければ、フォームからお問い合わせください。可能な限り対応させていただきます。"
       : "I'm sorry I couldn't be your help. Please contact us if you are OK.";
-  const close = locale === "ja" ? "とじる" : "Close";
-  const form = locale === "ja" ? "問い合わせる" : "Inquire";
+  const close = language === "ja" ? "とじる" : "Close";
+  const form = language === "ja" ? "問い合わせる" : "Inquire";
 
   const goForm = () => {
     location.href =

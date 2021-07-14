@@ -23,7 +23,7 @@ const helpsJson: {
 } = require("../../../../help/helps.json");
 
 interface HelpListProps {
-  locale: "ja" | "en";
+  language: "ja" | "en";
 }
 
 const HelpList: FC<HelpListProps> = (props) => {
@@ -31,8 +31,8 @@ const HelpList: FC<HelpListProps> = (props) => {
   const [gotItSnackBarOpen, handleGotItSnackbar] = useState(false);
   const [notGotItDialogOpen, handleNotGotItDialog] = useState(false);
 
-  const { locale } = props;
-  const helps = helpsJson[locale];
+  const { language } = props;
+  const helps = helpsJson[language];
 
   const onPanelExpansionChanged = (helpPanelId: string, expanded: boolean) => {
     setShowHelpDocId(expanded ? helpPanelId : null);
@@ -57,7 +57,7 @@ const HelpList: FC<HelpListProps> = (props) => {
           key={id}
           title={title}
           body={body}
-          locale={locale}
+          language={language}
           expanded={id === showHelpDocId}
           onChange={(_, expanded) => onPanelExpansionChanged(id, expanded)}
           onGotIt={() => onGotIt(id)}
@@ -65,12 +65,12 @@ const HelpList: FC<HelpListProps> = (props) => {
         />
       ))}
 
-      <GotItSnackBar open={gotItSnackBarOpen} locale={locale} />
+      <GotItSnackBar open={gotItSnackBarOpen} language={language} />
 
       <NotGotItDialog
         open={notGotItDialogOpen}
         handleClose={() => handleNotGotItDialog(false)}
-        locale={locale}
+        language={language}
       />
     </Root>
   );
