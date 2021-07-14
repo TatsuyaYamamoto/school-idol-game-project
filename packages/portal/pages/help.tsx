@@ -14,13 +14,16 @@ const HelpPage: NextPage = (props) => {
   ] as const);
   const language = hostLanguageQueryValue || "ja";
 
-  const onTabChanged = () => {};
+  const onTabChanged = (page: "ranking" | "help") => {
+    router.push(`/${page}`, { query: router.query });
+  };
 
   const onTranslate = () => {};
 
   return (
     <div>
       <AppBar
+        tab="help"
         language={language}
         onTabChanged={onTabChanged}
         onTranslate={onTranslate}

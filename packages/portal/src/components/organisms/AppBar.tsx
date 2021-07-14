@@ -27,17 +27,15 @@ const styles = {
 };
 
 interface AppBarProps {
+  tab: "ranking" | "help";
   language: "ja" | "en";
   onTabChanged: (tab: "ranking" | "help") => void;
   onTranslate: (locale: "ja" | "en") => void;
 }
 
 const AppBar: FC<AppBarProps> = (props) => {
-  const [tabIndex, handleTabIndex] = useState(0);
-
-  const handleTab = (_event: any, newTabIndex: any) => {
-    handleTabIndex(newTabIndex);
-    props.onTabChanged(newTabIndex === 0 ? "ranking" : "help");
+  const handleTab = (_event: any, newValue: "ranking" | "help") => {
+    props.onTabChanged(newValue);
   };
 
   const handleTranslate = (_event: any) => {
@@ -60,9 +58,9 @@ const AppBar: FC<AppBarProps> = (props) => {
             <TranslateIcon />
           </IconButton>
         </Toolbar>
-        <Tabs value={tabIndex} onChange={handleTab} centered={true}>
-          <Tab label="ランキング" />
-          <Tab label="ヘルプ" />
+        <Tabs value={props.tab} onChange={handleTab} centered={true}>
+          <Tab label="ランキング" value="ranking" />
+          <Tab label="ヘルプ" value="help" />
         </Tabs>
       </StyledMuiAppBar>
     </Root>

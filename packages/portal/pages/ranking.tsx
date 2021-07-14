@@ -40,6 +40,7 @@ const RankingPage: NextPage = () => {
   return (
     <div>
       <AppBar
+        tab="ranking"
         language={language}
         onTabChanged={onTabChanged}
         onTranslate={onTranslate}
