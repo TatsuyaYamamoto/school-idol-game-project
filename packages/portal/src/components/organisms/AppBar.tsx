@@ -20,12 +20,6 @@ const HeaderSpace = styled.div`
   flex-grow: 1;
 `;
 
-const styles = {
-  root: {
-    backgroundColor: "white",
-  },
-};
-
 interface AppBarProps {
   tab: "ranking" | "help";
   language: "ja" | "en";
