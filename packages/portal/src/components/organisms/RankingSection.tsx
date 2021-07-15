@@ -1,13 +1,9 @@
 import React from "react";
 import { IndexRange } from "react-virtualized";
 
-import type { MetadataDocument, RankItemDocument } from "@sokontokoro/mikan";
-
 import RankingList from "../molecules/RankingList";
 import RankItem from "../molecules/RankItem";
 import LastUpdateTime from "../molecules/LastUpdateTime";
-
-import { firebaseApp } from "../../utils/firebase";
 
 interface Props {
   game: string;
@@ -17,7 +13,7 @@ interface State {
   hasMoreItem: boolean;
   game: string;
   rankingList: JSX.Element[];
-  lastVisibleSnapshot: any;
+  lastVisibleId: string | null;
   lastUpdatedAt: Date;
 }
 
@@ -29,7 +25,7 @@ export default class RankingSection extends React.Component<Props, State> {
       game: this.props.game,
       hasMoreItem: true,
       rankingList: [],
-      lastVisibleSnapshot: null,
+      lastVisibleId: null,
       lastUpdatedAt: new Date(),
     };
   }
@@ -42,7 +38,7 @@ export default class RankingSection extends React.Component<Props, State> {
         game: nextProps.game,
         hasMoreItem: true,
         rankingList: [],
-        lastVisibleSnapshot: null,
+        lastVisibleId: null,
       };
     }
 
@@ -65,29 +61,19 @@ export default class RankingSection extends React.Component<Props, State> {
   }
 
   private loadMoreItem = async ({ startIndex, stopIndex }: IndexRange) => {
-    const { lastVisibleSnapshot, game } = this.state;
+    const { lastVisibleId, game } = this.state;
 
-    const limit = stopIndex - startIndex + 1;
-    const metadataRef = firebaseApp
-      .firestore()
-      .collection("metadata")
-      .doc(game);
-    const metadata = (await metadataRef.get()).data() as MetadataDocument;
+    const region = "asia-northeast1";
+    const projectId = "school-idol-game-development";
+    const baseUrl = `https://${region}-${projectId}.cloudfunctions.net`;
+    const search = new URLSearchParams();
+    if (lastVisibleId) {
+      search.set("lastVisibleId", lastVisibleId);
+    }
+    const res = await fetch(`${baseUrl}/api/games/${game}/ranking?${search}`);
+    const { scores, updatedAt } = await res.json();
 
-    let scores = lastVisibleSnapshot
-      ? await metadata.rankingRef
-          .collection("list")
-          .orderBy("point", "desc")
-          .startAfter(lastVisibleSnapshot)
-          .limit(limit)
-          .get()
-      : await metadata.rankingRef
-          .collection("list")
-          .orderBy("point", "desc")
-          .limit(limit)
-          .get();
-
-    if (scores.size === 0) {
+    if (scores.length === 0) {
       console.log("no more scores");
       this.setState({ hasMoreItem: false });
       return;
@@ -102,14 +88,13 @@ export default class RankingSection extends React.Component<Props, State> {
       }
 
       const pushedItems = state.rankingList;
-      scores.forEach((r) => {
-        const doc = r.data() as RankItemDocument;
+      scores.forEach((score: any) => {
         pushedItems.push(
           <RankItem
-            rank={doc.rank}
-            userName={doc.userName}
-            point={doc.point}
-            member={doc.member}
+            rank={score.rank}
+            userName={score.userName}
+            point={score.point}
+            member={score.member}
           />
         );
       });
@@ -117,11 +102,9 @@ export default class RankingSection extends React.Component<Props, State> {
       const newState = {
         ...state,
         rankingList: pushedItems,
-        lastVisibleSnapshot: scores.docs[scores.size - 1],
+        lastVisibleId: scores[scores.length - 1].id,
+        lastUpdatedAt: new Date(updatedAt),
       };
-      if (metadata.updatedAt) {
-        newState.lastUpdatedAt = (metadata.updatedAt as any).toDate();
-      }
 
       return newState;
     });
