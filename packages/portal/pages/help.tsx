@@ -18,16 +18,9 @@ const HelpPage: NextPage = (props) => {
     router.push({ pathname: `/${page}`, query: router.query });
   };
 
-  const onTranslate = () => {};
-
   return (
     <div>
-      <AppBar
-        tab="help"
-        language={language}
-        onTabChanged={onTabChanged}
-        onTranslate={onTranslate}
-      />
+      <AppBar tab="help" onTabChanged={onTabChanged} />
 
       <HelpList language={language} />
 

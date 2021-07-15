@@ -18,14 +18,9 @@ const RankingPage: NextPage = () => {
   ] as const);
 
   const game = gameQueryValue || "honocar";
-  const language = hostLanguageQueryValue || "ja";
 
   const onTabChanged = (page: "ranking" | "help") => {
     router.push({ pathname: `/${page}`, query: router.query });
-  };
-
-  const onTranslate = (locale: "ja" | "en") => {
-    console.log("translate", locale);
   };
 
   const onGameSelected = (index: number) => {
@@ -39,12 +34,7 @@ const RankingPage: NextPage = () => {
 
   return (
     <div>
-      <AppBar
-        tab="ranking"
-        language={language}
-        onTabChanged={onTabChanged}
-        onTranslate={onTranslate}
-      />
+      <AppBar tab="ranking" onTabChanged={onTabChanged} />
 
       <ControlSection
         game={game}
