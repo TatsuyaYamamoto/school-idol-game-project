@@ -1,4 +1,4 @@
-import * as React from "react";
+import { FC } from "react";
 import {
   Index,
   IndexRange,
@@ -9,15 +9,21 @@ import {
   WindowScroller,
 } from "react-virtualized";
 
-import RankItem from "./RankItem";
+import RankItem from "../molecules/RankItem";
+import { Member } from "../../utils/tmp_mikan";
 
-interface Props {
+interface RankingListProps {
   hasMoreItem: boolean;
-  list: JSX.Element[];
+  list: {
+    rank: number;
+    userName: string;
+    point: number;
+    member: Member;
+  }[];
   loadMoreItem: (params: IndexRange) => Promise<any>;
 }
 
-const RankingList: React.SFC<Props> = (props) => {
+const RankingList: FC<RankingListProps> = (props) => {
   const { list, hasMoreItem, loadMoreItem } = props;
 
   const rowCount = hasMoreItem ? list.length + 5 : list.length;
@@ -34,7 +40,16 @@ const RankingList: React.SFC<Props> = (props) => {
           ...style,
         }}
       >
-        {item || <div>Loading...</div>}
+        {item ? (
+          <RankItem
+            rank={item.rank}
+            userName={item.userName}
+            point={item.point}
+            member={item.member}
+          />
+        ) : (
+          <div>Loading...</div>
+        )}
       </div>
     );
   };

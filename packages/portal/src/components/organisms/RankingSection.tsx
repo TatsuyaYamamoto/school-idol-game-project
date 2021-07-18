@@ -1,112 +1,111 @@
-import React from "react";
+import { FC, useEffect, useState } from "react";
+import styled from "styled-components";
 import { IndexRange } from "react-virtualized";
 
 import RankingList from "../molecules/RankingList";
-import RankItem from "../molecules/RankItem";
 import LastUpdateTime from "../molecules/LastUpdateTime";
+import { Member } from "../../utils/tmp_mikan";
+import { functionsOrigin } from "../../utils/firebase";
 
-interface Props {
+const ListWrapper = styled.div`
+  max-width: 600px;
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
+`;
+
+interface RankingSectionProps {
   game: string;
 }
 
-interface State {
-  hasMoreItem: boolean;
-  game: string;
-  rankingList: JSX.Element[];
-  lastVisibleId: string | null;
-  lastUpdatedAt: Date;
-}
+const RankingSection: FC<RankingSectionProps> = (props) => {
+  const [virtualState, setVirtualState] = useState<{
+    game: string;
+    hasMoreItem: boolean;
+    rankingList: {
+      rank: number;
+      userName: string;
+      point: number;
+      member: Member;
+    }[];
+    lastVisibleId: string | null;
+    lastUpdatedAt: Date;
+  }>({
+    game: props.game,
+    hasMoreItem: true,
+    rankingList: [],
+    lastVisibleId: null,
+    lastUpdatedAt: new Date(),
+  });
 
-export default class RankingSection extends React.Component<Props, State> {
-  public constructor(props: any) {
-    super(props);
+  const loadMoreItem = async ({}: IndexRange) => {
+    const { game, lastVisibleId } = virtualState;
 
-    this.state = {
-      game: this.props.game,
-      hasMoreItem: true,
-      rankingList: [],
-      lastVisibleId: null,
-      lastUpdatedAt: new Date(),
-    };
-  }
-
-  public static getDerivedStateFromProps(nextProps: Props, prevState: State) {
-    if (nextProps.game !== prevState.game) {
-      console.log(`change game. ${prevState.game} -> ${nextProps.game}`);
-
-      return {
-        game: nextProps.game,
-        hasMoreItem: true,
-        rankingList: [],
-        lastVisibleId: null,
-      };
-    }
-
-    return null;
-  }
-
-  public render() {
-    const { hasMoreItem, rankingList, lastUpdatedAt } = this.state;
-
-    return (
-      <React.Fragment>
-        <LastUpdateTime time={lastUpdatedAt} />
-        <RankingList
-          hasMoreItem={hasMoreItem}
-          list={rankingList}
-          loadMoreItem={this.loadMoreItem}
-        />
-      </React.Fragment>
-    );
-  }
-
-  private loadMoreItem = async ({ startIndex, stopIndex }: IndexRange) => {
-    const { lastVisibleId, game } = this.state;
-
-    const region = "asia-northeast1";
-    const projectId = "school-idol-game-development";
-    const baseUrl = `https://${region}-${projectId}.cloudfunctions.net`;
     const search = new URLSearchParams();
     if (lastVisibleId) {
       search.set("lastVisibleId", lastVisibleId);
     }
-    const res = await fetch(`${baseUrl}/api/games/${game}/ranking?${search}`);
+    const res = await fetch(
+      `${functionsOrigin}/api/games/${game}/ranking?${search}`
+    );
     const { scores, updatedAt } = await res.json();
 
     if (scores.length === 0) {
       console.log("no more scores");
-      this.setState({ hasMoreItem: false });
+      setVirtualState((prev) => ({ ...prev, hasMoreItem: false }));
       return;
     }
 
-    this.setState((state) => {
-      if (state.game !== game) {
+    setVirtualState((prev) => {
+      if (game !== prev.game) {
         console.log(
-          `active game; ${game} is changed. ignore this game ranking list push.`
+          `the fetched game (${game}) and the current props game (${prev.game}) are different. ignore this game ranking list push.`
         );
-        return null;
+        return prev;
       }
 
-      const pushedItems = state.rankingList;
+      const pushedItems = prev.rankingList;
       scores.forEach((score: any) => {
-        pushedItems.push(
-          <RankItem
-            rank={score.rank}
-            userName={score.userName}
-            point={score.point}
-            member={score.member}
-          />
-        );
+        pushedItems.push({
+          rank: score.rank,
+          userName: score.userName,
+          point: score.point,
+          member: score.member,
+        });
       });
 
-      const newState = {
-        ...state,
+      return {
+        ...prev,
+        game,
         rankingList: pushedItems,
         lastVisibleId: scores[scores.length - 1].id,
         lastUpdatedAt: new Date(updatedAt),
       };
-
-      return newState;
     });
   };
-}
+
+  useEffect(() => {
+    setVirtualState({
+      game: props.game,
+      hasMoreItem: true,
+      rankingList: [],
+      lastVisibleId: null,
+      lastUpdatedAt: new Date(),
+    });
+  }, [props.game]);
+
+  return (
+    <>
+      <LastUpdateTime time={virtualState.lastUpdatedAt} />
+      <ListWrapper>
+        <RankingList
+          hasMoreItem={virtualState.hasMoreItem}
+          list={virtualState.rankingList}
+          loadMoreItem={loadMoreItem}
+        />
+      </ListWrapper>
+    </>
+  );
+};
+
+export default RankingSection;

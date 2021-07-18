@@ -46,25 +46,11 @@ const GameSelector: FC<GameSelectorProps> = (props) => {
 
   const { game, slickSettings } = props;
   const slickRef = useRef<Slider>(null);
-  const pendingIdOfOnSelected = useRef<null | number>(null);
   const initialSelectorIndex = games.findIndex((id) => id === game);
-  const beforeIndex = useRef(0);
   const { i18n } = useTranslation();
 
-  const beforeChange = (current: number, next: number) => {
-    if (beforeIndex.current === next) {
-      return;
-    }
-
-    beforeIndex.current = next;
-
-    if (pendingIdOfOnSelected.current) {
-      clearTimeout(pendingIdOfOnSelected.current);
-    }
-
-    pendingIdOfOnSelected.current = window.setTimeout(() => {
-      props.onSelected(next);
-    }, 500);
+  const afterChange = (currentSlide: number) => {
+    props.onSelected(currentSlide);
   };
 
   const settings: Settings = {
@@ -72,7 +58,7 @@ const GameSelector: FC<GameSelectorProps> = (props) => {
     initialSlide: initialSelectorIndex,
     dots: true,
     arrows: true,
-    beforeChange,
+    afterChange,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     ...slickSettings,
