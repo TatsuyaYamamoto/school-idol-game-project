@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import { useTranslation } from "react-i18next";
 
 import {
   StylesProvider,
@@ -12,14 +13,28 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 import "../src/utils/firebase";
+import "../src/utils/i18n";
+
 import muiTheme from "../src/muiTheme";
+import useQuery from "../src/components/hooks/useQuery";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const { i18n } = useTranslation();
+  const { value: hostLanguageQueryValue } = useQuery("hl", [
+    "ja",
+    "en",
+  ] as const);
+
   useEffect(() => {
     // https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
     const jssStyles = document.querySelector("#jss-server-side");
     jssStyles?.parentElement?.removeChild(jssStyles);
   }, []);
+
+  useEffect(() => {
+    const language = hostLanguageQueryValue || "ja";
+    i18n.changeLanguage(language);
+  }, [i18n, hostLanguageQueryValue]);
 
   return (
     <>
@@ -39,4 +54,5 @@ function MyApp({ Component, pageProps }: AppProps) {
     </>
   );
 }
+
 export default MyApp;

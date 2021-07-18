@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 
@@ -11,38 +12,47 @@ import useQuery from "../src/components/hooks/useQuery";
 
 const RankingPage: NextPage = () => {
   const router = useRouter();
-  const { value: gameQueryValue } = useQuery("game", gameIds);
-  const { value: hostLanguageQueryValue } = useQuery("hl", [
-    "ja",
-    "en",
-  ] as const);
-
-  const game = gameQueryValue || "honocar";
-
-  const onTabChanged = (page: "ranking" | "help") => {
-    router.push({ pathname: `/${page}`, query: router.query });
-  };
+  const { value: gameQueryValue, isReady: isGameQueryReady } = useQuery(
+    "game",
+    gameIds
+  );
 
   const onGameSelected = (index: number) => {
     const newGame = gameIds[index];
-    router.replace(`/ranking`, { query: { game: newGame } });
+    router.replace({ query: { game: newGame } });
   };
 
   const onJumpGame = () => {
-    location.href = GAMES[game].url;
+    if (!gameQueryValue) {
+      return;
+    }
+    location.href = GAMES[gameQueryValue].url;
   };
+
+  useEffect(() => {
+    if (!isGameQueryReady) {
+      return;
+    }
+    if (gameQueryValue) {
+      return;
+    }
+    router.replace({ query: { game: "honocar" } });
+  }, [gameQueryValue, router, isGameQueryReady]);
 
   return (
     <div>
-      <AppBar tab="ranking" onTabChanged={onTabChanged} />
+      <AppBar tab="ranking" />
 
-      <ControlSection
-        game={game}
-        onGameSelected={onGameSelected}
-        onJumpGame={onJumpGame}
-      />
-
-      <RankingSection game={game} />
+      {gameQueryValue && (
+        <>
+          <ControlSection
+            game={gameQueryValue}
+            onGameSelected={onGameSelected}
+            onJumpGame={onJumpGame}
+          />
+          <RankingSection game={gameQueryValue} />
+        </>
+      )}
 
       <FooterSection />
     </div>

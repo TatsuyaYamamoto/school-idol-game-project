@@ -1,12 +1,15 @@
 import { FC } from "react";
 import styled from "styled-components";
-import { Game } from "../../utils/tmp_mikan";
+import { useTranslation } from "react-i18next";
 
+import { Button } from "@material-ui/core";
+
+import { Game } from "../../utils/tmp_mikan";
 import GameSelector from "../molecules/GameSelector";
-import JumpGameButton from "../atoms/JumpGameButton";
 
 const Root = styled.div`
   margin: 50px 0;
+  text-align: center;
 `;
 
 interface ControlSectionProps {
@@ -17,6 +20,7 @@ interface ControlSectionProps {
 
 const ControlSection: FC<ControlSectionProps> = (props) => {
   const { game, onGameSelected, onJumpGame } = props;
+  const { t } = useTranslation();
 
   return (
     <Root>
@@ -26,7 +30,9 @@ const ControlSection: FC<ControlSectionProps> = (props) => {
         onSelected={onGameSelected}
       />
 
-      <JumpGameButton onClick={onJumpGame} />
+      <Button onClick={onJumpGame} variant="outlined" color="primary">
+        {t(`jump_to_game`)}
+      </Button>
     </Root>
   );
 };

@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 
@@ -14,6 +14,8 @@ import {
 import TranslateIcon from "@material-ui/icons/Translate";
 
 import AppTitle from "../atoms/AppTitle";
+import { useTranslation } from "react-i18next";
+import { query } from "scripts/src/firestore/import";
 
 const Root = styled.div``;
 
@@ -27,19 +29,19 @@ const HeaderSpace = styled.div`
 
 interface AppBarProps {
   tab: "ranking" | "help";
-  onTabChanged: (tab: "ranking" | "help") => void;
 }
 
 const AppBar: FC<AppBarProps> = (props) => {
-  const { tab, onTabChanged } = props;
+  const { tab } = props;
   const router = useRouter();
   const [
     translateAnchorEl,
     setTranslateAnchorEl,
   ] = useState<null | HTMLElement>(null);
+  const { t } = useTranslation();
 
   const handleTab = (_event: any, newValue: "ranking" | "help") => {
-    onTabChanged(newValue);
+    router.push({ pathname: `/${newValue}`, query: router.query });
   };
 
   const onClickTranslateButton = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -52,7 +54,7 @@ const AppBar: FC<AppBarProps> = (props) => {
 
   const onClickTranslateLanguage = (lang: "ja" | "en") => () => {
     setTranslateAnchorEl(null);
-    router.push({ query: { hl: lang } });
+    router.push({ query: { ...router.query, hl: lang } });
   };
 
   return (
@@ -69,8 +71,8 @@ const AppBar: FC<AppBarProps> = (props) => {
             </IconButton>
           </Toolbar>
           <Tabs value={tab} onChange={handleTab} centered={true}>
-            <Tab label="ランキング" value="ranking" />
-            <Tab label="ヘルプ" value="help" />
+            <Tab label={t(`tab.ranking`)} value="ranking" />
+            <Tab label={t(`tab.help`)} value="help" />
           </Tabs>
         </StyledMuiAppBar>
       </Root>

@@ -1,4 +1,4 @@
-import * as React from "react";
+import { FC, useRef } from "react";
 import Slider, { Settings, CustomArrowProps } from "react-slick";
 import styled from "styled-components";
 
@@ -6,6 +6,7 @@ import { GAMES, Game } from "../../utils/tmp_mikan";
 
 import Arrow from "../atoms/GameSelectArrow";
 import GameSelectorItem from "./GameSelectorItem";
+import { useTranslation } from "react-i18next";
 
 const Root = styled.div`
   max-width: 500px;
@@ -13,7 +14,7 @@ const Root = styled.div`
   padding: 30px;
 `;
 
-const NextArrow: React.SFC<CustomArrowProps> = (props) => {
+const NextArrow: FC<CustomArrowProps> = (props) => {
   return (
     <Arrow
       className={props.className}
@@ -23,7 +24,7 @@ const NextArrow: React.SFC<CustomArrowProps> = (props) => {
   );
 };
 
-const PrevArrow: React.SFC<CustomArrowProps> = (props) => {
+const PrevArrow: FC<CustomArrowProps> = (props) => {
   return (
     <Arrow
       className={props.className}
@@ -33,86 +34,63 @@ const PrevArrow: React.SFC<CustomArrowProps> = (props) => {
   );
 };
 
-interface Props {
+interface GameSelectorProps {
   game: Game;
   slickSettings: Settings;
   onSelected: (index: number) => void;
 }
 
-interface State {
-  initialSelectorIndex: number;
-  games: Game[];
-}
+const GameSelector: FC<GameSelectorProps> = (props) => {
+  // TODO support ranking system yamidori, oimo!
+  const games: Game[] = ["honocar", "shakarin", "maruten"];
 
-class GameSelector extends React.Component<Props, State> {
-  private slickRef = React.createRef<Slider>();
-  private pendingIdOfOnSelected: any = null;
+  const { game, slickSettings } = props;
+  const slickRef = useRef<Slider>(null);
+  const pendingIdOfOnSelected = useRef<null | number>(null);
+  const initialSelectorIndex = games.findIndex((id) => id === game);
+  const beforeIndex = useRef(0);
+  const { i18n } = useTranslation();
 
-  // TODO {@link https://github.com/akiran/react-slick/pull/1272}
-  private beforeIndex: number = 0;
-
-  constructor(props: any) {
-    super(props);
-
-    const { game } = this.props;
-
-    // TODO support ranking system yamidori, oimo!
-    const games: Game[] = ["honocar", "shakarin", "maruten"];
-
-    this.state = {
-      games,
-      initialSelectorIndex: Object.keys(GAMES).findIndex((id) => id === game),
-    };
-  }
-
-  render() {
-    const { slickSettings } = this.props;
-    const { initialSelectorIndex } = this.state;
-
-    const settings: Settings = {
-      infinite: false,
-      initialSlide: initialSelectorIndex,
-      dots: true,
-      arrows: true,
-      beforeChange: this.beforeChange,
-      nextArrow: <NextArrow />,
-      prevArrow: <PrevArrow />,
-      ...slickSettings,
-    };
-
-    // TODO support ranking system yamidori, oimo!
-    const games: Game[] = ["honocar", "shakarin", "maruten"];
-
-    return (
-      <Root>
-        <Slider ref={this.slickRef} {...settings}>
-          {games.map((game) => (
-            <GameSelectorItem
-              key={GAMES[game].url}
-              title={GAMES[game].name.ja} // TODO support multi language.
-              imageUrl={GAMES[game].imageUrl}
-            />
-          ))}
-        </Slider>
-      </Root>
-    );
-  }
-
-  private beforeChange = (current: number, next: number) => {
-    if (this.beforeIndex === next) {
+  const beforeChange = (current: number, next: number) => {
+    if (beforeIndex.current === next) {
       return;
     }
 
-    this.beforeIndex = next;
+    beforeIndex.current = next;
 
-    if (this.pendingIdOfOnSelected) {
-      clearTimeout(this.pendingIdOfOnSelected);
+    if (pendingIdOfOnSelected.current) {
+      clearTimeout(pendingIdOfOnSelected.current);
     }
 
-    this.pendingIdOfOnSelected = setTimeout(() => {
-      this.props.onSelected(next);
+    pendingIdOfOnSelected.current = window.setTimeout(() => {
+      props.onSelected(next);
     }, 500);
   };
-}
+
+  const settings: Settings = {
+    infinite: false,
+    initialSlide: initialSelectorIndex,
+    dots: true,
+    arrows: true,
+    beforeChange,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+    ...slickSettings,
+  };
+
+  return (
+    <Root>
+      <Slider ref={slickRef} {...settings}>
+        {games.map((game) => (
+          <GameSelectorItem
+            key={GAMES[game].url}
+            title={GAMES[game].name[i18n.language as "ja" | "en"]}
+            imageUrl={GAMES[game].imageUrl}
+          />
+        ))}
+      </Slider>
+    </Root>
+  );
+};
 
 export default GameSelector;

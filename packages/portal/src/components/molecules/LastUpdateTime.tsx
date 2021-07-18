@@ -1,5 +1,6 @@
-import * as React from "react";
+import { FC } from "react";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   time: Date;
@@ -17,10 +18,9 @@ const Time = styled.span`
   padding-right: 50px;
 `;
 
-const DateValue = styled.span``;
-
-const LastUpdateTime: React.SFC<Props> = (props) => {
+const LastUpdateTime: FC<Props> = (props) => {
   const { time } = props;
+  const { t } = useTranslation();
 
   const yyyy = time.getFullYear();
   const MM = ("00" + (time.getMonth() + 1)).slice(-2);
@@ -30,10 +30,7 @@ const LastUpdateTime: React.SFC<Props> = (props) => {
 
   return (
     <Root>
-      <Time>
-        {`Last updated at `}
-        {`${yyyy}/${MM}/${dd} ${hh}:${mm}`}
-      </Time>
+      <Time>{`${t(`last_updated_at`)} ${yyyy}/${MM}/${dd} ${hh}:${mm}`}</Time>
     </Root>
   );
 };

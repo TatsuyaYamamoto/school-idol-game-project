@@ -1,0 +1,15 @@
+{
+  "tab": {
+    "ranking": "ランキング",
+    "help": "ヘルプ"
+  },
+  "jump_to_game": "ゲームのページへ行く！",
+  "last_updated_at": "最終更新日時",
+  "game_title": {
+    "honocar": "ほのCar！",
+    "shakarin": "しゃかりん！",
+    "maruten": "まるてん！"
+  },
+  "rank_unit": "位",
+  "score_label": "スコア"
+}

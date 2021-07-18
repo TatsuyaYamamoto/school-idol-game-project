@@ -1,4 +1,5 @@
 import { FC, useState } from "react";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import HelpPanel from "../molecules/HelpPanel";
@@ -22,16 +23,15 @@ const helpsJson: {
   en: HelpDoc[];
 } = require("../../../../help/helps.json");
 
-interface HelpListProps {
-  language: "ja" | "en";
-}
+interface HelpListProps {}
 
 const HelpList: FC<HelpListProps> = (props) => {
+  const { i18n } = useTranslation();
   const [showHelpDocId, setShowHelpDocId] = useState<string | null>(null);
   const [gotItSnackBarOpen, handleGotItSnackbar] = useState(false);
   const [notGotItDialogOpen, handleNotGotItDialog] = useState(false);
 
-  const { language } = props;
+  const language = i18n.language as "ja" | "en";
   const helps = helpsJson[language];
 
   const onPanelExpansionChanged = (helpPanelId: string, expanded: boolean) => {

@@ -1,8 +1,9 @@
-import * as React from "react";
+import { FC } from "react";
 import styled from "styled-components";
 import Tippy from "@tippyjs/react";
 
 import { MEMBERS, Member, getMemberIcon } from "../../utils/tmp_mikan";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   rank: number;
@@ -64,8 +65,9 @@ const MemberIcon = styled.div`
  * @param props
  * @constructor
  */
-const RankItem: React.SFC<Props> = (props) => {
+const RankItem: FC<Props> = (props) => {
   const { rank, point, userName, member } = props;
+  const { t } = useTranslation();
 
   const tooltip = `${MEMBERS[member].name.ja}とプレイしました！`;
 
@@ -73,12 +75,15 @@ const RankItem: React.SFC<Props> = (props) => {
     <Root>
       <Rank>
         <RankValue>{rank}</RankValue>
-        <RankUnit>位</RankUnit>
+        <RankUnit>{t("rank_unit")}</RankUnit>
       </Rank>
       <UserDetail>
         <Username>{userName}</Username>
         <Score>
-          <ScoreLabel>{"SCORE "}</ScoreLabel>
+          <ScoreLabel>
+            {t("score_label")}
+            {` `}
+          </ScoreLabel>
           <ScoreValue>{point}</ScoreValue>
         </Score>
       </UserDetail>

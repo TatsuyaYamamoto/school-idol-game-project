@@ -5,16 +5,18 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build && next export",
-    "start": "next start"
+    "deploy-dev": "firebase deploy --force --project school-idol-game-development"
   },
   "dependencies": {
     "@material-ui/core": "^4.12.1",
     "@material-ui/icons": "^4.11.2",
     "@tippyjs/react": "^4.2.5",
     "firebase": "^8.7.1",
+    "i18next": "^20.3.3",
     "next": "11.0.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-i18next": "^11.11.2",
     "react-markdown": "^6.0.2",
     "react-slick": "^0.28.1",
     "react-virtualized": "^9.22.3",

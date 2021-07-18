@@ -2,17 +2,14 @@ import { useMemo } from "react";
 import { useRouter } from "next/router";
 
 const useQuery = <T>(key: string, expectedValues: ReadonlyArray<T>) => {
-  const router = useRouter();
+  const { query, isReady } = useRouter();
+
   const queryValue: T | null = useMemo(() => {
-    // https://github.com/vercel/next.js/discussions/11484#discussioncomment-139578
-    const values =
-      router.asPath.match(new RegExp(`[&?]${key}=(.*)(&|$)`)) || [];
-    const value: any = values[1];
-
+    const value: any = query[key];
     return expectedValues.includes(value) ? value : null;
-  }, [key, router]);
+  }, [key, expectedValues, query]);
 
-  return { value: queryValue };
+  return { value: queryValue, isReady };
 };
 
 export default useQuery;
