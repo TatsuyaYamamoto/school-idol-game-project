@@ -15,7 +15,6 @@ import TranslateIcon from "@material-ui/icons/Translate";
 
 import AppTitle from "../atoms/AppTitle";
 import { useTranslation } from "react-i18next";
-import { query } from "scripts/src/firestore/import";
 
 const Root = styled.div``;
 
