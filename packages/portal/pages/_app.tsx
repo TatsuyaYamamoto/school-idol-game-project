@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 import { useTranslation } from "react-i18next";
 
@@ -52,6 +53,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
+      <Head>
+        <title>{process.env.APP_TITLE}</title>
+        <meta name="description" content={process.env.APP_DESCRIPTION} />
+        <meta name="keyword" content={process.env.APP_KEYWORD} />
+      </Head>
       {/* https://material-ui.com/guides/interoperability/#controlling-priority-3 */}
       <StylesProvider injectFirst={true}>
         <MuiThemeProvider theme={muiTheme}>

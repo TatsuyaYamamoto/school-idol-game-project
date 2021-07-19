@@ -10,6 +10,10 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
+          {process.env.APP_ENV !== "pro" && (
+            <meta name="robots" content="noindex" />
+          )}
+
           <link
             href="https://fonts.googleapis.com/earlyaccess/roundedmplus1c.css"
             rel="stylesheet"
