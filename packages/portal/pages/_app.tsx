@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import type { AppProps } from "next/app";
-import Head from "next/head";
+import { useRouter } from "next/router";
+
 import { useTranslation } from "react-i18next";
 
 import {
@@ -18,8 +19,10 @@ import "../src/utils/i18n";
 
 import muiTheme from "../src/muiTheme";
 import useQuery from "../src/components/hooks/useQuery";
+import { pageview } from "../src/utils/gtag";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
   const { i18n } = useTranslation();
   const { value: hostLanguageQueryValue } = useQuery("hl", [
     "ja",
@@ -37,15 +40,18 @@ function MyApp({ Component, pageProps }: AppProps) {
     i18n.changeLanguage(language);
   }, [i18n, hostLanguageQueryValue]);
 
+  useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      pageview(url);
+    };
+    router.events.on("routeChangeComplete", handleRouteChange);
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.events]);
+
   return (
     <>
-      <Head>
-        <link
-          href="https://fonts.googleapis.com/earlyaccess/roundedmplus1c.css"
-          rel="stylesheet"
-        />
-      </Head>
-
       {/* https://material-ui.com/guides/interoperability/#controlling-priority-3 */}
       <StylesProvider injectFirst={true}>
         <MuiThemeProvider theme={muiTheme}>
