@@ -1,0 +1,23 @@
+@font-face {
+  font-family: "PixelMplus";
+  src: url("https://cdn.leafscape.be/PixelMplus/PixelMplus10-Regular_web.woff2")
+    format("woff2");
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Rounded Mplus 1c", -apple-system, BlinkMacSystemFont, Segoe UI,
+    Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+    sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}

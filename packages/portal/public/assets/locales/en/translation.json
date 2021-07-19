@@ -1,0 +1,15 @@
+{
+  "tab": {
+    "ranking": "Ranking",
+    "help": "Help"
+  },
+  "jump_to_game": "Jump to game!",
+  "last_updated_at": "Last updated at",
+  "game_title": {
+    "honocar": "Hono-car！",
+    "shakarin": "Shaka-rin！",
+    "maruten": "Maru-ten！"
+  },
+  "rank_unit": "",
+  "score_label": "SCORE"
+}

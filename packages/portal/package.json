@@ -1,0 +1,48 @@
+{
+  "name": "portal",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "      APP_ENV=dev next dev",
+    "build-dev": "APP_ENV=dev next build && next export",
+    "build-pro": "APP_ENV=pro next build && next export",
+    "deploy-dev": "BUCKET=games-dev.sokontokoro-factory.net  npm run _deploy",
+    "deploy-pro": "BUCKET=games.sokontokoro-factory.net      npm run _deploy",
+    "_deploy": "run-s --print-label _deploy:rsync:* _deploy:setmeta:*",
+    "_deploy:rsync:index": "  gsutil cp          out/index.html gs://$BUCKET/index.html",
+    "_deploy:rsync:404": "    gsutil rsync -d -r out/404/       gs://$BUCKET/404/",
+    "_deploy:rsync:_next": "  gsutil rsync -d -r out/_next/     gs://$BUCKET/_next/",
+    "_deploy:rsync:assets": " gsutil rsync -d -r out/assets/    gs://$BUCKET/assets/",
+    "_deploy:rsync:ranking": "gsutil rsync -d -r out/ranking/   gs://$BUCKET/ranking/",
+    "_deploy:rsync:help": "   gsutil rsync -d -r out/help/      gs://$BUCKET/help/",
+    "_deploy:setmeta:index": "  gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/index.html",
+    "_deploy:setmeta:404": "    gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/404/index.html",
+    "_deploy:setmeta:ranking": "gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/ranking/**/*.html",
+    "_deploy:setmeta:help": "   gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/help/**/*.html"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.12.1",
+    "@material-ui/icons": "^4.11.2",
+    "@tippyjs/react": "^4.2.5",
+    "firebase": "^8.7.1",
+    "i18next": "^20.3.3",
+    "next": "11.0.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-i18next": "^11.11.2",
+    "react-markdown": "^6.0.2",
+    "react-slick": "^0.28.1",
+    "react-virtualized": "^9.22.3",
+    "slick-carousel": "^1.8.1",
+    "styled-components": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "17.0.14",
+    "@types/react-slick": "^0.23.5",
+    "@types/react-virtualized": "^9.21.12",
+    "@types/styled-components": "^5.1.11",
+    "chalk": "^2.4.2",
+    "eslint-config-next": "^11.0.1",
+    "typescript": "4.3.5"
+  }
+}

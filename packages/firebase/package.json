@@ -1,5 +1,5 @@
 {
-  "name": "@sokontokoro/firebase",
+  "name": "firebase",
   "private": true,
   "version": "1.5.1",
   "engines": {
@@ -8,15 +8,14 @@
   "main": "dist/index.js",
   "scripts": {
     "clean": "rm -rf dist",
-    "build:dev": "yarn clean && tsc",
-    "build:pro": "yarn clean && tsc",
+    "build-dev": "tsc",
+    "build-pro": "tsc",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
-    "deploy:dev": "                     firebase deploy --force --project school-idol-game-development",
-    "deploy:pro": "     yarn confirm && firebase deploy --force --project school-idol-game-production",
-    "logs": "firebase functions:log",
-    "confirm": "../../production-confirm.js"
+    "deploy-dev": "firebase deploy --force --project school-idol-game-development",
+    "deploy-pro": "firebase deploy --force --project school-idol-game-production",
+    "logs": "firebase functions:log"
   },
   "dependencies": {
     "@nestjs/common": "^7.5.5",
