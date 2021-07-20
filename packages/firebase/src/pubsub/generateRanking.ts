@@ -106,7 +106,7 @@ const sendToSlack = (params: {
 };
 
 export default functions
-  .runWith({ timeoutSeconds: 60 * 5 })
+  .runWith({ timeoutSeconds: 60 * 8 })
   .pubsub.schedule("00 09 * * *")
   .timeZone("Asia/Tokyo")
   .onRun(async (context) => {
