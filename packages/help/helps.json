@@ -1,0 +1,66 @@
+{
+  "ja": [
+    {
+      "id": "enhance-request",
+      "title": "機能を追加して欲しいんだけれど！",
+      "tags": "hoge, hogehoge",
+      "body": "ありがとうございます！すばらしいアイデアを[お問い合わせフォーム](https://docs.google.com/forms/d/e/1FAIpQLSe5bSPvJ5XQM0IACqZ9NKoHuRUAcC_V1an16JGwHh6HeGd-oQ/viewform)からご連絡ください！\n\n新しいゲーム 、新しいキャラクターの対応、新しいゲームモード、なんでも OK です！\n"
+    },
+    {
+      "id": "stop-connecting-for-online-game",
+      "title": "オンライン対戦の通信が止まってしまう",
+      "tags": "hoge, hogehoge",
+      "body": "以下の原因が考えられるため、確認してみてください。\n\n- 通信環境\n  - リアルタイムに端末間で通信をしているため、通信環境が悪いと必要な情報のやりとりに失敗してしまうことがあります。\n  - 4G や WiFi 環境下でプレイしてみてください。\n- 使用してる端末/ブラウザ\n  - 端末/ブラウザがオンライン対戦のための機能をサポートしていない可能性があります。\n  - リリース時点の最新 OS、最新のブラウザ(Chrome/Safari)で動作確認をしているので、アップデートしてみてください。\n"
+    },
+    {
+      "id": "stop-game-on-playing",
+      "title": "プレイ画面がフリーズする",
+      "tags": "hoge, hogehoge",
+      "body": "端末/ブラウザがゲームを実行するための機能をサポートしていない可能性があります。リリース時点の最新 OS、最新のブラウザ(Chrome/Safari)で動作確認をしているので、アップデートしてみてください。\n"
+    },
+    {
+      "id": "stop-game",
+      "title": "ゲームが止まってしまう",
+      "tags": "hoge, hogehoge",
+      "body": "止まってしまうゲームの画面によって原因が異なるため、以下のヘルプを確認してください。\n\n- ゲームをロードしている画面: [リンク](/#/help/#stop-loading)\n- ゲームをプレイしている画面: [リンク](/#/help/#stop-game-on-playing)\n- オンライン対戦のための通信中: [リンク](/#/help/#stop-connecting-for-online-game)\n"
+    },
+    {
+      "id": "stop-loading",
+      "title": "ゲームのロードが止まってしまう",
+      "tags": "hoge, hogehoge",
+      "body": "ページをリロードしてみてください。\n\nゲームを実行するための画像や音声ファイルのダウンロードが、いくつか失敗してしまっているかもしれません。\nすでにダウンロード済みのファイルはキャッシュから取得するため、続きからダウンロード出来ます。\n"
+    }
+  ],
+  "en": [
+    {
+      "id": "enhance-request",
+      "title": "Please enhance!",
+      "tags": "hoge, hogehoge",
+      "body": "Thank you! Let me know your great idea from [contact page](https://docs.google.com/forms/d/e/1FAIpQLSe5bSPvJ5XQM0IACqZ9NKoHuRUAcC_V1an16JGwHh6HeGd-oQ/viewform).\n\nNew game , new character support, new game mode, either one is OK.\n"
+    },
+    {
+      "id": "stop-connecting-for-online-game",
+      "title": "Stop connection for online game",
+      "tags": "hoge, hogehoge",
+      "body": "It is caused by the following.\n\n- Network\n  - If your network is unstable, your device may fail real time connecting.\n  - Please play under 4G or WiFI environment.\n- Device/Browser\n  - Your device or browser may not provide functions for online mode.\n  - Please update to the latest version.\n"
+    },
+    {
+      "id": "stop-game-on-playing",
+      "title": "Freeze play view",
+      "tags": "hoge, hogehoge",
+      "body": "Your device or browser may not provide functions for game. Please update to the latest version.\n"
+    },
+    {
+      "id": "stop-game",
+      "title": "Stop game",
+      "tags": "hoge, hogehoge",
+      "body": "Please check the following helps\n\n- View for loading: [Link](/#/help/?language=en#stop-loading)\n- View for playing game: [Link](/#/help/?language=en#stop-game-on-playing)\n- Connection for online mode: [Link](/#/help/?language=en#stop-connecting-for-online-game)\n"
+    },
+    {
+      "id": "stop-loading",
+      "title": "Stop loading",
+      "tags": "hoge, hogehoge",
+      "body": "Please reload the page.\n\nDownloading several image and sound files for game might fail. Since already downloaded files are obtained from the cache, you can continue to download.\n"
+    }
+  ]
+}
