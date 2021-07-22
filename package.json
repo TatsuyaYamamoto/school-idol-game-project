@@ -11,13 +11,17 @@
     "npm": "7"
   },
   "scripts": {
-    "precommit": "pretty-quick --staged",
     "lint": "run-p --print-label lint:*",
     "lint:eslint": "  eslint   .",
     "lint:prettier": "prettier . --check",
     "fix": "run-s --print-label fix:*",
     "fix:eslint": "  eslint   . --fix",
-    "fix:prettier": "prettier . --write"
+    "fix:prettier": "prettier . --write",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
+    "*.{js,jsx,ts,tsx,json,css,scss,md}": "prettier --write"
   },
   "config": {
     "sokontokoro": {
@@ -47,9 +51,9 @@
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "husky": "^0.14.3",
+    "husky": "^7.0.1",
+    "lint-staged": "^11.1.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.2.0",
-    "pretty-quick": "^1.6.0"
+    "prettier": "^2.2.0"
   }
 }
