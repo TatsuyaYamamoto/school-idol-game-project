@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 
-import { GAMES, gameIds } from "../../src/utils/tmp_mikan";
+import { gameIds } from "../../src/utils/tmp_mikan";
 
 import ControlSection from "../../src/components/organisms/ControlSection";
 import RankingSection from "../../src/components/organisms/RankingSection";
@@ -20,13 +20,6 @@ const RankingPage: NextPage = () => {
   const onGameSelected = (index: number) => {
     const newGame = gameIds[index];
     router.replace({ query: { game: newGame } });
-  };
-
-  const onJumpGame = () => {
-    if (!gameQueryValue) {
-      return;
-    }
-    location.href = GAMES[gameQueryValue].url;
   };
 
   useEffect(() => {
@@ -48,7 +41,6 @@ const RankingPage: NextPage = () => {
           <ControlSection
             game={gameQueryValue}
             onGameSelected={onGameSelected}
-            onJumpGame={onJumpGame}
           />
           <RankingSection game={gameQueryValue} />
         </>
