@@ -64,15 +64,17 @@ const AppBar: FC<AppBarProps> = (props) => {
       <Root>
         <StyledMuiAppBar position="static">
           <Toolbar>
-            <AppTitle />
+            <Link href="/">
+              <a>
+                <AppTitle />
+              </a>
+            </Link>
 
             <HeaderSpace />
 
-            <Link href={SOKONTOKORO_FACTORY_WEBSITE_URL}>
-              <IconButton>
-                <WebsiteIcon />
-              </IconButton>
-            </Link>
+            <IconButton href={SOKONTOKORO_FACTORY_WEBSITE_URL}>
+              <WebsiteIcon />
+            </IconButton>
             <IconButton onClick={onClickTranslateButton}>
               <TranslateIcon />
             </IconButton>
