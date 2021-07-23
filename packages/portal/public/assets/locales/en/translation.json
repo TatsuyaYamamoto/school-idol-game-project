@@ -1,14 +1,44 @@
 {
-  "tab": {
+  "tabs": {
+    "game_list": "Games",
     "ranking": "Ranking",
     "help": "Help"
   },
   "jump_to_game": "Jump to game!",
   "last_updated_at": "Last updated at",
-  "game_title": {
-    "honocar": "Hono-car！",
-    "shakarin": "Shaka-rin！",
-    "maruten": "Maru-ten！"
+  "games": {
+    "honocar": {
+      "title": "Hono-Car!",
+      "description": "Honoka-chan avoids cars while listening to \"Susume → tomorrow \" as a background music."
+    },
+    "shakarin": {
+      "title": "Shaka-Rin!",
+      "description": "Let's shake Rin-chan's maracas!"
+    },
+    "maruten": {
+      "title": "Maru-Ten!",
+      "description": "Hanamaru-chan makes Yoshiko-chan fallen-angel. You swipe the screen and hit a black feather to Yoshiko-chan!"
+    },
+    "yamidori": {
+      "title": "Yami-Dori!",
+      "description": "Prevent to make Kotori-chan's THE HOT POT! You tap Kotori-chan on the screen and take away her cakes."
+    },
+    "oimo-no-mikiri": {
+      "title": "Oimo no mikiri",
+      "description": "Enemies aim for Hanamaru-chan's oimo (potate). You tap quickly after a sign and defend her oimo!"
+    },
+    "rinadoko": {
+      "title": "Rina-chan box \"Where?\"",
+      "description": "Find out Rina-chan hiding in a cardboard box."
+    },
+    "review-lovelive-cyber-security": {
+      "title": "Review! LoveLive Cyber Security!",
+      "description": "Study about Cyber Security again with Yoshiko-chan, Hanamaru-chan and Ruby-chan."
+    }
+  },
+  "game_link_card": {
+    "close": "Close",
+    "jump_to_game": "Jump to game page"
   },
   "rank_unit": "",
   "score_label": "SCORE"

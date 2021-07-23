@@ -13,12 +13,10 @@
     "_deploy:rsync:404": "    gsutil rsync -d -r out/404/       gs://$BUCKET/404/",
     "_deploy:rsync:_next": "  gsutil rsync -d -r out/_next/     gs://$BUCKET/_next/",
     "_deploy:rsync:assets": " gsutil rsync -d -r out/assets/    gs://$BUCKET/assets/",
-    "_deploy:rsync:ranking": "gsutil rsync -d -r out/ranking/   gs://$BUCKET/ranking/",
-    "_deploy:rsync:help": "   gsutil rsync -d -r out/help/      gs://$BUCKET/help/",
-    "_deploy:setmeta:index": "  gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/index.html",
-    "_deploy:setmeta:404": "    gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/404/index.html",
-    "_deploy:setmeta:ranking": "gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/ranking/**/*.html",
-    "_deploy:setmeta:help": "   gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/help/**/*.html"
+    "_deploy:rsync:pages": "  gsutil rsync -d -r out/portal/    gs://$BUCKET/portal/",
+    "_deploy:setmeta:index": "gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/index.html",
+    "_deploy:setmeta:404": "  gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/404/index.html",
+    "_deploy:setmeta:pages": "gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/portal/**/*.html"
   },
   "dependencies": {
     "@material-ui/core": "^4.12.1",

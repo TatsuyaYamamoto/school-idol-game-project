@@ -1,14 +1,44 @@
 {
-  "tab": {
+  "tabs": {
+    "game_list": "ゲーム",
     "ranking": "ランキング",
     "help": "ヘルプ"
   },
   "jump_to_game": "ゲームのページへ行く！",
   "last_updated_at": "最終更新日時",
-  "game_title": {
-    "honocar": "ほのCar！",
-    "shakarin": "しゃかりん！",
-    "maruten": "まるてん！"
+  "games": {
+    "honocar": {
+      "title": "ほのCar！",
+      "description": "ススメ→トゥモロウをバックに穂乃果ちゃんがひたすら車を避けるゲームです！"
+    },
+    "shakarin": {
+      "title": "しゃかりん！",
+      "description": "マラカスを持った凛ちゃんをひたすらシャカシャカさせるゲームです！"
+    },
+    "maruten": {
+      "title": "まるてん！",
+      "description": "はなまるちゃんがよしこちゃんを堕天させるゲームです！画面をスライドさせてよしこに黒い羽を当てよう！"
+    },
+    "yamidori": {
+      "title": "やみどり！",
+      "description": "ことりちゃんの\"あの\"お鍋を阻止するゲームです！画面の左右から出てくることりちゃんをタップして、ケーキを取り上げよう"
+    },
+    "oimo-no-mikiri": {
+      "title": "おいものみきり",
+      "description": "はなまるちゃんの\"おいも\"を狙って、次々と敵が襲いかかる！合図が出たら素早くタップして、おいもを守ろう！"
+    },
+    "rinadoko": {
+      "title": "リナちゃんボックス「どこ？」",
+      "description": "シャッフルされたダンボールから、隠れた璃奈ちゃんを見つけ出そう！"
+    },
+    "review-lovelive-cyber-security": {
+      "title": "復習！サイバーセキュリティ月間",
+      "description": "サイバーセキュリティ月間で学んだことを一緒に復習しましょう！"
+    }
+  },
+  "game_link_card": {
+    "close": "閉じる",
+    "jump_to_game": "ゲームページへ"
   },
   "rank_unit": "位",
   "score_label": "スコア"

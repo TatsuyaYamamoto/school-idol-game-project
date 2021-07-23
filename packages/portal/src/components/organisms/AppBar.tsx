@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import styled from "styled-components";
 
 import {
@@ -12,14 +13,17 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import TranslateIcon from "@material-ui/icons/Translate";
+import WebsiteIcon from "@material-ui/icons/Home";
 
 import AppTitle from "../atoms/AppTitle";
 import { useTranslation } from "react-i18next";
-
-const Root = styled.div``;
+import { SOKONTOKORO_FACTORY_WEBSITE_URL } from "../../utils/constants";
 
 const StyledMuiAppBar = styled(MuiAppBar)`
   background-color: #ffffff;
+
+  position: sticky;
+  top: -${(props) => props.theme.mui.mixins.toolbar.minHeight}px;
 `;
 
 const HeaderSpace = styled.div`
@@ -27,7 +31,7 @@ const HeaderSpace = styled.div`
 `;
 
 interface AppBarProps {
-  tab: "ranking" | "help";
+  tab: "game-list" | "ranking" | "help";
 }
 
 const AppBar: FC<AppBarProps> = (props) => {
@@ -40,7 +44,7 @@ const AppBar: FC<AppBarProps> = (props) => {
   const { t } = useTranslation();
 
   const handleTab = (_event: any, newValue: "ranking" | "help") => {
-    router.push({ pathname: `/${newValue}`, query: router.query });
+    router.push({ pathname: `/portal/${newValue}`, query: router.query });
   };
 
   const onClickTranslateButton = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -58,23 +62,29 @@ const AppBar: FC<AppBarProps> = (props) => {
 
   return (
     <>
-      <Root>
-        <StyledMuiAppBar position="static">
-          <Toolbar>
-            <AppTitle />
+      <StyledMuiAppBar position="static">
+        <Toolbar>
+          <Link href="/">
+            <a>
+              <AppTitle />
+            </a>
+          </Link>
 
-            <HeaderSpace />
+          <HeaderSpace />
 
-            <IconButton onClick={onClickTranslateButton}>
-              <TranslateIcon />
-            </IconButton>
-          </Toolbar>
-          <Tabs value={tab} onChange={handleTab} centered={true}>
-            <Tab label={t(`tab.ranking`)} value="ranking" />
-            <Tab label={t(`tab.help`)} value="help" />
-          </Tabs>
-        </StyledMuiAppBar>
-      </Root>
+          <IconButton href={SOKONTOKORO_FACTORY_WEBSITE_URL}>
+            <WebsiteIcon />
+          </IconButton>
+          <IconButton onClick={onClickTranslateButton}>
+            <TranslateIcon />
+          </IconButton>
+        </Toolbar>
+        <Tabs value={tab} onChange={handleTab} centered={true}>
+          <Tab label={t(`tabs.game_list`)} value="game-list" />
+          <Tab label={t(`tabs.ranking`)} value="ranking" />
+          <Tab label={t(`tabs.help`)} value="help" />
+        </Tabs>
+      </StyledMuiAppBar>
       <Menu
         anchorEl={translateAnchorEl}
         keepMounted
