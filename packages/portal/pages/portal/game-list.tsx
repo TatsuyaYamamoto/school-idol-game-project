@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 
-import FooterSection from "../src/components/organisms/FooterSection";
-import AppBar from "../src/components/organisms/AppBar";
-import GameList from "../src/components/organisms/GameList";
+import FooterSection from "../../src/components/organisms/FooterSection";
+import AppBar from "../../src/components/organisms/AppBar";
+import GameList from "../../src/components/organisms/GameList";
 
 const data = [{}, {}, {}] as const;
 

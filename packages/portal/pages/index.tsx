@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 const IndexPage: NextPage = () => {
   const router = useRouter();
   useEffect(() => {
-    router.replace(`/game-list`);
+    router.replace(`/portal/game-list`);
   }, [router]);
 
   return <div></div>;

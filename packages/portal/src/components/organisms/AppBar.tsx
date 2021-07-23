@@ -44,7 +44,7 @@ const AppBar: FC<AppBarProps> = (props) => {
   const { t } = useTranslation();
 
   const handleTab = (_event: any, newValue: "ranking" | "help") => {
-    router.push({ pathname: `/${newValue}`, query: router.query });
+    router.push({ pathname: `/portal/${newValue}`, query: router.query });
   };
 
   const onClickTranslateButton = (e: React.MouseEvent<HTMLButtonElement>) => {
