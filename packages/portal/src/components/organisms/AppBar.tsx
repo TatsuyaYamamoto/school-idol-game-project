@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import styled from "styled-components";
 
 import {
@@ -12,9 +13,11 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import TranslateIcon from "@material-ui/icons/Translate";
+import WebsiteIcon from "@material-ui/icons/Home";
 
 import AppTitle from "../atoms/AppTitle";
 import { useTranslation } from "react-i18next";
+import { SOKONTOKORO_FACTORY_WEBSITE_URL } from "../../utils/constants";
 
 const Root = styled.div``;
 
@@ -65,6 +68,11 @@ const AppBar: FC<AppBarProps> = (props) => {
 
             <HeaderSpace />
 
+            <Link href={SOKONTOKORO_FACTORY_WEBSITE_URL}>
+              <IconButton>
+                <WebsiteIcon />
+              </IconButton>
+            </Link>
             <IconButton onClick={onClickTranslateButton}>
               <TranslateIcon />
             </IconButton>
