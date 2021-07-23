@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 
-import { ImageList, ImageListItem } from "@material-ui/core";
+import { ImageList, ImageListItem, ImageListItemBar } from "@material-ui/core";
+
 import GameLinkCard from "./GameLinkCard";
 import { GA_QUERY_FROM_GAME_LIST } from "../../utils/constants";
 
@@ -20,6 +21,16 @@ const StyledImageList = styled(ImageList)`
 `;
 
 const StyledImageListItem = styled(ImageListItem)``;
+
+const StyledImageListItemBar = styled(ImageListItemBar)`
+  height: unset;
+  .MuiImageListItemBar-titleWrap {
+    margin: 16px;
+  }
+  .MuiImageListItemBar-title {
+    white-space: unset;
+  }
+`;
 
 const data = [
   {
@@ -84,12 +95,21 @@ const data = [
 const GameList = () => {
   const { t } = useTranslation();
   const [openLinkCardGameId, setLinkCardGameId] = useState<string | null>(null);
+  const [hoveredGameId, setHoveredGameId] = useState<string | null>(null);
+
   const onClickGame = (gameId: string) => () => {
     setLinkCardGameId(gameId);
   };
   const onCloseGameLinkCard = () => {
     setLinkCardGameId(null);
   };
+  const onEnterImage = (id: string) => () => {
+    setHoveredGameId(id);
+  };
+  const onEnterLeave = () => () => {
+    setHoveredGameId(null);
+  };
+
   return (
     <>
       <Root>
@@ -100,8 +120,13 @@ const GameList = () => {
               cols={item.cols}
               rows={item.rows}
               onClick={onClickGame(item.id)}
+              onMouseEnter={onEnterImage(item.id)}
+              onMouseLeave={onEnterLeave()}
             >
               <img src={item.imageUrl} alt={t(`games.${item.id}.title`)} />
+              {item.id === hoveredGameId && (
+                <StyledImageListItemBar title={t(`games.${item.id}.title`)} />
+              )}
             </StyledImageListItem>
           ))}
         </StyledImageList>
