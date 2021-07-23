@@ -5,7 +5,10 @@ import { useRouter } from "next/router";
 const IndexPage: NextPage = () => {
   const router = useRouter();
   useEffect(() => {
-    router.replace(`/portal/game-list`);
+    if (router.isReady) {
+      const { query } = router;
+      router.replace({ pathname: `/portal/game-list`, query });
+    }
   }, [router]);
 
   return <div></div>;
