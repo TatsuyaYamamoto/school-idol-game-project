@@ -27,7 +27,7 @@ const HeaderSpace = styled.div`
 `;
 
 interface AppBarProps {
-  tab: "ranking" | "help";
+  tab: "game-list" | "ranking" | "help";
 }
 
 const AppBar: FC<AppBarProps> = (props) => {
@@ -70,8 +70,9 @@ const AppBar: FC<AppBarProps> = (props) => {
             </IconButton>
           </Toolbar>
           <Tabs value={tab} onChange={handleTab} centered={true}>
-            <Tab label={t(`tab.ranking`)} value="ranking" />
-            <Tab label={t(`tab.help`)} value="help" />
+            <Tab label={t(`tabs.game_list`)} value="game-list" />
+            <Tab label={t(`tabs.ranking`)} value="ranking" />
+            <Tab label={t(`tabs.help`)} value="help" />
           </Tabs>
         </StyledMuiAppBar>
       </Root>
