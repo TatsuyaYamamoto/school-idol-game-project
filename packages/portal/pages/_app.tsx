@@ -9,6 +9,7 @@ import {
   StylesProvider,
   ThemeProvider as MuiThemeProvider,
 } from "@material-ui/core/styles";
+import { ThemeProvider as StyledThemeProvider } from "styled-components";
 
 import "../styles/globals.css";
 import "slick-carousel/slick/slick.css";
@@ -61,7 +62,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       {/* https://material-ui.com/guides/interoperability/#controlling-priority-3 */}
       <StylesProvider injectFirst={true}>
         <MuiThemeProvider theme={muiTheme}>
-          <Component {...pageProps} />
+          <StyledThemeProvider theme={{ mui: muiTheme }}>
+            <Component {...pageProps} />
+          </StyledThemeProvider>
         </MuiThemeProvider>
       </StylesProvider>
     </>

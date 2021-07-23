@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 const IndexPage: NextPage = () => {
   const router = useRouter();
   useEffect(() => {
-    router.replace(`/ranking`);
+    router.replace(`/game-list`);
   }, [router]);
 
   return <div></div>;

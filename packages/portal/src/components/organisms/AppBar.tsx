@@ -19,10 +19,11 @@ import AppTitle from "../atoms/AppTitle";
 import { useTranslation } from "react-i18next";
 import { SOKONTOKORO_FACTORY_WEBSITE_URL } from "../../utils/constants";
 
-const Root = styled.div``;
-
 const StyledMuiAppBar = styled(MuiAppBar)`
   background-color: #ffffff;
+
+  position: sticky;
+  top: -${(props) => props.theme.mui.mixins.toolbar.minHeight}px;
 `;
 
 const HeaderSpace = styled.div`
@@ -61,31 +62,29 @@ const AppBar: FC<AppBarProps> = (props) => {
 
   return (
     <>
-      <Root>
-        <StyledMuiAppBar position="static">
-          <Toolbar>
-            <Link href="/">
-              <a>
-                <AppTitle />
-              </a>
-            </Link>
+      <StyledMuiAppBar position="static">
+        <Toolbar>
+          <Link href="/">
+            <a>
+              <AppTitle />
+            </a>
+          </Link>
 
-            <HeaderSpace />
+          <HeaderSpace />
 
-            <IconButton href={SOKONTOKORO_FACTORY_WEBSITE_URL}>
-              <WebsiteIcon />
-            </IconButton>
-            <IconButton onClick={onClickTranslateButton}>
-              <TranslateIcon />
-            </IconButton>
-          </Toolbar>
-          <Tabs value={tab} onChange={handleTab} centered={true}>
-            <Tab label={t(`tabs.game_list`)} value="game-list" />
-            <Tab label={t(`tabs.ranking`)} value="ranking" />
-            <Tab label={t(`tabs.help`)} value="help" />
-          </Tabs>
-        </StyledMuiAppBar>
-      </Root>
+          <IconButton href={SOKONTOKORO_FACTORY_WEBSITE_URL}>
+            <WebsiteIcon />
+          </IconButton>
+          <IconButton onClick={onClickTranslateButton}>
+            <TranslateIcon />
+          </IconButton>
+        </Toolbar>
+        <Tabs value={tab} onChange={handleTab} centered={true}>
+          <Tab label={t(`tabs.game_list`)} value="game-list" />
+          <Tab label={t(`tabs.ranking`)} value="ranking" />
+          <Tab label={t(`tabs.help`)} value="help" />
+        </Tabs>
+      </StyledMuiAppBar>
       <Menu
         anchorEl={translateAnchorEl}
         keepMounted
