@@ -1,3 +1,4 @@
+const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const htmlParams = {};
@@ -32,4 +33,8 @@ module.exports = {
   },
 
   plugins,
+
+  devServer: {
+    contentBase: path.join(__dirname, "public"),
+  },
 };

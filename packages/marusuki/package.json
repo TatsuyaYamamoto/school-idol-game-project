@@ -8,6 +8,8 @@
     "build": "webpack"
   },
   "dependencies": {
+    "@pixi/sound": "^4.0.4",
+    "hotkeys-js": "^3.8.7",
     "pixi.js": "^6.0.4"
   },
   "devDependencies": {
