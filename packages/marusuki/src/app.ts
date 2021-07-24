@@ -125,10 +125,7 @@ export const start = async (): Promise<PIXI.Application> => {
   chisato.anchor.set(0.5);
   gameContainer.addChild(chisato);
 
-  hotkeys("s", () => {
-    hotkeys.unbind("s");
-    console.log("start app");
-
+  const startApp = () => {
     hotkeys("q,z,o,m", (event, handler) => {
       event.preventDefault();
 
@@ -206,7 +203,21 @@ export const start = async (): Promise<PIXI.Application> => {
         },
       });
     });
+  };
+
+  const onClickWindow = () => {
+    hotkeys.unbind("s");
+    window.removeEventListener("click", onClickWindow);
+    console.log("start app");
+    startApp();
+  };
+  hotkeys("s", () => {
+    hotkeys.unbind("s");
+    window.removeEventListener("click", onClickWindow);
+    console.log("start app");
+    startApp();
   });
+  window.addEventListener("click", onClickWindow);
 
   return app;
 };

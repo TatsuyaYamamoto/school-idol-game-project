@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack serve",
-    "build": "webpack"
+    "build-dev": "webpack --progress",
+    "deploy-dev": "BUCKET=games-dev.sokontokoro-factory.net  npm run _deploy",
+    "_deploy": "run-s --print-label _deploy:rsync _deploy:setmeta",
+    "_deploy:rsync": "  gsutil rsync -d -r dist/ gs://$BUCKET/marusuki/",
+    "_deploy:setmeta": "gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/marusuki/**/*.html"
   },
   "dependencies": {
     "@pixi/sound": "^4.0.4",
