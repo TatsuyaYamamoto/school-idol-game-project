@@ -1,8 +1,11 @@
-import app from "./app";
+import { start } from "./app";
 
 export const bootstrap = () => {
-  console.log("start app");
-  document.body.appendChild(app.view);
+  console.log("launch app");
+
+  start().then((app) => {
+    document.body.appendChild(app.view);
+  });
 };
 
 window.addEventListener("load", bootstrap);
