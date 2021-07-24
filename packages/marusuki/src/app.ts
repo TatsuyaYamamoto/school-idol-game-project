@@ -102,11 +102,15 @@ export const start = async (): Promise<PIXI.Application> => {
   lowerLeft.x = 2;
   lowerLeft.y = 500;
   lowerLeft.visible = false;
+  const counterText = new PIXI.Text("0");
+  counterText.x = 400;
+  counterText.y = 20;
 
   gameContainer.addChild(upperLeft);
   gameContainer.addChild(upperRight);
   gameContainer.addChild(lowerLeft);
   gameContainer.addChild(lowerRight);
+  gameContainer.addChild(counterText);
 
   const chisato = new PIXI.Sprite(spriteMap.chisato.texture);
   chisato.x = app.renderer.width * 0.5;
@@ -118,12 +122,18 @@ export const start = async (): Promise<PIXI.Application> => {
     hotkeys.unbind("s");
     console.log("start app");
 
+    const countUp = () => {
+      const current = parseInt(counterText.text, 10);
+      counterText.text = String(current + 1);
+    };
+
     hotkeys("q,z,o,m", (event, handler) => {
       event.preventDefault();
 
       if (handler.key === "q") {
         if (upperLeft.visible) {
           sound.play("pa");
+          countUp();
         } else {
           sound.play("pon");
         }
@@ -131,6 +141,7 @@ export const start = async (): Promise<PIXI.Application> => {
       if (handler.key === "z") {
         if (lowerLeft.visible) {
           sound.play("pa");
+          countUp();
         } else {
           sound.play("pon");
         }
@@ -138,6 +149,7 @@ export const start = async (): Promise<PIXI.Application> => {
       if (handler.key === "o") {
         if (upperRight.visible) {
           sound.play("pa");
+          countUp();
         } else {
           sound.play("pon");
         }
@@ -145,6 +157,7 @@ export const start = async (): Promise<PIXI.Application> => {
       if (handler.key === "m") {
         if (lowerRight.visible) {
           sound.play("pa");
+          countUp();
         } else {
           sound.play("pon");
         }
