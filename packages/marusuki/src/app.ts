@@ -86,25 +86,32 @@ export const start = async (): Promise<PIXI.Application> => {
   const soundMap = await loadSound();
   const spriteMap = await loadSprite(app.loader);
 
-  const upperRight = new PIXI.Sprite(spriteMap.takoyaki.texture);
-  upperRight.x = 500;
-  upperRight.y = 1;
-  upperRight.visible = false;
-  const upperLeft = new PIXI.Sprite(spriteMap.takoyaki.texture);
-  upperLeft.x = 10;
-  upperLeft.y = 10;
-  upperLeft.visible = false;
-  const lowerRight = new PIXI.Sprite(spriteMap.takoyaki.texture);
-  lowerRight.x = 500;
-  lowerRight.y = 500;
-  lowerRight.visible = false;
-  const lowerLeft = new PIXI.Sprite(spriteMap.takoyaki.texture);
-  lowerLeft.x = 2;
-  lowerLeft.y = 500;
-  lowerLeft.visible = false;
   const counterText = new PIXI.Text("0");
   counterText.x = 400;
   counterText.y = 20;
+
+  const countUp = () => {
+    const current = parseInt(counterText.text, 10);
+    counterText.text = String(current + 1);
+  };
+
+  const [upperLeft, upperRight, lowerLeft, lowerRight] = [
+    { x: 10, y: 10 },
+    { x: 10, y: 450 },
+    { x: 700, y: 10 },
+    { x: 700, y: 450 },
+  ].map((params) => {
+    const sprite = new PIXI.Sprite(spriteMap.takoyaki.texture);
+    sprite.x = params.x;
+    sprite.y = params.y;
+    sprite.visible = false;
+    sprite.interactive = true;
+    sprite.on("pointerdown", () => {
+      sound.play("pa");
+      countUp();
+    });
+    return sprite;
+  });
 
   gameContainer.addChild(upperLeft);
   gameContainer.addChild(upperRight);
@@ -121,11 +128,6 @@ export const start = async (): Promise<PIXI.Application> => {
   hotkeys("s", () => {
     hotkeys.unbind("s");
     console.log("start app");
-
-    const countUp = () => {
-      const current = parseInt(counterText.text, 10);
-      counterText.text = String(current + 1);
-    };
 
     hotkeys("q,z,o,m", (event, handler) => {
       event.preventDefault();
