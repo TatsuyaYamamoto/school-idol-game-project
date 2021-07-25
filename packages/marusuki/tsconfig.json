@@ -1,6 +1,12 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "es2019.Object"],
+
+    "module": "esnext",
+    "moduleResolution": "node",
+
     "sourceMap": true
   }
 }

@@ -1,45 +1,9 @@
 import * as PIXI from "pixi.js";
 import hotkeys from "hotkeys-js";
-import { sound, SoundMap } from "@pixi/sound";
+import { sound } from "@pixi/sound";
 
-const loadSound = (): Promise<SoundMap> => {
-  return new Promise((resolve) => {
-    const soundMap = sound.add(
-      {
-        pa: "assets/sounds/pa.mp3",
-        pon: "assets/sounds/pon.mp3",
-        drum_loop: "assets/sounds/drum_loop.wav",
-      },
-      { preload: true }
-    );
-    resolve(soundMap);
-  });
-};
-
-const loadSprite = (
-  loader: PIXI.loaders.Loader
-): Promise<PIXI.loaders.ResourceDictionary> => {
-  [
-    { name: "chisato", url: "assets/images/chisato.png" },
-    { name: "takoyaki", url: "assets/images/takoyaki.png" },
-  ].forEach(({ name, url }) => {
-    loader.add(name, url);
-  });
-
-  return new Promise((resolve) => {
-    loader.load((_loader, resources) => {
-      resolve(resources);
-    });
-  });
-};
-
-const randomInt = (max: number) => {
-  return Math.floor(Math.random() * (max + 1));
-};
-
-const between = (min: number, target: number, max: number) => {
-  return min < target && target < max;
-};
+import { loadSound, loadSprite } from "./assetLoader";
+import { between, randomInt } from "./helper/utils";
 
 const measureMap: { [key: string]: boolean } = {};
 let measureCount = 0;
@@ -83,8 +47,21 @@ export const start = async (): Promise<PIXI.Application> => {
   const gameContainer = new PIXI.Container();
   app.stage.addChild(gameContainer);
 
-  const soundMap = await loadSound();
-  const spriteMap = await loadSprite(app.loader);
+  const soundMap = await loadSound([
+    { id: "pa", url: "assets/sounds/pa.mp3" },
+    {
+      id: "pon",
+      url: "assets/sounds/pon.mp3",
+    },
+    {
+      id: "drum_loop",
+      url: "assets/sounds/drum_loop.wav",
+    },
+  ]);
+  const spriteMap = await loadSprite(app.loader, [
+    { name: "chisato", url: "assets/images/chisato.png" },
+    { name: "takoyaki", url: "assets/images/takoyaki.png" },
+  ]);
 
   const counterText = new PIXI.Text("0");
   counterText.x = 400;
@@ -97,8 +74,8 @@ export const start = async (): Promise<PIXI.Application> => {
 
   const [upperLeft, upperRight, lowerLeft, lowerRight] = [
     { x: 10, y: 10 },
-    { x: 10, y: 450 },
     { x: 700, y: 10 },
+    { x: 10, y: 450 },
     { x: 700, y: 450 },
   ].map((params) => {
     const sprite = new PIXI.Sprite(spriteMap.takoyaki.texture);
