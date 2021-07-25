@@ -2,16 +2,20 @@ import * as PIXI from "pixi.js";
 import hotkeys from "hotkeys-js";
 import { sound } from "@pixi/sound";
 
+import { CounterText } from "./sprites/CounterText";
 import { loadSound, loadSprite } from "./assetLoader";
 import { between, randomInt } from "./helper/utils";
+import { SpeedText } from "./sprites/SpeedText";
 
+const MIN_SPEED = 1;
+const MAX_SPEED = 1.5;
 const measureMap: { [key: string]: boolean } = {};
 let measureCount = 0;
 let prevProgress = Number.MAX_SAFE_INTEGER;
 
 const detectBeats = (
   progress: number,
-  params: { [beat: number]: () => void }
+  params: { [beat: number]: (params: { measures: number }) => void }
 ) => {
   if (progress < prevProgress) {
     measureCount += 1;
@@ -35,7 +39,7 @@ const detectBeats = (
     });
 
   if (targetBeat !== undefined && params[targetBeat]) {
-    params[targetBeat]();
+    params[targetBeat]({ measures: measureCount });
   }
 };
 
@@ -63,14 +67,15 @@ export const start = async (): Promise<PIXI.Application> => {
     { name: "takoyaki", url: "assets/images/takoyaki.png" },
   ]);
 
-  const counterText = new PIXI.Text("0");
+  const counterText = new CounterText();
   counterText.x = 400;
   counterText.y = 20;
+  counterText.anchor.set(0.5);
 
-  const countUp = () => {
-    const current = parseInt(counterText.text, 10);
-    counterText.text = String(current + 1);
-  };
+  const speedText = new SpeedText(MIN_SPEED);
+  speedText.x = 400;
+  speedText.y = 50;
+  speedText.anchor.set(0.5);
 
   const [upperLeft, upperRight, lowerLeft, lowerRight] = [
     { x: 10, y: 10 },
@@ -85,7 +90,7 @@ export const start = async (): Promise<PIXI.Application> => {
     sprite.interactive = true;
     sprite.on("pointerdown", () => {
       sound.play("shan");
-      countUp();
+      counterText.countUp();
     });
     return sprite;
   });
@@ -95,6 +100,7 @@ export const start = async (): Promise<PIXI.Application> => {
   gameContainer.addChild(lowerLeft);
   gameContainer.addChild(lowerRight);
   gameContainer.addChild(counterText);
+  gameContainer.addChild(speedText);
 
   const chisato = new PIXI.Sprite(spriteMap.chisato.texture);
   chisato.x = app.renderer.width * 0.5;
@@ -109,7 +115,7 @@ export const start = async (): Promise<PIXI.Application> => {
       if (handler.key === "q") {
         if (upperLeft.visible) {
           sound.play("shan");
-          countUp();
+          counterText.countUp();
         } else {
           sound.play("pon");
         }
@@ -117,7 +123,7 @@ export const start = async (): Promise<PIXI.Application> => {
       if (handler.key === "z") {
         if (lowerLeft.visible) {
           sound.play("shan");
-          countUp();
+          counterText.countUp();
         } else {
           sound.play("pon");
         }
@@ -125,7 +131,7 @@ export const start = async (): Promise<PIXI.Application> => {
       if (handler.key === "o") {
         if (upperRight.visible) {
           sound.play("shan");
-          countUp();
+          counterText.countUp();
         } else {
           sound.play("pon");
         }
@@ -133,7 +139,7 @@ export const start = async (): Promise<PIXI.Application> => {
       if (handler.key === "m") {
         if (lowerRight.visible) {
           sound.play("shan");
-          countUp();
+          counterText.countUp();
         } else {
           sound.play("pon");
         }
@@ -143,12 +149,23 @@ export const start = async (): Promise<PIXI.Application> => {
     sound.play("drum_loop", { loop: true });
 
     const drumLoop = soundMap.drum_loop;
+    drumLoop.speed = MIN_SPEED;
     const drumLoopInstance = drumLoop.instances[0];
 
     const images = [upperLeft, upperRight, lowerLeft, lowerRight] as const;
     const visibleImages: { [beat: string]: PIXI.Sprite | undefined } = {};
 
+    const hideSprite = (beat: number) => {
+      const visibleImage = visibleImages[beat];
+      if (visibleImage) {
+        visibleImage.visible = false;
+        visibleImages[beat] = undefined;
+      }
+    };
+
     const showSprite = (beat: number) => {
+      hideSprite(beat);
+
       let imageIndex: number | null = null;
       while (imageIndex === null) {
         const randomValue = randomInt(3);
@@ -162,21 +179,22 @@ export const start = async (): Promise<PIXI.Application> => {
       visibleImages[beat] = visibleImage;
     };
 
-    const hideSprite = (beat: number) => {
-      const visibleImage = visibleImages[beat];
-      if (visibleImage) {
-        visibleImage.visible = false;
-      }
-      visibleImages[beat] = undefined;
+    const checkCountAndUpdateSpeed = (measures: number) => {
+      const increment = 0.1 * Math.floor(measures / 4);
+      const newSpeed =
+        MIN_SPEED + increment < MAX_SPEED ? MIN_SPEED + increment : MAX_SPEED;
+
+      drumLoop.speed = newSpeed;
+      speedText.change(newSpeed);
     };
 
     app.ticker.add(() => {
       const { progress } = drumLoopInstance;
 
       detectBeats(progress, {
-        0: () => {
-          console.log(progress, "0/4");
-
+        0: ({ measures }) => {
+          console.log(progress, "0/4", measures);
+          checkCountAndUpdateSpeed(measures);
           hideSprite(6 / 8);
         },
         [1 / 8]: () => {
@@ -199,6 +217,7 @@ export const start = async (): Promise<PIXI.Application> => {
         },
         [4 / 8]: () => {
           console.log(progress, "2/4");
+          hideSprite(2 / 8);
         },
         [5 / 8]: () => {
           console.log(progress, "5/8");
