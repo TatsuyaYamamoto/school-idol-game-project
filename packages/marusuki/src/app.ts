@@ -34,7 +34,7 @@ const detectBeats = (
       return false;
     });
 
-  if (targetBeat && params[targetBeat]) {
+  if (targetBeat !== undefined && params[targetBeat]) {
     params[targetBeat]();
   }
 };
@@ -48,7 +48,7 @@ export const start = async (): Promise<PIXI.Application> => {
   app.stage.addChild(gameContainer);
 
   const soundMap = await loadSound([
-    { id: "pa", url: "assets/sounds/pa.mp3" },
+    { id: "shan", url: "assets/sounds/shan.mp3" },
     {
       id: "pon",
       url: "assets/sounds/pon.mp3",
@@ -84,7 +84,7 @@ export const start = async (): Promise<PIXI.Application> => {
     sprite.visible = false;
     sprite.interactive = true;
     sprite.on("pointerdown", () => {
-      sound.play("pa");
+      sound.play("shan");
       countUp();
     });
     return sprite;
@@ -108,7 +108,7 @@ export const start = async (): Promise<PIXI.Application> => {
 
       if (handler.key === "q") {
         if (upperLeft.visible) {
-          sound.play("pa");
+          sound.play("shan");
           countUp();
         } else {
           sound.play("pon");
@@ -116,7 +116,7 @@ export const start = async (): Promise<PIXI.Application> => {
       }
       if (handler.key === "z") {
         if (lowerLeft.visible) {
-          sound.play("pa");
+          sound.play("shan");
           countUp();
         } else {
           sound.play("pon");
@@ -124,7 +124,7 @@ export const start = async (): Promise<PIXI.Application> => {
       }
       if (handler.key === "o") {
         if (upperRight.visible) {
-          sound.play("pa");
+          sound.play("shan");
           countUp();
         } else {
           sound.play("pon");
@@ -132,7 +132,7 @@ export const start = async (): Promise<PIXI.Application> => {
       }
       if (handler.key === "m") {
         if (lowerRight.visible) {
-          sound.play("pa");
+          sound.play("shan");
           countUp();
         } else {
           sound.play("pon");
@@ -146,37 +146,77 @@ export const start = async (): Promise<PIXI.Application> => {
     const drumLoopInstance = drumLoop.instances[0];
 
     const images = [upperLeft, upperRight, lowerLeft, lowerRight] as const;
+    const visibleImages: { [beat: string]: PIXI.Sprite | undefined } = {};
+
+    const showSprite = (beat: number) => {
+      let imageIndex: number | null = null;
+      while (imageIndex === null) {
+        const randomValue = randomInt(3);
+        if (!images[randomValue].visible) {
+          imageIndex = randomValue;
+        }
+      }
+
+      const visibleImage = images[imageIndex];
+      visibleImage.visible = true;
+      visibleImages[beat] = visibleImage;
+    };
+
+    const hideSprite = (beat: number) => {
+      const visibleImage = visibleImages[beat];
+      if (visibleImage) {
+        visibleImage.visible = false;
+      }
+      visibleImages[beat] = undefined;
+    };
 
     app.ticker.add(() => {
       const { progress } = drumLoopInstance;
 
       detectBeats(progress, {
-        0.13: () => {
-          images[randomInt(3)].visible = true;
+        0: () => {
+          console.log(progress, "0/4");
+
+          hideSprite(6 / 8);
         },
-        0.25: () => {
+        [1 / 8]: () => {
+          console.log(progress, "1/8");
+
+          showSprite(1 / 8);
+        },
+        [2 / 8]: () => {
           console.log(progress, "1/4");
+
+          // random show
+          if (randomInt(2) === 0) {
+            showSprite(2 / 8);
+          }
         },
-        0.37: () => {
+        [3 / 8]: () => {
           console.log(progress, "3/8");
-          const target = images.find((image) => image.visible);
-          if (target) {
-            target.visible = false;
+
+          hideSprite(1 / 8);
+        },
+        [4 / 8]: () => {
+          console.log(progress, "2/4");
+        },
+        [5 / 8]: () => {
+          console.log(progress, "5/8");
+
+          showSprite(5 / 8);
+        },
+        [6 / 8]: () => {
+          console.log(progress, "3/4");
+
+          // random show
+          if (randomInt(2) === 0) {
+            showSprite(6 / 8);
           }
         },
-        0.63: () => {
-          console.log(progress, "3/4");
-          images[randomInt(3)].visible = true;
-        },
-        0.75: () => {
-          console.log(progress, "3/4");
-        },
-        0.87: () => {
+        [7 / 8]: () => {
           console.log(progress, "7/8");
-          const target = images.find((image) => image.visible);
-          if (target) {
-            target.visible = false;
-          }
+
+          hideSprite(5 / 8);
         },
       });
     });
