@@ -1,10 +1,10 @@
 import { start } from "./app";
 
-export const bootstrap = () => {
+export const bootstrap = (): void => {
   console.log("launch app");
 
   start().then((app) => {
-    document.body.appendChild(app.view);
+    document.getElementById("app")?.appendChild(app.view);
   });
 };
 

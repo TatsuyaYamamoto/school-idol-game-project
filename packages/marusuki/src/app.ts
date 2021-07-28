@@ -6,6 +6,7 @@ import { CounterText } from "./sprites/CounterText";
 import { loadSound, loadSprite } from "./assetLoader";
 import { between, randomInt } from "./helper/utils";
 import { SpeedText } from "./sprites/SpeedText";
+import { RhythmTarget } from "./sprites/RhythmTarget";
 
 const MIN_SPEED = 1;
 const MAX_SPEED = 1.5;
@@ -52,7 +53,7 @@ export const start = async (): Promise<PIXI.Application> => {
   app.stage.addChild(gameContainer);
 
   const soundMap = await loadSound([
-    { id: "shan", url: "assets/sounds/shan.mp3" },
+    { id: "shan", url: "assets/sounds/shan.wav" },
     {
       id: "pon",
       url: "assets/sounds/pon.mp3",
@@ -65,6 +66,7 @@ export const start = async (): Promise<PIXI.Application> => {
   const spriteMap = await loadSprite(app.loader, [
     { name: "chisato", url: "assets/images/chisato.png" },
     { name: "takoyaki", url: "assets/images/takoyaki.png" },
+    { name: "takoyaki_crush", url: "assets/images/takoyaki_crush.png" },
   ]);
 
   const counterText = new CounterText();
@@ -77,20 +79,30 @@ export const start = async (): Promise<PIXI.Application> => {
   speedText.y = 50;
   speedText.anchor.set(0.5);
 
+  const onTapRhyhumTarget = (target: RhythmTarget): void => {
+    sound.play("shan");
+    navigator.vibrate(50);
+    target.crush();
+    counterText.countUp();
+    setTimeout(() => {
+      target.hide();
+    }, 500);
+  };
+
   const [upperLeft, upperRight, lowerLeft, lowerRight] = [
-    { x: 10, y: 10 },
-    { x: 700, y: 10 },
-    { x: 10, y: 450 },
+    { x: 100, y: 100 },
+    { x: 700, y: 100 },
+    { x: 100, y: 450 },
     { x: 700, y: 450 },
   ].map((params) => {
-    const sprite = new PIXI.Sprite(spriteMap.takoyaki.texture);
+    const sprite = new RhythmTarget({
+      normal: spriteMap.takoyaki.texture,
+      crush: spriteMap.takoyaki_crush.texture,
+    });
     sprite.x = params.x;
     sprite.y = params.y;
-    sprite.visible = false;
-    sprite.interactive = true;
     sprite.on("pointerdown", () => {
-      sound.play("shan");
-      counterText.countUp();
+      onTapRhyhumTarget(sprite);
     });
     return sprite;
   });
@@ -114,32 +126,28 @@ export const start = async (): Promise<PIXI.Application> => {
 
       if (handler.key === "q") {
         if (upperLeft.visible) {
-          sound.play("shan");
-          counterText.countUp();
+          onTapRhyhumTarget(upperLeft);
         } else {
           sound.play("pon");
         }
       }
       if (handler.key === "z") {
         if (lowerLeft.visible) {
-          sound.play("shan");
-          counterText.countUp();
+          onTapRhyhumTarget(lowerLeft);
         } else {
           sound.play("pon");
         }
       }
       if (handler.key === "o") {
         if (upperRight.visible) {
-          sound.play("shan");
-          counterText.countUp();
+          onTapRhyhumTarget(upperRight);
         } else {
           sound.play("pon");
         }
       }
       if (handler.key === "m") {
         if (lowerRight.visible) {
-          sound.play("shan");
-          counterText.countUp();
+          onTapRhyhumTarget(lowerRight);
         } else {
           sound.play("pon");
         }
@@ -175,7 +183,7 @@ export const start = async (): Promise<PIXI.Application> => {
       }
 
       const visibleImage = images[imageIndex];
-      visibleImage.visible = true;
+      visibleImage.show();
       visibleImages[beat] = visibleImage;
     };
 
