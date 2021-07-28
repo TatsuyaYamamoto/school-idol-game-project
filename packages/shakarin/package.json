@@ -7,12 +7,14 @@
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf dist",
-    "start": "yarn clean && webpack-dev-server",
-    "build:dev": "yarn clean &&                     webpack",
-    "build:pro": "yarn clean && NODE_ENV=production webpack",
-    "deploy:dev": "                gsutil -m rsync -d -r dist/ gs://games-dev.sokontokoro-factory.net/shakarin/ && gsutil setmeta -h 'Cache-Control:no-cache' gs://games-dev.sokontokoro-factory.net/shakarin/**/*.html",
-    "deploy:pro": "yarn confirm && gsutil -m rsync -d -r dist/ gs://games.sokontokoro-factory.net/shakarin/     && gsutil setmeta -h 'Cache-Control:no-cache' gs://games.sokontokoro-factory.net/shakarin/**/*.html",
-    "confirm": "../../production-confirm.js"
+    "dev": "yarn clean && webpack-dev-server",
+    "build-dev": "                    webpack",
+    "build-pro": "NODE_ENV=production webpack",
+    "deploy-dev": "BUCKET=games-dev.sokontokoro-factory.net  npm run _deploy",
+    "deploy-pro": "BUCKET=games.sokontokoro-factory.net      npm run _deploy",
+    "_deploy": "run-s --print-label _deploy:rsync _deploy:setmeta",
+    "_deploy:rsync": "  gsutil -m rsync -d -r dist/ gs://$BUCKET/shakarin/",
+    "_deploy:setmeta": "gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/shakarin/**/*.html"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",

@@ -7,10 +7,13 @@
   "scripts": {
     "dev": "webpack-dev-server --progress --colors --watch",
     "clean": "rm -rf dist",
-    "build:dev": "yarn clean &&                     webpack",
-    "build:pro": "yarn clean && NODE_ENV=production webpack",
-    "deploy:dev": "gsutil -m rsync -d -r dist/ gs://games-dev.sokontokoro-factory.net/rinadoko/",
-    "deploy:pro": "gsutil -m rsync -d -r dist/ gs://games.sokontokoro-factory.net/rinadoko/"
+    "build:dev": "                    webpack",
+    "build:pro": "NODE_ENV=production webpack",
+    "deploy-dev": "BUCKET=games-dev.sokontokoro-factory.net  npm run _deploy",
+    "deploy-pro": "BUCKET=games.sokontokoro-factory.net      npm run _deploy",
+    "_deploy": "run-s --print-label _deploy:rsync _deploy:setmeta",
+    "_deploy:rsync": "  gsutil -m rsync -d -r dist/ gs://$BUCKET/rinadoko/",
+    "_deploy:setmeta": "gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/rinadoko/**/*.html"
   },
   "dependencies": {
     "@sokontokoro/mikan": "*",
