@@ -7,12 +7,14 @@
   "private": true,
   "scripts": {
     "clean": "rm -rf dist",
-    "start": "yarn clean && webpack-serve",
-    "build:dev": "yarn clean &&                     webpack",
-    "build:pro": "yarn clean && NODE_ENV=production webpack",
-    "deploy:dev": "                gsutil -m rsync -d -r dist/ gs://games-dev.sokontokoro-factory.net/honocar/ && gsutil setmeta -h 'Cache-Control:no-cache' gs://games-dev.sokontokoro-factory.net/honocar/**/*.html",
-    "deploy:pro": "yarn confirm && gsutil -m rsync -d -r dist/ gs://games.sokontokoro-factory.net/honocar/     && gsutil setmeta -h 'Cache-Control:no-cache' gs://games.sokontokoro-factory.net/honocar/**/*.html",
-    "confirm": "../../production-confirm.js"
+    "start": "webpack-serve",
+    "build-dev": "                    webpack",
+    "build-pro": "NODE_ENV=production webpack",
+    "deploy-dev": "BUCKET=games-dev.sokontokoro-factory.net  npm run _deploy",
+    "deploy-pro": "BUCKET=games.sokontokoro-factory.net      npm run _deploy",
+    "_deploy": "run-s --print-label _deploy:rsync _deploy:setmeta",
+    "_deploy:rsync": "  gsutil -m rsync -d -r dist/ gs://$BUCKET/honocar/",
+    "_deploy:setmeta": "gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/honocar/**/*.html"
   },
   "devDependencies": {
     "@babel/core": "^7.0.1",
@@ -30,6 +32,7 @@
   "dependencies": {
     "alertify": "^0.3.0",
     "createjs": "^1.0.1",
+    "firebase": "^8.8.0",
     "query-string": "^6.1.0"
   }
 }
