@@ -42,9 +42,6 @@ jobs:
   build-and-deploy-portal:
     runs-on: macos-latest
     needs: install
-    if: |
-      github.ref == 'refs/heads/develop' ||
-      github.ref == 'refs/heads/develop-portal'
     steps:
       # checkout
       - uses: actions/checkout@v2
@@ -69,13 +66,13 @@ jobs:
           service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY_DEV }}
           export_default_credentials: true
       - run: npm -w portal run deploy-dev
+        if: |
+          github.ref == 'refs/heads/develop' ||
+          github.ref == 'refs/heads/develop-portal'
 
   build-and-deploy-firebase:
     runs-on: macos-latest
     needs: install
-    if: |
-      github.ref == 'refs/heads/develop' ||
-      github.ref == 'refs/heads/develop-firebase'
     steps:
       # checkout
       - uses: actions/checkout@v2
@@ -97,13 +94,23 @@ jobs:
       - run: npm -w firebase           run build-dev
       # deploy
       - run: npm -w firebase           run deploy-dev -- --token ${{ secrets.FIREBASE_TOKEN }}
+        if: |
+          github.ref == 'refs/heads/develop' ||
+          github.ref == 'refs/heads/develop-firebase'
 
-  build-and-deploy-honocar:
+  build-and-deploy-games:
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        game:
+          - honocar
+          - shakarin
+          - maruten
+          - yamidori
+          - oimo-no-mikiri
+          - rinadoko
     needs: install
-    if: |
-      github.ref == 'refs/heads/develop' ||
-      github.ref == 'refs/heads/develop-honocar'
     steps:
       # checkout
       # lfs cache hack: https://github.com/actions/checkout/issues/165#issuecomment-657673315
@@ -129,20 +136,23 @@ jobs:
       - run: npm install
       # build
       - run: npm -w @sokontokoro/mikan run build
-      - run: npm -w honocar            run build-dev
+      - run: npm -w ${{ matrix.game }} run build-dev
       # deploy
       - uses: google-github-actions/setup-gcloud@master
         with:
           service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY_DEV }}
           export_default_credentials: true
-      - run: npm -w honocar run deploy-dev
+      - run: npm -w ${{ matrix.game }} run deploy-dev
+        if: |
+          github.ref == 'refs/heads/develop' ||
+          github.ref == 'refs/heads/develop-${{ matrix.game }}'
 
   notify:
     runs-on: macos-latest
     needs:
       - build-and-deploy-portal
       - build-and-deploy-firebase
-      - build-and-deploy-honocar
+      - build-and-deploy-games
     if: always()
     steps:
       # https://github.com/technote-space/workflow-conclusion-action
