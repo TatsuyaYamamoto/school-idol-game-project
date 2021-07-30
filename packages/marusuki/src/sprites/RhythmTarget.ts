@@ -1,8 +1,19 @@
 import * as PIXI from "pixi.js";
 
 export class RhythmTarget extends PIXI.Sprite {
+  private _state: "normal" | "ng" = "normal";
+
+  public get state() {
+    return this._state;
+  }
+
   public constructor(
-    private textures: { normal: PIXI.Texture; crush: PIXI.Texture }
+    private textures: {
+      normal: PIXI.Texture;
+      normalTouched: PIXI.Texture;
+      ng: PIXI.Texture;
+      ngTouched: PIXI.Texture;
+    }
   ) {
     super(textures.normal);
     this.anchor.set(0.5);
@@ -11,16 +22,23 @@ export class RhythmTarget extends PIXI.Sprite {
     this.scale.set(1.5);
   }
 
-  show() {
-    this.texture = this.textures.normal;
+  show(state: "normal" | "ng"): void {
+    this.texture = this.textures[state];
+    this._state = state;
     this.visible = true;
   }
 
-  hide() {
+  hide(): void {
     this.visible = false;
   }
 
-  crush() {
-    this.texture = this.textures.crush;
+  touch(): void {
+    if (this.state === "normal") {
+      this.texture = this.textures.normalTouched;
+    }
+
+    if (this.state === "ng") {
+      this.texture = this.textures.ngTouched;
+    }
   }
 }

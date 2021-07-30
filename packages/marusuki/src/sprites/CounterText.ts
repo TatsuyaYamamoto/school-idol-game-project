@@ -3,7 +3,7 @@ import * as PIXI from "pixi.js";
 export class CounterText extends PIXI.Text {
   private _value = 0;
 
-  public constructor() {
+  public constructor(private _label: string = "") {
     super();
     this.update();
   }
@@ -14,6 +14,6 @@ export class CounterText extends PIXI.Text {
   }
 
   private update() {
-    this.text = `Count: ${this._value}`;
+    this.text = `${this._label}${this._value}`;
   }
 }

@@ -12,10 +12,14 @@ export const loadSound = (
   });
 };
 
-export const loadSprite = (
+export const loadSprite = <T extends string>(
   loader: PIXI.loaders.Loader,
-  sources: { name: string; url: string }[]
-): Promise<PIXI.loaders.ResourceDictionary> => {
+  sources: { name: T; url: string }[]
+): Promise<
+  {
+    [key in T]: PIXI.loaders.Resource;
+  }
+> => {
   sources.forEach(({ name, url }) => {
     loader.add(name, url);
   });

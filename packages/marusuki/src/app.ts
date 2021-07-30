@@ -14,6 +14,29 @@ const measureMap: { [key: string]: boolean } = {};
 let measureCount = 0;
 let prevProgress = Number.MAX_SAFE_INTEGER;
 
+const assets = {
+  images: [
+    { name: "chisato", url: "assets/images/chisato.png" },
+    { name: "takoyaki", url: "assets/images/takoyaki.png" },
+    { name: "takoyaki_crush", url: "assets/images/takoyaki_crush.png" },
+    {
+      name: "touch_target_ng_piman",
+      url: "assets/images/touch_target_ng_piman.png",
+    },
+  ],
+  sounds: [
+    { id: "shan", url: "assets/sounds/shan.wav" },
+    {
+      id: "pon",
+      url: "assets/sounds/pon.mp3",
+    },
+    {
+      id: "drum_loop",
+      url: "assets/sounds/drum_loop.wav",
+    },
+  ],
+};
+
 const detectBeats = (
   progress: number,
   params: { [beat: number]: (params: { measures: number }) => void }
@@ -52,38 +75,37 @@ export const start = async (): Promise<PIXI.Application> => {
   const gameContainer = new PIXI.Container();
   app.stage.addChild(gameContainer);
 
-  const soundMap = await loadSound([
-    { id: "shan", url: "assets/sounds/shan.wav" },
-    {
-      id: "pon",
-      url: "assets/sounds/pon.mp3",
-    },
-    {
-      id: "drum_loop",
-      url: "assets/sounds/drum_loop.wav",
-    },
-  ]);
-  const spriteMap = await loadSprite(app.loader, [
-    { name: "chisato", url: "assets/images/chisato.png" },
-    { name: "takoyaki", url: "assets/images/takoyaki.png" },
-    { name: "takoyaki_crush", url: "assets/images/takoyaki_crush.png" },
-  ]);
+  const soundMap = await loadSound(assets.sounds);
+  const spriteMap = await loadSprite(app.loader, assets.images);
 
-  const counterText = new CounterText();
-  counterText.x = 400;
-  counterText.y = 20;
-  counterText.anchor.set(0.5);
+  const successCounterText = new CounterText("Count: ");
+  successCounterText.x = 400;
+  successCounterText.y = 20;
+  successCounterText.anchor.set(0.5);
 
   const speedText = new SpeedText(MIN_SPEED);
   speedText.x = 400;
   speedText.y = 50;
   speedText.anchor.set(0.5);
 
-  const onTapRhyhumTarget = (target: RhythmTarget): void => {
-    sound.play("shan");
-    navigator.vibrate(50);
-    target.crush();
-    counterText.countUp();
+  const ngCounterText = new CounterText("NG: ");
+  ngCounterText.x = 400;
+  ngCounterText.y = 80;
+  ngCounterText.anchor.set(0.5);
+
+  const onTapRhythmTarget = (target: RhythmTarget): void => {
+    target.touch();
+
+    if (target.state === "normal" /* success */) {
+      sound.play("shan");
+      navigator.vibrate(50);
+      successCounterText.countUp();
+    } else {
+      sound.play("pon");
+      navigator.vibrate(200);
+      ngCounterText.countUp();
+    }
+
     setTimeout(() => {
       target.hide();
     }, 500);
@@ -97,12 +119,14 @@ export const start = async (): Promise<PIXI.Application> => {
   ].map((params) => {
     const sprite = new RhythmTarget({
       normal: spriteMap.takoyaki.texture,
-      crush: spriteMap.takoyaki_crush.texture,
+      normalTouched: spriteMap.takoyaki_crush.texture,
+      ng: spriteMap.touch_target_ng_piman.texture,
+      ngTouched: spriteMap.touch_target_ng_piman.texture,
     });
     sprite.x = params.x;
     sprite.y = params.y;
     sprite.on("pointerdown", () => {
-      onTapRhyhumTarget(sprite);
+      onTapRhythmTarget(sprite);
     });
     return sprite;
   });
@@ -111,8 +135,9 @@ export const start = async (): Promise<PIXI.Application> => {
   gameContainer.addChild(upperRight);
   gameContainer.addChild(lowerLeft);
   gameContainer.addChild(lowerRight);
-  gameContainer.addChild(counterText);
+  gameContainer.addChild(successCounterText);
   gameContainer.addChild(speedText);
+  gameContainer.addChild(ngCounterText);
 
   const chisato = new PIXI.Sprite(spriteMap.chisato.texture);
   chisato.x = app.renderer.width * 0.5;
@@ -126,28 +151,28 @@ export const start = async (): Promise<PIXI.Application> => {
 
       if (handler.key === "q") {
         if (upperLeft.visible) {
-          onTapRhyhumTarget(upperLeft);
+          onTapRhythmTarget(upperLeft);
         } else {
           sound.play("pon");
         }
       }
       if (handler.key === "z") {
         if (lowerLeft.visible) {
-          onTapRhyhumTarget(lowerLeft);
+          onTapRhythmTarget(lowerLeft);
         } else {
           sound.play("pon");
         }
       }
       if (handler.key === "o") {
         if (upperRight.visible) {
-          onTapRhyhumTarget(upperRight);
+          onTapRhythmTarget(upperRight);
         } else {
           sound.play("pon");
         }
       }
       if (handler.key === "m") {
         if (lowerRight.visible) {
-          onTapRhyhumTarget(lowerRight);
+          onTapRhythmTarget(lowerRight);
         } else {
           sound.play("pon");
         }
@@ -161,30 +186,46 @@ export const start = async (): Promise<PIXI.Application> => {
     const drumLoopInstance = drumLoop.instances[0];
 
     const images = [upperLeft, upperRight, lowerLeft, lowerRight] as const;
-    const visibleImages: { [beat: string]: PIXI.Sprite | undefined } = {};
+    const visibleImagesMap: { [beat: string]: PIXI.Sprite[] | undefined } = {};
 
     const hideSprite = (beat: number) => {
-      const visibleImage = visibleImages[beat];
-      if (visibleImage) {
-        visibleImage.visible = false;
-        visibleImages[beat] = undefined;
+      const visibleImages = visibleImagesMap[beat];
+      if (visibleImages) {
+        visibleImages.forEach((i) => {
+          // eslint-disable-next-line no-param-reassign
+          i.visible = false;
+        });
       }
+      visibleImagesMap[beat] = undefined;
     };
 
     const showSprite = (beat: number) => {
       hideSprite(beat);
 
-      let imageIndex: number | null = null;
-      while (imageIndex === null) {
+      while (!visibleImagesMap[beat]) {
         const randomValue = randomInt(3);
         if (!images[randomValue].visible) {
-          imageIndex = randomValue;
+          const visibleImage = images[randomValue];
+          visibleImage.show("normal");
+          visibleImagesMap[beat] = [visibleImage];
+          break;
         }
       }
 
-      const visibleImage = images[imageIndex];
-      visibleImage.show();
-      visibleImages[beat] = visibleImage;
+      const showNgTarget = randomInt(2) === 0;
+      if (showNgTarget) {
+        while (visibleImagesMap[beat]?.length !== 2) {
+          const randomValue = randomInt(3);
+          if (!images[randomValue].visible) {
+            const visibleImage = images[randomValue];
+            visibleImage.show("ng");
+            visibleImagesMap[beat]?.push(visibleImage);
+            break;
+          }
+        }
+      }
+
+      console.log(visibleImagesMap);
     };
 
     const checkCountAndUpdateSpeed = (measures: number) => {
@@ -203,7 +244,6 @@ export const start = async (): Promise<PIXI.Application> => {
         0: ({ measures }) => {
           console.log(progress, "0/4", measures);
           checkCountAndUpdateSpeed(measures);
-          hideSprite(6 / 8);
         },
         [1 / 8]: () => {
           console.log(progress, "1/8");
@@ -212,11 +252,6 @@ export const start = async (): Promise<PIXI.Application> => {
         },
         [2 / 8]: () => {
           console.log(progress, "1/4");
-
-          // random show
-          if (randomInt(2) === 0) {
-            showSprite(2 / 8);
-          }
         },
         [3 / 8]: () => {
           console.log(progress, "3/8");
@@ -225,7 +260,6 @@ export const start = async (): Promise<PIXI.Application> => {
         },
         [4 / 8]: () => {
           console.log(progress, "2/4");
-          hideSprite(2 / 8);
         },
         [5 / 8]: () => {
           console.log(progress, "5/8");
@@ -234,11 +268,6 @@ export const start = async (): Promise<PIXI.Application> => {
         },
         [6 / 8]: () => {
           console.log(progress, "3/4");
-
-          // random show
-          if (randomInt(2) === 0) {
-            showSprite(6 / 8);
-          }
         },
         [7 / 8]: () => {
           console.log(progress, "7/8");
