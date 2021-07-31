@@ -4,7 +4,7 @@ import { sound } from "@pixi/sound";
 
 import { CounterText } from "./sprites/CounterText";
 import { loadSound, loadSprite } from "./assetLoader";
-import { between, randomInt } from "./helper/utils";
+import { randomInt } from "./helper/utils";
 import { SpeedText } from "./sprites/SpeedText";
 import { RhythmTarget } from "./sprites/RhythmTarget";
 
@@ -37,39 +37,50 @@ const assets = {
   ],
 };
 
+type CallbackableBeat = 0 | 0.125 | 0.25 | 0.375 | 0.5 | 0.625 | 0.75 | 0.875;
+
 const detectBeats = (
   progress: number,
-  params: { [beat: number]: (params: { measures: number }) => void }
+  beatCallbacks: {
+    [beat in CallbackableBeat]: (params: { measures: number }) => void;
+  }
 ) => {
   if (progress < prevProgress) {
     measureCount += 1;
   }
   prevProgress = progress;
-  const diff = 0.01;
 
-  const targetBeat = Object.keys(params)
-    .map((beatString) => {
-      return Number(beatString);
-    })
-    .find((beat) => {
-      if (
-        between(beat - diff, progress, beat + diff) &&
-        !measureMap[`${measureCount}_${beat}`]
-      ) {
-        measureMap[`${measureCount}_${beat}`] = true;
-        return true;
-      }
-      return false;
-    });
+  const beats: CallbackableBeat[] = [
+    0,
+    0.125,
+    0.25,
+    0.375,
+    0.5,
+    0.625,
+    0.75,
+    0.875,
+  ];
 
-  if (targetBeat !== undefined && params[targetBeat]) {
-    params[targetBeat]({ measures: measureCount });
+  const callbackableBeat = beats.find((beat) => {
+    if (beat < progress && !measureMap[`${measureCount}_${beat}`]) {
+      measureMap[`${measureCount}_${beat}`] = true;
+      return true;
+    }
+    return false;
+  });
+
+  if (callbackableBeat === undefined) {
+    return;
   }
+
+  beatCallbacks[callbackableBeat]({
+    measures: measureCount,
+  });
 };
 
 export const start = async (): Promise<PIXI.Application> => {
   const app = new PIXI.Application({
-    backgroundColor: parseInt("#efefef".replace("#", ""), 16),
+    backgroundColor: parseInt("#d5d5d5".replace("#", ""), 16),
     autoStart: false,
   });
   const gameContainer = new PIXI.Container();
@@ -93,6 +104,12 @@ export const start = async (): Promise<PIXI.Application> => {
   ngCounterText.y = 80;
   ngCounterText.anchor.set(0.5);
 
+  const beatText = new PIXI.Text();
+  beatText.x = 400;
+  beatText.y = 110;
+  beatText.text = ``;
+  beatText.anchor.set(0.5);
+
   const onTapRhythmTarget = (target: RhythmTarget): void => {
     target.touch();
 
@@ -105,10 +122,6 @@ export const start = async (): Promise<PIXI.Application> => {
       navigator.vibrate(200);
       ngCounterText.countUp();
     }
-
-    setTimeout(() => {
-      target.hide();
-    }, 500);
   };
 
   const [upperLeft, upperRight, lowerLeft, lowerRight] = [
@@ -131,13 +144,13 @@ export const start = async (): Promise<PIXI.Application> => {
     return sprite;
   });
 
-  gameContainer.addChild(upperLeft);
-  gameContainer.addChild(upperRight);
-  gameContainer.addChild(lowerLeft);
-  gameContainer.addChild(lowerRight);
-  gameContainer.addChild(successCounterText);
-  gameContainer.addChild(speedText);
-  gameContainer.addChild(ngCounterText);
+  gameContainer.addChild(upperLeft, upperRight, lowerLeft, lowerRight);
+  gameContainer.addChild(
+    successCounterText,
+    speedText,
+    ngCounterText,
+    beatText
+  );
 
   const chisato = new PIXI.Sprite(spriteMap.chisato.texture);
   chisato.x = app.renderer.width * 0.5;
@@ -202,30 +215,18 @@ export const start = async (): Promise<PIXI.Application> => {
     const showSprite = (beat: number) => {
       hideSprite(beat);
 
-      while (!visibleImagesMap[beat]) {
-        const randomValue = randomInt(3);
-        if (!images[randomValue].visible) {
-          const visibleImage = images[randomValue];
-          visibleImage.show("normal");
-          visibleImagesMap[beat] = [visibleImage];
-          break;
-        }
-      }
+      const normalTargetIndex = randomInt(3);
+      const nomalImage = images[normalTargetIndex];
+      nomalImage.show("normal");
+      visibleImagesMap[beat] = [nomalImage];
 
       const showNgTarget = randomInt(2) === 0;
       if (showNgTarget) {
-        while (visibleImagesMap[beat]?.length !== 2) {
-          const randomValue = randomInt(3);
-          if (!images[randomValue].visible) {
-            const visibleImage = images[randomValue];
-            visibleImage.show("ng");
-            visibleImagesMap[beat]?.push(visibleImage);
-            break;
-          }
-        }
+        const ngTargetIndex = (normalTargetIndex + 1 + randomInt(2)) % 4;
+        const ngImage = images[ngTargetIndex];
+        ngImage.show("ng");
+        visibleImagesMap[beat]?.push(ngImage);
       }
-
-      console.log(visibleImagesMap);
     };
 
     const checkCountAndUpdateSpeed = (measures: number) => {
@@ -242,34 +243,42 @@ export const start = async (): Promise<PIXI.Application> => {
 
       detectBeats(progress, {
         0: ({ measures }) => {
+          beatText.text = `0/8`;
           console.log(progress, "0/4", measures);
           checkCountAndUpdateSpeed(measures);
         },
-        [1 / 8]: () => {
+        0.125: () => {
+          beatText.text = `[ 1/8 ]`;
           console.log(progress, "1/8");
 
           showSprite(1 / 8);
         },
-        [2 / 8]: () => {
+        0.25: () => {
+          beatText.text = `[ [ 2/8 ] ]`;
           console.log(progress, "1/4");
         },
-        [3 / 8]: () => {
+        0.375: () => {
+          beatText.text = `[ 3/8 ]`;
           console.log(progress, "3/8");
 
           hideSprite(1 / 8);
         },
-        [4 / 8]: () => {
+        0.5: () => {
+          beatText.text = `4/8`;
           console.log(progress, "2/4");
         },
-        [5 / 8]: () => {
+        0.625: () => {
+          beatText.text = `[ 5/8 ]`;
           console.log(progress, "5/8");
 
           showSprite(5 / 8);
         },
-        [6 / 8]: () => {
+        0.75: () => {
+          beatText.text = `[ [ 6/8 ] ]`;
           console.log(progress, "3/4");
         },
-        [7 / 8]: () => {
+        0.875: () => {
+          beatText.text = `[ 7/8 ]`;
           console.log(progress, "7/8");
 
           hideSprite(5 / 8);
