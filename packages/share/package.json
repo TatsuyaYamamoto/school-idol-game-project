@@ -1,0 +1,25 @@
+{
+  "name": "share",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "web-components:dev": "http-server web-components",
+    "web-components:build": "rollup --config web-components/rollup.config.js",
+    "web-components:deploy-dev": "BUCKET=games-dev.sokontokoro-factory.net  run-s web-components:_deploy web-components:_setmeta",
+    "web-components:deploy-pro": "BUCKET=games.sokontokoro-factory.net      run-s web-components:_deploy",
+    "web-components:_deploy": " gsutil -m rsync -d -r web-components/dist/ gs://$BUCKET/web-components/",
+    "web-components:_setmeta": "gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/web-components/**/*.js"
+  },
+  "dependencies": {
+    "lit": "^2.0.0-rc.2",
+    "bowser": "^2.11.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^13.0.4",
+    "@rollup/plugin-typescript": "^8.2.5",
+    "http-server": "^0.12.3",
+    "rollup": "^2.55.1",
+    "rollup-plugin-summary": "^1.3.0",
+    "rollup-plugin-terser": "^7.0.2"
+  }
+}

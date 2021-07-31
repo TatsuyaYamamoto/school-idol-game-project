@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "es6",
+    "moduleResolution": "node",
+    "lib": ["dom"],
+    "experimentalDecorators": true,
+    "esModuleInterop": true
+  }
+}

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <sf-guide-before-launch
+      id="button"
+      style="margin: 100px auto"
+      app-name="アプリの名前"
+      app-version="1.2.3"
+    ></sf-guide-before-launch>
+    <script src="./dist/sf-guide-before-launch.bundle.js"></script>
+    <script>
+      const button = document.getElementById("button");
+      button.addEventListener("start", () => {
+        alert("button is clicked");
+      });
+    </script>
+  </body>
+</html>
