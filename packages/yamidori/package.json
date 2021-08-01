@@ -4,13 +4,15 @@
   "description": "LoveLive fun game! Darkside nabe with cheese cake.",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --progress --colors --watch",
+    "dev": "webpack-dev-server --progress --colors --watch",
     "clean": "rm -rf dist",
-    "build:dev": "yarn clean && webpack",
-    "build:pro": "yarn clean && NODE_ENV=production webpack",
-    "deploy:dev": "                gsutil -m rsync -d -r dist/ gs://games-dev.sokontokoro-factory.net/yamidori/ && gsutil setmeta -h 'Cache-Control:no-cache' gs://games-dev.sokontokoro-factory.net/yamidori/**/*.html",
-    "deploy:pro": "yarn confirm && gsutil -m rsync -d -r dist/ gs://games.sokontokoro-factory.net/yamidori/     && gsutil setmeta -h 'Cache-Control:no-cache' gs://games.sokontokoro-factory.net/yamidori/**/*.html",
-    "confirm": "../../production-confirm.js"
+    "build-dev": "                    webpack",
+    "build-pro": "NODE_ENV=production webpack",
+    "deploy-dev": "BUCKET=games-dev.sokontokoro-factory.net  npm run _deploy",
+    "deploy-pro": "BUCKET=games.sokontokoro-factory.net      npm run _deploy",
+    "_deploy": "run-s --print-label _deploy:rsync _deploy:setmeta",
+    "_deploy:rsync": "  gsutil -m rsync -d -r dist/ gs://$BUCKET/yamidori/",
+    "_deploy:setmeta": "gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/yamidori/**/*.html"
   },
   "repository": {
     "type": "git",
@@ -41,6 +43,7 @@
   "dependencies": {
     "@types/i18next-browser-languagedetector": "^2.0.0",
     "animejs": "^2.0.2",
+    "firebase": "^8.8.0",
     "i18next": "^9.0.0",
     "i18next-browser-languagedetector": "^2.0.0",
     "pixi-sound": "^1.4.2",

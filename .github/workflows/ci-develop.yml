@@ -17,131 +17,146 @@ on:
     - cron: "0 9 * * 1"
 
 env:
-  NODE_VERSION: 12.x
+  NODE_VERSION: 12
 
 jobs:
-  lint:
+  install:
     runs-on: macos-latest
     steps:
+      # checkout
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      # setup env
+      - uses: actions/setup-node@v2
         with:
           node-version: ${{ env.NODE_VERSION }}
-
-      # https://github.com/actions/cache/blob/main/examples.md#node---yarn
-      - name: "Get yarn cache directory path"
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: "Restore yarn cache"
-        uses: actions/cache@v2
-        id: yarn-cache
+      - run: npm install -g npm@latest
+      # install deps
+      - uses: actions/cache@v2
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
-      - run: yarn install
-      - run: yarn workspace @sokontokoro/mikan build
-      - run: yarn lint
+            ${{ runner.os }}-node-
+      - run: npm install
 
-  # 本来はブランチ名(develop-:package)に従って実行するjobを制御するべきだが、
-  # if句でmatrixを使えないらしいので、とりあえず、毎回すべてのpackageで実行させる
-  # https://github.community/t/bug-trouble-with-if-conditional-expression-groupings/16563
-  build-and-deploy-app:
+  build-and-deploy-portal:
     runs-on: macos-latest
-    needs: lint
-    strategy:
-      matrix:
-        app:
-          - "honocar"
-          - "shakarin"
-          - "maruten"
-          - "oimo-no-mikiri"
-          - "rinadoko"
-          - "ranking"
-    if: ${{
-      startsWith(github.ref, 'refs/heads/develop')
-      }}
+    needs: install
     steps:
+      # checkout
       - uses: actions/checkout@v2
-        with:
-          lfs: true
-      - uses: actions/setup-node@v1
+      # setup env
+      - uses: actions/setup-node@v2
         with:
           node-version: ${{ env.NODE_VERSION }}
-
-      # https://github.com/actions/cache/blob/main/examples.md#node---yarn
-      - name: "Get yarn cache directory path"
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: "Restore yarn cache"
-        uses: actions/cache@v2
-        id: yarn-cache
+      - run: npm install -g npm@latest
+      # install deps
+      - uses: actions/cache@v2
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
-      - run: yarn install
-      # todo: reuse as artifacts
-      - run: yarn workspace @sokontokoro/mikan build
-      - run: yarn workspace ${{ matrix.app }} build:dev
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@master
+            ${{ runner.os }}-node-
+      - run: npm install
+      # build
+      - run: npm -w portal run build-dev
+      # deploy
+      - uses: google-github-actions/setup-gcloud@master
         with:
           service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY_DEV }}
           export_default_credentials: true
-
-      - name: Deploy to dev
-        if: ${{ github.event_name == 'push' }}
-        run: yarn workspace ${{ matrix.app }} deploy:dev
+      - run: npm -w portal run deploy-dev
+        if: |
+          github.ref == 'refs/heads/develop' ||
+          github.ref == 'refs/heads/develop-portal'
 
   build-and-deploy-firebase:
     runs-on: macos-latest
-    needs: lint
-    if: ${{
-      github.ref == 'refs/heads/develop' ||
-      github.ref == 'refs/heads/develop-firebase'
-      }}
+    needs: install
     steps:
+      # checkout
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      # setup env
+      - uses: actions/setup-node@v2
         with:
           node-version: ${{ env.NODE_VERSION }}
-
-      # https://github.com/actions/cache/blob/main/examples.md#node---yarn
-      - name: "Get yarn cache directory path"
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: "Restore yarn cache"
-        uses: actions/cache@v2
-        id: yarn-cache
+      - run: npm install -g npm@latest
+      # install deps
+      - uses: actions/cache@v2
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
-      - run: yarn install
-      # todo: reuse as artifacts
-      - run: yarn workspace @sokontokoro/mikan build
-      - run: yarn workspace @sokontokoro/firebase build:dev
+            ${{ runner.os }}-node-
+      - run: npm install
+      # build
+      - run: npm -w @sokontokoro/mikan run build
+      - run: npm -w firebase           run build-dev
+      # deploy
+      - run: npm -w firebase           run deploy-dev -- --token ${{ secrets.FIREBASE_TOKEN }}
+        if: |
+          github.ref == 'refs/heads/develop' ||
+          github.ref == 'refs/heads/develop-firebase'
 
-      - name: Deploy to dev
-        if: ${{ github.event_name == 'push' }}
-        run: yarn workspace @sokontokoro/firebase deploy:dev --token ${{ secrets.FIREBASE_TOKEN }}
+  build-and-deploy-games:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        game:
+          - honocar
+          - shakarin
+          - maruten
+          - yamidori
+          - oimo-no-mikiri
+          - rinadoko
+    needs: install
+    steps:
+      # checkout
+      # lfs cache hack: https://github.com/actions/checkout/issues/165#issuecomment-657673315
+      - uses: actions/checkout@v2
+      - run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+      - uses: actions/cache@v2
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
+      - run: git lfs pull
+      # setup env
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: npm install -g npm@latest
+      # install deps
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - run: npm install
+      # build
+      - run: npm -w @sokontokoro/mikan run build
+      - run: npm -w ${{ matrix.game }} run build-dev
+      # deploy
+      - uses: google-github-actions/setup-gcloud@master
+        with:
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY_DEV }}
+          export_default_credentials: true
+      - run: npm -w ${{ matrix.game }} run deploy-dev
+        if: |
+          github.ref == 'refs/heads/develop' ||
+          github.ref == 'refs/heads/develop-${{ matrix.game }}'
 
   notify:
     runs-on: macos-latest
     needs:
-      - build-and-deploy-app
+      - build-and-deploy-portal
       - build-and-deploy-firebase
+      - build-and-deploy-games
     if: always()
     steps:
-      # run this action to get workflow conclusion
-      # You can get conclusion via env (env.WORKFLOW_CONCLUSION)
+      # https://github.com/technote-space/workflow-conclusion-action
       - uses: technote-space/workflow-conclusion-action@v2
-
       - uses: 8398a7/action-slack@v3
         with:
           status: ${{ env.WORKFLOW_CONCLUSION }}
@@ -149,4 +164,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: always()
