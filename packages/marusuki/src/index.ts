@@ -1,11 +1,19 @@
 import { start } from "./app";
 
+const appEl = document.getElementById("app");
+const guideBeforeLaunchEl = document.getElementById("guide-before-launch");
+
 export const bootstrap = (): void => {
   console.log("launch app");
 
-  start().then((app) => {
-    document.getElementById("app")?.appendChild(app.view);
-  });
+  if (appEl && guideBeforeLaunchEl) {
+    appEl.style.display = "flex";
+    guideBeforeLaunchEl.style.display = "none";
+    start(appEl);
+  }
 };
 
-window.addEventListener("load", bootstrap);
+guideBeforeLaunchEl?.addEventListener("start", () => {
+  bootstrap();
+});
+guideBeforeLaunchEl?.setAttribute("ready", "true");

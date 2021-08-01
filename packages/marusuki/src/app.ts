@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import hotkeys from "hotkeys-js";
-import { sound } from "@pixi/sound";
+import { IMediaInstance, sound } from "@pixi/sound";
 
 import { CounterText } from "./sprites/CounterText";
 import { loadSound, loadSprite } from "./assetLoader";
@@ -78,11 +78,13 @@ const detectBeats = (
   });
 };
 
-export const start = async (): Promise<PIXI.Application> => {
+export const start = async (el: Element): Promise<void> => {
   const app = new PIXI.Application({
     backgroundColor: parseInt("#d5d5d5".replace("#", ""), 16),
     autoStart: false,
   });
+  el.appendChild(app.view);
+
   const gameContainer = new PIXI.Container();
   app.stage.addChild(gameContainer);
 
@@ -104,10 +106,9 @@ export const start = async (): Promise<PIXI.Application> => {
   ngCounterText.y = 80;
   ngCounterText.anchor.set(0.5);
 
-  const beatText = new PIXI.Text();
+  const beatText = new PIXI.Text(``);
   beatText.x = 400;
   beatText.y = 110;
-  beatText.text = ``;
   beatText.anchor.set(0.5);
 
   const onTapRhythmTarget = (target: RhythmTarget): void => {
@@ -158,88 +159,91 @@ export const start = async (): Promise<PIXI.Application> => {
   chisato.anchor.set(0.5);
   gameContainer.addChild(chisato);
 
-  const startApp = () => {
-    hotkeys("q,z,o,m", (event, handler) => {
-      event.preventDefault();
+  const images = [upperLeft, upperRight, lowerLeft, lowerRight] as const;
+  const visibleImagesMap: { [beat: string]: PIXI.Sprite[] | undefined } = {};
+  const drumLoop = soundMap.drum_loop;
+  drumLoop.speed = MIN_SPEED;
+  let drumLoopInstance: IMediaInstance | null = null;
 
-      if (handler.key === "q") {
-        if (upperLeft.visible) {
-          onTapRhythmTarget(upperLeft);
-        } else {
-          sound.play("pon");
-        }
+  hotkeys("q,z,o,m", (event, handler) => {
+    event.preventDefault();
+
+    if (handler.key === "q") {
+      if (upperLeft.visible) {
+        onTapRhythmTarget(upperLeft);
+      } else {
+        sound.play("pon");
       }
-      if (handler.key === "z") {
-        if (lowerLeft.visible) {
-          onTapRhythmTarget(lowerLeft);
-        } else {
-          sound.play("pon");
-        }
+    }
+    if (handler.key === "z") {
+      if (lowerLeft.visible) {
+        onTapRhythmTarget(lowerLeft);
+      } else {
+        sound.play("pon");
       }
-      if (handler.key === "o") {
-        if (upperRight.visible) {
-          onTapRhythmTarget(upperRight);
-        } else {
-          sound.play("pon");
-        }
+    }
+    if (handler.key === "o") {
+      if (upperRight.visible) {
+        onTapRhythmTarget(upperRight);
+      } else {
+        sound.play("pon");
       }
-      if (handler.key === "m") {
-        if (lowerRight.visible) {
-          onTapRhythmTarget(lowerRight);
-        } else {
-          sound.play("pon");
-        }
+    }
+    if (handler.key === "m") {
+      if (lowerRight.visible) {
+        onTapRhythmTarget(lowerRight);
+      } else {
+        sound.play("pon");
       }
-    });
+    }
+  });
+
+  const hideSprite = (beat: number) => {
+    const visibleImages = visibleImagesMap[beat];
+    if (visibleImages) {
+      visibleImages.forEach((i) => {
+        // eslint-disable-next-line no-param-reassign
+        i.visible = false;
+      });
+    }
+    visibleImagesMap[beat] = undefined;
+  };
+
+  const showSprite = (beat: number) => {
+    hideSprite(beat);
+
+    const normalTargetIndex = randomInt(3);
+    const nomalImage = images[normalTargetIndex];
+    nomalImage.show("normal");
+    visibleImagesMap[beat] = [nomalImage];
+
+    const showNgTarget = randomInt(2) === 0;
+    if (showNgTarget) {
+      const ngTargetIndex = (normalTargetIndex + 1 + randomInt(2)) % 4;
+      const ngImage = images[ngTargetIndex];
+      ngImage.show("ng");
+      visibleImagesMap[beat]?.push(ngImage);
+    }
+  };
+
+  const checkCountAndUpdateSpeed = (measures: number) => {
+    const increment = 0.1 * Math.floor(measures / 4);
+    const newSpeed =
+      MIN_SPEED + increment < MAX_SPEED ? MIN_SPEED + increment : MAX_SPEED;
+
+    drumLoop.speed = newSpeed;
+    speedText.change(newSpeed);
+  };
+
+  const startApp = () => {
     app.start();
     sound.play("drum_loop", { loop: true });
-
-    const drumLoop = soundMap.drum_loop;
-    drumLoop.speed = MIN_SPEED;
-    const drumLoopInstance = drumLoop.instances[0];
-
-    const images = [upperLeft, upperRight, lowerLeft, lowerRight] as const;
-    const visibleImagesMap: { [beat: string]: PIXI.Sprite[] | undefined } = {};
-
-    const hideSprite = (beat: number) => {
-      const visibleImages = visibleImagesMap[beat];
-      if (visibleImages) {
-        visibleImages.forEach((i) => {
-          // eslint-disable-next-line no-param-reassign
-          i.visible = false;
-        });
-      }
-      visibleImagesMap[beat] = undefined;
-    };
-
-    const showSprite = (beat: number) => {
-      hideSprite(beat);
-
-      const normalTargetIndex = randomInt(3);
-      const nomalImage = images[normalTargetIndex];
-      nomalImage.show("normal");
-      visibleImagesMap[beat] = [nomalImage];
-
-      const showNgTarget = randomInt(2) === 0;
-      if (showNgTarget) {
-        const ngTargetIndex = (normalTargetIndex + 1 + randomInt(2)) % 4;
-        const ngImage = images[ngTargetIndex];
-        ngImage.show("ng");
-        visibleImagesMap[beat]?.push(ngImage);
-      }
-    };
-
-    const checkCountAndUpdateSpeed = (measures: number) => {
-      const increment = 0.1 * Math.floor(measures / 4);
-      const newSpeed =
-        MIN_SPEED + increment < MAX_SPEED ? MIN_SPEED + increment : MAX_SPEED;
-
-      drumLoop.speed = newSpeed;
-      speedText.change(newSpeed);
-    };
-
+    drumLoopInstance = drumLoop.instances[0] || null;
     app.ticker.add(() => {
-      const { progress } = drumLoopInstance;
+      const progress = drumLoopInstance?.progress;
+      if (progress === undefined) {
+        return;
+      }
 
       detectBeats(progress, {
         0: ({ measures }) => {
@@ -287,19 +291,5 @@ export const start = async (): Promise<PIXI.Application> => {
     });
   };
 
-  const onClickWindow = () => {
-    hotkeys.unbind("s");
-    window.removeEventListener("click", onClickWindow);
-    console.log("start app");
-    startApp();
-  };
-  hotkeys("s", () => {
-    hotkeys.unbind("s");
-    window.removeEventListener("click", onClickWindow);
-    console.log("start app");
-    startApp();
-  });
-  window.addEventListener("click", onClickWindow);
-
-  return app;
+  startApp();
 };

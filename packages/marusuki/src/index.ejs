@@ -11,13 +11,24 @@
             width: 100%;
             height: 100%;
 
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
         }
+        #guide-before-launch{
+            margin: 100px auto;
+        }
     </style>
+    <script src="https://games-dev.sokontokoro-factory.net/web-components/sf-guide-before-launch.bundle.js"></script>
 </head>
 <body>
+<sf-guide-before-launch
+        id="guide-before-launch"
+        app-name="まるすき"
+        app-version="1.0.0">
+</sf-guide-before-launch>
+
 <div id="app"></div>
 </body>
 </html>
+
