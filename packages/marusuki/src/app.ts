@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import * as PIXI from "pixi-v6";
 import hotkeys from "hotkeys-js";
 import { IMediaInstance, sound } from "@pixi/sound";
 
@@ -80,7 +80,7 @@ const detectBeats = (
 
 export const start = async (el: Element): Promise<void> => {
   const app = new PIXI.Application({
-    backgroundColor: parseInt("#d5d5d5".replace("#", ""), 16),
+    backgroundColor: parseInt("#f3f2f2".replace("#", ""), 16),
     autoStart: false,
   });
   el.appendChild(app.view);
@@ -89,7 +89,7 @@ export const start = async (el: Element): Promise<void> => {
   app.stage.addChild(gameContainer);
 
   const soundMap = await loadSound(assets.sounds);
-  const spriteMap = await loadSprite(app.loader, assets.images);
+  const spriteMap = await loadSprite(assets.images);
 
   const successCounterText = new CounterText("Count: ");
   successCounterText.x = 400;
@@ -132,10 +132,10 @@ export const start = async (el: Element): Promise<void> => {
     { x: 700, y: 450 },
   ].map((params) => {
     const sprite = new RhythmTarget({
-      normal: spriteMap.takoyaki.texture,
-      normalTouched: spriteMap.takoyaki_crush.texture,
-      ng: spriteMap.touch_target_ng_piman.texture,
-      ngTouched: spriteMap.touch_target_ng_piman.texture,
+      normal: spriteMap.takoyaki.texture as PIXI.Texture,
+      normalTouched: spriteMap.takoyaki_crush.texture as PIXI.Texture,
+      ng: spriteMap.touch_target_ng_piman.texture as PIXI.Texture,
+      ngTouched: spriteMap.touch_target_ng_piman.texture as PIXI.Texture,
     });
     sprite.x = params.x;
     sprite.y = params.y;

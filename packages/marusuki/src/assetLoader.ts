@@ -1,5 +1,5 @@
 import { sound, SoundMap } from "@pixi/sound";
-import * as PIXI from "pixi.js";
+import * as PIXI from "pixi-v6";
 
 export const loadSound = (
   sources: { id: string; url: string }[]
@@ -13,13 +13,13 @@ export const loadSound = (
 };
 
 export const loadSprite = <T extends string>(
-  loader: PIXI.loaders.Loader,
   sources: { name: T; url: string }[]
 ): Promise<
   {
-    [key in T]: PIXI.loaders.Resource;
+    [key in T]: PIXI.ILoaderResource;
   }
 > => {
+  const loader = new PIXI.Loader();
   sources.forEach(({ name, url }) => {
     loader.add(name, url);
   });

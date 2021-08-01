@@ -14,7 +14,7 @@
   "dependencies": {
     "@pixi/sound": "^4.0.4",
     "hotkeys-js": "^3.8.7",
-    "pixi.js": "^6.0.4"
+    "pixi-v6": "npm:pixi.js@^6.0.4"
   },
   "devDependencies": {
     "html-webpack-plugin": "^5.3.2",

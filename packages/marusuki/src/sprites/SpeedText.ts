@@ -1,8 +1,8 @@
-import * as PIXI from "pixi.js";
+import * as PIXI from "pixi-v6";
 
 export class SpeedText extends PIXI.Text {
   public constructor(private _value: number) {
-    super();
+    super(`${_value}`);
     this.update();
   }
 

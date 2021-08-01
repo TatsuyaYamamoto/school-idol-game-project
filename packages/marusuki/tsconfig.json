@@ -6,7 +6,16 @@
 
     "module": "esnext",
     "moduleResolution": "node",
+    "esModuleInterop": true,
 
-    "sourceMap": true
+    "sourceMap": true,
+
+    "baseUrl": ".",
+    "paths": {
+      // https://github.com/pixijs/pixijs/releases/tag/v6.0.0
+      "mini-signals": [
+        "../../node_modules/resource-loader/typings/mini-signals.d.ts"
+      ]
+    }
   }
 }

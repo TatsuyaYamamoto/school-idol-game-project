@@ -1,4 +1,7 @@
-import * as PIXI from "pixi.js";
+import * as PIXI from "pixi-v6";
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface RhythmTarget extends PIXI.Sprite, PIXI.utils.EventEmitter {}
 
 export class RhythmTarget extends PIXI.Sprite {
   private _state: "normal" | "ng" = "normal";

@@ -1,10 +1,10 @@
-import * as PIXI from "pixi.js";
+import * as PIXI from "pixi-v6";
 
 export class CounterText extends PIXI.Text {
   private _value = 0;
 
   public constructor(private _label: string = "") {
-    super();
+    super(_label);
     this.update();
   }
 
