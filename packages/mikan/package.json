@@ -27,7 +27,7 @@
     "firebase": "^8.1.1",
     "i18next": "^11.6.0",
     "i18next-browser-languagedetector": "^2.2.3",
-    "loglevel": "^1.6.1",
+    "loglevel": "^1.7.1",
     "pixi-sound": "^1.4.2",
     "pixi.js": "^4.5.4",
     "skyway-js": "^1.1.16",
