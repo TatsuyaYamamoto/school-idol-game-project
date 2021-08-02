@@ -6,9 +6,8 @@
   "scripts": {
     "dev": "webpack-dev-server --progress --colors --watch",
     "clean": "rm -rf dist",
-    "minify-image": "imagemin dist/assets/image/*.png --out-dir=dist/assets/image",
     "build-dev": "                    webpack",
-    "build-pro": "NODE_ENV=production webpack && npm run minify-image",
+    "build-pro": "NODE_ENV=production webpack",
     "deploy-dev": "BUCKET=games-dev.sokontokoro-factory.net  npm run _deploy",
     "deploy-pro": "BUCKET=games.sokontokoro-factory.net      npm run _deploy",
     "_deploy": "run-s --print-label _deploy:rsync _deploy:setmeta",
@@ -41,7 +40,6 @@
     "copy-webpack-plugin": "^4.5.4",
     "css-loader": "^0.28.7",
     "html-webpack-plugin": "^3.2.0",
-    "imagemin-cli": "^3.0.0",
     "style-loader": "^0.20.2",
     "ts-loader": "^5.2.2",
     "typescript": "^3.1.3",
