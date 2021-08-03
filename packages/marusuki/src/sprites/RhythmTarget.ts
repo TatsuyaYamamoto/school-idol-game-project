@@ -14,7 +14,7 @@ export class RhythmTarget extends PIXI.Sprite {
   public constructor(
     private params: {
       normalTexture: PIXI.Texture;
-      touchedTexture: PIXI.Texture;
+      touchedTextures: PIXI.Texture[];
       ngTextures: PIXI.Texture[];
     }
   ) {
@@ -44,7 +44,9 @@ export class RhythmTarget extends PIXI.Sprite {
 
   touch(): void {
     if (this.state === "normal") {
-      this.texture = this.params.touchedTexture;
+      const touchedTextureSize = this.params.touchedTextures.length;
+      const randomIndex = randomInt(touchedTextureSize);
+      this.texture = this.params.touchedTextures[randomIndex];
     }
   }
 }

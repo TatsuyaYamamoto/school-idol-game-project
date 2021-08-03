@@ -131,8 +131,13 @@ export class GameState extends ViewState {
       const sprite = new RhythmTarget({
         normalTexture: spriteMap.touch_target_ok_takoyaki_1
           .texture as PIXI.Texture,
-        touchedTexture: spriteMap.touch_target_effect_blue
-          .texture as PIXI.Texture,
+        touchedTextures: [
+          spriteMap.touch_target_effect_blue.texture as PIXI.Texture,
+          spriteMap.touch_target_effect_green.texture as PIXI.Texture,
+          spriteMap.touch_target_effect_orange.texture as PIXI.Texture,
+          spriteMap.touch_target_effect_pink.texture as PIXI.Texture,
+          spriteMap.touch_target_effect_skyblue.texture as PIXI.Texture,
+        ],
         ngTextures: [
           spriteMap.touch_target_ng_piman_1.texture as PIXI.Texture,
           spriteMap.touch_target_ng_piman_2.texture as PIXI.Texture,
