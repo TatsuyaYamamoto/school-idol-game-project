@@ -1,4 +1,4 @@
-import { ViewState } from "../ViewState";
+import { ViewState } from "../stateMachine/ViewState";
 
 export class TitleState extends ViewState {
   onEnter(): void {
