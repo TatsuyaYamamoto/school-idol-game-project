@@ -1,4 +1,4 @@
-import { startMachine } from "./stateMachine";
+import { startMachine } from "./state-machine";
 import { GameApp } from "./GameApp";
 
 const appEl = document.getElementById("app");

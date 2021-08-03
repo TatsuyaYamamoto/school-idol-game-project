@@ -6,10 +6,10 @@ import { createMachine, interpret, StateValue } from "xstate";
 import * as PIXI from "pixi-v6";
 import { SoundMap } from "@pixi/sound";
 
-import { GameApp } from "../GameApp";
-import { AssetLoadingState } from "./states/AssetLoadingState";
-import { TitleState } from "./states/TitleState";
-import { GameState } from "./states/GameState";
+import { GameApp } from "./GameApp";
+import { AssetLoadingState } from "./stateMachine/states/AssetLoadingState";
+import { TitleState } from "./stateMachine/states/TitleState";
+import { GameState } from "./stateMachine/states/GameState";
 
 const convertStateKeyFrom = (stateValue: StateValue): string => {
   if (typeof stateValue === "string") {

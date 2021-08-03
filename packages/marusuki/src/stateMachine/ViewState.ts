@@ -1,6 +1,6 @@
 import { Interpreter, StateSchema } from "xstate";
 
-import { AppContext, AppEvent } from ".";
+import { AppContext, AppEvent } from "../state-machine";
 import { GameApp } from "../GameApp";
 
 export abstract class ViewState {
