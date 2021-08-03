@@ -129,11 +129,14 @@ export class GameState extends ViewState {
       { x: 0.85, y: 0.8 },
     ].map((params) => {
       const sprite = new RhythmTarget({
-        normal: spriteMap.touch_target_ok_takoyaki_1.texture as PIXI.Texture,
-        normalTouched: spriteMap.touch_target_effect_blue
+        normalTexture: spriteMap.touch_target_ok_takoyaki_1
           .texture as PIXI.Texture,
-        ng: spriteMap.touch_target_ng_piman_1.texture as PIXI.Texture,
-        ngTouched: spriteMap.touch_target_ng_piman_1.texture as PIXI.Texture,
+        touchedTexture: spriteMap.touch_target_effect_blue
+          .texture as PIXI.Texture,
+        ngTextures: [
+          spriteMap.touch_target_ng_piman_1.texture as PIXI.Texture,
+          spriteMap.touch_target_ng_piman_2.texture as PIXI.Texture,
+        ],
       });
       sprite.x = this.context.app.getX(params.x);
       sprite.y = this.context.app.getY(params.y);

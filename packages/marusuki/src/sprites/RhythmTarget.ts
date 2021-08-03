@@ -1,4 +1,5 @@
 import * as PIXI from "pixi-v6";
+import { randomInt } from "../helper/utils";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface RhythmTarget extends PIXI.Sprite, PIXI.utils.EventEmitter {}
@@ -11,21 +12,28 @@ export class RhythmTarget extends PIXI.Sprite {
   }
 
   public constructor(
-    private textures: {
-      normal: PIXI.Texture;
-      normalTouched: PIXI.Texture;
-      ng: PIXI.Texture;
-      ngTouched: PIXI.Texture;
+    private params: {
+      normalTexture: PIXI.Texture;
+      touchedTexture: PIXI.Texture;
+      ngTextures: PIXI.Texture[];
     }
   ) {
-    super(textures.normal);
+    super(params.normalTexture);
     this.anchor.set(0.5);
     this.interactive = true;
     this.visible = false;
   }
 
   show(state: "normal" | "ng"): void {
-    this.texture = this.textures[state];
+    if (state === "normal") {
+      this.texture = this.params.normalTexture;
+    }
+    if (state === "ng") {
+      const ngTextureSize = this.params.ngTextures.length;
+      const randomIndex = randomInt(ngTextureSize);
+      this.texture = this.params.ngTextures[randomIndex];
+    }
+
     this._state = state;
     this.visible = true;
   }
@@ -36,11 +44,7 @@ export class RhythmTarget extends PIXI.Sprite {
 
   touch(): void {
     if (this.state === "normal") {
-      this.texture = this.textures.normalTouched;
-    }
-
-    if (this.state === "ng") {
-      this.texture = this.textures.ngTouched;
+      this.texture = this.params.touchedTexture;
     }
   }
 }
