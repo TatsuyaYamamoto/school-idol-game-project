@@ -6,7 +6,7 @@ export interface RhythmTarget extends PIXI.Sprite, PIXI.utils.EventEmitter {}
 export class RhythmTarget extends PIXI.Sprite {
   private _state: "normal" | "ng" = "normal";
 
-  public get state() {
+  public get state(): "normal" | "ng" {
     return this._state;
   }
 
@@ -22,7 +22,7 @@ export class RhythmTarget extends PIXI.Sprite {
     this.anchor.set(0.5);
     this.interactive = true;
     this.visible = false;
-    this.scale.set(1.8);
+    this.scale.set(0.5);
   }
 
   show(state: "normal" | "ng"): void {

@@ -4,6 +4,7 @@ import hotkeys from "hotkeys-js";
 
 import { ViewState } from "../../ViewState";
 
+import { Chisato } from "../../../sprites/Chisato";
 import { CounterText } from "../../../sprites/CounterText";
 import { SpeedText } from "../../../sprites/SpeedText";
 import { RhythmTarget } from "../../../sprites/RhythmTarget";
@@ -87,13 +88,33 @@ export class GameCountState extends ViewState {
     beatText.y = 110;
     beatText.anchor.set(0.5);
 
+    const chisato = new Chisato({
+      baseAnimationTextures: Object.entries(
+        spriteMap["chisato.spritesheet"].textures || {}
+      ).map(([, t]) => t),
+      successTexture: spriteMap.chisato_success.texture as PIXI.Texture,
+    });
+    chisato.x = app.renderer.width * 0.5;
+    chisato.y = app.renderer.height * 0.5;
+    chisato.playAnimation();
+    gameContainer.addChild(chisato);
+
     const onTapRhythmTarget = (target: RhythmTarget): void => {
       target.touch();
 
       if (target.state === "normal" /* success */) {
         sound.play("shan");
-        navigator.vibrate(50);
         successCounterText.countUp();
+        chisato.showSuccess();
+        setTimeout(() => {
+          chisato.showAnimation();
+        }, 200);
+
+        try {
+          navigator.vibrate(50);
+        } catch (e) {
+          // ignore
+        }
       } else {
         sound.play("pon");
         navigator.vibrate(200);
@@ -108,10 +129,11 @@ export class GameCountState extends ViewState {
       { x: 700, y: 450 },
     ].map((params) => {
       const sprite = new RhythmTarget({
-        normal: spriteMap.takoyaki.texture as PIXI.Texture,
-        normalTouched: spriteMap.takoyaki_crush.texture as PIXI.Texture,
-        ng: spriteMap.touch_target_ng_piman.texture as PIXI.Texture,
-        ngTouched: spriteMap.touch_target_ng_piman.texture as PIXI.Texture,
+        normal: spriteMap.touch_target_ok_takoyaki_1.texture as PIXI.Texture,
+        normalTouched: spriteMap.touch_target_effect_blue
+          .texture as PIXI.Texture,
+        ng: spriteMap.touch_target_ng_piman_1.texture as PIXI.Texture,
+        ngTouched: spriteMap.touch_target_ng_piman_1.texture as PIXI.Texture,
       });
       sprite.x = params.x;
       sprite.y = params.y;
@@ -128,12 +150,6 @@ export class GameCountState extends ViewState {
       ngCounterText,
       beatText
     );
-
-    const chisato = new PIXI.Sprite(spriteMap.chisato.texture);
-    chisato.x = app.renderer.width * 0.5;
-    chisato.y = app.renderer.height * 0.5;
-    chisato.anchor.set(0.5);
-    gameContainer.addChild(chisato);
 
     const images = [upperLeft, upperRight, lowerLeft, lowerRight] as const;
     const visibleImagesMap: { [beat: string]: PIXI.Sprite[] | undefined } = {};
