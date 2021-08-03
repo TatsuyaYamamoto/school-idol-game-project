@@ -2,15 +2,15 @@ import * as PIXI from "pixi-v6";
 import { IMediaInstance, sound } from "@pixi/sound";
 import hotkeys from "hotkeys-js";
 
-import { ViewState } from "../../ViewState";
+import { ViewState } from "../ViewState";
 
-import { Chisato } from "../../../sprites/Chisato";
-import { CounterText } from "../../../sprites/CounterText";
-import { SpeedText } from "../../../sprites/SpeedText";
-import { RhythmTarget } from "../../../sprites/RhythmTarget";
-import { BeatText } from "../../../sprites/BeatText";
+import { Chisato } from "../../sprites/Chisato";
+import { CounterText } from "../../sprites/CounterText";
+import { SpeedText } from "../../sprites/SpeedText";
+import { RhythmTarget } from "../../sprites/RhythmTarget";
+import { BeatText } from "../../sprites/BeatText";
 
-import { randomInt } from "../../../helper/utils";
+import { randomInt } from "../../helper/utils";
 
 const MIN_SPEED = 1;
 const MAX_SPEED = 1.5;
@@ -58,7 +58,7 @@ const detectBeats = (
   });
 };
 
-export class GameCountState extends ViewState {
+export class GameState extends ViewState {
   onEnter(): void {
     const { app } = this.context;
     const {

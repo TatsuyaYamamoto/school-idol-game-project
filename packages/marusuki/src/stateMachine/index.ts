@@ -9,9 +9,7 @@ import { SoundMap } from "@pixi/sound";
 import { GameApp } from "../GameApp";
 import { AssetLoadingState } from "./states/AssetLoadingState";
 import { TitleState } from "./states/TitleState";
-import { GameCountState } from "./states/game/CountState";
-import { GamePlayState } from "./states/game/PlayState";
-import { GameOverState } from "./states/game/OverState";
+import { GameState } from "./states/GameState";
 
 const convertStateKeyFrom = (stateValue: StateValue): string => {
   if (typeof stateValue === "string") {
@@ -78,32 +76,12 @@ export const appMachine = createMachine<AppContext, AppEvent, AppTypestate>(
         exit: ["handleStateExit"],
       },
       game: {
-        initial: "count",
-        states: {
-          count: {
-            entry: ["handleStateEnter"],
-            exit: ["handleStateExit"],
-            on: {
-              COMPLETED: "play",
-            },
-          },
-          play: {
-            entry: ["handleStateEnter"],
-            exit: ["handleStateExit"],
-            on: {
-              COMPLETED: "over",
-            },
-          },
-          over: {
-            type: "final",
-            entry: ["handleStateEnter"],
-            exit: ["handleStateExit"],
-            on: {
-              REPLAY: "count",
-              END_GAME: "#title",
-            },
-          },
+        on: {
+          REPLAY: "game",
+          END_GAME: "title",
         },
+        entry: ["handleStateEnter"],
+        exit: ["handleStateExit"],
       },
     },
   },
@@ -141,9 +119,7 @@ export const startMachine = (app: GameApp): void => {
   stateInstances = {
     assetLoading: new AssetLoadingState({ app, machineService: appService }),
     title: new TitleState({ app, machineService: appService }),
-    "game.count": new GameCountState({ app, machineService: appService }),
-    "game.play": new GamePlayState({ app, machineService: appService }),
-    "game.over": new GameOverState({ app, machineService: appService }),
+    game: new GameState({ app, machineService: appService }),
   };
 
   appService.start();
