@@ -121,7 +121,7 @@ export const appMachine = createMachine<AppContext, AppEvent, AppTypestate>(
       },
       handleStateExit: (_context, _event, meta) => {
         const stateKey = convertStateKeyFrom(meta.state.value);
-        console.log(`enter - ${stateKey}`);
+        console.log(`exit - ${stateKey}`);
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
