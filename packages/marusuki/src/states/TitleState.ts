@@ -30,7 +30,7 @@ export class TitleState extends ViewState {
 
     this.container.interactive = true;
     this.container.buttonMode = true;
-    this.container.once("pointerdown", this.onTapForStart);
+    this.container.on("pointerdown", this.onTapForStart);
   }
 
   onExit(): void {
@@ -38,7 +38,9 @@ export class TitleState extends ViewState {
     app.stage.removeChild(this.container);
   }
 
-  onTapForStart = () => {
+  onTapForStart = (): void => {
+    // 特定の？Android端末onceが発火しない...
+    this.container.off("pointerdown", this.onTapForStart);
     this.sendEvent({ type: "START_GAME" });
   };
 }
