@@ -10,9 +10,12 @@ export const loadSound = (sources: {
   });
 };
 
-export const loadSprite = <T extends string>(sources: {
-  [id: string]: string;
-}): Promise<
+export const loadSprite = <T extends string>(
+  sources: {
+    [id: string]: string;
+  },
+  onProgress: (progress: number) => void
+): Promise<
   {
     [key in T]: PIXI.ILoaderResource;
   }
@@ -20,6 +23,9 @@ export const loadSprite = <T extends string>(sources: {
   const loader = new PIXI.Loader();
   Object.entries(sources).forEach(([id, url]) => {
     loader.add(id, url);
+  });
+  loader.onProgress.add(() => {
+    onProgress(loader.progress);
   });
 
   return new Promise((resolve) => {

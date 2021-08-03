@@ -232,7 +232,6 @@ export class GameState extends ViewState {
     };
 
     const startApp = () => {
-      app.start();
       sound.play("drum_loop", { loop: true });
       drumLoopInstance = drumLoop.instances[0] || null;
       app.ticker.add(() => {

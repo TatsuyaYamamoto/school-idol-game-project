@@ -28,10 +28,17 @@ export class GameApp extends PIXI.Application {
     return scale;
   }
 
+  public get width(): number {
+    return this.renderer.width;
+  }
+
+  public get height(): number {
+    return this.renderer.height;
+  }
+
   constructor() {
     super({
       backgroundColor: parseInt("#f3f2f2".replace("#", ""), 16),
-      autoStart: false,
       width: canvasWidth,
       height: canvasHeight,
     });

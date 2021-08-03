@@ -20,6 +20,7 @@ const convertStateKeyFrom = (stateValue: StateValue): string => {
 };
 
 export interface AppContext {
+  currentStateKey: string;
   loader: {
     spriteMap: { [key: string]: PIXI.ILoaderResource };
     soundMap: SoundMap;
@@ -54,6 +55,7 @@ export const appMachine = createMachine<AppContext, AppEvent, AppTypestate>(
   {
     initial: "assetLoading",
     context: {
+      currentStateKey: "assetLoading",
       loader: {
         spriteMap: {},
         soundMap: {},
@@ -87,8 +89,9 @@ export const appMachine = createMachine<AppContext, AppEvent, AppTypestate>(
   },
   {
     actions: {
-      handleStateEnter: (_context, _event, meta) => {
+      handleStateEnter: (context, _event, meta) => {
         const stateKey = convertStateKeyFrom(meta.state.value);
+        context.currentStateKey = stateKey;
         console.log(`enter - ${stateKey}`);
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -97,8 +100,8 @@ export const appMachine = createMachine<AppContext, AppEvent, AppTypestate>(
         const currentState = stateInstances[stateKey];
         currentState.onEnter();
       },
-      handleStateExit: (_context, _event, meta) => {
-        const stateKey = convertStateKeyFrom(meta.state.value);
+      handleStateExit: (context) => {
+        const stateKey = context.currentStateKey;
         console.log(`exit - ${stateKey}`);
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
