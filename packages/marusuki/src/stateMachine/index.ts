@@ -6,6 +6,7 @@ import { createMachine, interpret, StateValue } from "xstate";
 import * as PIXI from "pixi-v6";
 import { SoundMap } from "@pixi/sound";
 
+import { GameApp } from "../GameApp";
 import { AssetLoadingState } from "./states/AssetLoadingState";
 import { TitleState } from "./states/TitleState";
 import { GameCountState } from "./states/game/CountState";
@@ -136,7 +137,7 @@ export const appService = interpret(appMachine);
 
 let stateInstances = {};
 
-export const startMachine = (app: PIXI.Application): void => {
+export const startMachine = (app: GameApp): void => {
   stateInstances = {
     assetLoading: new AssetLoadingState({ app, machineService: appService }),
     title: new TitleState({ app, machineService: appService }),

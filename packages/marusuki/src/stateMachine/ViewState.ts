@@ -1,13 +1,13 @@
-import * as PIXI from "pixi-v6";
 import { Interpreter, StateSchema } from "xstate";
 
 import { AppContext, AppEvent } from ".";
+import { GameApp } from "../GameApp";
 
 export abstract class ViewState {
   // eslint-disable-next-line no-useless-constructor
   constructor(
     protected context: {
-      app: PIXI.Application;
+      app: GameApp;
       machineService: Interpreter<AppContext, StateSchema, AppEvent>;
     }
   ) {}

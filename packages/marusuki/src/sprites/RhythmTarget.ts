@@ -22,7 +22,6 @@ export class RhythmTarget extends PIXI.Sprite {
     this.anchor.set(0.5);
     this.interactive = true;
     this.visible = false;
-    this.scale.set(0.5);
   }
 
   show(state: "normal" | "ng"): void {

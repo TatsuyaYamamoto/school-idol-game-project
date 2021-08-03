@@ -5,6 +5,7 @@ export class CounterText extends PIXI.Text {
 
   public constructor(private _label: string = "") {
     super(_label);
+    this.anchor.set(0.5);
     this.update();
   }
 

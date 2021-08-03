@@ -2,7 +2,7 @@ export const assets = {
   images: {
     // "chisato": "assets/images/chisato.png",
     "chisato.spritesheet": "assets/images/chisato.spritesheet@0.5.json",
-    chisato_success: "assets/images/chisato_06.png",
+    chisato_success: "assets/images/chisato_06@0.5.png",
     touch_target_ok_takoyaki_1: "assets/images/touch_target_ok_takoyaki_1.png",
     touch_target_ng_piman_1: "assets/images/touch_target_ng_piman_1.png",
     touch_target_ng_piman_2: "assets/images/touch_target_ng_piman_2.png",

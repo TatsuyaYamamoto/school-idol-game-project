@@ -1,5 +1,5 @@
-import * as PIXI from "pixi-v6";
 import { startMachine } from "./stateMachine";
+import { GameApp } from "./GameApp";
 
 const appEl = document.getElementById("app");
 const guideBeforeLaunchEl = document.getElementById("guide-before-launch");
@@ -11,10 +11,7 @@ export const bootstrap = (): void => {
     appEl.style.display = "flex";
     guideBeforeLaunchEl.style.display = "none";
 
-    const app = new PIXI.Application({
-      backgroundColor: parseInt("#f3f2f2".replace("#", ""), 16),
-      autoStart: false,
-    });
+    const app = new GameApp();
     appEl.appendChild(app.view);
 
     startMachine(app);

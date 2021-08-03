@@ -8,6 +8,7 @@ import { Chisato } from "../../../sprites/Chisato";
 import { CounterText } from "../../../sprites/CounterText";
 import { SpeedText } from "../../../sprites/SpeedText";
 import { RhythmTarget } from "../../../sprites/RhythmTarget";
+import { BeatText } from "../../../sprites/BeatText";
 
 import { randomInt } from "../../../helper/utils";
 
@@ -69,23 +70,24 @@ export class GameCountState extends ViewState {
     app.stage.addChild(gameContainer);
 
     const successCounterText = new CounterText("Count: ");
-    successCounterText.x = 400;
-    successCounterText.y = 20;
-    successCounterText.anchor.set(0.5);
+    successCounterText.x = this.context.app.getX(0.5);
+    successCounterText.y = this.context.app.getY(0.05);
+    successCounterText.scale.set(this.context.app.scale);
 
     const speedText = new SpeedText(MIN_SPEED);
-    speedText.x = 400;
-    speedText.y = 50;
-    speedText.anchor.set(0.5);
+    speedText.x = this.context.app.getX(0.5);
+    speedText.y = this.context.app.getY(0.1);
+    speedText.scale.set(this.context.app.scale);
 
     const ngCounterText = new CounterText("NG: ");
-    ngCounterText.x = 400;
-    ngCounterText.y = 80;
-    ngCounterText.anchor.set(0.5);
+    ngCounterText.x = this.context.app.getX(0.5);
+    ngCounterText.y = this.context.app.getY(0.15);
+    ngCounterText.scale.set(this.context.app.scale);
 
-    const beatText = new PIXI.Text(``);
-    beatText.x = 400;
-    beatText.y = 110;
+    const beatText = new BeatText();
+    beatText.x = this.context.app.getX(0.5);
+    beatText.y = this.context.app.getY(0.2);
+    beatText.scale.set(this.context.app.scale);
     beatText.anchor.set(0.5);
 
     const chisato = new Chisato({
@@ -94,8 +96,9 @@ export class GameCountState extends ViewState {
       ).map(([, t]) => t),
       successTexture: spriteMap.chisato_success.texture as PIXI.Texture,
     });
-    chisato.x = app.renderer.width * 0.5;
-    chisato.y = app.renderer.height * 0.5;
+    chisato.x = this.context.app.getX(0.5);
+    chisato.y = this.context.app.getY(0.5);
+    chisato.setScale(this.context.app.scale * 0.5);
     chisato.playAnimation();
     gameContainer.addChild(chisato);
 
@@ -123,10 +126,10 @@ export class GameCountState extends ViewState {
     };
 
     const [upperLeft, upperRight, lowerLeft, lowerRight] = [
-      { x: 100, y: 100 },
-      { x: 700, y: 100 },
-      { x: 100, y: 450 },
-      { x: 700, y: 450 },
+      { x: 0.15, y: 0.2 },
+      { x: 0.85, y: 0.2 },
+      { x: 0.15, y: 0.8 },
+      { x: 0.85, y: 0.8 },
     ].map((params) => {
       const sprite = new RhythmTarget({
         normal: spriteMap.touch_target_ok_takoyaki_1.texture as PIXI.Texture,
@@ -135,8 +138,9 @@ export class GameCountState extends ViewState {
         ng: spriteMap.touch_target_ng_piman_1.texture as PIXI.Texture,
         ngTouched: spriteMap.touch_target_ng_piman_1.texture as PIXI.Texture,
       });
-      sprite.x = params.x;
-      sprite.y = params.y;
+      sprite.x = this.context.app.getX(params.x);
+      sprite.y = this.context.app.getY(params.y);
+      sprite.scale.set(this.context.app.scale * 0.4);
       sprite.on("pointerdown", () => {
         onTapRhythmTarget(sprite);
       });
