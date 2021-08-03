@@ -5,12 +5,12 @@ import hotkeys from "hotkeys-js";
 import { ViewState } from "../ViewState";
 
 import { Chisato } from "../sprites/Chisato";
-import { CounterText } from "../sprites/CounterText";
 import { SpeedText } from "../sprites/SpeedText";
 import { RhythmTarget } from "../sprites/RhythmTarget";
 import { BeatText } from "../sprites/BeatText";
 
 import { randomInt } from "../helper/utils";
+import { PointCounter } from "../sprites/PointCounter";
 
 const MIN_SPEED = 1;
 const MAX_SPEED = 1.5;
@@ -69,24 +69,22 @@ export class GameState extends ViewState {
     const gameContainer = new PIXI.Container();
     app.stage.addChild(gameContainer);
 
-    const successCounterText = new CounterText("Count: ");
-    successCounterText.x = this.context.app.getX(0.5);
-    successCounterText.y = this.context.app.getY(0.05);
-    successCounterText.scale.set(this.context.app.scale);
+    const pointCounter = new PointCounter({
+      labelTexture: spriteMap.touch_target_ok_takoyaki_1
+        .texture as PIXI.Texture,
+    });
+    pointCounter.x = this.context.app.getX(0.5);
+    pointCounter.y = this.context.app.getY(0.1);
+    pointCounter.setScale(this.context.app.scale);
 
     const speedText = new SpeedText(MIN_SPEED);
     speedText.x = this.context.app.getX(0.5);
-    speedText.y = this.context.app.getY(0.1);
+    speedText.y = this.context.app.getY(0.95);
     speedText.scale.set(this.context.app.scale);
-
-    const ngCounterText = new CounterText("NG: ");
-    ngCounterText.x = this.context.app.getX(0.5);
-    ngCounterText.y = this.context.app.getY(0.15);
-    ngCounterText.scale.set(this.context.app.scale);
 
     const beatText = new BeatText();
     beatText.x = this.context.app.getX(0.5);
-    beatText.y = this.context.app.getY(0.2);
+    beatText.y = this.context.app.getY(0.85);
     beatText.scale.set(this.context.app.scale);
     beatText.anchor.set(0.5);
 
@@ -107,7 +105,7 @@ export class GameState extends ViewState {
 
       if (target.state === "normal" /* success */) {
         sound.play("shan");
-        successCounterText.countUp();
+        pointCounter.countUp();
         chisato.showSuccess();
         setTimeout(() => {
           chisato.showAnimation();
@@ -121,7 +119,6 @@ export class GameState extends ViewState {
       } else {
         sound.play("pon");
         navigator.vibrate(200);
-        ngCounterText.countUp();
       }
     };
 
@@ -148,12 +145,7 @@ export class GameState extends ViewState {
     });
 
     gameContainer.addChild(upperLeft, upperRight, lowerLeft, lowerRight);
-    gameContainer.addChild(
-      successCounterText,
-      speedText,
-      ngCounterText,
-      beatText
-    );
+    gameContainer.addChild(pointCounter, speedText, beatText);
 
     const images = [upperLeft, upperRight, lowerLeft, lowerRight] as const;
     const visibleImagesMap: { [beat: string]: PIXI.Sprite[] | undefined } = {};
