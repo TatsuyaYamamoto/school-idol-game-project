@@ -38,7 +38,8 @@ export class GameApp extends PIXI.Application {
 
   constructor() {
     super({
-      backgroundColor: parseInt("#f3f2f2".replace("#", ""), 16),
+      // backgroundColor: parseInt("#f3f2f2".replace("#", ""), 16),
+      transparent: true,
       width: canvasWidth,
       height: canvasHeight,
     });

@@ -20,6 +20,7 @@ const convertStateKeyFrom = (stateValue: StateValue): string => {
 };
 
 export interface AppContext {
+  debug: boolean;
   currentStateKey: string;
   loader: {
     spriteMap: { [key: string]: PIXI.ILoaderResource };
@@ -55,6 +56,7 @@ export const appMachine = createMachine<AppContext, AppEvent, AppTypestate>(
   {
     initial: "assetLoading",
     context: {
+      debug: true,
       currentStateKey: "assetLoading",
       loader: {
         spriteMap: {},

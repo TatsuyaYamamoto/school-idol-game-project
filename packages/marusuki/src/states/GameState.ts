@@ -1,6 +1,6 @@
 import * as PIXI from "pixi-v6";
-import { IMediaInstance, sound } from "@pixi/sound";
-import hotkeys from "hotkeys-js";
+import { Sound, sound } from "@pixi/sound";
+import hotkeys, { KeyHandler } from "hotkeys-js";
 
 import { ViewState } from "../ViewState";
 
@@ -59,8 +59,28 @@ const detectBeats = (
 };
 
 export class GameState extends ViewState {
+  private visibleImagesMap!: { [beat: string]: PIXI.Sprite[] | undefined };
+
+  private rhythmTargetImages!: [
+    RhythmTarget,
+    RhythmTarget,
+    RhythmTarget,
+    RhythmTarget
+  ];
+
+  private chisato!: Chisato;
+
+  private pointCounter!: PointCounter;
+
+  private speedText?: SpeedText;
+
+  private beatText?: BeatText;
+
+  private drumLoop!: Sound;
+
   onEnter(): void {
     const { app } = this.context;
+    const { debug } = this.context.machineService.state.context;
     const {
       spriteMap,
       soundMap,
@@ -69,58 +89,26 @@ export class GameState extends ViewState {
     const gameContainer = new PIXI.Container();
     app.stage.addChild(gameContainer);
 
-    const pointCounter = new PointCounter({
+    this.pointCounter = new PointCounter({
       labelTexture: spriteMap.touch_target_ok_takoyaki_1
         .texture as PIXI.Texture,
     });
-    pointCounter.x = this.context.app.getX(0.5);
-    pointCounter.y = this.context.app.getY(0.1);
-    pointCounter.setScale(this.context.app.scale);
+    this.pointCounter.x = this.context.app.getX(0.5);
+    this.pointCounter.y = this.context.app.getY(0.1);
+    this.pointCounter.setScale(this.context.app.scale);
+    gameContainer.addChild(this.pointCounter);
 
-    const speedText = new SpeedText(MIN_SPEED);
-    speedText.x = this.context.app.getX(0.5);
-    speedText.y = this.context.app.getY(0.95);
-    speedText.scale.set(this.context.app.scale);
-
-    const beatText = new BeatText();
-    beatText.x = this.context.app.getX(0.5);
-    beatText.y = this.context.app.getY(0.85);
-    beatText.scale.set(this.context.app.scale);
-    beatText.anchor.set(0.5);
-
-    const chisato = new Chisato({
+    this.chisato = new Chisato({
       baseAnimationTextures: Object.entries(
         spriteMap["chisato.spritesheet"].textures || {}
       ).map(([, t]) => t),
       successTexture: spriteMap.chisato_success.texture as PIXI.Texture,
     });
-    chisato.x = this.context.app.getX(0.5);
-    chisato.y = this.context.app.getY(0.5);
-    chisato.setScale(this.context.app.scale * 0.5);
-    chisato.playAnimation();
-    gameContainer.addChild(chisato);
-
-    const onTapRhythmTarget = (target: RhythmTarget): void => {
-      target.touch();
-
-      if (target.state === "normal" /* success */) {
-        sound.play("shan");
-        pointCounter.countUp();
-        chisato.showSuccess();
-        setTimeout(() => {
-          chisato.showAnimation();
-        }, 200);
-
-        try {
-          navigator.vibrate(50);
-        } catch (e) {
-          // ignore
-        }
-      } else {
-        sound.play("pon");
-        navigator.vibrate(200);
-      }
-    };
+    this.chisato.x = this.context.app.getX(0.5);
+    this.chisato.y = this.context.app.getY(0.5);
+    this.chisato.setScale(this.context.app.scale * 0.5);
+    this.chisato.playAnimation();
+    gameContainer.addChild(this.chisato);
 
     const [upperLeft, upperRight, lowerLeft, lowerRight] = [
       { x: 0.15, y: 0.2 },
@@ -147,143 +135,38 @@ export class GameState extends ViewState {
       sprite.y = this.context.app.getY(params.y);
       sprite.scale.set(this.context.app.scale * 0.4);
       sprite.on("pointerdown", () => {
-        onTapRhythmTarget(sprite);
+        this.onTapRhythmTarget(sprite);
       });
       return sprite;
     });
-
     gameContainer.addChild(upperLeft, upperRight, lowerLeft, lowerRight);
-    gameContainer.addChild(pointCounter, speedText, beatText);
 
-    const images = [upperLeft, upperRight, lowerLeft, lowerRight] as const;
-    const visibleImagesMap: { [beat: string]: PIXI.Sprite[] | undefined } = {};
-    const drumLoop = soundMap.drum_loop;
-    drumLoop.speed = MIN_SPEED;
-    let drumLoopInstance: IMediaInstance | null = null;
+    if (debug) {
+      this.speedText = new SpeedText(MIN_SPEED);
+      this.speedText.x = this.context.app.getX(0.5);
+      this.speedText.y = this.context.app.getY(0.95);
+      this.speedText.scale.set(this.context.app.scale);
 
-    hotkeys("q,z,o,m", (event, handler) => {
-      event.preventDefault();
+      this.beatText = new BeatText();
+      this.beatText.x = this.context.app.getX(0.5);
+      this.beatText.y = this.context.app.getY(0.85);
+      this.beatText.scale.set(this.context.app.scale);
+      this.beatText.anchor.set(0.5);
 
-      if (handler.key === "q") {
-        if (upperLeft.visible) {
-          onTapRhythmTarget(upperLeft);
-        } else {
-          sound.play("pon");
-        }
-      }
-      if (handler.key === "z") {
-        if (lowerLeft.visible) {
-          onTapRhythmTarget(lowerLeft);
-        } else {
-          sound.play("pon");
-        }
-      }
-      if (handler.key === "o") {
-        if (upperRight.visible) {
-          onTapRhythmTarget(upperRight);
-        } else {
-          sound.play("pon");
-        }
-      }
-      if (handler.key === "m") {
-        if (lowerRight.visible) {
-          onTapRhythmTarget(lowerRight);
-        } else {
-          sound.play("pon");
-        }
-      }
-    });
+      gameContainer.addChild(this.speedText, this.beatText);
+    }
 
-    const hideSprite = (beat: number) => {
-      const visibleImages = visibleImagesMap[beat];
-      if (visibleImages) {
-        visibleImages.forEach((i) => {
-          // eslint-disable-next-line no-param-reassign
-          i.visible = false;
-        });
-      }
-      visibleImagesMap[beat] = undefined;
-    };
+    this.visibleImagesMap = {};
+    this.rhythmTargetImages = [upperLeft, upperRight, lowerLeft, lowerRight];
 
-    const showSprite = (beat: number) => {
-      hideSprite(beat);
+    this.drumLoop = soundMap.drum_loop;
+    this.drumLoop.speed = MIN_SPEED;
 
-      const normalTargetIndex = randomInt(3);
-      const nomalImage = images[normalTargetIndex];
-      nomalImage.show("normal");
-      visibleImagesMap[beat] = [nomalImage];
-
-      const showNgTarget = randomInt(2) === 0;
-      if (showNgTarget) {
-        const ngTargetIndex = (normalTargetIndex + 1 + randomInt(2)) % 4;
-        const ngImage = images[ngTargetIndex];
-        ngImage.show("ng");
-        visibleImagesMap[beat]?.push(ngImage);
-      }
-    };
-
-    const checkCountAndUpdateSpeed = (measures: number) => {
-      const increment = 0.1 * Math.floor(measures / 4);
-      const newSpeed =
-        MIN_SPEED + increment < MAX_SPEED ? MIN_SPEED + increment : MAX_SPEED;
-
-      drumLoop.speed = newSpeed;
-      speedText.change(newSpeed);
-    };
+    hotkeys("q,z,o,m", this.hotkeysCallback);
 
     const startApp = () => {
       sound.play("drum_loop", { loop: true });
-      drumLoopInstance = drumLoop.instances[0] || null;
-      app.ticker.add(() => {
-        const progress = drumLoopInstance?.progress;
-        if (progress === undefined) {
-          return;
-        }
-
-        detectBeats(progress, {
-          0: ({ measures }) => {
-            beatText.text = `0/8`;
-            console.log(progress, "0/4", measures);
-            checkCountAndUpdateSpeed(measures);
-          },
-          0.125: () => {
-            beatText.text = `[ 1/8 ]`;
-            console.log(progress, "1/8");
-
-            showSprite(1 / 8);
-          },
-          0.25: () => {
-            beatText.text = `[ [ 2/8 ] ]`;
-            console.log(progress, "1/4");
-          },
-          0.375: () => {
-            beatText.text = `[ 3/8 ]`;
-            console.log(progress, "3/8");
-
-            hideSprite(1 / 8);
-          },
-          0.5: () => {
-            beatText.text = `4/8`;
-            console.log(progress, "2/4");
-          },
-          0.625: () => {
-            beatText.text = `[ 5/8 ]`;
-            console.log(progress, "5/8");
-
-            showSprite(5 / 8);
-          },
-          0.75: () => {
-            beatText.text = `[ [ 6/8 ] ]`;
-            console.log(progress, "3/4");
-          },
-          0.875: () => {
-            beatText.text = `[ 7/8 ]`;
-            console.log(progress, "7/8");
-
-            hideSprite(5 / 8);
-          },
-        });
-      });
+      app.ticker.add(this.gameLoop);
     };
 
     startApp();
@@ -292,4 +175,151 @@ export class GameState extends ViewState {
   onExit(): void {
     //
   }
+
+  private hideSprite = (beat: number) => {
+    const visibleImages = this.visibleImagesMap[beat];
+    if (visibleImages) {
+      visibleImages.forEach((i) => {
+        // eslint-disable-next-line no-param-reassign
+        i.visible = false;
+      });
+    }
+    this.visibleImagesMap[beat] = undefined;
+  };
+
+  private showSprite = (beat: number) => {
+    this.hideSprite(beat);
+
+    const normalTargetIndex = randomInt(3);
+    const nomalImage = this.rhythmTargetImages[normalTargetIndex];
+    nomalImage.show("normal");
+    this.visibleImagesMap[beat] = [nomalImage];
+
+    const showNgTarget = randomInt(2) === 0;
+    if (showNgTarget) {
+      const ngTargetIndex = (normalTargetIndex + 1 + randomInt(2)) % 4;
+      const ngImage = this.rhythmTargetImages[ngTargetIndex];
+      ngImage.show("ng");
+      this.visibleImagesMap[beat]?.push(ngImage);
+    }
+  };
+
+  private checkCountAndUpdateSpeed = (measures: number) => {
+    const increment = 0.1 * Math.floor(measures / 4);
+    const newSpeed =
+      MIN_SPEED + increment < MAX_SPEED ? MIN_SPEED + increment : MAX_SPEED;
+
+    this.drumLoop.speed = newSpeed;
+    this.speedText?.change(newSpeed);
+  };
+
+  private onTapRhythmTarget = (target: RhythmTarget): void => {
+    target.touch();
+
+    if (target.state === "normal" /* success */) {
+      sound.play("shan");
+      this.pointCounter.countUp();
+      this.chisato.showSuccess();
+      setTimeout(() => {
+        this.chisato.showAnimation();
+      }, 200);
+
+      try {
+        navigator.vibrate(50);
+      } catch (e) {
+        // ignore
+      }
+    } else {
+      sound.play("pon");
+      navigator.vibrate(200);
+    }
+  };
+
+  private hotkeysCallback: KeyHandler = (event, handler) => {
+    event.preventDefault();
+    // `this.rhythmTargetImages` の代入の順番と変わっていないことに注意！
+    const [
+      upperLeft,
+      upperRight,
+      lowerLeft,
+      lowerRight,
+    ] = this.rhythmTargetImages;
+
+    if (handler.key === "q") {
+      if (upperLeft.visible) {
+        this.onTapRhythmTarget(upperLeft);
+      } else {
+        sound.play("pon");
+      }
+    }
+    if (handler.key === "z") {
+      if (lowerLeft.visible) {
+        this.onTapRhythmTarget(lowerLeft);
+      } else {
+        sound.play("pon");
+      }
+    }
+    if (handler.key === "o") {
+      if (upperRight.visible) {
+        this.onTapRhythmTarget(upperRight);
+      } else {
+        sound.play("pon");
+      }
+    }
+    if (handler.key === "m") {
+      if (lowerRight.visible) {
+        this.onTapRhythmTarget(lowerRight);
+      } else {
+        sound.play("pon");
+      }
+    }
+  };
+
+  private gameLoop = () => {
+    const progress: number | undefined = this.drumLoop.instances[0]?.progress;
+    if (progress === undefined) {
+      return;
+    }
+
+    detectBeats(progress, {
+      0: ({ measures }) => {
+        console.log(progress, "0/4", measures);
+        this.checkCountAndUpdateSpeed(measures);
+
+        this.beatText?.show(0);
+      },
+      0.125: () => {
+        console.log(progress, "1/8");
+        this.showSprite(1 / 8);
+        this.beatText?.show(1);
+      },
+      0.25: () => {
+        console.log(progress, "1/4");
+        this.beatText?.show(2);
+      },
+      0.375: () => {
+        console.log(progress, "3/8");
+        this.hideSprite(1 / 8);
+        this.beatText?.show(3);
+      },
+      0.5: () => {
+        console.log(progress, "2/4");
+        this.beatText?.show(4);
+      },
+      0.625: () => {
+        console.log(progress, "5/8");
+        this.showSprite(5 / 8);
+        this.beatText?.show(5);
+      },
+      0.75: () => {
+        console.log(progress, "3/4");
+        this.beatText?.show(6);
+      },
+      0.875: () => {
+        console.log(progress, "7/8");
+        this.hideSprite(5 / 8);
+        this.beatText?.show(7);
+      },
+    });
+  };
 }
