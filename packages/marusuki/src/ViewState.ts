@@ -1,7 +1,7 @@
 import { Interpreter, StateSchema } from "xstate";
 
-import { AppContext, AppEvent } from "../state-machine";
-import { GameApp } from "../GameApp";
+import { AppContext, AppEvent } from "./state-machine";
+import { GameApp } from "./GameApp";
 
 export abstract class ViewState {
   // eslint-disable-next-line no-useless-constructor

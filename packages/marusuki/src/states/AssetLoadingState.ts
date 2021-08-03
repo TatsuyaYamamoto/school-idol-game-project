@@ -1,4 +1,4 @@
-import { ViewState } from "../stateMachine/ViewState";
+import { ViewState } from "../ViewState";
 import { assets } from "../assets";
 import { loadSound, loadSprite } from "../helper/loader";
 

@@ -2,7 +2,7 @@ import * as PIXI from "pixi-v6";
 import { IMediaInstance, sound } from "@pixi/sound";
 import hotkeys from "hotkeys-js";
 
-import { ViewState } from "../stateMachine/ViewState";
+import { ViewState } from "../ViewState";
 
 import { Chisato } from "../sprites/Chisato";
 import { CounterText } from "../sprites/CounterText";
