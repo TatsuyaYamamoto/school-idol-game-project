@@ -15,48 +15,6 @@ import { PointCounter } from "../sprites/PointCounter";
 const MIN_SPEED = 1;
 const MAX_SPEED = 1.5;
 type CallbackableBeat = 0 | 0.125 | 0.25 | 0.375 | 0.5 | 0.625 | 0.75 | 0.875;
-let measureMap: { [key: string]: boolean } = {};
-let measureCount = 0;
-let prevProgress = Number.MAX_SAFE_INTEGER;
-
-const detectBeats = (
-  progress: number,
-  beatCallbacks: {
-    [beat in CallbackableBeat]: (params: { measures: number }) => void;
-  }
-) => {
-  if (progress < prevProgress) {
-    measureCount += 1;
-  }
-  prevProgress = progress;
-
-  const beats: CallbackableBeat[] = [
-    0,
-    0.125,
-    0.25,
-    0.375,
-    0.5,
-    0.625,
-    0.75,
-    0.875,
-  ];
-
-  const callbackableBeat = beats.find((beat) => {
-    if (beat < progress && !measureMap[`${measureCount}_${beat}`]) {
-      measureMap[`${measureCount}_${beat}`] = true;
-      return true;
-    }
-    return false;
-  });
-
-  if (callbackableBeat === undefined) {
-    return;
-  }
-
-  beatCallbacks[callbackableBeat]({
-    measures: measureCount,
-  });
-};
 
 export class GameState extends ViewState {
   private rhythmTargetImages!: [
@@ -77,6 +35,12 @@ export class GameState extends ViewState {
   private beatText?: BeatText;
 
   private drumLoop!: Sound;
+
+  private measureMap: { [key: string]: boolean } = {};
+
+  private measureCount = 0;
+
+  private prevProgress = Number.MAX_SAFE_INTEGER;
 
   onEnter(): void {
     const { app } = this.context;
@@ -205,8 +169,8 @@ export class GameState extends ViewState {
     setTimeout(() => {
       document
         .getElementById("app")
-        ?.addEventListener("click", this.restartGame);
-    }, 1000);
+        ?.addEventListener("pointerdown", this.restartGame);
+    }, 600);
   }
 
   /** ************************************************************************************
@@ -233,8 +197,9 @@ export class GameState extends ViewState {
 
   private resetGameVariables = (): void => {
     this.pointCounter.reset();
-    measureMap = {};
-    measureCount = 0;
+    this.measureMap = {};
+    this.measureCount = 0;
+    this.prevProgress = Number.MAX_SAFE_INTEGER;
   };
 
   private showSprite = () => {
@@ -312,10 +277,10 @@ export class GameState extends ViewState {
       return;
     }
 
-    detectBeats(progress, {
-      0: ({ measures }) => {
-        console.log(progress, "0/4", measures);
-        this.checkCountAndUpdateSpeed(measures);
+    this.detectBeats(progress, {
+      0: () => {
+        console.log(progress, "0/4", this.measureCount);
+        this.checkCountAndUpdateSpeed(this.measureCount);
 
         this.beatText?.show(0);
       },
@@ -365,12 +330,49 @@ export class GameState extends ViewState {
   private restartGame = () => {
     document
       .getElementById("app")
-      ?.removeEventListener("click", this.restartGame);
+      ?.removeEventListener("pointerdown", this.restartGame);
     document
       .getElementById("share-action")
       ?.classList.add("share-action--hide");
 
     this.resetGameVariables();
     this.onGameStart();
+  };
+
+  private detectBeats = (
+    progress: number,
+    beatCallbacks: {
+      [beat in CallbackableBeat]: () => void;
+    }
+  ) => {
+    if (progress < this.prevProgress) {
+      this.measureCount += 1;
+    }
+    this.prevProgress = progress;
+
+    const beats: CallbackableBeat[] = [
+      0,
+      0.125,
+      0.25,
+      0.375,
+      0.5,
+      0.625,
+      0.75,
+      0.875,
+    ];
+
+    const callbackableBeat = beats.find((beat) => {
+      if (beat < progress && !this.measureMap[`${this.measureCount}_${beat}`]) {
+        this.measureMap[`${this.measureCount}_${beat}`] = true;
+        return true;
+      }
+      return false;
+    });
+
+    if (callbackableBeat === undefined) {
+      return;
+    }
+
+    beatCallbacks[callbackableBeat]();
   };
 }
