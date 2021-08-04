@@ -12,6 +12,7 @@ import { BeatText } from "../sprites/BeatText";
 import { randomInt } from "../helper/utils";
 import { PointCounter } from "../sprites/PointCounter";
 import { GameoverEffect } from "../sprites/GameoverEffect";
+import { getShareMessage } from "../helper/shareMessages";
 
 const MIN_SPEED = 1;
 const MAX_SPEED = 1.5;
@@ -176,7 +177,7 @@ export class GameState extends ViewState {
       const sfTwitterShareButton = shareAction.getElementsByTagName(
         "sf-twitter-share-button"
       )[0];
-      sfTwitterShareButton.setAttribute("text", `結果は${resultPoint}`);
+      sfTwitterShareButton.setAttribute("text", getShareMessage(resultPoint));
     }
 
     setTimeout(() => {
