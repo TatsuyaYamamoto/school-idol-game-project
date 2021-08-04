@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 const htmlParams = {};
 
@@ -8,6 +9,9 @@ const plugins = [
     template: "src/index.ejs",
     templateParameters: htmlParams,
     hash: true,
+  }),
+  new CopyPlugin({
+    patterns: [{ from: "public", to: "." }],
   }),
 ];
 
