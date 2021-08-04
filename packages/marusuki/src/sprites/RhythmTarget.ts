@@ -33,16 +33,14 @@ export class RhythmTarget extends PIXI.Sprite {
   }
 
   show(state: "normal" | "ng"): void {
-    this.isPlayingSuccessAnimation = false;
     if (state === "normal") {
       this.texture = this.params.normalTexture;
     }
     if (state === "ng") {
-      const ngTextureSize = this.params.ngTextures.length;
-      const randomIndex = randomInt(ngTextureSize);
+      const randomIndex = randomInt(this.params.ngTextures.length - 1);
       this.texture = this.params.ngTextures[randomIndex];
     }
-
+    this.isPlayingSuccessAnimation = false;
     this._state = state;
     this.visible = true;
   }
@@ -53,8 +51,7 @@ export class RhythmTarget extends PIXI.Sprite {
 
   showSuccessAnimation(): void {
     this.isPlayingSuccessAnimation = true;
-    const touchedTextureSize = this.params.touchedTextures.length;
-    const randomIndex = randomInt(touchedTextureSize);
+    const randomIndex = randomInt(this.params.touchedTextures.length - 1);
     this.texture = this.params.touchedTextures[randomIndex];
   }
 }
