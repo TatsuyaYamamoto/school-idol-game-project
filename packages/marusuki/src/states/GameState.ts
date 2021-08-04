@@ -15,7 +15,7 @@ import { PointCounter } from "../sprites/PointCounter";
 const MIN_SPEED = 1;
 const MAX_SPEED = 1.5;
 type CallbackableBeat = 0 | 0.125 | 0.25 | 0.375 | 0.5 | 0.625 | 0.75 | 0.875;
-const measureMap: { [key: string]: boolean } = {};
+let measureMap: { [key: string]: boolean } = {};
 let measureCount = 0;
 let prevProgress = Number.MAX_SAFE_INTEGER;
 
@@ -233,6 +233,8 @@ export class GameState extends ViewState {
 
   private resetGameVariables = (): void => {
     this.pointCounter.reset();
+    measureMap = {};
+    measureCount = 0;
   };
 
   private showSprite = () => {

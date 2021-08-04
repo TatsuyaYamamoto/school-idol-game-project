@@ -56,7 +56,7 @@ export const appMachine = createMachine<AppContext, AppEvent, AppTypestate>(
   {
     initial: "assetLoading",
     context: {
-      debug: true,
+      debug: false,
       currentStateKey: "assetLoading",
       loader: {
         spriteMap: {},
