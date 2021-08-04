@@ -103,6 +103,9 @@ export class GameState extends ViewState {
         spriteMap["chisato.spritesheet"].textures || {}
       ).map(([, t]) => t),
       successTexture: spriteMap.chisato_success.texture as PIXI.Texture,
+      resultTextures: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(
+        (i) => spriteMap[`chisato_gameover_${i}`].texture as PIXI.Texture
+      ),
     });
     this.chisato.x = this.context.app.getX(0.5);
     this.chisato.y = this.context.app.getY(0.5);
@@ -185,6 +188,8 @@ export class GameState extends ViewState {
     this.chisato.stopAnimation();
     const resultPoint = this.pointCounter.value;
     console.log(`resultPoint: ${resultPoint}`);
+
+    this.chisato.showResult(resultPoint);
 
     const shareAction = document.getElementById("share-action");
     if (shareAction) {

@@ -5,6 +5,8 @@ export class Chisato extends PIXI.Container {
 
   private successSprite: PIXI.Sprite;
 
+  private resultSprites: PIXI.Sprite[];
+
   public set animationSpeed(value: number) {
     this.animatedSprite.animationSpeed = value;
   }
@@ -12,6 +14,7 @@ export class Chisato extends PIXI.Container {
   public constructor(params: {
     baseAnimationTextures: PIXI.Texture[];
     successTexture: PIXI.Texture;
+    resultTextures: PIXI.Texture[];
   }) {
     super();
 
@@ -22,12 +25,21 @@ export class Chisato extends PIXI.Container {
     this.successSprite = PIXI.Sprite.from(params.successTexture);
     this.successSprite.anchor.set(0.5);
 
+    this.resultSprites = params.resultTextures.map((t) => {
+      const s = PIXI.Sprite.from(t);
+      s.anchor.set(0.5);
+      return s;
+    });
+
     this.addChild(this.animatedSprite);
   }
 
   public setScale(value: number): void {
     this.animatedSprite.scale.set(value);
     this.successSprite.scale.set(value);
+    this.resultSprites.forEach((r) => {
+      r.scale.set(value);
+    });
   }
 
   public playAnimation(): void {
@@ -39,12 +51,23 @@ export class Chisato extends PIXI.Container {
   }
 
   public showSuccess(): void {
+    this.removeChildren();
     this.addChild(this.successSprite);
-    this.removeChild(this.animatedSprite);
   }
 
   public showAnimation(): void {
+    this.removeChildren();
     this.addChild(this.animatedSprite);
-    this.removeChild(this.successSprite);
+  }
+
+  public showResult(point: number): void {
+    this.removeChildren();
+    // eslint-disable-next-line yoda
+    if (0 <= point && point <= 9) {
+      this.addChild(this.resultSprites[point]);
+      return;
+    }
+
+    this.addChild(this.resultSprites[10]);
   }
 }
