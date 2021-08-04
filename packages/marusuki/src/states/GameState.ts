@@ -68,6 +68,8 @@ export class GameState extends ViewState {
     RhythmTarget
   ];
 
+  private gameContainer!: PIXI.Container;
+
   private chisato!: Chisato;
 
   private pointCounter!: PointCounter;
@@ -86,8 +88,8 @@ export class GameState extends ViewState {
       soundMap,
     } = this.context.machineService.state.context.loader;
 
-    const gameContainer = new PIXI.Container();
-    app.stage.addChild(gameContainer);
+    this.gameContainer = new PIXI.Container();
+    app.stage.addChild(this.gameContainer);
 
     this.pointCounter = new PointCounter({
       labelTexture: spriteMap.touch_target_ok_takoyaki_1
@@ -96,7 +98,7 @@ export class GameState extends ViewState {
     this.pointCounter.x = this.context.app.getX(0.5);
     this.pointCounter.y = this.context.app.getY(0.1);
     this.pointCounter.setScale(this.context.app.scale);
-    gameContainer.addChild(this.pointCounter);
+    this.gameContainer.addChild(this.pointCounter);
 
     this.chisato = new Chisato({
       baseAnimationTextures: Object.entries(
@@ -110,8 +112,7 @@ export class GameState extends ViewState {
     this.chisato.x = this.context.app.getX(0.5);
     this.chisato.y = this.context.app.getY(0.5);
     this.chisato.setScale(this.context.app.scale * 0.5);
-    this.chisato.playAnimation();
-    gameContainer.addChild(this.chisato);
+    this.gameContainer.addChild(this.chisato);
 
     const [upperLeft, upperRight, lowerLeft, lowerRight] = [
       { x: 0.15, y: 0.2 },
@@ -142,7 +143,7 @@ export class GameState extends ViewState {
       });
       return sprite;
     });
-    gameContainer.addChild(upperLeft, upperRight, lowerLeft, lowerRight);
+    this.gameContainer.addChild(upperLeft, upperRight, lowerLeft, lowerRight);
 
     if (debug) {
       this.speedText = new SpeedText(MIN_SPEED);
@@ -156,28 +157,28 @@ export class GameState extends ViewState {
       this.beatText.scale.set(this.context.app.scale);
       this.beatText.anchor.set(0.5);
 
-      gameContainer.addChild(this.speedText, this.beatText);
+      this.gameContainer.addChild(this.speedText, this.beatText);
     }
 
-    this.visibleImagesMap = {};
     this.rhythmTargetImages = [upperLeft, upperRight, lowerLeft, lowerRight];
-
     this.drumLoop = soundMap.drum_loop;
-    this.drumLoop.speed = MIN_SPEED;
 
     hotkeys("q,z,o,m", this.hotkeysCallback);
 
+    this.resetGameVariables();
     this.onGameStart();
   }
 
   onExit(): void {
-    //
+    hotkeys.unbind("q,z,o,m", this.hotkeysCallback);
   }
 
   /** ************************************************************************************
    * Game state callbacks
    */
   protected onGameStart(): void {
+    this.chisato.showAnimation();
+    this.chisato.startAnimation();
     sound.play("drum_loop", { loop: true });
     this.context.app.ticker.add(this.gameLoop);
   }
@@ -202,11 +203,23 @@ export class GameState extends ViewState {
       )[0];
       sfTwitterShareButton.setAttribute("text", `結果は${resultPoint}`);
     }
+
+    setTimeout(() => {
+      document
+        .getElementById("app")
+        ?.addEventListener("click", this.restartGame);
+    }, 1000);
   }
 
   /** ************************************************************************************
    * private methods
    */
+  private resetGameVariables = (): void => {
+    this.drumLoop.speed = MIN_SPEED;
+    this.visibleImagesMap = {};
+    this.pointCounter.reset();
+  };
+
   private hideSprite = (beat: number) => {
     const visibleImages = this.visibleImagesMap[beat];
     visibleImages?.forEach((i) => {
@@ -358,5 +371,17 @@ export class GameState extends ViewState {
     } catch (e) {
       // ignore
     }
+  };
+
+  private restartGame = () => {
+    document
+      .getElementById("app")
+      ?.removeEventListener("click", this.restartGame);
+    document
+      .getElementById("share-action")
+      ?.classList.add("share-action--hide");
+
+    this.resetGameVariables();
+    this.onGameStart();
   };
 }

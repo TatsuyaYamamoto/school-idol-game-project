@@ -21,6 +21,7 @@ export class Chisato extends PIXI.Container {
     this.animatedSprite = new PIXI.AnimatedSprite(params.baseAnimationTextures);
     this.animatedSprite.anchor.set(0.5);
     this.animatedSprite.animationSpeed = 0.1;
+    this.animatedSprite.stop();
 
     this.successSprite = PIXI.Sprite.from(params.successTexture);
     this.successSprite.anchor.set(0.5);
@@ -42,7 +43,7 @@ export class Chisato extends PIXI.Container {
     });
   }
 
-  public playAnimation(): void {
+  public startAnimation(): void {
     this.animatedSprite.play();
   }
 
