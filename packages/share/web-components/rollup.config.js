@@ -16,11 +16,12 @@ const plugins = [
   }),
 ];
 
-const targets = [`sf-guide-before-launch`];
+const targets = [`sf-guide-before-launch`, `sf-twitter-share-button`];
 
 export default targets.map((target) => ({
   input: `${__dirname}/${target}.ts`,
   output: {
+    format: "iife",
     file: `${__dirname}/dist/${target}.bundle.js`,
   },
   plugins,
