@@ -59,7 +59,7 @@ const detectBeats = (
 };
 
 export class GameState extends ViewState {
-  private visibleImagesMap!: { [beat: string]: PIXI.Sprite[] | undefined };
+  private visibleImagesMap!: { [beat: string]: RhythmTarget[] | undefined };
 
   private rhythmTargetImages!: [
     RhythmTarget,
@@ -185,6 +185,9 @@ export class GameState extends ViewState {
   protected onGameOver(): void {
     sound.stop("drum_loop");
     this.context.app.ticker.remove(this.gameLoop);
+    this.rhythmTargetImages.forEach((i) => {
+      i.hide();
+    });
     this.chisato.stopAnimation();
     const resultPoint = this.pointCounter.value;
     console.log(`resultPoint: ${resultPoint}`);
@@ -206,12 +209,9 @@ export class GameState extends ViewState {
    */
   private hideSprite = (beat: number) => {
     const visibleImages = this.visibleImagesMap[beat];
-    if (visibleImages) {
-      visibleImages.forEach((i) => {
-        // eslint-disable-next-line no-param-reassign
-        i.visible = false;
-      });
-    }
+    visibleImages?.forEach((i) => {
+      i.hide();
+    });
     this.visibleImagesMap[beat] = undefined;
   };
 
