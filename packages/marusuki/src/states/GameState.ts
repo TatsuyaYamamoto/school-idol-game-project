@@ -59,8 +59,6 @@ const detectBeats = (
 };
 
 export class GameState extends ViewState {
-  private visibleImagesMap!: { [beat: string]: RhythmTarget[] | undefined };
-
   private rhythmTargetImages!: [
     RhythmTarget,
     RhythmTarget,
@@ -179,7 +177,7 @@ export class GameState extends ViewState {
   protected onGameStart(): void {
     this.chisato.showAnimation();
     this.chisato.startAnimation();
-    sound.play("drum_loop", { loop: true });
+    sound.play("drum_loop", { loop: true, speed: MIN_SPEED });
     this.context.app.ticker.add(this.gameLoop);
   }
 
@@ -214,34 +212,41 @@ export class GameState extends ViewState {
   /** ************************************************************************************
    * private methods
    */
+  private checkGameOver = (): void => {
+    if (this.context.machineService.state.context.debug) {
+      this.rhythmTargetImages.forEach((i) => i.hide());
+      return;
+    }
+
+    const tappableTarget = this.rhythmTargetImages.find((visibleImage) => {
+      return visibleImage.tappable;
+    });
+    if (!tappableTarget) {
+      // OK
+      return;
+    }
+
+    sound.play("pon");
+    this.vibrate(200);
+    this.onGameOver();
+  };
+
   private resetGameVariables = (): void => {
-    this.drumLoop.speed = MIN_SPEED;
-    this.visibleImagesMap = {};
     this.pointCounter.reset();
   };
 
-  private hideSprite = (beat: number) => {
-    const visibleImages = this.visibleImagesMap[beat];
-    visibleImages?.forEach((i) => {
-      i.hide();
-    });
-    this.visibleImagesMap[beat] = undefined;
-  };
-
-  private showSprite = (beat: number) => {
-    this.hideSprite(beat);
+  private showSprite = () => {
+    this.rhythmTargetImages.forEach((i) => i.hide());
 
     const normalTargetIndex = randomInt(3);
-    const nomalImage = this.rhythmTargetImages[normalTargetIndex];
-    nomalImage.show("normal");
-    this.visibleImagesMap[beat] = [nomalImage];
+    const normalImage = this.rhythmTargetImages[normalTargetIndex];
+    normalImage.show("normal");
 
     const showNgTarget = randomInt(2) === 0;
     if (showNgTarget) {
       const ngTargetIndex = (normalTargetIndex + 1 + randomInt(2)) % 4;
       const ngImage = this.rhythmTargetImages[ngTargetIndex];
       ngImage.show("ng");
-      this.visibleImagesMap[beat]?.push(ngImage);
     }
   };
 
@@ -255,19 +260,23 @@ export class GameState extends ViewState {
   };
 
   private onTapRhythmTarget = (target: RhythmTarget): void => {
-    target.touch();
+    if (target.state === "normal") {
+      if (target.tappable) {
+        sound.play("shan");
+        target.showSuccessAnimation();
+        this.pointCounter.countUp();
+        this.chisato.showSuccess();
+        setTimeout(() => {
+          this.chisato.showAnimation();
+          this.rhythmTargetImages.forEach((i) => i.hide());
+        }, 200);
 
-    if (target.state === "normal" /* success */) {
-      sound.play("shan");
-      this.pointCounter.countUp();
-      this.chisato.showSuccess();
-      setTimeout(() => {
-        this.chisato.showAnimation();
-      }, 200);
-
-      this.vibrate(50);
+        this.vibrate(50);
+      }
     } else {
-      this.onFail();
+      sound.play("pon");
+      this.vibrate(200);
+      this.onGameOver();
     }
   };
 
@@ -282,32 +291,16 @@ export class GameState extends ViewState {
     ] = this.rhythmTargetImages;
 
     if (handler.key === "q") {
-      if (upperLeft.visible) {
-        this.onTapRhythmTarget(upperLeft);
-      } else {
-        this.onFail();
-      }
+      this.onTapRhythmTarget(upperLeft);
     }
     if (handler.key === "z") {
-      if (lowerLeft.visible) {
-        this.onTapRhythmTarget(lowerLeft);
-      } else {
-        this.onFail();
-      }
+      this.onTapRhythmTarget(lowerLeft);
     }
     if (handler.key === "o") {
-      if (upperRight.visible) {
-        this.onTapRhythmTarget(upperRight);
-      } else {
-        this.onFail();
-      }
+      this.onTapRhythmTarget(upperRight);
     }
     if (handler.key === "m") {
-      if (lowerRight.visible) {
-        this.onTapRhythmTarget(lowerRight);
-      } else {
-        this.onFail();
-      }
+      this.onTapRhythmTarget(lowerRight);
     }
   };
 
@@ -326,7 +319,7 @@ export class GameState extends ViewState {
       },
       0.125: () => {
         console.log(progress, "1/8");
-        this.showSprite(1 / 8);
+        this.showSprite();
         this.beatText?.show(1);
       },
       0.25: () => {
@@ -335,7 +328,7 @@ export class GameState extends ViewState {
       },
       0.375: () => {
         console.log(progress, "3/8");
-        this.hideSprite(1 / 8);
+        this.checkGameOver();
         this.beatText?.show(3);
       },
       0.5: () => {
@@ -344,7 +337,7 @@ export class GameState extends ViewState {
       },
       0.625: () => {
         console.log(progress, "5/8");
-        this.showSprite(5 / 8);
+        this.showSprite();
         this.beatText?.show(5);
       },
       0.75: () => {
@@ -353,16 +346,10 @@ export class GameState extends ViewState {
       },
       0.875: () => {
         console.log(progress, "7/8");
-        this.hideSprite(5 / 8);
+        this.checkGameOver();
         this.beatText?.show(7);
       },
     });
-  };
-
-  private onFail = () => {
-    sound.play("pon");
-    this.vibrate(200);
-    this.onGameOver();
   };
 
   private vibrate = (ms: number) => {

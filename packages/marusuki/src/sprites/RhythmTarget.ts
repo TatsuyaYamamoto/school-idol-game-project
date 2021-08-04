@@ -7,8 +7,16 @@ export interface RhythmTarget extends PIXI.Sprite, PIXI.utils.EventEmitter {}
 export class RhythmTarget extends PIXI.Sprite {
   private _state: "normal" | "ng" = "normal";
 
+  private isPlayingSuccessAnimation = false;
+
   public get state(): "normal" | "ng" {
     return this._state;
+  }
+
+  public get tappable(): boolean {
+    return (
+      this.state === "normal" && this.visible && !this.isPlayingSuccessAnimation
+    );
   }
 
   public constructor(
@@ -25,6 +33,7 @@ export class RhythmTarget extends PIXI.Sprite {
   }
 
   show(state: "normal" | "ng"): void {
+    this.isPlayingSuccessAnimation = false;
     if (state === "normal") {
       this.texture = this.params.normalTexture;
     }
@@ -42,11 +51,10 @@ export class RhythmTarget extends PIXI.Sprite {
     this.visible = false;
   }
 
-  touch(): void {
-    if (this.state === "normal") {
-      const touchedTextureSize = this.params.touchedTextures.length;
-      const randomIndex = randomInt(touchedTextureSize);
-      this.texture = this.params.touchedTextures[randomIndex];
-    }
+  showSuccessAnimation(): void {
+    this.isPlayingSuccessAnimation = true;
+    const touchedTextureSize = this.params.touchedTextures.length;
+    const randomIndex = randomInt(touchedTextureSize);
+    this.texture = this.params.touchedTextures[randomIndex];
   }
 }
