@@ -5,3 +5,11 @@ export const randomInt = (max: number) => {
 export const between = (min: number, target: number, max: number) => {
   return min < target && target < max;
 };
+
+export const wait = (ms: number): Promise<void> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  });
+};

@@ -9,7 +9,7 @@ import { SpeedText } from "../sprites/SpeedText";
 import { RhythmTarget } from "../sprites/RhythmTarget";
 import { BeatText } from "../sprites/BeatText";
 
-import { randomInt } from "../helper/utils";
+import { randomInt, wait } from "../helper/utils";
 import { PointCounter } from "../sprites/PointCounter";
 import { GameoverEffect } from "../sprites/GameoverEffect";
 import { getShareMessage } from "../helper/shareMessages";
@@ -58,24 +58,13 @@ export class GameState extends ViewState {
     this.gameContainer = new PIXI.Container();
     app.stage.addChild(this.gameContainer);
 
-    this.pointCounter = new PointCounter({
-      labelTexture: spriteMap.touch_target_ok_takoyaki_1
-        .texture as PIXI.Texture,
-    });
+    this.pointCounter = new PointCounter({ spriteMap });
     this.pointCounter.x = this.context.app.getX(0.5);
     this.pointCounter.y = this.context.app.getY(0.1);
     this.pointCounter.setScale(this.context.app.scale);
     this.gameContainer.addChild(this.pointCounter);
 
-    this.chisato = new Chisato({
-      baseAnimationTextures: Object.entries(
-        spriteMap["chisato.spritesheet"].textures || {}
-      ).map(([, t]) => t),
-      successTexture: spriteMap.chisato_success.texture as PIXI.Texture,
-      resultTextures: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(
-        (i) => spriteMap[`chisato_gameover_${i}`].texture as PIXI.Texture
-      ),
-    });
+    this.chisato = new Chisato({ spriteMap });
     this.chisato.x = this.context.app.getX(0.5);
     this.chisato.y = this.context.app.getY(0.5);
     this.chisato.setScale(this.context.app.scale * 0.5);
@@ -87,21 +76,7 @@ export class GameState extends ViewState {
       { x: 0.15, y: 0.8 },
       { x: 0.85, y: 0.8 },
     ].map((params) => {
-      const sprite = new RhythmTarget({
-        normalTexture: spriteMap.touch_target_ok_takoyaki_1
-          .texture as PIXI.Texture,
-        touchedTextures: [
-          spriteMap.touch_target_effect_blue.texture as PIXI.Texture,
-          spriteMap.touch_target_effect_green.texture as PIXI.Texture,
-          spriteMap.touch_target_effect_orange.texture as PIXI.Texture,
-          spriteMap.touch_target_effect_pink.texture as PIXI.Texture,
-          spriteMap.touch_target_effect_skyblue.texture as PIXI.Texture,
-        ],
-        ngTextures: [
-          spriteMap.touch_target_ng_piman_1.texture as PIXI.Texture,
-          spriteMap.touch_target_ng_piman_2.texture as PIXI.Texture,
-        ],
-      });
+      const sprite = new RhythmTarget({ spriteMap });
       sprite.x = this.context.app.getX(params.x);
       sprite.y = this.context.app.getY(params.y);
       sprite.scale.set(this.context.app.scale * 0.4);
@@ -159,7 +134,7 @@ export class GameState extends ViewState {
     this.context.app.ticker.add(this.gameLoop);
   }
 
-  protected onGameOver(): void {
+  protected async onGameOver(): Promise<void> {
     sound.stop("drum_loop");
     this.context.app.ticker.remove(this.gameLoop);
     this.rhythmTargetImages.forEach((i) => {
@@ -168,6 +143,12 @@ export class GameState extends ViewState {
     this.chisato.stopAnimation();
     const resultPoint = this.pointCounter.value;
     console.log(`resultPoint: ${resultPoint}`);
+
+    sendEvent("gameover", {
+      value: resultPoint,
+    });
+
+    await wait(1000);
 
     this.gameoverEffect.show();
     this.chisato.showResult(resultPoint);
@@ -181,15 +162,9 @@ export class GameState extends ViewState {
       sfTwitterShareButton.setAttribute("text", getShareMessage(resultPoint));
     }
 
-    setTimeout(() => {
-      document
-        .getElementById("app")
-        ?.addEventListener("pointerdown", this.restartGame);
-    }, 600);
-
-    sendEvent("gameover", {
-      value: resultPoint,
-    });
+    document
+      .getElementById("app")
+      ?.addEventListener("pointerdown", this.restartGame);
   }
 
   /** ************************************************************************************
@@ -210,6 +185,7 @@ export class GameState extends ViewState {
     }
 
     sound.play("pon");
+    this.chisato.showFailure();
     this.vibrate(200);
     this.onGameOver();
   };
@@ -262,6 +238,7 @@ export class GameState extends ViewState {
       }
     } else {
       sound.play("pon");
+      this.chisato.showFailure();
       this.vibrate(200);
       this.onGameOver();
     }

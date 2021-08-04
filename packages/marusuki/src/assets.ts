@@ -1,8 +1,8 @@
 export const assets = {
   images: {
-    // "chisato": "assets/images/chisato.png",
     "chisato.spritesheet": "assets/images/chisato.spritesheet@0.5.json",
     chisato_success: "assets/images/chisato_06@0.5.png",
+    chisato_failure: "assets/images/chisato_failure@0.5.png",
     chisato_gameover_0: "assets/images/chisato_gameover_0@0.5.png",
     chisato_gameover_1: "assets/images/chisato_gameover_1@0.5.png",
     chisato_gameover_2: "assets/images/chisato_gameover_2@0.5.png",

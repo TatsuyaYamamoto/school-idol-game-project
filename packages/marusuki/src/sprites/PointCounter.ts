@@ -1,4 +1,5 @@
 import * as PIXI from "pixi-v6";
+import { SpriteMap } from "../helper/loader";
 
 export class PointCounter extends PIXI.Container {
   private _value = 0;
@@ -11,14 +12,16 @@ export class PointCounter extends PIXI.Container {
     return this._value;
   }
 
-  public constructor(params: { labelTexture: PIXI.Texture }) {
+  public constructor(params: { spriteMap: SpriteMap }) {
     super();
 
     this.countText = new PIXI.Text("");
     this.countText.anchor.set(0, 0.5);
     this.updateCounter();
 
-    this.countLabel = new PIXI.Sprite(params.labelTexture);
+    const labelTexture = params.spriteMap.touch_target_ok_takoyaki_1
+      .texture as PIXI.Texture;
+    this.countLabel = new PIXI.Sprite(labelTexture);
     this.countLabel.anchor.set(1, 0.5);
 
     this.addChild(this.countLabel, this.countText);
