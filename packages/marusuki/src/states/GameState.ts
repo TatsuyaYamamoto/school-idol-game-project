@@ -13,6 +13,7 @@ import { randomInt } from "../helper/utils";
 import { PointCounter } from "../sprites/PointCounter";
 import { GameoverEffect } from "../sprites/GameoverEffect";
 import { getShareMessage } from "../helper/shareMessages";
+import { sendEvent } from "../helper/tracker";
 
 const MIN_SPEED = 1;
 const MAX_SPEED = 1.5;
@@ -185,6 +186,10 @@ export class GameState extends ViewState {
         .getElementById("app")
         ?.addEventListener("pointerdown", this.restartGame);
     }, 600);
+
+    sendEvent("gameover", {
+      value: resultPoint,
+    });
   }
 
   /** ************************************************************************************
