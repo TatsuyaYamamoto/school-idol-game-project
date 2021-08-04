@@ -34,6 +34,10 @@ export class Chisato extends PIXI.Container {
     this.animatedSprite.play();
   }
 
+  public stopAnimation(): void {
+    this.animatedSprite.stop();
+  }
+
   public showSuccess(): void {
     this.addChild(this.successSprite);
     this.removeChild(this.animatedSprite);

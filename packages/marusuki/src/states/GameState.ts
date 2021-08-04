@@ -164,18 +164,41 @@ export class GameState extends ViewState {
 
     hotkeys("q,z,o,m", this.hotkeysCallback);
 
-    const startApp = () => {
-      sound.play("drum_loop", { loop: true });
-      app.ticker.add(this.gameLoop);
-    };
-
-    startApp();
+    this.onGameStart();
   }
 
   onExit(): void {
     //
   }
 
+  /** ************************************************************************************
+   * Game state callbacks
+   */
+  protected onGameStart(): void {
+    sound.play("drum_loop", { loop: true });
+    this.context.app.ticker.add(this.gameLoop);
+  }
+
+  protected onGameOver(): void {
+    sound.stop("drum_loop");
+    this.context.app.ticker.remove(this.gameLoop);
+    this.chisato.stopAnimation();
+    const resultPoint = this.pointCounter.value;
+    console.log(`resultPoint: ${resultPoint}`);
+
+    const shareAction = document.getElementById("share-action");
+    if (shareAction) {
+      shareAction.classList.remove("share-action--hide");
+      const sfTwitterShareButton = shareAction.getElementsByTagName(
+        "sf-twitter-share-button"
+      )[0];
+      sfTwitterShareButton.setAttribute("text", `結果は${resultPoint}`);
+    }
+  }
+
+  /** ************************************************************************************
+   * private methods
+   */
   private hideSprite = (beat: number) => {
     const visibleImages = this.visibleImagesMap[beat];
     if (visibleImages) {
@@ -224,14 +247,9 @@ export class GameState extends ViewState {
         this.chisato.showAnimation();
       }, 200);
 
-      try {
-        navigator.vibrate(50);
-      } catch (e) {
-        // ignore
-      }
+      this.vibrate(50);
     } else {
-      sound.play("pon");
-      navigator.vibrate(200);
+      this.onFail();
     }
   };
 
@@ -249,28 +267,28 @@ export class GameState extends ViewState {
       if (upperLeft.visible) {
         this.onTapRhythmTarget(upperLeft);
       } else {
-        sound.play("pon");
+        this.onFail();
       }
     }
     if (handler.key === "z") {
       if (lowerLeft.visible) {
         this.onTapRhythmTarget(lowerLeft);
       } else {
-        sound.play("pon");
+        this.onFail();
       }
     }
     if (handler.key === "o") {
       if (upperRight.visible) {
         this.onTapRhythmTarget(upperRight);
       } else {
-        sound.play("pon");
+        this.onFail();
       }
     }
     if (handler.key === "m") {
       if (lowerRight.visible) {
         this.onTapRhythmTarget(lowerRight);
       } else {
-        sound.play("pon");
+        this.onFail();
       }
     }
   };
@@ -321,5 +339,19 @@ export class GameState extends ViewState {
         this.beatText?.show(7);
       },
     });
+  };
+
+  private onFail = () => {
+    sound.play("pon");
+    this.vibrate(200);
+    this.onGameOver();
+  };
+
+  private vibrate = (ms: number) => {
+    try {
+      navigator.vibrate(ms);
+    } catch (e) {
+      // ignore
+    }
   };
 }
