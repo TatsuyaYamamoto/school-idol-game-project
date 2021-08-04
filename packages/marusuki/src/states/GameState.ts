@@ -11,6 +11,7 @@ import { BeatText } from "../sprites/BeatText";
 
 import { randomInt } from "../helper/utils";
 import { PointCounter } from "../sprites/PointCounter";
+import { GameoverEffect } from "../sprites/GameoverEffect";
 
 const MIN_SPEED = 1;
 const MAX_SPEED = 1.5;
@@ -33,6 +34,8 @@ export class GameState extends ViewState {
   private speedText?: SpeedText;
 
   private beatText?: BeatText;
+
+  private gameoverEffect!: GameoverEffect;
 
   private drumLoop!: Sound;
 
@@ -107,6 +110,15 @@ export class GameState extends ViewState {
     });
     this.gameContainer.addChild(upperLeft, upperRight, lowerLeft, lowerRight);
 
+    this.gameoverEffect = new GameoverEffect({
+      texture: spriteMap.gameover_effect.texture as PIXI.Texture,
+    });
+    this.gameoverEffect.x = this.context.app.getX(0.5);
+    this.gameoverEffect.y = this.context.app.getY(0.1);
+    this.gameoverEffect.setScale(this.context.app.scale * 0.5);
+    this.gameoverEffect.hide();
+    this.gameContainer.addChild(this.gameoverEffect);
+
     if (debug) {
       this.speedText = new SpeedText(MIN_SPEED);
       this.speedText.x = this.context.app.getX(0.5);
@@ -155,6 +167,7 @@ export class GameState extends ViewState {
     const resultPoint = this.pointCounter.value;
     console.log(`resultPoint: ${resultPoint}`);
 
+    this.gameoverEffect.show();
     this.chisato.showResult(resultPoint);
 
     const shareAction = document.getElementById("share-action");
@@ -200,6 +213,7 @@ export class GameState extends ViewState {
     this.measureMap = {};
     this.measureCount = 0;
     this.prevProgress = Number.MAX_SAFE_INTEGER;
+    this.gameoverEffect.hide();
   };
 
   private showSprite = () => {

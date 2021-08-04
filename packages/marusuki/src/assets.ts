@@ -23,6 +23,7 @@ export const assets = {
     touch_target_effect_pink: "assets/images/touch_target_effect_pink.png",
     touch_target_effect_skyblue:
       "assets/images/touch_target_effect_skyblue.png",
+    gameover_effect: "assets/images/gameover_effect@0.5.png",
   },
   sounds: {
     shan: "assets/sounds/shan.wav",
