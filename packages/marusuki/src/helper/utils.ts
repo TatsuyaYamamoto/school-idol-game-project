@@ -13,3 +13,29 @@ export const wait = (ms: number): Promise<void> => {
     }, ms);
   });
 };
+
+export const calcGameWindowSize = (
+  aspectRatio: number,
+  unitWidth: number
+): {
+  width: number;
+  height: number;
+  scale: number;
+} => {
+  const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
+
+  let width;
+  let height;
+  if (windowWidth * aspectRatio < windowHeight) {
+    /* portrait */
+    width = windowWidth;
+    height = windowWidth * aspectRatio;
+  } else {
+    /* landscape */
+    width = windowHeight / aspectRatio;
+    height = windowHeight;
+  }
+
+  return { width, height, scale: width / unitWidth };
+};

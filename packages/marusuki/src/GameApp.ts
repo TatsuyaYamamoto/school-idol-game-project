@@ -1,31 +1,11 @@
 import * as PIXI from "pixi-v6";
-
-const { canvasWidth, canvasHeight, scale } = ((
-  aspectRatio: number,
-  unitWidth: number
-) => {
-  const windowWidth = window.innerWidth;
-  const windowHeight = window.innerHeight;
-
-  if (windowWidth * aspectRatio < windowHeight) {
-    /* portrait */
-    return {
-      canvasWidth: windowWidth,
-      canvasHeight: windowWidth * aspectRatio,
-      scale: windowWidth / unitWidth,
-    };
-  }
-  /* landscape */
-  return {
-    canvasHeight: windowHeight,
-    canvasWidth: windowHeight / aspectRatio,
-    scale: windowWidth / (windowHeight / aspectRatio),
-  };
-})(3 / 4, 800);
+import { calcGameWindowSize } from "./helper/utils";
 
 export class GameApp extends PIXI.Application {
+  private _scale: number;
+
   public get scale(): number {
-    return scale;
+    return this._scale;
   }
 
   public get width(): number {
@@ -37,12 +17,14 @@ export class GameApp extends PIXI.Application {
   }
 
   constructor() {
+    const { width, height, scale } = calcGameWindowSize(3 / 4, 800);
     super({
       // backgroundColor: parseInt("#f3f2f2".replace("#", ""), 16),
       backgroundAlpha: 0,
-      width: canvasWidth,
-      height: canvasHeight,
+      width,
+      height,
     });
+    this._scale = scale;
   }
 
   public getX(ratio: number): number {
