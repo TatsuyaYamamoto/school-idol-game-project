@@ -7,6 +7,8 @@ export class TitleState extends ViewState {
 
   onEnter(): void {
     const { app } = this.context;
+    const { spriteMap } = this.context.machineService.state.context.loader;
+
     this.container = new PIXI.Container();
     const hitArea = new PIXI.Rectangle();
     hitArea.width = app.width;
@@ -14,19 +16,21 @@ export class TitleState extends ViewState {
     this.container.hitArea = hitArea;
     app.stage.addChild(this.container);
 
-    const titleText = new PIXI.Text("まるすき");
-    titleText.anchor.set(0.5);
-    titleText.scale.set(app.scale);
-    titleText.x = app.getX(0.5);
-    titleText.y = app.getY(0.3);
-    this.container.addChild(titleText);
+    const titleSprite = new PIXI.Sprite(
+      spriteMap.title.texture as PIXI.Texture
+    );
+    titleSprite.anchor.set(0.5);
+    titleSprite.scale.set(app.scale * 0.6);
+    titleSprite.x = app.getX(0.5);
+    titleSprite.y = app.getY(0.5);
 
     const loadingProgressText = new PIXI.Text("タップではじまるよ！");
     loadingProgressText.anchor.set(0.5);
     loadingProgressText.scale.set(app.scale);
     loadingProgressText.x = app.getX(0.5);
-    loadingProgressText.y = app.getY(0.8);
-    this.container.addChild(loadingProgressText);
+    loadingProgressText.y = app.getY(0.9);
+
+    this.container.addChild(titleSprite, loadingProgressText);
 
     this.container.interactive = true;
     this.container.buttonMode = true;

@@ -1,5 +1,6 @@
 export const assets = {
   images: {
+    title: "assets/images/title@0.5.png",
     "chisato.spritesheet": "assets/images/chisato.spritesheet@0.5.json",
     chisato_success: "assets/images/chisato_06@0.5.png",
     chisato_failure: "assets/images/chisato_failure@0.5.png",
