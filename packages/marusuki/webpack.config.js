@@ -12,7 +12,8 @@ const htmlParams = {
   noIndex: true,
   appVersion,
   trackingCode: "UA-127664761-2",
-  description: `"まんまる"なたこ焼きをリズミに合わせてタップして、大好きな気持ちをあらわ`,
+  description:
+    "「まんまる」なたこ焼きをリズミに合わせてタップして、大好きな気持ちをあらわ",
   ogpUrl: "https://games.sokontokoro-factory.net/marusuki/",
   ogpImageUrl:
     "https://games.sokontokoro-factory.net/marusuki/assets/images/ogp.png",
@@ -41,7 +42,7 @@ const plugins = [
 ];
 
 module.exports = {
-  mode: "development",
+  mode: isProduction ? "production" : "development",
 
   // https://github.com/TypeStrong/ts-loader#devtool--sourcemaps
   devtool: "inline-source-map",

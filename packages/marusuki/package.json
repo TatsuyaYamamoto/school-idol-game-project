@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack serve",
-    "build-dev": "webpack --progress",
+    "build-dev": "                    webpack --progress",
+    "build-pro": "NODE_ENV=production webpack --progress",
     "deploy-dev": "BUCKET=games-dev.sokontokoro-factory.net  npm run _deploy",
+    "deploy-pro": "BUCKET=games.sokontokoro-factory.net      npm run _deploy",
     "_deploy": "run-s --print-label _deploy:rsync _deploy:setmeta",
     "_deploy:rsync": "  gsutil rsync -d -r dist/ gs://$BUCKET/marusuki/",
     "_deploy:setmeta": "gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/marusuki/**/*.html"
