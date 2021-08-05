@@ -25,6 +25,8 @@ export const assets = {
     touch_target_effect_skyblue:
       "assets/images/touch_target_effect_skyblue.png",
     gameover_effect: "assets/images/gameover_effect@0.5.png",
+    icon_home: "assets/images/icon_home.svg",
+    icon_twitter: "assets/images/icon_twitter.svg",
   },
   sounds: {
     shan: "assets/sounds/shan.wav",
