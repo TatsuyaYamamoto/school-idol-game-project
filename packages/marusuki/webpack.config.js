@@ -8,19 +8,22 @@ const appVersion = appPackageJson.version;
 const isProduction = process.env.NODE_ENV === "production";
 
 const htmlParams = {
-  title: "[開発環境] たこ焼きどれくらい好き？",
+  title: "[開発環境] まんまるどれくらい好き？",
   noIndex: true,
   appVersion,
   trackingCode: "UA-127664761-2",
-  description: "",
+  description: `"まんまる"なたこ焼きをリズミに合わせてタップして、大好きな気持ちをあらわ`,
   ogpUrl: "https://games.sokontokoro-factory.net/marusuki/",
   ogpImageUrl:
-    "https://games.sokontokoro-factory.net/marusuki/assets/images/ogp.jpg",
+    "https://games.sokontokoro-factory.net/marusuki/assets/images/ogp.png",
+  shareHashtags: "そこんところ工房,まんまるどれくらい好き",
+  shareUrl:
+    "https://games.sokontokoro-factory.net/marusuki/?utm_source=result-share&utm_medium=twitter&utm_campaign=marusuki",
 };
 
 if (isProduction) {
   Object.assign(htmlParams, {
-    title: "たこ焼きどれくらい好き？ | そこんところ工房",
+    title: "まんまるどれくらい好き？ | そこんところ工房",
     trackingCode: "UA-127664761-1",
     noIndex: false,
   });
