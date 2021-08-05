@@ -42,6 +42,14 @@ export class PointCounter extends PIXI.Container {
     this.updateCounter();
   }
 
+  public show(): void {
+    this.visible = true;
+  }
+
+  public hide(): void {
+    this.visible = false;
+  }
+
   private updateCounter() {
     this.countText.text = `x ${this._value}`;
   }

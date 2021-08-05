@@ -14,9 +14,12 @@ import { PointCounter } from "../sprites/PointCounter";
 import { GameoverEffect } from "../sprites/GameoverEffect";
 import { getShareMessage } from "../helper/shareMessages";
 import { sendEvent } from "../helper/tracker";
+import { TutorialMessage } from "../sprites/TutorialMessage";
+import { StartMessage } from "../sprites/StartMessage";
 
 const MIN_SPEED = 1;
 const MAX_SPEED = 1.5;
+const DESCRIPTION_OFFSET_MEASURE_COUNT = 1;
 type CallbackableBeat = 0 | 0.125 | 0.25 | 0.375 | 0.5 | 0.625 | 0.75 | 0.875;
 
 export class GameState extends ViewState {
@@ -38,6 +41,10 @@ export class GameState extends ViewState {
   private beatText?: BeatText;
 
   private gameoverEffect!: GameoverEffect;
+
+  private tutorialMessage!: TutorialMessage;
+
+  private startMessage!: StartMessage;
 
   private drumLoop!: Sound;
 
@@ -63,6 +70,18 @@ export class GameState extends ViewState {
     this.pointCounter.y = this.context.app.getY(0.1);
     this.pointCounter.setScale(this.context.app.scale);
     this.gameContainer.addChild(this.pointCounter);
+
+    this.tutorialMessage = new TutorialMessage();
+    this.tutorialMessage.x = this.context.app.getX(0.5);
+    this.tutorialMessage.y = this.context.app.getY(0.2);
+    this.tutorialMessage.scale.set(this.context.app.scale);
+    this.gameContainer.addChild(this.tutorialMessage);
+
+    this.startMessage = new StartMessage();
+    this.startMessage.x = this.context.app.getX(0.5);
+    this.startMessage.y = this.context.app.getY(0.8);
+    this.startMessage.scale.set(this.context.app.scale);
+    this.gameContainer.addChild(this.startMessage);
 
     this.chisato = new Chisato({ spriteMap });
     this.chisato.x = this.context.app.getX(0.5);
@@ -196,6 +215,9 @@ export class GameState extends ViewState {
     this.measureCount = 0;
     this.prevProgress = Number.MAX_SAFE_INTEGER;
     this.gameoverEffect.hide();
+    this.pointCounter.hide();
+    this.tutorialMessage.hide();
+    this.startMessage.hide();
   };
 
   private showSprite = () => {
@@ -213,7 +235,7 @@ export class GameState extends ViewState {
     }
   };
 
-  private checkCountAndUpdateSpeed = (measures: number) => {
+  private updateSpeed = (measures: number) => {
     const increment = 0.1 * Math.floor(measures / 4);
     const newSpeed =
       MIN_SPEED + increment < MAX_SPEED ? MIN_SPEED + increment : MAX_SPEED;
@@ -277,13 +299,23 @@ export class GameState extends ViewState {
     this.detectBeats(progress, {
       0: () => {
         console.log(progress, "0/4", this.measureCount);
-        this.checkCountAndUpdateSpeed(this.measureCount);
+        this.updateSpeed(this.measureCount);
 
+        if (DESCRIPTION_OFFSET_MEASURE_COUNT < this.measureCount) {
+          this.tutorialMessage.hide();
+          this.startMessage.hide();
+          this.pointCounter.show();
+        }
+        if (this.measureCount <= DESCRIPTION_OFFSET_MEASURE_COUNT) {
+          this.tutorialMessage.show();
+        }
         this.beatText?.show(0);
       },
       0.125: () => {
         console.log(progress, "1/8");
-        this.showSprite();
+        if (DESCRIPTION_OFFSET_MEASURE_COUNT < this.measureCount) {
+          this.showSprite();
+        }
         this.beatText?.show(1);
       },
       0.25: () => {
@@ -301,16 +333,24 @@ export class GameState extends ViewState {
       },
       0.625: () => {
         console.log(progress, "5/8");
-        this.showSprite();
+        if (DESCRIPTION_OFFSET_MEASURE_COUNT < this.measureCount) {
+          this.showSprite();
+        }
         this.beatText?.show(5);
       },
       0.75: () => {
         console.log(progress, "3/4");
+
+        if (this.measureCount <= DESCRIPTION_OFFSET_MEASURE_COUNT) {
+          this.startMessage.show();
+        }
+
         this.beatText?.show(6);
       },
       0.875: () => {
         console.log(progress, "7/8");
         this.checkGameOver();
+
         this.beatText?.show(7);
       },
     });
