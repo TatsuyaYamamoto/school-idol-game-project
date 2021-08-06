@@ -15,7 +15,7 @@ const htmlParams = {
   appVersion,
   trackingCode: "UA-127664761-2",
   description:
-    "「まんまる」なたこ焼きをリズミに合わせてタップして、大好きな気持ちをあらわ",
+    "リズムに乗って「まんまる」なたこ焼きをタップするファンゲーム！ピーマンは細かくしてもぜっっっっったいダメ！",
   ogpUrl: "https://games.sokontokoro-factory.net/marusuki/",
   ogpImageUrl:
     "https://games.sokontokoro-factory.net/marusuki/assets/images/ogp.png",
