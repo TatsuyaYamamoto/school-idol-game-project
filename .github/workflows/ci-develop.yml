@@ -110,6 +110,7 @@ jobs:
           - yamidori
           - oimo-no-mikiri
           - rinadoko
+          - marusuki
     needs: install
     steps:
       # checkout
