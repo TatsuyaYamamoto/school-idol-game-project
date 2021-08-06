@@ -1,11 +1,13 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 
 const appPackageJson = require("./package.json");
 
 const appVersion = appPackageJson.version;
 const isProduction = process.env.NODE_ENV === "production";
+const analyze = process.env.ANALYZE === "true";
 
 const htmlParams = {
   title: "[開発環境] まんまるどれくらい好き？",
@@ -41,11 +43,15 @@ const plugins = [
   }),
 ];
 
+if (analyze) {
+  plugins.push(new BundleAnalyzerPlugin());
+}
+
 module.exports = {
   mode: isProduction ? "production" : "development",
 
   // https://github.com/TypeStrong/ts-loader#devtool--sourcemaps
-  devtool: "inline-source-map",
+  devtool: isProduction ? false : "source-map",
 
   entry: "./src/index.ts",
 
