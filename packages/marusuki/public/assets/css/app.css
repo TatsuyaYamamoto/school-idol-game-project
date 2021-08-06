@@ -1,0 +1,25 @@
+body {
+  margin: 0;
+}
+#app {
+  width: 100%;
+  height: 100%;
+
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+#guide-before-launch {
+  margin: 100px auto;
+}
+
+.share-action {
+  position: fixed;
+  width: 100%;
+  bottom: 50px;
+  text-align: center;
+}
+
+.share-action--hide {
+  display: none;
+}
