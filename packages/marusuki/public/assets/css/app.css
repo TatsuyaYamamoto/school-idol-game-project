@@ -8,6 +8,11 @@ body {
   display: none;
   justify-content: center;
   align-items: center;
+
+  background-image: url("../../assets/images/background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: right 10% bottom 50%;
 }
 #guide-before-launch {
   margin: 100px auto;
