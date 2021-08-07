@@ -1,6 +1,6 @@
 import PIXISound from "pixi-sound";
 import { tweetByWebIntent } from "@sokontokoro/mikan/dist/utils";
-import { trackEvent } from "@sokontokoro/mikan/dist/Tracker";
+import { sendEvent } from "../utils";
 
 import {
   State,
@@ -77,7 +77,7 @@ export class GameResultState implements State {
     });
 
     // tracking
-    trackEvent("pointerdown", {
+    sendEvent("pointerdown", {
       label: "result",
       value: this.result.point,
     });
