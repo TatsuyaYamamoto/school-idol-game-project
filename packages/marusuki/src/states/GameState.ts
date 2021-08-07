@@ -86,7 +86,7 @@ export class GameState extends ViewState {
     this.chisato = new Chisato({ spriteMap });
     this.chisato.x = this.context.app.getX(0.5);
     this.chisato.y = this.context.app.getY(0.5);
-    this.chisato.setScale(this.context.app.scale * 0.5);
+    this.chisato.setScale(this.context.app.scale);
     this.gameContainer.addChild(this.chisato);
 
     const [upperLeft, upperRight, lowerLeft, lowerRight] = [
@@ -98,7 +98,7 @@ export class GameState extends ViewState {
       const sprite = new RhythmTarget({ spriteMap });
       sprite.x = this.context.app.getX(params.x);
       sprite.y = this.context.app.getY(params.y);
-      sprite.scale.set(this.context.app.scale * 0.4);
+      sprite.scale.set(this.context.app.scale);
       sprite.on("pointerdown", () => {
         this.onTapRhythmTarget(sprite);
       });

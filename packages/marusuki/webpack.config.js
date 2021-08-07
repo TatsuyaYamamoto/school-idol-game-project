@@ -18,7 +18,7 @@ const htmlParams = {
     "リズムに乗って「まんまる」なたこ焼きをタップするファンゲーム！ピーマンは細かくしてもぜっっっっったいダメ！",
   ogpUrl: "https://games.sokontokoro-factory.net/marusuki/",
   ogpImageUrl:
-    "https://games.sokontokoro-factory.net/marusuki/assets/images/ogp.png",
+    "https://games.sokontokoro-factory.net/marusuki/assets/images/ogp.jpg",
   shareHashtags: "そこんところ工房,まんまるどれくらい好き",
   shareUrl:
     "https://games.sokontokoro-factory.net/marusuki/?utm_source=result-share&utm_medium=twitter&utm_campaign=marusuki",

@@ -20,7 +20,7 @@ export class TitleState extends ViewState {
       spriteMap.title.texture as PIXI.Texture
     );
     titleSprite.anchor.set(0.5);
-    titleSprite.scale.set(app.scale * 0.6);
+    titleSprite.scale.set(app.scale);
     titleSprite.x = app.getX(0.5);
     titleSprite.y = app.getY(0.5);
 
