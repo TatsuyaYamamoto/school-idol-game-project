@@ -1,0 +1,120 @@
+{
+  "frames": [
+    {
+      "filename": "chisato_01@0.25.png",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 290,
+        "h": 283
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 290,
+        "h": 283
+      },
+      "sourceSize": {
+        "w": 290,
+        "h": 283
+      }
+    },
+    {
+      "filename": "chisato_02@0.25.png",
+      "frame": {
+        "x": 290,
+        "y": 0,
+        "w": 290,
+        "h": 283
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 290,
+        "h": 283
+      },
+      "sourceSize": {
+        "w": 290,
+        "h": 283
+      }
+    },
+    {
+      "filename": "chisato_03@0.25.png",
+      "frame": {
+        "x": 580,
+        "y": 0,
+        "w": 290,
+        "h": 283
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 290,
+        "h": 283
+      },
+      "sourceSize": {
+        "w": 290,
+        "h": 283
+      }
+    },
+    {
+      "filename": "chisato_04@0.25.png",
+      "frame": {
+        "x": 870,
+        "y": 0,
+        "w": 290,
+        "h": 283
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 290,
+        "h": 283
+      },
+      "sourceSize": {
+        "w": 290,
+        "h": 283
+      }
+    },
+    {
+      "filename": "chisato_05@0.25.png",
+      "frame": {
+        "x": 1160,
+        "y": 0,
+        "w": 290,
+        "h": 283
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 290,
+        "h": 283
+      },
+      "sourceSize": {
+        "w": 290,
+        "h": 283
+      }
+    }
+  ],
+  "meta": {
+    "app": "http://www.codeandweb.com/texturepacker",
+    "version": "1.0",
+    "image": "chisato.spritesheet@0.25.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1450,
+      "h": 283
+    },
+    "scale": "1"
+  }
+}

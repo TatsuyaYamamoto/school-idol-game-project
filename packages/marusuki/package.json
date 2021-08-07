@@ -1,0 +1,33 @@
+{
+  "name": "marusuki",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack serve",
+    "build-dev": "                    webpack --progress",
+    "build-pro": "NODE_ENV=production webpack --progress",
+    "deploy-dev": "BUCKET=games-dev.sokontokoro-factory.net  npm run _deploy",
+    "deploy-pro": "BUCKET=games.sokontokoro-factory.net      npm run _deploy",
+    "_deploy": "run-s --print-label _deploy:rsync _deploy:setmeta",
+    "_deploy:rsync": "  gsutil rsync -d -r dist/ gs://$BUCKET/marusuki/",
+    "_deploy:setmeta": "gsutil setmeta -h 'Cache-Control:no-cache' gs://$BUCKET/marusuki/**/*.html"
+  },
+  "dependencies": {
+    "@pixi/sound": "^4.0.4",
+    "hotkeys-js": "^3.8.7",
+    "pixi-v6": "npm:pixi.js@^6.0.4",
+    "share": "*",
+    "xstate": "^4.23.1"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^9.0.1",
+    "html-webpack-plugin": "^5.3.2",
+    "ts-loader": "^9.2.3",
+    "typescript": "^4.3.5",
+    "webpack": "^5.46.0",
+    "webpack-bundle-analyzer": "^4.4.2",
+    "webpack-cli": "^4.7.2",
+    "webpack-dev-server": "^3.11.2"
+  }
+}

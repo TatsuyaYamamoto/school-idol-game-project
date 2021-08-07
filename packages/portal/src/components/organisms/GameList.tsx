@@ -34,9 +34,18 @@ const StyledImageListItemBar = styled(ImageListItemBar)`
 
 const data = [
   {
+    id: "marusuki",
+    cols: 2,
+    rows: 1,
+    videoUrl: "",
+    imageUrl:
+      "https://games.sokontokoro-factory.net/marusuki/assets/images/ogp.png",
+    gameUrl: `https://games.sokontokoro-factory.net/marusuki?${GA_QUERY_FROM_GAME_LIST}`,
+  },
+  {
     id: "review-lovelive-cyber-security",
-    cols: 1,
-    rows: 2,
+    cols: 2,
+    rows: 1,
     videoUrl: "",
     imageUrl: "https://review-lovelive-cyber-security.t28.dev/images/ogp.png",
     gameUrl: `https://review-lovelive-cyber-security.t28.dev?${GA_QUERY_FROM_GAME_LIST}`,
@@ -52,8 +61,8 @@ const data = [
   },
   {
     id: "oimo-no-mikiri",
-    cols: 2,
-    rows: 1,
+    cols: 1,
+    rows: 2,
     videoUrl: "",
     imageUrl: `https://pbs.twimg.com/media/DRNzFMqU8AAdqDb.jpg`,
     gameUrl: `https://games.sokontokoro-factory.net/oimo?${GA_QUERY_FROM_GAME_LIST}`,
