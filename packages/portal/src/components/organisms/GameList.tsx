@@ -39,7 +39,7 @@ const data = [
     rows: 1,
     videoUrl: "",
     imageUrl:
-      "https://games.sokontokoro-factory.net/marusuki/assets/images/ogp.png",
+      "https://games.sokontokoro-factory.net/marusuki/assets/images/ogp.jpg",
     gameUrl: `https://games.sokontokoro-factory.net/marusuki?${GA_QUERY_FROM_GAME_LIST}`,
   },
   {
