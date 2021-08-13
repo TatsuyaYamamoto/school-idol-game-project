@@ -19,7 +19,7 @@ const htmlParams = {
   ogpUrl: "https://games.sokontokoro-factory.net/marusuki/",
   ogpImageUrl:
     "https://games.sokontokoro-factory.net/marusuki/assets/images/ogp.jpg",
-  shareHashtags: "そこんところ工房,まんまるどれくらい好き",
+  shareHashtags: "そこんところ工房,まんまるどれくらい好き,lovelive,Liella",
   shareUrl:
     "https://games.sokontokoro-factory.net/marusuki/?utm_source=result-share&utm_medium=twitter&utm_campaign=marusuki",
 };
