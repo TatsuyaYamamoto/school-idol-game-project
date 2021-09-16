@@ -8,7 +8,7 @@ const AppTitle: FC = () => (
       fontFamily: "PixelMplus",
     }}
   >
-    そこんところ工房ゲームズ ポータル
+    そこんところ工房ポータル
   </Typography>
 );
 

@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 
 import { ImageList, ImageListItem, ImageListItemBar } from "@material-ui/core";
 
 import GameLinkCard from "./GameLinkCard";
-import { GA_QUERY_FROM_GAME_LIST } from "../../utils/constants";
+import { GA_QUERY_FROM_APP_LIST } from "../../utils/constants";
 
 const Root = styled.div`
   margin: 50px 0;
@@ -34,62 +34,36 @@ const StyledImageListItemBar = styled(ImageListItemBar)`
 
 const data = [
   {
-    id: "marusuki",
+    id: "review-lovelive-cyber-security",
     cols: 2,
     rows: 1,
     videoUrl: "",
-    imageUrl:
-      "https://games.sokontokoro-factory.net/marusuki/assets/images/ogp.jpg",
-    gameUrl: `https://games.sokontokoro-factory.net/marusuki?${GA_QUERY_FROM_GAME_LIST}`,
+    imageUrl: "https://review-lovelive-cyber-security.t28.dev/images/ogp.png",
+    appUrl: `https://review-lovelive-cyber-security.t28.dev?${GA_QUERY_FROM_APP_LIST}`,
   },
   {
-    id: "rinadoko",
+    id: "replica-ticket",
     cols: 1,
     rows: 2,
     videoUrl: "",
-    imageUrl:
-      "https://games.sokontokoro-factory.net/rinadoko/assets/images/ogp.jpg",
-    gameUrl: `https://games.sokontokoro-factory.net/rinadoko?${GA_QUERY_FROM_GAME_LIST}`,
+    imageUrl: "https://replica-ticket.web.app/images/ogp.jpg",
+    appUrl: `https://replica-ticket.web.app/?${GA_QUERY_FROM_APP_LIST}`,
   },
   {
-    id: "oimo-no-mikiri",
+    id: "cyazalea-kiss-calc",
     cols: 1,
     rows: 2,
     videoUrl: "",
-    imageUrl: `https://pbs.twimg.com/media/DRNzFMqU8AAdqDb.jpg`,
-    gameUrl: `https://games.sokontokoro-factory.net/oimo?${GA_QUERY_FROM_GAME_LIST}`,
+    imageUrl: "https://cyazalea-kiss-calc.web.app/ogp.jpg",
+    appUrl: `https://cyazalea-kiss-calc.web.app?${GA_QUERY_FROM_APP_LIST}`,
   },
   {
-    id: "yamidori",
+    id: "nijigasaki-school",
     cols: 2,
     rows: 1,
     videoUrl: "",
-    imageUrl: "https://pbs.twimg.com/media/DJdHP7-VYAEeZLb.jpg",
-    gameUrl: `https://games.sokontokoro-factory.net/yamidori?${GA_QUERY_FROM_GAME_LIST}`,
-  },
-  {
-    id: "maruten",
-    cols: 1,
-    rows: 2,
-    videoUrl: "",
-    imageUrl: "https://pbs.twimg.com/media/CsmUpAeUkAAgyGh.jpg",
-    gameUrl: `https://games.sokontokoro-factory.net/maruten?${GA_QUERY_FROM_GAME_LIST}`,
-  },
-  {
-    id: "shakarin",
-    cols: 1,
-    rows: 2,
-    videoUrl: "",
-    imageUrl: "https://pbs.twimg.com/media/CXmsUq2UsAEYh6h.jpg",
-    gameUrl: `https://games.sokontokoro-factory.net/shakarin?${GA_QUERY_FROM_GAME_LIST}`,
-  },
-  {
-    id: "honocar",
-    cols: 1,
-    rows: 2,
-    videoUrl: "",
-    imageUrl: "https://pbs.twimg.com/media/CJYd0RHUYAAUpPv.jpg",
-    gameUrl: `https://games.sokontokoro-factory.net/honocar?${GA_QUERY_FROM_GAME_LIST}`,
+    imageUrl: "https://nijigasaki-school.web.app/ogp.jpg",
+    appUrl: `https://nijigasaki-school.web.app/?${GA_QUERY_FROM_APP_LIST}`,
   },
 ] as const;
 
@@ -124,9 +98,9 @@ const GameList = () => {
               onMouseEnter={onEnterImage(item.id)}
               onMouseLeave={onEnterLeave()}
             >
-              <img src={item.imageUrl} alt={t(`games.${item.id}.title`)} />
+              <img src={item.imageUrl} alt={t(`apps.${item.id}.title`)} />
               {item.id === hoveredGameId && (
-                <StyledImageListItemBar title={t(`games.${item.id}.title`)} />
+                <StyledImageListItemBar title={t(`apps.${item.id}.title`)} />
               )}
             </StyledImageListItem>
           ))}
@@ -137,9 +111,9 @@ const GameList = () => {
         <GameLinkCard
           key={item.id}
           open={item.id === openLinkCardGameId}
-          title={t(`games.${item.id}.title`)}
-          description={t(`games.${item.id}.description`)}
-          gameUrl={item.gameUrl}
+          title={t(`apps.${item.id}.title`)}
+          description={t(`apps.${item.id}.description`)}
+          gameUrl={item.appUrl}
           imageUrl={item.imageUrl}
           onClose={onCloseGameLinkCard}
         />
