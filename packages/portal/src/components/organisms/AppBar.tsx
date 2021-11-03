@@ -31,7 +31,7 @@ const HeaderSpace = styled.div`
 `;
 
 interface AppBarProps {
-  tab: "game-list" | "ranking" | "help";
+  tab: "app-list" | "game-list" | "ranking" | "help";
 }
 
 const AppBar: FC<AppBarProps> = (props) => {
@@ -80,6 +80,7 @@ const AppBar: FC<AppBarProps> = (props) => {
           </IconButton>
         </Toolbar>
         <Tabs value={tab} onChange={handleTab} centered={true}>
+          <Tab label={t(`tabs.app_list`)} value="app-list" />
           <Tab label={t(`tabs.game_list`)} value="game-list" />
           <Tab label={t(`tabs.ranking`)} value="ranking" />
           <Tab label={t(`tabs.help`)} value="help" />

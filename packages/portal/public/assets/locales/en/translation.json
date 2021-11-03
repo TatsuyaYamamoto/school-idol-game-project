@@ -1,11 +1,30 @@
 {
   "tabs": {
+    "app_list": "Apps",
     "game_list": "Games",
     "ranking": "Ranking",
     "help": "Help"
   },
   "jump_to_game": "Jump to game!",
   "last_updated_at": "Last updated at",
+  "apps": {
+    "review-lovelive-cyber-security": {
+      "title": "Review! LoveLive Cyber Security",
+      "description": "サイバーセキュリティ月間で学んだことを一緒に復習しましょう！\n\n...という、2021年エイプリルフールに作成したサイバーセキュリティ月間の(勝手な)補足ノベルゲーム(?)です。"
+    },
+    "replica-ticket": {
+      "title": "Replica ticket machine",
+      "description": "レプリカチケットの発券をサポートするアプリです。これは2020年の無料ライブ配信に合わせて企画された\"レプリカチケット\"を応援するために作成したものです。"
+    },
+    "cyazalea-kiss-calc": {
+      "title": "Cyazalea ☆ kiss ☆ calculator",
+      "description": "これはあいときぼうのシャゼリア☆キッス☆計算機！3+3+3は9千兆パワー!!!だよ！\n\n...という、2020年エイプリルフールのジョークサイトです。"
+    },
+    "nijigasaki-school": {
+      "title": "Nijigasaki school web site",
+      "description": "東京・お台場にある、虹ヶ咲学園のウェブサイトです。自由な校風と多様な専攻が魅力の虹ヶ咲学園の情報を、四月馬鹿の範囲でご覧頂けます。\n\n...という、2020年エイプリルフールのジョークサイトです。"
+    }
+  },
   "games": {
     "honocar": {
       "title": "Hono-Car!",
@@ -31,10 +50,6 @@
       "title": "Rina-chan box \"Where?\"",
       "description": "Find out Rina-chan hiding in a cardboard box."
     },
-    "review-lovelive-cyber-security": {
-      "title": "Review! LoveLive Cyber Security!",
-      "description": "Study about Cyber Security again with Yoshiko-chan, Hanamaru-chan and Ruby-chan."
-    },
     "marusuki": {
       "title": "How much do you like manmaru?",
       "description": "Get on the rhythm and tap manmaru (perfect circle) takoyaki! Chisato-chan dislikes green peppers, even if they're finely cut."
@@ -42,7 +57,7 @@
   },
   "game_link_card": {
     "close": "Close",
-    "jump_to_game": "Jump to game page"
+    "jump_to_game": "Go to this page"
   },
   "rank_unit": "",
   "score_label": "SCORE"
