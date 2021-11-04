@@ -1,0 +1,12 @@
+{
+  "name": "sf-libs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "exports": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "firebase": "^9.2.0"
+  }
+}
